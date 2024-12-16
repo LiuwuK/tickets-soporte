@@ -7,6 +7,9 @@ if (!$con) {
     echo "Error de conexión a la base de datos: " . mysqli_connect_error();
     exit;
 }
+else {
+    echo "Conectado a la bd\n";
+}
 
 
 class Chat implements MessageComponentInterface {
@@ -17,15 +20,23 @@ class Chat implements MessageComponentInterface {
         $this->clients = new \SplObjectStorage;
     }
 
-    public function onOpen(ConnectionInterface $conn) {
-        $this->clients->attach($conn);
-        echo "Nueva conexión: ({$conn->resourceId})\n";
+    public function onOpen(ConnectionInterface $con) {
+        $this->clients->attach($con);
+        echo "Nueva conexión: ({$con->resourceId})\n";
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
         global $con;
-    
+        
         $data = json_decode($msg);
+        if (!$data) {
+            echo "Error al decodificar el mensaje\n";
+            return;
+        }
+        
+        // Mostrar datos recibidos para depuración
+        echo "Mensaje recibido: " . print_r($data, true) . "\n";
+    
         $ticketId = $data->ticket_id;
         $sender = $data->sender;
         $message = $data->message;
@@ -36,6 +47,7 @@ class Chat implements MessageComponentInterface {
             $stmt->bind_param("iss", $ticketId, $sender, $message);
             $stmt->execute();
             $stmt->close();
+            echo "Mensaje guardado en la base de datos\n";
         } else {
             echo "Error al preparar la consulta: " . $con->error . "\n";
         }
@@ -55,22 +67,22 @@ class Chat implements MessageComponentInterface {
             ]));
         }
     }
-    public function onClose(ConnectionInterface $conn) {
+    public function onClose(ConnectionInterface $con) {
         // Eliminamos el cliente de todos los tickets
         foreach ($this->ticketClients as $ticketId => $clients) {
-            if (isset($clients[$conn->resourceId])) {
-                unset($this->ticketClients[$ticketId][$conn->resourceId]);
+            if (isset($clients[$con->resourceId])) {
+                unset($this->ticketClients[$ticketId][$con->resourceId]);
             }
         }
     
         // Finalmente, eliminamos de la colección general
-        $this->clients->detach($conn);
-        echo "Conexión cerrada: ({$conn->resourceId})\n";
+        $this->clients->detach($con);
+        echo "Conexión cerrada: ({$con->resourceId})\n";
     }
 
-    public function onError(ConnectionInterface $conn, \Exception $e) {
+    public function onError(ConnectionInterface $con, \Exception $e) {
         echo "Error: {$e->getMessage()}\n";
-        $conn->close();
+        $con->close();
     }
 }
 
@@ -86,6 +98,7 @@ $server = IoServer::factory(
     ),
     8080
 );
+
 
 echo "Servidor WebSocket ejecutándose en el puerto 8080\n";
 $server->run();
