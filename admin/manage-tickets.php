@@ -71,7 +71,7 @@ if (isset($_POST['update'])) {
             <div class="grid simple no-border">
               <div class="grid-title no-border descriptive clickable">
                 <h4 class="semi-bold"><?php echo $row['subject']; ?></h4>
-                <p><span class="text-success bold">Ticket #<?php echo $_SESSION['sid'] = $row['ticket_id']; ?></span> - Fecha de creación <?php echo $row['posting_date']; ?>
+                <p><span class="text-success bold">Ticket #<?php echo $_SESSION['sid'] = $row['id']; ?></span> - Fecha de creación <?php echo $row['posting_date']; ?>
                   <span class="label label-important"><?php echo $row['status']; ?></span>
                 </p>
                 <div class="actions"> <a class="view" href="javascript:;"><i class="fa fa-angle-down"></i></a> </div>
@@ -82,6 +82,13 @@ if (isset($_POST['update'])) {
                     <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="../assets/img/user.png" data-src="../assets/img/user.png" src="../assets/img/user.png" alt=""> </div>
                   </div>
                   <div class="info-wrapper">
+                  <!-- Teste envio mensajes -->
+                    <div id="chat_area_<?php echo $row['id']; ?>"></div>
+                    <input type="hidden" id="sender_<?php echo $row['id']; ?>" value="<?php echo$_SESSION["alogin"]; ?>">
+                    <input type="hidden" id="ticket_id_<?php echo $row['id']; ?>" value="<?php echo $row['id']; ?>" />
+                    <input type="text" id="message_input_<?php echo $row['id']; ?>" placeholder="Escribe tu mensaje" />
+                    <button onclick="sendMessage(document.getElementById('message_input_<?php echo $row['id']; ?>').value, <?php echo $row['id']; ?>, document.getElementById('sender_<?php echo $row['id']; ?>').value)">Enviar</button>
+
                     <div class="info"><?php echo $row['ticket']; ?> </div>
                     <div class="clearfix"></div>
                   </div>
@@ -152,6 +159,7 @@ if (isset($_POST['update'])) {
   <!-- BEGIN CORE TEMPLATE JS -->
   <script src="../assets/js/core.js" type="text/javascript"></script>
   <script src="../assets/js/chat.js" type="text/javascript"></script>
+  <script src="../assets/js/live_chat.js" type="text/javascript"></script>
   <script src="../assets/js/demo.js" type="text/javascript"></script>
   <!-- END CORE TEMPLATE JS -->
 </body>

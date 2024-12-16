@@ -65,7 +65,6 @@ check_login();
       <?php $rt = mysqli_query($con, "select * from ticket where email_id='" . $_SESSION['login'] . "'");
       $num = mysqli_num_rows($rt);
       if ($num > 0) {
-
         while ($row = mysqli_fetch_array($rt)) {
       ?>
           <div class="row">
@@ -73,7 +72,7 @@ check_login();
               <div class="grid simple no-border">
                 <div class="grid-title no-border descriptive clickable">
                   <h4 class="semi-bold"><?php echo $row['subject']; ?></h4>
-                  <p><span class="text-success bold">Ticket #<?php echo $row['ticket_id']; ?></span> - Fecha de Creación <?php echo $row['posting_date']; ?>
+                  <p><span class="text-success bold">Ticket #<?php echo $row['id']; ?></span> - Fecha de Creación <?php echo $row['posting_date']; ?>
                     <span class="label label-important"><?php echo $row['status']; ?></span>
                   </p>
                   <div class="actions"> <a class="view" href="javascript:;"><i class="fa fa-angle-down"></i></a> </div>
@@ -84,6 +83,13 @@ check_login();
                       <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="assets/img/user.png" data-src="assets/img/user.png" src="assets/img/user.png" alt=""> </div>
                     </div>
                     <div class="info-wrapper">
+                      <!-- TESTEO ENVIO MENSAJES -->
+                      <div id="chat_area_<?php echo $row['id']; ?>"></div>
+                      <input type="hidden" id="sender_<?php echo $row['id']; ?>" value="<?php echo$_SESSION["name"]; ?>">
+                      <input type="hidden" id="ticket_id_<?php echo $row['id']; ?>" value="<?php echo $row['id']; ?>" />
+                      <input type="text" id="message_input_<?php echo $row['id']; ?>" placeholder="Escribe tu mensaje" />
+                      <button onclick="sendMessage(document.getElementById('message_input_<?php echo $row['id']; ?>').value, <?php echo $row['id']; ?>, document.getElementById('sender_<?php echo $row['id']; ?>').value)">Enviar</button>
+                      <!-- -------------------------- -->
                       <div class="info"><?php echo $row['ticket']; ?> </div>
                       <div class="clearfix"></div>
                     </div>
@@ -134,6 +140,7 @@ check_login();
   </div>
   <!-- END CONTAINER -->
   <!-- BEGIN CORE JS FRAMEWORK-->
+  
   <script src="assets/plugins/jquery-1.8.3.min.js" type="text/javascript"></script>
   <script src="assets/plugins/jquery-ui/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
   <script src="assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
@@ -153,6 +160,7 @@ check_login();
   <!-- BEGIN CORE TEMPLATE JS -->
   <script src="assets/js/core.js" type="text/javascript"></script>
   <script src="assets/js/chat.js" type="text/javascript"></script>
+  <script src="assets/js/live_chat.js" type="text/javascript"></script>
   <script src="assets/js/demo.js" type="text/javascript"></script>
   <!-- END CORE TEMPLATE JS -->
 </body>

@@ -7,7 +7,7 @@
           </a> </li>
       </ul>
       <h2>
-        <a href="https://www.configuroweb.com/46-aplicaciones-gratuitas-en-php-python-y-javascript/#Aplicaciones-gratuitas-en-PHP,-Python-y-Javascript" class="text-white"><strong>ConfiguroWeb</strong></a>
+        <a href="#" class="text-white"><strong>ConfiguroWeb</strong></a>
       </h2>
     </div>
     <div class="header-quick-nav">
