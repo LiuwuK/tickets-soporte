@@ -72,8 +72,19 @@ check_login();
               <div class="grid simple no-border">
                 <div class="grid-title no-border descriptive clickable">
                   <h4 class="semi-bold"><?php echo $row['subject']; ?></h4>
-                  <p><span class="text-success bold">Ticket #<?php echo $row['id']; ?></span> - Fecha de Creación <?php echo $row['posting_date']; ?>
+                  <p><span class="text-success bold">Ticket #<?php echo $row['id']; ?></span> - Fecha de Creación <?php echo $row['posting_date']; ?> 
+                    <?php
+                    if ($row['status'] == 'Abierto') {
+                    ?>
+                    <span class="label label-success"><?php echo $row['status']; ?></span>
+                    <?php
+                    }else{
+                    ?>
                     <span class="label label-important"><?php echo $row['status']; ?></span>
+                    <?php
+                    };
+                  
+                  ?>
                   </p>
                   <div class="actions"> <a class="view" href="javascript:;"><i class="fa fa-angle-down"></i></a> </div>
                 </div>
@@ -83,13 +94,24 @@ check_login();
                       <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="assets/img/user.png" data-src="assets/img/user.png" src="assets/img/user.png" alt=""> </div>
                     </div>
                     <div class="info-wrapper">
-                      <!-- TESTEO ENVIO MENSAJES -->
-                      <div id="chat_area_<?php echo $row['id']; ?>"></div>
+
+                      <!-- CHAT A TIEMPO REAL ------------------------------------------------------------------------
+                      <div class="chatbox" id="chat_area_<?php echo $row['id']; ?>"></div>
                       <input type="hidden" id="sender_<?php echo $row['id']; ?>" value="<?php echo$_SESSION["name"]; ?>">
                       <input type="hidden" id="ticket_id_<?php echo $row['id']; ?>" value="<?php echo $row['id']; ?>" />
                       <input type="text" id="message_input_<?php echo $row['id']; ?>" placeholder="Escribe tu mensaje" />
                       <button onclick="sendMessage(document.getElementById('message_input_<?php echo $row['id']; ?>').value, <?php echo $row['id']; ?>, document.getElementById('sender_<?php echo $row['id']; ?>').value)">Enviar</button>
-                      <!-- -------------------------- -->
+                        <style>
+                          .chatbox{
+                            padding: 10px;
+                            min-height:400px;
+                            max-height:400px;
+                            width: 90%;
+                            border: 1px solid black;
+                            overflow-y: scroll;
+                          }
+                        </style> 
+                      ----------------------------------------------------------------------------------------------------->
                       <div class="info"><?php echo $row['ticket']; ?> </div>
                       <div class="clearfix"></div>
                     </div>
@@ -158,9 +180,9 @@ check_login();
   <!-- END PAGE LEVEL PLUGINS -->
   <script src="assets/js/support_ticket.js" type="text/javascript"></script>
   <!-- BEGIN CORE TEMPLATE JS -->
+  <script src="assets/js/live_chat.js" type="text/javascript"></script>
   <script src="assets/js/core.js" type="text/javascript"></script>
   <script src="assets/js/chat.js" type="text/javascript"></script>
-  <script src="assets/js/live_chat.js" type="text/javascript"></script>
   <script src="assets/js/demo.js" type="text/javascript"></script>
   <!-- END CORE TEMPLATE JS -->
 </body>

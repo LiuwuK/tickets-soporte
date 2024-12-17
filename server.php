@@ -1,16 +1,9 @@
 <?php
 require 'vendor/autoload.php';
-require 'dbconnection.php';
+require 'dbconnection.php'; // Asegúrate de que este archivo se conecta correctamente a la base de datos
+
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
-if (!$con) {
-    echo "Error de conexión a la base de datos: " . mysqli_connect_error();
-    exit;
-}
-else {
-    echo "Conectado a la bd\n";
-}
-
 
 class Chat implements MessageComponentInterface {
     protected $clients;
@@ -33,14 +26,14 @@ class Chat implements MessageComponentInterface {
             echo "Error al decodificar el mensaje\n";
             return;
         }
-        
+
         // Mostrar datos recibidos para depuración
         echo "Mensaje recibido: " . print_r($data, true) . "\n";
-    
+
         $ticketId = $data->ticket_id;
         $sender = $data->sender;
         $message = $data->message;
-    
+
         // Guardar el mensaje en la base de datos usando mysqli
         $stmt = $con->prepare("INSERT INTO messages (ticket_id, sender, message) VALUES (?, ?, ?)");
         if ($stmt) {
@@ -51,14 +44,15 @@ class Chat implements MessageComponentInterface {
         } else {
             echo "Error al preparar la consulta: " . $con->error . "\n";
         }
-    
-        // Asociamos al cliente con el ticket_id
+
+        // Asegurar que el cliente esté registrado para el ticket
         if (!isset($this->ticketClients[$ticketId])) {
             $this->ticketClients[$ticketId] = [];
         }
+        // Agregar el cliente actual al array de clientes de este ticket
         $this->ticketClients[$ticketId][$from->resourceId] = $from;
-    
-        // Enviar mensaje a los clientes conectados al ticket
+
+        // Enviar mensaje a todos los clientes conectados a este ticket (cliente + admin)
         foreach ($this->ticketClients[$ticketId] as $client) {
             $client->send(json_encode([
                 'ticket_id' => $ticketId,
@@ -67,15 +61,16 @@ class Chat implements MessageComponentInterface {
             ]));
         }
     }
+
     public function onClose(ConnectionInterface $con) {
-        // Eliminamos el cliente de todos los tickets
+        // Eliminar el cliente de todos los tickets
         foreach ($this->ticketClients as $ticketId => $clients) {
             if (isset($clients[$con->resourceId])) {
                 unset($this->ticketClients[$ticketId][$con->resourceId]);
             }
         }
-    
-        // Finalmente, eliminamos de la colección general
+
+        // Finalmente, eliminar de la colección general
         $this->clients->detach($con);
         echo "Conexión cerrada: ({$con->resourceId})\n";
     }
@@ -98,7 +93,6 @@ $server = IoServer::factory(
     ),
     8080
 );
-
 
 echo "Servidor WebSocket ejecutándose en el puerto 8080\n";
 $server->run();

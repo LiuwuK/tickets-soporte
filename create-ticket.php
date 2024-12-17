@@ -2,9 +2,14 @@
 session_start();
 //echo $_SESSION['id'];
 //$_SESSION['msg'];
+
 include("dbconnection.php");
 include("checklogin.php");
 check_login();
+$proridad = mysqli_query($con, "select * from prioridades ");
+
+
+
 if (isset($_POST['send'])) {
     $count_my_page = ("hitcounter.txt");
     $hits = file($count_my_page);
@@ -19,7 +24,7 @@ if (isset($_POST['send'])) {
     $priority = $_POST['priority'];
     $ticket = $_POST['description'];
     //$ticfile=$_FILES["tfile'"]["name"];
-    $st = "Open";
+    $st = "Abierto";
     $pdate = date('Y-m-d');
     //move_uploaded_file($_FILES["tfile"]["tmp_name"],"ticketfiles/".$_FILES["tfile"]["name"]);
     $a = mysqli_query($con, "insert into ticket(ticket_id,email_id,subject,task_type,prioprity,ticket,status,posting_date)  values('$tid','$email','$subject','$tt','$priority','$ticket','$st','$pdate')");
@@ -113,11 +118,11 @@ if (isset($_POST['send'])) {
                                         <label class="col-md-3 col-xs-12 control-label">Prioridad</label>
                                         <div class="col-md-6 col-xs-12">
                                             <select name="priority" class="form-control select">
-                                                <option value="">Seleccionar</option>
-                                                <option value="Importante">Importante</option>
-                                                <option value="Urgente-(Problema Funcional)">Urgente (Problema Funcional)</option>
-                                                <option value="No-Urgente">No Urgente</option>
-                                                <option value="Pregunta">Pregunta</option>
+                                            <?php
+                                            while ($row = mysqli_fetch_assoc($proridad)) {
+                                                echo "<option value=". $row['id'] .">". $row['nombre'] ."</option>";
+                                            };
+                                            ?>
                                             </select>
                                         </div>
                                     </div>
@@ -133,14 +138,6 @@ if (isset($_POST['send'])) {
 
 
                                 </div>
-
-
-
-
-
-
-
-
 
                             </div>
 

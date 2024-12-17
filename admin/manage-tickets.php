@@ -8,9 +8,28 @@ check_login();
 if (isset($_POST['update'])) {
   $adminremark = $_POST['aremark'];
   $fid = $_POST['frm_id'];
-  mysqli_query($con, "update ticket set admin_remark='$adminremark',status='closed' where id='$fid'");
-  echo '<script>alert("Ticket ha sido actualizado, correctamente"); location.replace(document.referrer)</script>';
+  mysqli_query($con, "update ticket set admin_remark='$adminremark',status='Cerrado' where id='$fid'");
+  echo '<script>alert("' . $query . '"); location.replace(document.referrer);</script>';
 }
+//carga las prioridades para filtrar
+$proridad = mysqli_query($con, "select * from prioridades ");
+
+// se verifica si se selecciono una proridad, si se selecciono una se hace el filtro, si no se ajusta la query para mostrar todas los tickets ordenados
+$priority_id = isset($_GET['priority']) ? $_GET['priority'] : '';
+
+$query = "select ti.id AS ticketId, 
+          pr.id AS prioridadId, 
+          ti.*,
+          pr.*
+          FROM ticket ti 
+          JOIN prioridades pr ON (ti.prioprity = pr.id)";
+if ($priority_id) {
+    $query .= " WHERE ti.prioprity = " . intval($priority_id);
+}
+$query .= " ORDER BY pr.nivel DESC";
+
+$rt = mysqli_query($con, $query);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -62,8 +81,26 @@ if (isset($_POST['update'])) {
       <div class="page-title">
         <h3>Lista de Tickets</h3>
       </div>
+      <div>
+        <h4>Filtrar por prioridad</h4>
+          <form method="GET" action="">
+            <select name="priority" class="form-control select">
+                <option value="">Ver todo</option> 
+                <?php
+                while ($row = mysqli_fetch_assoc($proridad)) {
+                    // Si se seleccionó una prioridad, marca la opción como seleccionada
+                    $selected = isset($_GET['priority']) && $_GET['priority'] == $row['id'] ? 'selected' : '';
+                    echo "<option value='" . $row['id'] . "' $selected>" . $row['nombre'] . "</option>";
+                }
+                ?>
+            </select>
+            <br>
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+          </form>
+        <br>
+      </div>
       <div class="clearfix"></div>
-      <?php $rt = mysqli_query($con, "select * from ticket order by id desc");
+      <?php 
       while ($row = mysqli_fetch_array($rt)) {
       ?>
         <div class="row">
@@ -71,9 +108,21 @@ if (isset($_POST['update'])) {
             <div class="grid simple no-border">
               <div class="grid-title no-border descriptive clickable">
                 <h4 class="semi-bold"><?php echo $row['subject']; ?></h4>
-                <p><span class="text-success bold">Ticket #<?php echo $_SESSION['sid'] = $row['id']; ?></span> - Fecha de creación <?php echo $row['posting_date']; ?>
-                  <span class="label label-important"><?php echo $row['status']; ?></span>
-                </p>
+                <p><span class="text-success bold">Ticket #<?php echo $_SESSION['sid'] = $row['ticketId']; ?></span> - Fecha de creación <?php echo $row['posting_date']; ?>
+                  <?php
+                    if ($row['status'] == 'Abierto') {
+                    ?>
+                    <span class="label label-success"><?php echo $row['status']; ?></span>
+                    <?php
+                    }else{
+                    ?>
+                    <span class="label label-important"><?php echo $row['status']; ?></span>
+                    <?php
+                    };
+                  
+                  ?>
+              
+                </>
                 <div class="actions"> <a class="view" href="javascript:;"><i class="fa fa-angle-down"></i></a> </div>
               </div>
               <div class="grid-body  no-border" style="display:none">
@@ -82,13 +131,6 @@ if (isset($_POST['update'])) {
                     <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="../assets/img/user.png" data-src="../assets/img/user.png" src="../assets/img/user.png" alt=""> </div>
                   </div>
                   <div class="info-wrapper">
-                  <!-- Teste envio mensajes -->
-                    <div id="chat_area_<?php echo $row['id']; ?>"></div>
-                    <input type="hidden" id="sender_<?php echo $row['id']; ?>" value="<?php echo$_SESSION["alogin"]; ?>">
-                    <input type="hidden" id="ticket_id_<?php echo $row['id']; ?>" value="<?php echo $row['id']; ?>" />
-                    <input type="text" id="message_input_<?php echo $row['id']; ?>" placeholder="Escribe tu mensaje" />
-                    <button onclick="sendMessage(document.getElementById('message_input_<?php echo $row['id']; ?>').value, <?php echo $row['id']; ?>, document.getElementById('sender_<?php echo $row['id']; ?>').value)">Enviar</button>
-
                     <div class="info"><?php echo $row['ticket']; ?> </div>
                     <div class="clearfix"></div>
                   </div>
@@ -107,7 +149,7 @@ if (isset($_POST['update'])) {
                         <hr>
                         <p class="small-text">
                           <input name="update" type="submit" class="txtbox1" id="Update" value="Actualizar" size="40" />
-                          <input name="frm_id" type="hidden" id="frm_id" value="<?php echo $row['id']; ?>" />
+                          <input name="frm_id" type="hidden" id="frm_id" value="<?php echo $row['ticketId']; ?>" />
                         </p>
                       </form>
                     </div>
