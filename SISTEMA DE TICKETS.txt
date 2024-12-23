@@ -1,0 +1,17 @@
+SISTEMA DE TICKETS
+-Crear opción para asignar micro-tareas al ticket ---EN PROCESO---
+
+-Crear funcionalidad para que el usuario pueda cambiar el estado de las micro-tareas 
+
+-Crear vista que permita al usuario tener una retroalimentación del proceso del ticket (Como el estado de un pedido)
+
+-Crear filtro por estado de tickets
+
+-Cambiar diseño del sistema
+
+-Cambiar dashboard, para el usuario cliente permitir ver los tickets creados por el recientemente y si estos tienen 
+respuesta, para el Admin se le debe mostrar un listado/grafico resumido con la cantidad de tickets creados recientemente
+
+-Crear sistema de notificaciones, el usuario debe ver en el dashboard una notificación si es que su ticket fue actualizado, finalizado, todas las notificaciones deben llegar a su correo
+
+-Crear chat a tiempo real (vinculado a cada ticket, posible chat con todos los usuarios??)
