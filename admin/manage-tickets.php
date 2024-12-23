@@ -5,16 +5,40 @@ session_start();
 include("dbconnection.php");
 include("checklogin.php");
 check_login();
+//Agregar tareas a un ticket--------------------------------------------------------------------------------
+if (isset($_POST["addtsk"])) {
+    $tId = $_POST['tk_id'];
+    $title = $_POST['title1'];
+    $query = "insert into tasks(ticket_id, titulo)  values('$tId', '$title') ";
+    mysqli_query($con, $query);
+    echo '<script>alert("Tareas creadas correctamente"); location.replace(document.referrer);</script>';
+    
+}
+//----------------------------------------------------------------------------------------------------------
+
+//Actualizar estado del ticket------------------------------------------------------------------------------
+//adminremark = mensaje del administrador
+//fid = id del ticket
 if (isset($_POST['update'])) {
   $adminremark = $_POST['aremark'];
   $fid = $_POST['frm_id'];
-  mysqli_query($con, "update ticket set admin_remark='$adminremark',status='Cerrado' where id='$fid'");
-  echo '<script>alert("' . $query . '"); location.replace(document.referrer);</script>';
+  mysqli_query($con, "update ticket set admin_remark='$adminremark',status='En proceso' where id='$fid'");
+  echo '<script>alert("Ticket actualizado correctamente"); location.replace(document.referrer);</script>';
 }
-//carga las prioridades para filtrar
-$proridad = mysqli_query($con, "select * from prioridades ");
+else if (isset($_POST['end'])) {
+  $adminremark = $_POST['aremark'];
+  $fid = $_POST['frm_id'];
+  mysqli_query($con, "update ticket set admin_remark='$adminremark',status='Cerrado' where id='$fid'");
+  echo '<script>alert("Ticket actualizado correctamente"); location.replace(document.referrer);</script>';
+}
+//----------------------------------------------------------------------------------------------------------
 
-// se verifica si se selecciono una proridad, si se selecciono una se hace el filtro, si no se ajusta la query para mostrar todas los tickets ordenados
+//carga las prioridades para filtrar------------------------------------------------------------------------
+$proridad = mysqli_query($con, "select * from prioridades ");
+//----------------------------------------------------------------------------------------------------------
+
+//Carga de tickets -----------------------------------------------------------------------------------------
+//La query cambia dependiendo si se filtra por prioridad
 $priority_id = isset($_GET['priority']) ? $_GET['priority'] : '';
 
 $query = "select ti.id AS ticketId, 
@@ -29,7 +53,7 @@ if ($priority_id) {
 $query .= " ORDER BY pr.nivel DESC";
 
 $rt = mysqli_query($con, $query);
-
+//----------------------------------------------------------------------------------------------------------
 ?>
 <!DOCTYPE html>
 <html>
@@ -88,7 +112,7 @@ $rt = mysqli_query($con, $query);
                 <option value="">Ver todo</option> 
                 <?php
                 while ($row = mysqli_fetch_assoc($proridad)) {
-                    // Si se seleccionó una prioridad, marca la opción como seleccionada
+                    // Opcion para filtar por prioridad
                     $selected = isset($_GET['priority']) && $_GET['priority'] == $row['id'] ? 'selected' : '';
                     echo "<option value='" . $row['id'] . "' $selected>" . $row['nombre'] . "</option>";
                 }
@@ -114,10 +138,13 @@ $rt = mysqli_query($con, $query);
                     ?>
                     <span class="label label-success"><?php echo $row['status']; ?></span>
                     <?php
-                    }else{
+                    }else if ($row['status'] == 'Cerrado'){
                     ?>
                     <span class="label label-important"><?php echo $row['status']; ?></span>
                     <?php
+                    }else{?>
+                      <span class="label label-warning"><?php echo $row['status']; ?></span>
+                      <?php
                     };
                   
                   ?>
@@ -142,16 +169,16 @@ $rt = mysqli_query($con, $query);
                     <div class="user-profile-pic-wrapper">
                       <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="../assets/img/admin.jpg" data-src="../assets/img/admin.jpg" src="../assets/img/admin.jpg" alt=""> </div>
                     </div>
-                    <div class="info-wrapper">
+                    <div class="info-wrapper d-flex">
                       <form name="adminr" method="post" enctype="multipart/form-data">
                         <br>
                         <textarea name="aremark" cols="50" rows="4" required="true"><?php echo $row['admin_remark']; ?></textarea>
                         <hr>
-                        <p class="small-text">
-                          <input name="update" type="submit" class="txtbox1" id="Update" value="Actualizar" size="40" />
+                          <button name="tasks" type="button" class="btn btn-success taskbtn" data-toggle="modal" data-target="#addTasks" data-ticket-id="<?php echo $row['ticketId']; ?>">Agregar tareas</button>
+                          <button name="update" type="submit" class="btn btn-primary" id="Update">Actualizar</button>
+                          <button name="end" type="submit" class="btn btn-danger" id="Update">Cerrar </button>
                           <input name="frm_id" type="hidden" id="frm_id" value="<?php echo $row['ticketId']; ?>" />
-                        </p>
-                      </form>
+                      </form>                      
                     </div>
                     <div class="clearfix"></div>
                   </div>
@@ -167,7 +194,8 @@ $rt = mysqli_query($con, $query);
     </div>
   </div>
   </div>
-
+  
+                    
 
   </div>
   </div>
@@ -181,6 +209,74 @@ $rt = mysqli_query($con, $query);
 
   </div>
   <!-- END CONTAINER -->
+
+  <!-- Estilos modal (crear archivo aparte :p) -->
+   <style>
+    .add-task, .del-task{
+      padding: 0;
+      border-radius: 50%; 
+      width:30px; 
+      height:30px;
+      margin: 2px;
+      margin-bottom: 5px;
+    }
+    .add-task{
+      background-color: green;
+    }
+    .add-task:hover{
+      background-color: green;
+    }
+    .add-task:active{
+      transform: scale(0.9);
+    }
+    .add-icon{
+      line-height: 30px;
+      font-size: medium;
+      color: white;
+    }
+
+   </style>
+  <!-- fin estilos -->
+ <!-- Add tasks modal -->
+  <div id="addTasks" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Contenido del modal-->
+      <div class="modal-content">
+        
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Crear tareas</h4>
+        </div>
+        <form name="taskForm" method="post" enctype="multipart/form-data">
+          <div class="modal-body" id="tasksContainer">
+              <input name="tk_id" type="hidden" id="modalTicketId"/>
+              <div>
+                <span class="btn btn-danger del-task pull-right" id="delTaskBtn" type="button">
+                    <i class="fa fa-minus add-icon" ></i>
+                </span>
+
+                <span class="btn add-task pull-right" id="addTaskBtn" type="button">
+                    <i class="fa fa-plus add-icon" ></i>
+                </span>
+              </div>
+  
+              <div class="form-group">
+                <label for="title1">Tarea #1</label>
+                <input name="title1" type="text" class="form-control" id="title1" placeholder="">
+              </div>
+
+          </div>
+          <div class="modal-footer">
+            <button name="addtsk" type="submit" class="btn btn-default">Enviar</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- fin modal  -->
+
+
   <!-- BEGIN CORE JS FRAMEWORK-->
   <script src="../assets/plugins/jquery-1.8.3.min.js" type="text/javascript"></script>
   <script src="../assets/plugins/jquery-ui/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
@@ -199,6 +295,7 @@ $rt = mysqli_query($con, $query);
   <!-- END PAGE LEVEL PLUGINS -->
   <script src="../assets/js/support_ticket.js" type="text/javascript"></script>
   <!-- BEGIN CORE TEMPLATE JS -->
+  <script src="../assets/js/tasks.js" ></script>
   <script src="../assets/js/core.js" type="text/javascript"></script>
   <script src="../assets/js/chat.js" type="text/javascript"></script>
   <script src="../assets/js/live_chat.js" type="text/javascript"></script>

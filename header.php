@@ -7,7 +7,7 @@
           </a> </li>
       </ul>
       <h2>
-        <a href="dashboard.php" class="text-white"><strong>CWEB</strong></a>
+        <a href="dashboard.php" class="text-white"><strong>Test</strong></a>
       </h2>
     </div>
     <div class="header-quick-nav">

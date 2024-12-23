@@ -3,6 +3,8 @@ session_start();
 include("checklogin.php");
 check_login();
 include("dbconnection.php");
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -10,7 +12,7 @@ include("dbconnection.php");
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <meta charset="utf-8" />
-  <title>CWEB Dashboard </title>
+  <title>Dashboard </title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta content="" name="description" />
   <meta content="" name="author" />
@@ -25,7 +27,7 @@ include("dbconnection.php");
   <link href="assets/css/custom-icon-set.css" rel="stylesheet" type="text/css" />
 </head>
 
-<body class="">
+<body class="" >
   <?php include("header.php"); ?>
   <div class="page-container row-fluid">
     <?php include("leftbar.php"); ?>
@@ -45,7 +47,7 @@ include("dbconnection.php");
       <div class="page-title">
         <h3>Dashboard</h3>
         <div class="row 2col">
-          <div class="col-md-6 col-sm-6 spacing-bottom-sm spacing-bottom">
+          <div class="d-flex col-md-6 col-sm-6 spacing-bottom-sm spacing-bottom">
             <div class="tiles blue added-margin">
               <div class="tiles-body">
                 <div class="controller"> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
@@ -54,20 +56,6 @@ include("dbconnection.php");
                 ?>
                 <div class="heading"><a href="view-tickets.php" style="color:#FFF"> Total de Tickets</a></div>
                 <h3 class="text-right text-white"><span class="animate-number" data-value="<?php echo $num; ?>" data-animation-duration="1200"><?= $num ?></span></h3>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-sm-6 spacing-bottom-sm spacing-bottom">
-            <div class="tiles green added-margin">
-              <div class="tiles-body">
-                <div class="controller"> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
-                <?php $prequest = mysqli_query($con, "select * from prequest where email='" . $_SESSION['login'] . "'");
-                $pnum = mysqli_num_rows($prequest);
-                ?>
-                <div class="heading"> <span class="fa fa-ticket"></span>
-                  <a href="get-quote.php" style="color:#FFF">Total de Consultas</a>
-                </div>
-                <h3 class="text-right text-white"><span class="animate-number" data-value="<?php echo $num; ?>" data-animation-duration="1200"><?= $pnum ?></span></h3>
               </div>
             </div>
           </div>

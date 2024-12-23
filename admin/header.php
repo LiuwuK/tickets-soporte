@@ -7,7 +7,7 @@
           </a> </li>
       </ul>
       <h2>
-        <a href="#" class="text-white"><strong>ConfiguroWeb</strong></a>
+        <a href="#" class="text-white"><strong>Test</strong></a>
       </h2>
     </div>
     <div class="header-quick-nav">
