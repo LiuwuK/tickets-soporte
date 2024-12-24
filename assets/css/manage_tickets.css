@@ -1,0 +1,73 @@
+/* ESTILOS MODAL */
+.add-task, .del-task{
+    padding: 0;
+    border-radius: 50%; 
+    width:30px; 
+    height:30px;
+    margin: 2px;
+    margin-bottom: 5px;
+  }
+  .add-task{
+    background-color: green;
+  }
+  .add-task:hover{
+    background-color: green;
+  }
+  .add-task:active{
+    transform: scale(0.9);
+  }
+  .add-icon{
+    line-height: 30px;
+    font-size: medium;
+    color: white;
+  }
+
+
+  /*Estilos ticket*/
+  .info-ticket{
+    display: inline-block;
+    float: left;
+  }
+  .status-div{
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    margin: 30px;
+    margin-top: 0;
+  }
+  .status-div select{
+    width: auto;
+  }
+  .comm{
+    margin-bottom: 20px;
+  }
+
+  .btn-div{
+    display: flex;
+    justify-content: space-between;
+  }
+  .btn-div button{
+    width: 25%;
+  }
+
+  .tsk{
+    padding: 0;
+    width:25px; 
+    height:25px;
+    border-radius: 50%;
+    margin: 5px;
+  }
+  .tsk:active{
+    transform: scale(0.9);
+  }
+
+  .tsk i{
+    line-height: 27px;
+  }
+  .del-modal{
+    text-align: center;
+  }
+  .del-footer{
+    display: flex;
+    justify-content: center;
+  }

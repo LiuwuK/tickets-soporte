@@ -5,14 +5,46 @@ session_start();
 include("dbconnection.php");
 include("checklogin.php");
 check_login();
+
 //Agregar tareas a un ticket--------------------------------------------------------------------------------
 if (isset($_POST["addtsk"])) {
-    $tId = $_POST['tk_id'];
-    $title = $_POST['title1'];
-    $query = "insert into tasks(ticket_id, titulo)  values('$tId', '$title') ";
-    mysqli_query($con, $query);
-    echo '<script>alert("Tareas creadas correctamente"); location.replace(document.referrer);</script>';
-    
+  $tId = $_POST['tk_id'];
+  $titles = $_POST['title'];
+  
+//actualizar el estado del ticket cuando se le asignen tareas
+  $queryUpdt = "update ticket set status='En proceso' where id='$tId'";
+  mysqli_query($con, $queryUpdt);
+
+  if (!empty($titles)) {    
+      $values = [];
+      foreach ($titles as $title) {
+          $title = trim($title);
+          if (!empty($title)) {
+              $title = mysqli_real_escape_string($con, $title);
+              $values[] = "('$tId', '$title')";
+          }
+      }
+      if (!empty($values)) {
+          //consulta para insertar múltiples tareas de una vez
+          $query = "INSERT INTO tasks (ticket_id, titulo) VALUES " . implode(", ", $values);
+          if (mysqli_query($con, $query)) {
+              echo '<script>alert("'.$query.'"); location.replace(document.referrer);</script>';
+          } else {
+              echo "Error al insertar tareas: " . mysqli_error($con);
+          }
+      } else {
+          echo '<script>alert("Debe agregar al menos una tarea.");</script>';
+      }
+  }
+}
+//Eliminar tareas-------------------------------------------------------------------------------------------
+elseif (isset($_POST["deltsk"])) {
+  $tId = $_POST['tk_id'];
+  $query = "DELETE FROM `tasks` WHERE id = ?";
+  $stmt = $con->prepare($query);
+  $stmt->bind_param("i",$tId); 
+  $stmt->execute();
+  echo '<script>alert("'.$tId.'"); location.replace(document.referrer);</script>';
 }
 //----------------------------------------------------------------------------------------------------------
 
@@ -22,13 +54,35 @@ if (isset($_POST["addtsk"])) {
 if (isset($_POST['update'])) {
   $adminremark = $_POST['aremark'];
   $fid = $_POST['frm_id'];
-  mysqli_query($con, "update ticket set admin_remark='$adminremark',status='En proceso' where id='$fid'");
+  $queryUpdt = "update ticket set admin_remark='$adminremark',status='En proceso' where id='$fid'";
+  mysqli_query($con, $queryUpdt);
+ 
+  //actualizar el estado de las tareas
+  $status  = $_POST["status"];
+  foreach ($status as $tskId => $stId) {
+    $query = "UPDATE tasks SET estado_id = ? WHERE id = ?";
+    $stmt = $con->prepare($query);
+    $stmt->bind_param("ii", $stId, $tskId); 
+    $stmt->execute();
+  }
   echo '<script>alert("Ticket actualizado correctamente"); location.replace(document.referrer);</script>';
+
 }
 else if (isset($_POST['end'])) {
   $adminremark = $_POST['aremark'];
   $fid = $_POST['frm_id'];
-  mysqli_query($con, "update ticket set admin_remark='$adminremark',status='Cerrado' where id='$fid'");
+  $queryUpdt = "update ticket set admin_remark='$adminremark',status='Cerrado' where id='$fid'";
+  mysqli_query($con, $queryUpdt);
+
+  //actualizar el estado de las tareas
+  $status  = $_POST["status"];
+  foreach ($status as $tskId => $stId) {
+    $query = "UPDATE tasks SET estado_id = ? WHERE id = ?";
+    $stmt = $con->prepare($query);
+    $stmt->bind_param("ii", $stId, $tskId); 
+    $stmt->execute();
+  }
+
   echo '<script>alert("Ticket actualizado correctamente"); location.replace(document.referrer);</script>';
 }
 //----------------------------------------------------------------------------------------------------------
@@ -54,6 +108,19 @@ $query .= " ORDER BY pr.nivel DESC";
 
 $rt = mysqli_query($con, $query);
 //----------------------------------------------------------------------------------------------------------
+//Obtener todos los estados --------------------------------------------------------------------------------
+
+$query = "SELECT * FROM estados";
+$status = mysqli_query($con, $query);
+
+$estados = [];
+while ($estado = $status->fetch_assoc()) {
+    $estados[] = $estado;
+}
+//----------------------------------------------------------------------------------------------------------
+
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -65,6 +132,7 @@ $rt = mysqli_query($con, $query);
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta content="" name="description" />
   <meta content="" name="author" />
+
   <link href="../assets/plugins/pace/pace-theme-flash.css" rel="stylesheet" type="text/css" media="screen" />
   <link href="../assets/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css" rel="stylesheet" type="text/css" />
   <link href="../assets/plugins/boostrapv3/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -75,6 +143,7 @@ $rt = mysqli_query($con, $query);
   <link href="../assets/css/style.css" rel="stylesheet" type="text/css" />
   <link href="../assets/css/responsive.css" rel="stylesheet" type="text/css" />
   <link href="../assets/css/custom-icon-set.css" rel="stylesheet" type="text/css" />
+  <link href="../assets/css/manage_tickets.css" rel="stylesheet" />
 </head>
 
 <body class="">
@@ -167,17 +236,79 @@ $rt = mysqli_query($con, $query);
                 <div class="form-actions">
                   <div class="post col-md-12">
                     <div class="user-profile-pic-wrapper">
-                      <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="../assets/img/admin.jpg" data-src="../assets/img/admin.jpg" src="../assets/img/admin.jpg" alt=""> </div>
+                      <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="../assets/img/user.png" data-src="../assets/img/user.png" src="../assets/img/user.png" alt=""> </div>
                     </div>
-                    <div class="info-wrapper d-flex">
+                    <div class="info-ticket d-flex">
                       <form name="adminr" method="post" enctype="multipart/form-data">
-                        <br>
-                        <textarea name="aremark" cols="50" rows="4" required="true"><?php echo $row['admin_remark']; ?></textarea>
+                        <br>    
+                        <!-- listar tareas -->
+                        <div>
+                          <?php
+                            //Obtener las task asociadas al ticket
+                            $tkid = $row['ticketId'];
+                            $query = "SELECT ta.id AS tskId, ta.titulo, es.nombre, es.id AS statusId
+                                      FROM tasks ta
+                                      JOIN estados es ON(ta.estado_id = es.id)
+                                      WHERE ta.ticket_id = ?";
+
+                            $stmt = $con->prepare($query);
+                             
+                            if($stmt){
+                              $stmt->bind_param("i", $tkid); 
+                              $stmt->execute();
+                              $tasks = $stmt->get_result();
+
+                              if($tasks->num_rows > 0) {
+                                echo "<h2>Tareas </h2> <hr>";
+                                while($tsk = $tasks->fetch_assoc()) {
+                                  ?>
+                                    <h4>
+                                      <?php echo $tsk["titulo"]?>
+                                    </h4>
+                                    <button class="btn btn-danger tsk pull-right"  type="button" data-toggle="modal" data-target="#delTasks" data-task-id="<?php echo $tsk['tskId'];?>">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                    <div class="status-div">
+                                      <span>Estado</span>
+                                      <select class="form-control select" name="status[<?php echo $tsk['tskId']; ?>]" >
+                                        <option value="<?php echo $tsk['statusId']; ?>" selected>
+                                            <?php echo $tsk['nombre']; ?>
+                                        </option>
+
+                                        <?php foreach ($estados as $estado) {
+                                           if ($estado['id'] != $tsk['statusId']) { // Excluir el estado actual 
+                                           ?>
+                                          <option value="<?php echo $estado['id']; ?>">
+                                            <?php echo $estado['nombre']; ?>  
+                                          </option>
+                                        <?php 
+                                            } 
+                                          } ?>
+                                      </select>
+                                    </div>
+                                  <?php
+                                }
+                              }else{
+                                echo "<h3>No hay tareas asociadas </h3>";
+                              }
+                              $stmt->close(); 
+                            }  
+                            else {
+                              echo "Error en la consulta: ".$con->error;
+                            }
+                          ?>
+                        </div>
+                        <!-- Final listar tareas -->
                         <hr>
-                          <button name="tasks" type="button" class="btn btn-success taskbtn" data-toggle="modal" data-target="#addTasks" data-ticket-id="<?php echo $row['ticketId']; ?>">Agregar tareas</button>
-                          <button name="update" type="submit" class="btn btn-primary" id="Update">Actualizar</button>
-                          <button name="end" type="submit" class="btn btn-danger" id="Update">Cerrar </button>
-                          <input name="frm_id" type="hidden" id="frm_id" value="<?php echo $row['ticketId']; ?>" />
+                        <div class="comm">
+                          <textarea name="aremark" cols="110" rows="4" required="true"><?php echo $row['admin_remark']; ?></textarea>
+                        </div>
+                          <div class="btn-div">
+                            <button name="tasks" type="button" class=" btn btn-success taskbtn" data-toggle="modal" data-target="#addTasks" data-ticket-id="<?php echo $row['ticketId']; ?>">Agregar tareas</button>
+                            <button name="update" type="submit" class="btn btn-primary" id="Update">Actualizar</button>
+                            <button name="end" type="submit" class="btn btn-danger" id="Update">Cerrar </button>
+                            <input name="frm_id" type="hidden" id="frm_id" value="<?php echo $row['ticketId']; ?>" />
+                          </div>
                       </form>                      
                     </div>
                     <div class="clearfix"></div>
@@ -210,33 +341,7 @@ $rt = mysqli_query($con, $query);
   </div>
   <!-- END CONTAINER -->
 
-  <!-- Estilos modal (crear archivo aparte :p) -->
-   <style>
-    .add-task, .del-task{
-      padding: 0;
-      border-radius: 50%; 
-      width:30px; 
-      height:30px;
-      margin: 2px;
-      margin-bottom: 5px;
-    }
-    .add-task{
-      background-color: green;
-    }
-    .add-task:hover{
-      background-color: green;
-    }
-    .add-task:active{
-      transform: scale(0.9);
-    }
-    .add-icon{
-      line-height: 30px;
-      font-size: medium;
-      color: white;
-    }
 
-   </style>
-  <!-- fin estilos -->
  <!-- Add tasks modal -->
   <div id="addTasks" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -262,7 +367,7 @@ $rt = mysqli_query($con, $query);
   
               <div class="form-group">
                 <label for="title1">Tarea #1</label>
-                <input name="title1" type="text" class="form-control" id="title1" placeholder="">
+                <input name="title[]" type="text" class="form-control" id="title1" placeholder="">
               </div>
 
           </div>
@@ -275,8 +380,33 @@ $rt = mysqli_query($con, $query);
     </div>
   </div>
   <!-- fin modal  -->
+  <div id="delTasks" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Contenido del modal-->
+      <div class="modal-content">
+        
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Confirmación</h4>
+        </div>
+        <form name="delForm" method="post" enctype="multipart/form-data">
+          <div class="modal-body del-modal" id="tasksContainer">
+              <input name="tk_id" type="hidden" id="taskId"/>
+              <h3>Estas seguro que quieres eliminar esta tarea?</h3>
+          </div>
+          <div class="modal-footer del-footer">
+            <button name="deltsk" type="submit" class="btn btn-default">Eliminar</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Borrar task modal -->
 
 
+  <!-- Final modal -->
   <!-- BEGIN CORE JS FRAMEWORK-->
   <script src="../assets/plugins/jquery-1.8.3.min.js" type="text/javascript"></script>
   <script src="../assets/plugins/jquery-ui/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>

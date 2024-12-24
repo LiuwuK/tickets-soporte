@@ -5,6 +5,14 @@ session_start();
 include("dbconnection.php");
 include("checklogin.php");
 check_login();
+
+//se obtienen los tickets del usuario-------------------------------------------------------------------------
+$query = "select * from ticket where email_id='".$_SESSION['login']."'";
+$rt = mysqli_query($con, $query);
+$num = mysqli_num_rows($rt);
+//------------------------------------------------------------------------------------------------------------
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -62,8 +70,7 @@ check_login();
 
       <h4> <span class="semi-bold">Tickets</span></h4>
       <br>
-      <?php $rt = mysqli_query($con, "select * from ticket where email_id='" . $_SESSION['login'] . "'");
-      $num = mysqli_num_rows($rt);
+      <?php 
       if ($num > 0) {
         while ($row = mysqli_fetch_array($rt)) {
       ?>
@@ -78,12 +85,16 @@ check_login();
                     ?>
                     <span class="label label-success"><?php echo $row['status']; ?></span>
                     <?php
-                    }else{
+                    }else if ($row['status'] == 'Cerrado'){
                     ?>
                     <span class="label label-important"><?php echo $row['status']; ?></span>
                     <?php
+                    }else{?>
+                      <span class="label label-warning"><?php echo $row['status']; ?></span>
+                      <?php
                     };
                   
+                
                   ?>
                   </p>
                   <div class="actions"> <a class="view" href="javascript:;"><i class="fa fa-angle-down"></i></a> </div>
@@ -126,9 +137,52 @@ check_login();
                           <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="assets/img/admin.jpg" data-src="assets/img/admin.jpg" src="assets/img/admin.jpg" alt="Admin"> </div>
                         </div>
                         <div class="info-wrapper">
-
                           <br>
-                          <?php echo $row['admin_remark']; ?>
+                          <div class="comm">
+                            <h4>Procedimiento a seguir</h4>
+                            <div>
+                              <ul>
+                                <?php
+                                  //Obtener las task asociadas al ticket
+                                  $tkid = $row['id'];
+                                  $query = "SELECT ta.id AS tskId, ta.titulo, es.nombre
+                                            FROM tasks ta
+                                            JOIN estados es ON(ta.estado_id = es.id)
+                                            WHERE ta.ticket_id = ?";
+
+                                  $stmt = $con->prepare($query);
+                                  
+                                  if($stmt){
+                                    $stmt->bind_param("i", $tkid); 
+                                    $stmt->execute();
+                                    $tasks = $stmt->get_result();
+                                    if($tasks->num_rows > 0) {
+                                      while($tsk = $tasks->fetch_assoc()) {
+                                        ?>
+                                            <li><?php echo $tsk["titulo"]?> </li>
+
+                                            <p style="margin-left:15px"> Estado: <?php echo $tsk["nombre"]?></p>
+                                            
+                                        <?php
+
+                                      }
+
+                                    }else {
+                                      echo "Actualmente no tiene tareas asignadas";
+                                    }
+                                    $stmt->close(); 
+                                    }  
+                                    else {
+                                      echo "Error en la consulta: ".$con->error;
+                                    }
+                                ?>
+                              </ul>
+                            </div>
+                          </div>
+                          <div class="tasks">
+                            <h4>Comentario</h4>
+                            <p style="margin-left:30px"><?php echo $row['admin_remark']; ?></p>
+                          </div>
                           <hr>
                           <p class="small-text">Publicado en <?php echo $row['admin_remark_date']; ?></p>
                         </div>

@@ -1,42 +1,31 @@
 <?php
 session_start();
-error_reporting(0);
+
 include("dbconnection.php");
+
 if (isset($_POST['login'])) {
-  $ret = mysqli_query($con, "SELECT * FROM user WHERE email='" . $_POST['email'] . "' and password='" . $_POST['password'] . "'");
-  $num = mysqli_fetch_array($ret);
-  if ($num > 0) {
-    $_SESSION['login'] = $_POST['email'];
-    $_SESSION['id'] = $num['id'];
-    $_SESSION['name'] = $num['name'];
-    $val3 = date("Y/m/d");
-    date_default_timezone_set("Asia/Calcutta");
-    $time = date("h:i:sa");
-    $tim = $time;
-    $ip_address = $_SERVER['REMOTE_ADDR'];
-    $geopluginURL = 'http://www.geoplugin.net/php.gp?ip=' . $ip_address;
-    $addrDetailsArr = unserialize(file_get_contents($geopluginURL));
-    $city = $addrDetailsArr['geoplugin_city'];
-    $country = $addrDetailsArr['geoplugin_countryName'];
-    ob_start();
-    system('ipconfig /all');
-    $mycom = ob_get_contents();
-    ob_clean();
-    $findme = "Physical";
-    $pmac = strpos($mycom, $findme);
-    $mac = substr($mycom, ($pmac + 36), 17);
-    $ret = mysqli_query($con, "insert into usercheck(logindate,logintime,user_id,username,email,ip,mac,city,country)values('" . $val3 . "','" . $tim . "','" . $_SESSION['id'] . "','" . $_SESSION['name'] . "','" . $_SESSION['login'] . "','$ip_address','$mac','$city','$country')");
+    $stmt = $con->prepare("SELECT * FROM user WHERE email = ?");
+    $stmt->bind_param("s", $_POST['email']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $num = $result->fetch_array();
 
-    $extra = "dashboard.php";
-    echo "<script>window.location.href='" . $extra . "'</script>";
-    exit();
-  } else {
-    $_SESSION['action1'] = "Usuari@ o Contraseña Inválida";
-    $extra = "login.php";
+    if ($num > 0 && password_verify($_POST['password'], $num['password'])) {  
+        $_SESSION['login'] = $_POST['email'];
+        $_SESSION['id'] = $num['id'];
+        $_SESSION['name'] = $num['name'];
 
-    echo "<script>window.location.href='" . $extra . "'</script>";
-    exit();
-  }
+        // Redirigir a la página del dashboard
+        $extra = "dashboard.php";
+        echo "<script>window.location.href='" . $extra . "'</script>";
+        exit();
+    } else {
+        // Si el usuario o la contraseña son incorrectos
+        $_SESSION['action1'] = "Usuario o Contraseña Inválida";
+        $extra = "login.php";
+        echo "<script>window.location.href='" . $extra . "'</script>";
+        exit();
+    }
 }
 ?>
 <!DOCTYPE html>

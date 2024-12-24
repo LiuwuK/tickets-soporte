@@ -14,7 +14,7 @@
       <div class="ml-2 pull-left" style="padding-top: 0.5em;padding-left: 1em">
 
         <h4>
-          <a href="./admin/home.php" class="text-reset"><strong>Sistema de Generación de Tickets - Ambiente Administrativo</strong></a>
+          <a href="home.php" class="text-reset"><strong>Sistema de Generación de Tickets - Ambiente Administrativo</strong></a>
         </h4>
         <ul class="nav quick-section">
 

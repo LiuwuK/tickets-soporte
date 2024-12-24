@@ -7,6 +7,14 @@ document.querySelectorAll('.taskbtn').forEach(function(btn) {
     });
 });
 
+//obtener id de la tarea y pasarlo al modal
+document.querySelectorAll('.tsk').forEach(function(btn){
+    btn.addEventListener('click', function(){
+        var taskId = btn.getAttribute('data-task-id');
+        document.getElementById('taskId').value = taskId;
+    });
+});
+
 //Agregar tareas
 document.getElementById('addTaskBtn').addEventListener('click', function() {
     //Contenedor de las tareas (Body del modal)
@@ -26,7 +34,7 @@ document.getElementById('addTaskBtn').addEventListener('click', function() {
     newInput.type = 'text';
     newInput.classList.add('form-control', 'task-input');
     newInput.setAttribute('id', 'title' + taskCount);
-    newInput.setAttribute('name','title' + taskCount);
+    newInput.setAttribute('name','title[]');
 
     //se agregan el input y label al contenedor
     newTaskDiv.appendChild(newLabel);

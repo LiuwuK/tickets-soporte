@@ -4,7 +4,7 @@
    <div class="page-sidebar-wrapper scrollbar-dynamic" id="main-menu-wrapper">
      <div class="user-info-wrapper">
        <div class="profile-wrapper" style="border:solid #fff 1px;">
-         <img src="../assets/img/admin.jpg" alt="" data-src="../assets/img/admin.jpg" data-src-retina="../assets/img/admin.jpg" class="side-user-img" />
+         <img src="../assets/img/user.png" alt="" data-src="../assets/img/user.png" data-src-retina="../assets/img/user.png" class="side-user-img" />
        </div>
        <div class="user-info">
          <div class="greeting">Bienvenid@</div>
