@@ -54,7 +54,7 @@ elseif (isset($_POST["deltsk"])) {
 if (isset($_POST['update'])) {
   $adminremark = $_POST['aremark'];
   $fid = $_POST['frm_id'];
-  $queryUpdt = "update ticket set admin_remark='$adminremark',status='En proceso' where id='$fid'";
+  $queryUpdt = "UPDATE ticket SET admin_remark='$adminremark', status = 10 WHERE id='$fid'";
   mysqli_query($con, $queryUpdt);
  
   //actualizar el estado de las tareas
@@ -71,7 +71,7 @@ if (isset($_POST['update'])) {
 else if (isset($_POST['end'])) {
   $adminremark = $_POST['aremark'];
   $fid = $_POST['frm_id'];
-  $queryUpdt = "update ticket set admin_remark='$adminremark',status='Cerrado' where id='$fid'";
+  $queryUpdt = "update ticket set admin_remark='$adminremark',status='12' where id='$fid'";
   mysqli_query($con, $queryUpdt);
 
   //actualizar el estado de las tareas
@@ -87,30 +87,44 @@ else if (isset($_POST['end'])) {
 }
 //----------------------------------------------------------------------------------------------------------
 
-//carga las prioridades para filtrar------------------------------------------------------------------------
-$proridad = mysqli_query($con, "select * from prioridades ");
+//carga las prioridades y estados de ticket para filtrar--------------------------------------------------------------
+$query_prio = "SELECT * FROM prioridades ";
+$prioridad = mysqli_query($con, $query_prio);
+
+$query_st = "SELECT * FROM estados WHERE type = 'ticket'";
+$statusF = mysqli_query($con, $query_st);
+
 //----------------------------------------------------------------------------------------------------------
 
 //Carga de tickets -----------------------------------------------------------------------------------------
-//La query cambia dependiendo si se filtra por prioridad
-$priority_id = isset($_GET['priority']) ? $_GET['priority'] : '';
+//La query cambia dependiendo si se filtra por prioridad y/o estado
+$priority_id = isset($_GET['priority']) ? intval($_GET['priority']) : '';
+$status_id = isset($_GET['statusF']) ? intval($_GET['statusF']) : '';
 
-$query = "select ti.id AS ticketId, 
-          pr.id AS prioridadId, 
-          ti.*,
-          pr.*
+$query = "SELECT ti.id AS ticketId, 
+                 pr.id AS prioridadId,
+                 st.nombre AS statusN,
+                 ti.*, pr.*
           FROM ticket ti 
-          JOIN prioridades pr ON (ti.prioprity = pr.id)";
-if ($priority_id) {
-    $query .= " WHERE ti.prioprity = " . intval($priority_id);
+          JOIN prioridades pr ON ti.prioprity = pr.id
+          JOIN estados st ON ti.status = st.id";
+
+if ($priority_id && $status_id) {
+    $query .= " WHERE ti.status = $status_id AND ti.prioprity = $priority_id";
+} elseif ($status_id) {
+    $query .= " WHERE ti.status = $status_id";
+} elseif ($priority_id) {
+    $query .= " WHERE ti.prioprity = $priority_id";
 }
-$query .= " ORDER BY pr.nivel DESC";
 
 $rt = mysqli_query($con, $query);
+if (!$rt) {
+    die("Error en la consulta: " . mysqli_error($con));
+}
 //----------------------------------------------------------------------------------------------------------
-//Obtener todos los estados --------------------------------------------------------------------------------
+//Obtener todos los estados de las task --------------------------------------------------------------------------------
 
-$query = "SELECT * FROM estados";
+$query = "SELECT * FROM estados WHERE type = 'task'";
 $status = mysqli_query($con, $query);
 
 $estados = [];
@@ -128,7 +142,7 @@ while ($estado = $status->fetch_assoc()) {
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <meta charset="utf-8" />
-  <title>Usuari@ | Soporte Ticket</title>
+  <title>Soporte Ticket</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta content="" name="description" />
   <meta content="" name="author" />
@@ -169,29 +183,53 @@ while ($estado = $status->fetch_assoc()) {
         <li>
           <p>Inicio</p>
         </li>
-        <li><a href="#" class="active">Ver Ticket</a></li>
+        <li><a href="#" class="active">Ver Tickets</a></li>
       </ul>
       <div class="page-title">
         <h3>Lista de Tickets</h3>
       </div>
-      <div>
-        <h4>Filtrar por prioridad</h4>
-          <form method="GET" action="">
-            <select name="priority" class="form-control select">
-                <option value="">Ver todo</option> 
-                <?php
-                while ($row = mysqli_fetch_assoc($proridad)) {
-                    // Opcion para filtar por prioridad
-                    $selected = isset($_GET['priority']) && $_GET['priority'] == $row['id'] ? 'selected' : '';
-                    echo "<option value='" . $row['id'] . "' $selected>" . $row['nombre'] . "</option>";
-                }
-                ?>
-            </select>
+      
+      <button class="btn btn-secondary pull-right" id="toggleFiltersBtn">
+            <i class="glyphicon glyphicon-chevron-down"></i> Filtros
+      </button>
+
+      <div>        
+        <form method="GET" action="" id="filtersForm" class="mt-3" style="display: none;">
+            <div class="fil-main form-group">
+                <div class="fil-div">
+                    <label for="prio">Prioridad</label>
+                    <select name="priority" class="form-control select" id="prio">
+                        <option value="">Ver todo</option> 
+                        <?php
+                        while ($row = mysqli_fetch_assoc($prioridad)) {
+                            // Opcion para filtrar por prioridad
+                            $selected = isset($_GET['priority']) && $_GET['priority'] == $row['id'] ? 'selected' : '';
+                            echo "<option value='" . $row['id'] . "' $selected>" . $row['nombre'] . "</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="fil-div">
+                    <label for="st">Estado</label>
+                    <select name="statusF" class="form-control select" id="st">
+                        <option value="">Ver todo</option>    
+                        <?php
+                        while ($st = mysqli_fetch_assoc($statusF)) {
+                            $select = isset($_GET['statusF']) && $_GET['statusF'] == $st['id'] ? 'selected' : '';
+                            echo "<option value='" . $st['id'] . "' $select>" . $st['nombre'] . "</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="fil-btn">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+            </div>
             <br>
-            <button type="submit" class="btn btn-primary">Filtrar</button>
-          </form>
+        </form>
         <br>
       </div>
+
       <div class="clearfix"></div>
       <?php 
       while ($row = mysqli_fetch_array($rt)) {
@@ -203,16 +241,16 @@ while ($estado = $status->fetch_assoc()) {
                 <h4 class="semi-bold"><?php echo $row['subject']; ?></h4>
                 <p><span class="text-success bold">Ticket #<?php echo $_SESSION['sid'] = $row['ticketId']; ?></span> - Fecha de creación <?php echo $row['posting_date']; ?>
                   <?php
-                    if ($row['status'] == 'Abierto') {
+                    if ($row['statusN'] == 'Abierto') {
                     ?>
-                    <span class="label label-success"><?php echo $row['status']; ?></span>
+                    <span class="label label-success"><?php echo $row['statusN']; ?></span>
                     <?php
-                    }else if ($row['status'] == 'Cerrado'){
+                    }else if ($row['statusN'] == 'Cerrado'){
                     ?>
-                    <span class="label label-important"><?php echo $row['status']; ?></span>
+                    <span class="label label-important"><?php echo $row['statusN']; ?></span>
                     <?php
                     }else{?>
-                      <span class="label label-warning"><?php echo $row['status']; ?></span>
+                      <span class="label label-warning"><?php echo $row['statusN']; ?></span>
                       <?php
                     };
                   
@@ -425,7 +463,8 @@ while ($estado = $status->fetch_assoc()) {
   <!-- END PAGE LEVEL PLUGINS -->
   <script src="../assets/js/support_ticket.js" type="text/javascript"></script>
   <!-- BEGIN CORE TEMPLATE JS -->
-  <script src="../assets/js/tasks.js" ></script>
+  <script src="../assets/js/general.js" type="text/javascript"></script>
+  <script src="../assets/js/tasks.js" type="text/javascript"></script>
   <script src="../assets/js/core.js" type="text/javascript"></script>
   <script src="../assets/js/chat.js" type="text/javascript"></script>
   <script src="../assets/js/live_chat.js" type="text/javascript"></script>

@@ -7,10 +7,40 @@ include("checklogin.php");
 check_login();
 
 //se obtienen los tickets del usuario-------------------------------------------------------------------------
-$query = "select * from ticket where email_id='".$_SESSION['login']."'";
+//La query cambia dependiendo si se filtra por prioridad y/o estado
+$priority_id = isset($_GET['priority']) ? intval($_GET['priority']) : '';
+$status_id = isset($_GET['statusF']) ? intval($_GET['statusF']) : '';
+
+$query = "SELECT ti.id AS ticketId, 
+                 pr.id AS prioridadId,
+                 st.nombre AS statusN,
+                 ti.*, pr.*
+          FROM ticket ti 
+          JOIN prioridades pr ON ti.prioprity = pr.id
+          JOIN estados st ON ti.status = st.id
+          WHERE email_id='".$_SESSION['login']."'";
+
+if ($priority_id && $status_id) {
+    $query .= " AND ti.status = $status_id AND ti.prioprity = $priority_id";
+} elseif ($status_id) {
+    $query .= " AND ti.status = $status_id";
+} elseif ($priority_id) {
+    $query .= " AND ti.prioprity = $priority_id";
+}
+
 $rt = mysqli_query($con, $query);
+if (!$rt) {
+    die("Error en la consulta: " . mysqli_error($con));
+}
 $num = mysqli_num_rows($rt);
+//----------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------
+//carga las prioridades y estados de ticket para filtrar------------------------------------------------------
+$query_prio = "SELECT * FROM prioridades ";
+$prioridad = mysqli_query($con, $query_prio);
+
+$query_st = "SELECT * FROM estados WHERE type = 'ticket'";
+$statusF = mysqli_query($con, $query_st);
 
 
 ?>
@@ -35,6 +65,7 @@ $num = mysqli_num_rows($rt);
   <link href="assets/css/style.css" rel="stylesheet" type="text/css" />
   <link href="assets/css/responsive.css" rel="stylesheet" type="text/css" />
   <link href="assets/css/custom-icon-set.css" rel="stylesheet" type="text/css" />
+  <link href="assets/css/manage_tickets.css" rel="stylesheet" />
   <!-- END CSS TEMPLATE -->
 </head>
 <!-- END HEAD -->
@@ -66,6 +97,48 @@ $num = mysqli_num_rows($rt);
       <div class="page-title">
         <h3>Ticket de Soporte</h3>
       </div>
+
+      <button class="btn btn-secondary pull-right" id="toggleFiltersBtn">
+            <i class="glyphicon glyphicon-chevron-down"></i> Filtros
+      </button>
+
+      <div>        
+        <form method="GET" action="" id="filtersForm" class="mt-3" style="display: none;">
+            <div class="fil-main form-group">
+                <div class="fil-div">
+                    <label for="prio">Prioridad</label>
+                    <select name="priority" class="form-control select" id="prio">
+                        <option value="">Ver todo</option> 
+                        <?php
+                        while ($row = mysqli_fetch_assoc($prioridad)) {
+                            // Opcion para filtrar por prioridad
+                            $selected = isset($_GET['priority']) && $_GET['priority'] == $row['id'] ? 'selected' : '';
+                            echo "<option value='" . $row['id'] . "' $selected>" . $row['nombre'] . "</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="fil-div">
+                    <label for="st">Estado</label>
+                    <select name="statusF" class="form-control select" id="st">
+                        <option value="">Ver todo</option>    
+                        <?php
+                        while ($st = mysqli_fetch_assoc($statusF)) {
+                            $select = isset($_GET['statusF']) && $_GET['statusF'] == $st['id'] ? 'selected' : '';
+                            echo "<option value='" . $st['id'] . "' $select>" . $st['nombre'] . "</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="fil-btn">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+            </div>
+            <br>
+        </form>
+        <br>
+      </div>
+
       <div class="clearfix"></div>
 
       <h4> <span class="semi-bold">Tickets</span></h4>
@@ -81,16 +154,16 @@ $num = mysqli_num_rows($rt);
                   <h4 class="semi-bold"><?php echo $row['subject']; ?></h4>
                   <p><span class="text-success bold">Ticket #<?php echo $row['id']; ?></span> - Fecha de Creación <?php echo $row['posting_date']; ?> 
                     <?php
-                    if ($row['status'] == 'Abierto') {
+                    if ($row['statusN'] == 'Abierto') {
                     ?>
-                    <span class="label label-success"><?php echo $row['status']; ?></span>
+                    <span class="label label-success"><?php echo $row['statusN']; ?></span>
                     <?php
-                    }else if ($row['status'] == 'Cerrado'){
+                    }else if ($row['statusN'] == 'Cerrado'){
                     ?>
-                    <span class="label label-important"><?php echo $row['status']; ?></span>
+                    <span class="label label-important"><?php echo $row['statusN']; ?></span>
                     <?php
                     }else{?>
-                      <span class="label label-warning"><?php echo $row['status']; ?></span>
+                      <span class="label label-warning"><?php echo $row['statusN']; ?></span>
                       <?php
                     };
                   
@@ -160,9 +233,7 @@ $num = mysqli_num_rows($rt);
                                       while($tsk = $tasks->fetch_assoc()) {
                                         ?>
                                             <li><?php echo $tsk["titulo"]?> </li>
-
                                             <p style="margin-left:15px"> Estado: <?php echo $tsk["nombre"]?></p>
-                                            
                                         <?php
 
                                       }
@@ -181,7 +252,7 @@ $num = mysqli_num_rows($rt);
                           </div>
                           <div class="tasks">
                             <h4>Comentario</h4>
-                            <p style="margin-left:30px"><?php echo $row['admin_remark']; ?></p>
+                            <p><?php echo $row['admin_remark']; ?></p>
                           </div>
                           <hr>
                           <p class="small-text">Publicado en <?php echo $row['admin_remark_date']; ?></p>
@@ -234,7 +305,8 @@ $num = mysqli_num_rows($rt);
   <!-- END PAGE LEVEL PLUGINS -->
   <script src="assets/js/support_ticket.js" type="text/javascript"></script>
   <!-- BEGIN CORE TEMPLATE JS -->
-  <script src="assets/js/live_chat.js" type="text/javascript"></script>
+  <script src="assets/js/general.js" type="text/javascript"></script> 
+  <!-- <script src="assets/js/live_chat.js" type="text/javascript"></script> -->
   <script src="assets/js/core.js" type="text/javascript"></script>
   <script src="assets/js/chat.js" type="text/javascript"></script>
   <script src="assets/js/demo.js" type="text/javascript"></script>

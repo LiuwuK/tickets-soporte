@@ -24,7 +24,7 @@ if (isset($_POST['send'])) {
     $priority = $_POST['priority'];
     $ticket = $_POST['description'];
     //$ticfile=$_FILES["tfile'"]["name"];
-    $st = "Abierto";
+    $st = 11;
     $pdate = date('Y-m-d');
     //move_uploaded_file($_FILES["tfile"]["tmp_name"],"ticketfiles/".$_FILES["tfile"]["name"]);
     $a = mysqli_query($con, "insert into ticket(ticket_id,email_id,subject,task_type,prioprity,ticket,status,posting_date)  values('$tid','$email','$subject','$tt','$priority','$ticket','$st','$pdate')");

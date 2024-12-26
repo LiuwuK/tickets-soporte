@@ -71,3 +71,40 @@
     display: flex;
     justify-content: center;
   }
+  .tasks p{
+    padding-left: 40px;
+  }
+
+  /*filtros*/
+  #filtersForm {
+      display: none; 
+      transition: all 0.3s ease; 
+  }
+
+  #toggleFiltersBtn {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 25px;
+  }
+
+  #toggleFiltersBtn i {
+      margin-right: 5px;
+  }
+  
+  
+  .fil-main{
+    display: flex;
+  }
+  .fil-div {
+    width: 25%;
+    margin-left: 25px;
+  }
+  .fil-btn{
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    margin-left: 5%;
+  }
+  .fil-btn button{
+    width: 150px;
+  }

@@ -4,6 +4,40 @@ include("checklogin.php");
 check_login();
 include("dbconnection.php");
 
+//Informacion para grafico y demas
+//General
+  $query = "SELECT * 
+            FROM ticket 
+            WHERE email_id='" . $_SESSION['login'] . "'";
+
+  $ti_total = mysqli_query($con, $query);
+  $general = mysqli_num_rows($ti_total);
+
+//Tickets Abiertos (estado id = 11)
+  $query = "SELECT *
+            FROM ticket 
+            WHERE email_id = '".$_SESSION['login']."' 
+            AND status = 11 ";
+  $ti_total = mysqli_query($con, $query);
+  $abi = mysqli_num_rows($ti_total);
+
+//Tickets En revisión (estado id = 10)
+  $query = "SELECT *
+  FROM ticket 
+  WHERE email_id = '".$_SESSION['login']."' 
+  AND status = 10 ";
+
+  $ti_total = mysqli_query($con, $query);
+  $revi = mysqli_num_rows($ti_total);
+
+//Tickets Cerrados (estado id = 12)
+  $query = "SELECT *
+  FROM ticket 
+  WHERE email_id = '".$_SESSION['login']."' 
+  AND status = 12 ";
+
+  $ti_total = mysqli_query($con, $query);
+  $cerr = mysqli_num_rows($ti_total);
 
 ?>
 <!DOCTYPE html>
@@ -35,32 +69,52 @@ include("dbconnection.php");
   </div>
   </div>
   <div class="page-content">
-    <div id="portlet-config" class="modal hide">
-      <div class="modal-header">
-        <button data-dismiss="modal" class="close" type="button"></button>
-        <h3>Widget Settings</h3>
-      </div>
-      <div class="modal-body"> Widget settings form goes here </div>
-    </div>
     <div class="clearfix"></div>
     <div class="content">
       <div class="page-title">
         <h3>Dashboard</h3>
         <div class="row 2col">
-          <div class="d-flex col-md-6 col-sm-6 spacing-bottom-sm spacing-bottom">
+          
+          <div class="d-flex col-md-3 col-sm-3 spacing-bottom-sm spacing-bottom">
             <div class="tiles blue added-margin">
               <div class="tiles-body">
                 <div class="controller"> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
-                <?php $ret = mysqli_query($con, "select * from ticket where email_id='" . $_SESSION['login'] . "'");
-                $num = mysqli_num_rows($ret);
-                ?>
                 <div class="heading"><a href="view-tickets.php" style="color:#FFF"> Total de Tickets</a></div>
-                <h3 class="text-right text-white"><span class="animate-number" data-value="<?php echo $num; ?>" data-animation-duration="1200"><?= $num ?></span></h3>
+                <h3 class="text-right text-white"><span class="animate-number" data-value="<?php echo $general; ?>" data-animation-duration="1200"><?= $general ?></span></h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex col-md-3 col-sm-3 spacing-bottom-sm spacing-bottom">
+            <div class="tiles bg-green added-margin">
+              <div class="tiles-body">
+                <div class="controller"> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
+                <div class="heading"><a href="view-tickets.php?statusF=11" style="color:#FFF">Tickets Abiertos</a></div>
+                <h3 class="text-right text-white"><span class="animate-number" data-value="<?php echo $abi; ?>" data-animation-duration="1200"><?= $abi?></span></h3>
+              </div>
+            </div>
+          </div>
+          
+          <div class="d-flex col-md-3 col-sm-3 spacing-bottom-sm spacing-bottom">
+            <div class="tiles bg-yellow added-margin">
+              <div class="tiles-body">
+                <div class="controller"> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
+                <div class="heading"><a href="view-tickets.php?statusF=10" style="color:#FFF">Tickets en revisión</a></div>
+                <h3 class="text-right text-white"><span class="animate-number" data-value="<?php echo $revi; ?>" data-animation-duration="1200"><?= $revi?></span></h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex col-md-3 col-sm-3 spacing-bottom-sm spacing-bottom">
+            <div class="tiles bg-red added-margin">
+              <div class="tiles-body">
+                <div class="controller"> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
+                <div class="heading"><a href="view-tickets.php?statusF=12" style="color:#FFF">Tickets Resueltos</a></div>
+                <h3 class="text-right text-white"><span class="animate-number" data-value="<?php echo $cerr; ?>" data-animation-duration="1200"><?= $cerr?></span></h3>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -81,7 +135,7 @@ include("dbconnection.php");
   <script src="assets/js/core.js" type="text/javascript"></script>
   <script src="assets/js/chat.js" type="text/javascript"></script>
   <script src="assets/js/demo.js" type="text/javascript"></script>
-
+  
 </body>
 
 </html>

@@ -14,7 +14,7 @@
       <div class="ml-2 pull-left" style="padding-top: 0.5em;padding-left: 1em">
 
         <h4>
-          <a href="./admin/dashboard.php" class="text-reset"><strong>Sistema de Generación de Tickets - Acceso Cliente</strong></a>
+          <a href="dashboard.php" class="text-reset"><strong>Sistema de Generación de Tickets - Acceso Cliente</strong></a>
         </h4>
         <ul class="nav quick-section">
 
