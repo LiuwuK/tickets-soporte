@@ -201,10 +201,11 @@ $statusF = mysqli_query($con, $query_st);
 //----------------------------------------------------------------------------------------------------------
 
 //Carga de tickets -----------------------------------------------------------------------------------------
-//La query cambia dependiendo si se filtra por prioridad y/o estado
+//La query cambia dependiendo si se filtra por prioridad y/o estado (FILTROS)
 $priority_id = isset($_GET['priority']) ? intval($_GET['priority']) : '';
 $status_id = isset($_GET['statusF']) ? intval($_GET['statusF']) : '';
-
+$searchText = isset($_GET['textSearch']) ? trim($_GET['textSearch']) : '';
+//----------------------------------------------------------------------------------------------------------
 $query = "SELECT ti.id AS ticketId, 
                  pr.id AS prioridadId,
                  st.nombre AS statusN,
@@ -213,20 +214,51 @@ $query = "SELECT ti.id AS ticketId,
           JOIN prioridades pr ON ti.prioprity = pr.id
           JOIN estados st ON ti.status = st.id";
 
-if ($priority_id && $status_id) {
-    $query .= " WHERE ti.status = $status_id AND ti.prioprity = $priority_id";
-} elseif ($status_id) {
-    $query .= " WHERE ti.status = $status_id";
-} elseif ($priority_id) {
-    $query .= " WHERE ti.prioprity = $priority_id";
+// Filtros dinámicos
+$conditions = [];
+$params = [];
+$types = '';
+
+// Filtrar por prioridad
+if (!empty($priority_id)) {
+    $conditions[] = "ti.prioprity = ?";
+    $params[] = $priority_id;
+    $types .= 'i';
 }
 
-$rt = mysqli_query($con, $query);
+// Filtrar por estado
+if (!empty($status_id)) {
+    $conditions[] = "ti.status = ?";
+    $params[] = $status_id;
+    $types .= 'i';
+}
+
+// Filtrar por texto (nombre del ticket o ID)
+if (!empty($searchText)) {
+    $conditions[] = "(ti.id LIKE ? OR ti.subject LIKE ?)";
+    $searchWildcard = '%' . $searchText . '%';
+    $params[] = $searchWildcard;
+    $params[] = $searchWildcard;
+    $types .= 'ss';
+}
+
+// Combinar las condiciones
+if (!empty($conditions)) {
+  $query .= ' WHERE ' . implode(' AND ', $conditions);
+}
+
+$stmt = $con->prepare($query);
+if (!empty($params)) {
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$rt = $stmt->get_result(); 
 if (!$rt) {
     die("Error en la consulta: " . mysqli_error($con));
 }
+$num = $rt->num_rows; 
 //----------------------------------------------------------------------------------------------------------
-//Obtener todos los estados de las task --------------------------------------------------------------------------------
+//Obtener todos los estados de las task --------------------------------------------------------------------
 
 $query = "SELECT * FROM estados WHERE type = 'task'";
 $status = mysqli_query($con, $query);
@@ -274,13 +306,6 @@ while ($estado = $status->fetch_assoc()) {
   </div>
   </div>
   <div class="page-content">
-    <div id="portlet-config" class="modal hide">
-      <div class="modal-header">
-        <button data-dismiss="modal" class="close" type="button"></button>
-        <h3>Widget Settings</h3>
-      </div>
-      <div class="modal-body"> Widget settings form goes here </div>
-    </div>
     <div class="clearfix"></div>
     <div class="content">
       <ul class="breadcrumb">
@@ -300,6 +325,10 @@ while ($estado = $status->fetch_assoc()) {
       <div>        
         <form method="GET" action="" id="filtersForm" class="mt-3" style="display: none;">
             <div class="fil-main form-group">
+                <div class="search-div">
+                  <label for="textSearch">Buscar:</labe>
+                  <input type="text" class="form-control" id="textSearch" name="textSearch" placeholder="Nombre/ID del ticket">
+                </div>
                 <div class="fil-div">
                     <label for="prio">Prioridad</label>
                     <select name="priority" class="form-control select" id="prio">
@@ -461,9 +490,10 @@ while ($estado = $status->fetch_assoc()) {
                 </div>
               </div>
             </div>
-          <?php } ?>
+      
           </div>
         </div>
+      <?php } ?>
 
 
     </div>

@@ -6,11 +6,12 @@ session_start();
 include("dbconnection.php");
 include("checklogin.php");
 check_login();
-$proridad = mysqli_query($con, "select * from prioridades ");
+$prioridad = mysqli_query($con, "select * from prioridades ");
 
-
-
-if (isset($_POST['send'])) {
+echo "<pre>";
+print_r($_SESSION);
+echo "</pre>";   
+    if (isset($_POST['send'])) {
     $count_my_page = ("hitcounter.txt");
     $hits = file($count_my_page);
     $hits[0]++;
@@ -19,6 +20,7 @@ if (isset($_POST['send'])) {
     fclose($fp);
     $tid = $hits[0];
     $email = $_SESSION['login'];
+    $userId = $_SESSION['id'];
     $subject = $_POST['subject'];
     $tt = $_POST['tasktype'];
     $priority = $_POST['priority'];
@@ -27,7 +29,7 @@ if (isset($_POST['send'])) {
     $st = 11;
     $pdate = date('Y-m-d');
     //move_uploaded_file($_FILES["tfile"]["tmp_name"],"ticketfiles/".$_FILES["tfile"]["name"]);
-    $a = mysqli_query($con, "insert into ticket(ticket_id,email_id,subject,task_type,prioprity,ticket,status,posting_date)  values('$tid','$email','$subject','$tt','$priority','$ticket','$st','$pdate')");
+    $a = mysqli_query($con, "insert into ticket(ticket_id,email_id,subject,task_type,prioprity,ticket,status,posting_date,user_id)  values('$tid','$email','$subject','$tt','$priority','$ticket','$st','$pdate', '$userId')");
     if ($a) {
         echo "<script>alert('Ticket Registrado Correctamente'); location.replace(document.referrer)</script>";
     }
@@ -119,7 +121,7 @@ if (isset($_POST['send'])) {
                                         <div class="col-md-6 col-xs-12">
                                             <select name="priority" class="form-control select">
                                             <?php
-                                            while ($row = mysqli_fetch_assoc($proridad)) {
+                                            while ($row = mysqli_fetch_assoc($prioridad)) {
                                                 echo "<option value=". $row['id'] .">". $row['nombre'] ."</option>";
                                             };
                                             ?>

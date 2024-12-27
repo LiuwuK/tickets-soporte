@@ -14,7 +14,7 @@ class Notificaciones {
         $asunto = "Actualización de su Ticket ";
         //credenciales (cambiar)
         $user = 'kevinantecao1206@gmail.com';
-        $pass = 'qwqb zssd nvks ktvm';
+        $pass = '';
         
         try {
             // Configuración SMTP
@@ -91,7 +91,7 @@ class Notificaciones {
                                     <div class='email-body'>
                                         <p>Estimado cliente,</p>
                                         <p>
-                                            Te informamos que su ticket <strong>#$tId</strong> ha sido actualizado.
+                                            Te informamos que el ticket <strong>#$tId</strong> ha sido actualizado.
                                             A continuación, te mostramos los detalles de la actualización:
                                         </p>
                                         <p></p>";
@@ -120,7 +120,7 @@ class Notificaciones {
                                         }
                         $mail->Body .= "<p>Para más detalles, puedes acceder a tu cuenta en el sistema de soporte.</p>
                                         <div class='btn-div'>
-                                            <a href='https://example.com' class='button'>Ver Ticket</a>
+                                            <a href='http://localhost/tickets-soporte/view-tickets.php?textSearch=$tId' class='button'>Ver Ticket</a>
                                         </div>
                                     </div>
                                     <div class='footer'>

@@ -117,19 +117,24 @@ include("dbconnection.php");
 
         </div>
         <!-- GRAFICOS -->
-        <div class="row charts">
-          
-          <div class="d-flex col-md-6 col-sm-12 spacing-bottom-sm spacing-bottom ">
-            <h3>Mes</h3>
-            <canvas id="monthlyChart"></canvas>
-          </div>
+        <?php
+          if ($general > 0){?>
+            <div class="row charts">
+              <div class="d-flex col-md-6 col-sm-12 spacing-bottom-sm spacing-bottom ">
+                <h3>Mes</h3>
+                <canvas id="monthlyChart"></canvas>
+              </div>
+              <div class="d-flex col-md-6 col-sm-12  spacing-bottom-sm spacing-bottom ">
+                <h3>Año</h3>
+                <canvas id="yearlyChart"></canvas>
+              </div>              
+            </div>
+          <?php } else { ?>
+            <h3 align="center" style="color:red;">Sin registros que mostrar</h3>
+          <?php } ?>
 
-          <div class="d-flex col-md-6 col-sm-12  spacing-bottom-sm spacing-bottom ">
-            <h3>Año</h3>
-            <canvas id="yearlyChart"></canvas>
-          </div>
-          
-        </div>
+          ?>
+        
 
       </div>
     </div>
