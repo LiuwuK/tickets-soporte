@@ -4,15 +4,24 @@ session_start();
 //$_SESSION['msg'];
 include("dbconnection.php");
 include("checklogin.php");
+include("phpmail.php");
+
 check_login();
 
+//Obtener el email del usuario para enviar notificaciones 
+
+$queryCliente = "SELECT email_id FROM ticket WHERE id = ?";
+$stmtCliente = $con->prepare($queryCliente);
+//---------------------------------------------------------------------------------------------------------
 //Agregar tareas a un ticket--------------------------------------------------------------------------------
 if (isset($_POST["addtsk"])) {
   $tId = $_POST['tk_id'];
   $titles = $_POST['title'];
-  
+  $ticketStatus = "En revisión";
 //actualizar el estado del ticket cuando se le asignen tareas
-  $queryUpdt = "update ticket set status='En proceso' where id='$tId'";
+  $queryUpdt = "UPDATE ticket 
+                SET status= 10 
+                WHERE id='$tId'";
   mysqli_query($con, $queryUpdt);
 
   if (!empty($titles)) {    
@@ -28,7 +37,7 @@ if (isset($_POST["addtsk"])) {
           //consulta para insertar múltiples tareas de una vez
           $query = "INSERT INTO tasks (ticket_id, titulo) VALUES " . implode(", ", $values);
           if (mysqli_query($con, $query)) {
-              echo '<script>alert("'.$query.'"); location.replace(document.referrer);</script>';
+              
           } else {
               echo "Error al insertar tareas: " . mysqli_error($con);
           }
@@ -36,6 +45,21 @@ if (isset($_POST["addtsk"])) {
           echo '<script>alert("Debe agregar al menos una tarea.");</script>';
       }
   }
+
+  //Enviar notificacion
+
+  $stmtCliente->bind_param("i", $tId);
+  $stmtCliente->execute();
+  $stmtCliente->bind_result($clienteEmail);
+  $stmtCliente->fetch();
+
+  if ($clienteEmail) {
+      //  Enviar la notificación por correo
+      echo '<script>alert("Tareas asignadas correctamente "); location.replace(document.referrer);</script>';  
+      Notificaciones::enviarCorreo($clienteEmail, $tId,$titles, null,$ticketStatus, null);
+  }
+
+  $stmtCliente->close();
 }
 //Eliminar tareas-------------------------------------------------------------------------------------------
 elseif (isset($_POST["deltsk"])) {
@@ -44,46 +68,126 @@ elseif (isset($_POST["deltsk"])) {
   $stmt = $con->prepare($query);
   $stmt->bind_param("i",$tId); 
   $stmt->execute();
-  echo '<script>alert("'.$tId.'"); location.replace(document.referrer);</script>';
 }
 //----------------------------------------------------------------------------------------------------------
 
 //Actualizar estado del ticket------------------------------------------------------------------------------
 //adminremark = mensaje del administrador
 //fid = id del ticket
+
 if (isset($_POST['update'])) {
   $adminremark = $_POST['aremark'];
   $fid = $_POST['frm_id'];
+  $ticketStatus = "En revisión";
+  
+  //actualizar el estado del ticket
   $queryUpdt = "UPDATE ticket SET admin_remark='$adminremark', status = 10 WHERE id='$fid'";
   mysqli_query($con, $queryUpdt);
  
   //actualizar el estado de las tareas
-  $status  = $_POST["status"];
-  foreach ($status as $tskId => $stId) {
-    $query = "UPDATE tasks SET estado_id = ? WHERE id = ?";
-    $stmt = $con->prepare($query);
-    $stmt->bind_param("ii", $stId, $tskId); 
-    $stmt->execute();
-  }
-  echo '<script>alert("Ticket actualizado correctamente"); location.replace(document.referrer);</script>';
+  $task  = $_POST["tasks"];
+  $taskStatus = [];
 
+  if($task){
+    foreach ($task as $tskid => $taskData){
+      $newStatus = $taskData['newstatus'];
+      $title = $taskData['titulo'];
+      $currentStatus = $taskData ['oldstatus'];
+
+      //actualizar solo si el estado cambia 
+      if ((int)$currentStatus !== (int)$newStatus){
+        $query = "UPDATE tasks SET estado_id = ? WHERE id = ?";
+        $stmt = $con->prepare($query);
+        $stmt->bind_param("ii", $newStatus, $tskid); 
+        $stmt->execute();
+        $stmt->close();
+        
+        $query = "SELECT nombre 
+                  FROM estados
+                  WHERE id = ?";
+        $stmt = $con->prepare($query);
+        $stmt->bind_param("i", $newStatus);
+        $stmt->execute();
+        $stmt->bind_result($statusName);
+        $stmt->fetch();
+        $stmt->close();
+        
+        $taskStatus[] = $title." -- Estado: ".$statusName;
+      }
+    }
+  }
+
+  echo '<script>';
+  echo 'console.log(' . json_encode($taskStatus) . ')';
+  echo '</script>';
+
+  $stmtCliente->bind_param("i", $fid);
+  $stmtCliente->execute();
+  $stmtCliente->bind_result($clienteEmail);
+  $stmtCliente->fetch();
+
+  if ($clienteEmail) {
+      //  Enviar la notificación por correo
+      echo '<script>alert("Ticket actualizado correctamente "); location.replace(document.referrer);</script>';  
+      Notificaciones::enviarCorreo($clienteEmail, $fid,null, $adminremark ,$ticketStatus, $taskStatus);
+  }
+
+  $stmtCliente->close();
 }
 else if (isset($_POST['end'])) {
   $adminremark = $_POST['aremark'];
   $fid = $_POST['frm_id'];
-  $queryUpdt = "update ticket set admin_remark='$adminremark',status='12' where id='$fid'";
+  $ticketStatus = "Cerrado";
+
+  $queryUpdt = "UPDATE ticket SET admin_remark='$adminremark', status= 12 where id='$fid'";
   mysqli_query($con, $queryUpdt);
 
-  //actualizar el estado de las tareas
-  $status  = $_POST["status"];
-  foreach ($status as $tskId => $stId) {
-    $query = "UPDATE tasks SET estado_id = ? WHERE id = ?";
-    $stmt = $con->prepare($query);
-    $stmt->bind_param("ii", $stId, $tskId); 
-    $stmt->execute();
-  }
+    //actualizar el estado de las tareas
+    $task  = $_POST["tasks"];
+    $taskStatus = [];
+  
+    if($task){
+      foreach ($task as $tskid => $taskData){
+        $newStatus = $taskData['newstatus'];
+        $title = $taskData['titulo'];
+        $currentStatus = $taskData ['oldstatus'];
+  
+        //actualizar solo si el estado cambia 
+        if ((int)$currentStatus !== (int)$newStatus){
+          $query = "UPDATE tasks SET estado_id = ? WHERE id = ?";
+          $stmt = $con->prepare($query);
+          $stmt->bind_param("ii", $newStatus, $tskid); 
+          $stmt->execute();
+          $stmt->close();
+          
+          $query = "SELECT nombre 
+                    FROM estados
+                    WHERE id = ?";
+          $stmt = $con->prepare($query);
+          $stmt->bind_param("i", $newStatus);
+          $stmt->execute();
+          $stmt->bind_result($statusName);
+          $stmt->fetch();
+          $stmt->close();
+          
+          $taskStatus[] = $title." -- Estado: ".$statusName;
+        }
+      }
+    }
+  
+    $stmtCliente->bind_param("i", $fid);
+    $stmtCliente->execute();
+    $stmtCliente->bind_result($clienteEmail);
+    $stmtCliente->fetch();
+  
+    if ($clienteEmail) {
+        //  Enviar la notificación por correo
+        echo '<script>alert("Ticket actualizado correctamente "); location.replace(document.referrer);</script>';  
+        Notificaciones::enviarCorreo($clienteEmail, $fid,null, $adminremark ,$ticketStatus, $taskStatus);
+    }
+  
+    $stmtCliente->close();
 
-  echo '<script>alert("Ticket actualizado correctamente"); location.replace(document.referrer);</script>';
 }
 //----------------------------------------------------------------------------------------------------------
 
@@ -308,7 +412,7 @@ while ($estado = $status->fetch_assoc()) {
                                     </button>
                                     <div class="status-div">
                                       <span>Estado</span>
-                                      <select class="form-control select" name="status[<?php echo $tsk['tskId']; ?>]" >
+                                      <select class="form-control select" name="tasks[<?php echo $tsk['tskId']; ?>][newstatus]">
                                         <option value="<?php echo $tsk['statusId']; ?>" selected>
                                             <?php echo $tsk['nombre']; ?>
                                         </option>
@@ -323,6 +427,8 @@ while ($estado = $status->fetch_assoc()) {
                                             } 
                                           } ?>
                                       </select>
+                                      <input type="hidden" name="tasks[<?php echo $tsk['tskId']; ?>][oldstatus]" value="<?php echo $tsk['statusId']; ?>" />
+                                      <input type="hidden" name="tasks[<?php echo $tsk['tskId']; ?>][titulo]" value="<?php echo $tsk['titulo']; ?>" />
                                     </div>
                                   <?php
                                 }
@@ -418,6 +524,7 @@ while ($estado = $status->fetch_assoc()) {
     </div>
   </div>
   <!-- fin modal  -->
+
   <div id="delTasks" class="modal fade" role="dialog">
     <div class="modal-dialog">
       <!-- Contenido del modal-->
@@ -428,7 +535,7 @@ while ($estado = $status->fetch_assoc()) {
           <h4 class="modal-title">Confirmación</h4>
         </div>
         <form name="delForm" method="post" enctype="multipart/form-data">
-          <div class="modal-body del-modal" id="tasksContainer">
+          <div class="modal-body del-modal" id="delContainer">
               <input name="tk_id" type="hidden" id="taskId"/>
               <h3>Estas seguro que quieres eliminar esta tarea?</h3>
           </div>

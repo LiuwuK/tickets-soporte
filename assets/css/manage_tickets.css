@@ -13,7 +13,7 @@
   .add-task:hover{
     background-color: green;
   }
-  .add-task:active{
+  .add-task:active, .del-task:active{
     transform: scale(0.9);
   }
   .add-icon{

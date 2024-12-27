@@ -53,7 +53,7 @@
     <div class="masthead-content">
       <div class="container">
         <h1 class="masthead-heading mb-0">Sistema de Generación de Tickets</h1>
-        <h2 class="masthead-subheading mb-0">en PHP y MySQL</h2>
+        <h2 class="masthead-subheading mb-0"></h2>
         <a href="registration.php" class="btn btn-primary btn-xl rounded-pill mt-5">Registro de Usuario</a>
       </div>
     </div>

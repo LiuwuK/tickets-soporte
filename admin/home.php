@@ -120,12 +120,12 @@ include("dbconnection.php");
         <div class="row charts">
           
           <div class="d-flex col-md-6 col-sm-12 spacing-bottom-sm spacing-bottom ">
-            <h3>Tickets mensuales</h3>
+            <h3>Mes</h3>
             <canvas id="monthlyChart"></canvas>
           </div>
 
           <div class="d-flex col-md-6 col-sm-12  spacing-bottom-sm spacing-bottom ">
-            <h3>Tickets anuales</h3>
+            <h3>Año</h3>
             <canvas id="yearlyChart"></canvas>
           </div>
           
