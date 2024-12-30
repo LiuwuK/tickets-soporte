@@ -17,6 +17,8 @@ toastr.options = {
     "hideMethod": "fadeOut" // Efecto al ocultar
 };
 
+const notificationSound = new Audio('assets/sounds/bells.mp3');
+
 // Enviar información al servidor cuando se conecta
 socket.onopen = () => {
     console.log("Conexion abierta")
@@ -26,8 +28,10 @@ socket.onopen = () => {
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
     if (userId == data.clientId && data.type === 'ticket_update') {
+        notificationSound.play();
         toastr.info(data.message, "Actualización de Ticket");
     } else if (data.type === 'new_ticket') {
+        notificationSound.play();
         toastr.info(data.message, "Importante") 
     }
 };
