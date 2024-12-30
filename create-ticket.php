@@ -5,35 +5,9 @@ session_start();
 
 include("dbconnection.php");
 include("checklogin.php");
+include("admin/notificaciones.php");
 check_login();
-$prioridad = mysqli_query($con, "select * from prioridades ");
-
-echo "<pre>";
-print_r($_SESSION);
-echo "</pre>";   
-    if (isset($_POST['send'])) {
-    $count_my_page = ("hitcounter.txt");
-    $hits = file($count_my_page);
-    $hits[0]++;
-    $fp = fopen($count_my_page, "w");
-    fputs($fp, "$hits[0]");
-    fclose($fp);
-    $tid = $hits[0];
-    $email = $_SESSION['login'];
-    $userId = $_SESSION['id'];
-    $subject = $_POST['subject'];
-    $tt = $_POST['tasktype'];
-    $priority = $_POST['priority'];
-    $ticket = $_POST['description'];
-    //$ticfile=$_FILES["tfile'"]["name"];
-    $st = 11;
-    $pdate = date('Y-m-d');
-    //move_uploaded_file($_FILES["tfile"]["tmp_name"],"ticketfiles/".$_FILES["tfile"]["name"]);
-    $a = mysqli_query($con, "insert into ticket(ticket_id,email_id,subject,task_type,prioprity,ticket,status,posting_date,user_id)  values('$tid','$email','$subject','$tt','$priority','$ticket','$st','$pdate', '$userId')");
-    if ($a) {
-        echo "<script>alert('Ticket Registrado Correctamente'); location.replace(document.referrer)</script>";
-    }
-}
+include("assets/php/create-ticket.php");
 ?>
 
 <!DOCTYPE html>
@@ -56,6 +30,7 @@ echo "</pre>";
     <link href="assets/css/style.css" rel="stylesheet" type="text/css" />
     <link href="assets/css/responsive.css" rel="stylesheet" type="text/css" />
     <link href="assets/css/custom-icon-set.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
 </head>
 
 <body class="">
@@ -69,14 +44,6 @@ echo "</pre>";
     <!-- END SIDEBAR -->
     <!-- BEGIN PAGE CONTAINER-->
     <div class="page-content">
-        <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-        <div id="portlet-config" class="modal hide">
-            <div class="modal-header">
-                <button data-dismiss="modal" class="close" type="button"></button>
-                <h3>Widget Settings</h3>
-            </div>
-            <div class="modal-body"> Widget settings form goes here </div>
-        </div>
         <div class="clearfix"></div>
         <div class="content">
             <div class="page-title">

@@ -1,7 +1,10 @@
 //Obtener el id del ticket y pasarlo al modal
 document.querySelectorAll('.taskbtn').forEach(function(btn) {
     btn.addEventListener('click', function() {
-      var ticketId = btn.getAttribute('data-ticket-id'); 
+      var userId = btn.getAttribute('data-user-id');
+      var ticketId = btn.getAttribute('data-ticket-id');
+      
+      document.getElementById('modalUserId').value = userId;
       document.getElementById('modalTicketId').value = ticketId;
       //console.log(ticketId);
     });
@@ -35,6 +38,7 @@ document.getElementById('addTaskBtn').addEventListener('click', function() {
     newInput.classList.add('form-control', 'task-input');
     newInput.setAttribute('id', 'title' + taskCount);
     newInput.setAttribute('name','title[]');
+    newInput.setAttribute('required', 'true')
 
     //se agregan el input y label al contenedor
     newTaskDiv.appendChild(newLabel);

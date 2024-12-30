@@ -3,18 +3,7 @@ session_start();
 error_reporting(0);
 include("checklogin.php");
 check_login();
-include("dbconnection.php");
-if (isset($_POST['change'])) {
-    $sql = mysqli_query($con, "SELECT password FROM  user where password='" . $_POST['oldpass'] . "' && email='" . $_SESSION['login'] . "'");
-    $num = mysqli_fetch_array($sql);
-    if ($num > 0) {
-        $con = mysqli_query($con, "update  user set password='" . $_POST['newpass'] . "' where email='" . $_SESSION['login'] . "'");
-        $_SESSION['msg1'] = "Contraseña Cambiada Correctamente !!";
-        //header('location:user.php');
-    } else {
-        $_SESSION['msg1'] = "Contraseña anterior no coincide !!";
-    }
-}
+include("assets/php/change-password.php")
 ?>
 
 <!DOCTYPE html>
@@ -149,8 +138,6 @@ if (isset($_POST['change'])) {
     </div>
 
     <!-- BEGIN CHAT -->
-
-
 
     </div>
     </div>

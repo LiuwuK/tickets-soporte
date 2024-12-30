@@ -2,19 +2,7 @@
 session_start();
 include("checklogin.php");
 check_login();
-include("dbconnection.php");
-if (isset($_POST['update'])) {
-  $name = $_POST['name'];
-  $altemail = $_POST['altemail'];
-  $contact = $_POST['contact'];
-  $address = $_POST['address'];
-  $gender = $_POST['gender'];
-  $userid = $_GET['id'];
-  $ret = mysqli_query($con, "update user set name='$name', alt_email='$altemail',mobile='$contact',gender='$gender',address='$address' where id='$userid'");
-  if ($ret) {
-    echo "<script>alert('Data Updated'); location.replace(document.referrer)</script>";
-  }
-}
+include("assets/php/edit-user.php");
 ?>
 
 <!DOCTYPE html>
@@ -36,6 +24,7 @@ if (isset($_POST['update'])) {
   <link href="../assets/css/style.css" rel="stylesheet" type="text/css" />
   <link href="../assets/css/responsive.css" rel="stylesheet" type="text/css" />
   <link href="../assets/css/custom-icon-set.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
 </head>
 
 <body class="">

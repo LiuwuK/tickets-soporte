@@ -77,7 +77,6 @@ $prioridad = mysqli_query($con, $query_prio);
 $query_st = "SELECT * FROM estados WHERE type = 'ticket'";
 $statusF = mysqli_query($con, $query_st);
 
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -101,6 +100,8 @@ $statusF = mysqli_query($con, $query_st);
   <link href="assets/css/responsive.css" rel="stylesheet" type="text/css" />
   <link href="assets/css/custom-icon-set.css" rel="stylesheet" type="text/css" />
   <link href="assets/css/manage_tickets.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+
   <!-- END CSS TEMPLATE -->
 </head>
 <!-- END HEAD -->
@@ -217,24 +218,6 @@ $statusF = mysqli_query($con, $query_st);
                       <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="assets/img/user.png" data-src="assets/img/user.png" src="assets/img/user.png" alt=""> </div>
                     </div>
                     <div class="info-wrapper">
-
-                      <!-- CHAT A TIEMPO REAL ------------------------------------------------------------------------
-                      <div class="chatbox" id="chat_area_<?php echo $row['id']; ?>"></div>
-                      <input type="hidden" id="sender_<?php echo $row['id']; ?>" value="<?php echo$_SESSION["name"]; ?>">
-                      <input type="hidden" id="ticket_id_<?php echo $row['id']; ?>" value="<?php echo $row['id']; ?>" />
-                      <input type="text" id="message_input_<?php echo $row['id']; ?>" placeholder="Escribe tu mensaje" />
-                      <button onclick="sendMessage(document.getElementById('message_input_<?php echo $row['id']; ?>').value, <?php echo $row['id']; ?>, document.getElementById('sender_<?php echo $row['id']; ?>').value)">Enviar</button>
-                        <style>
-                          .chatbox{
-                            padding: 10px;
-                            min-height:400px;
-                            max-height:400px;
-                            width: 90%;
-                            border: 1px solid black;
-                            overflow-y: scroll;
-                          }
-                        </style> 
-                      ----------------------------------------------------------------------------------------------------->
                       <div class="info"><?php echo $row['ticket']; ?> </div>
                       <div class="clearfix"></div>
                     </div>
@@ -256,7 +239,7 @@ $statusF = mysqli_query($con, $query_st);
                               <ul>
                                 <?php
                                   //Obtener las task asociadas al ticket
-                                  $tkid = $row['id'];
+                                  $tkid = $row['ticketId'];
                                   $query = "SELECT ta.id AS tskId, ta.titulo, es.nombre
                                             FROM tasks ta
                                             JOIN estados es ON(ta.estado_id = es.id)

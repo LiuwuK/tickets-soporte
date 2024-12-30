@@ -40,3 +40,13 @@
   <!-- END TOP NAVIGATION BAR -->
 </div>
 <!-- END HEADER -->
+
+<!-- definir tipo de usuario  -->
+<script>
+  const userType = 'admin';
+  const userId = <?php echo $_SESSION['admin_id'] ?>;  
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>  
+<script src="../assets/js/new_notifications.js" type="text/javascript"></script>

@@ -2,38 +2,7 @@
 session_start();
 include("checklogin.php");
 check_login();
-include("dbconnection.php");
-
-//Informacion para grafico y demas
-//General
-  $query = "SELECT * FROM ticket";
-
-  $ti_total = mysqli_query($con, $query);
-  $general = mysqli_num_rows($ti_total);
-
-//Tickets Abiertos (estado id = 11)
-  $query = "SELECT *
-            FROM ticket 
-            WHERE status = 11 ";
-  $ti_total = mysqli_query($con, $query);
-  $abi = mysqli_num_rows($ti_total);
-
-//Tickets En revisión (estado id = 10)
-  $query = "SELECT *
-  FROM ticket 
-  WHERE status = 10 ";
-
-  $ti_total = mysqli_query($con, $query);
-  $revi = mysqli_num_rows($ti_total);
-
-//Tickets Cerrados (estado id = 12)
-  $query = "SELECT *
-  FROM ticket 
-  WHERE status = 12 ";
-
-  $ti_total = mysqli_query($con, $query);
-  $cerr = mysqli_num_rows($ti_total);
-
+include("assets/php/home.php")
 ?>
 <!DOCTYPE html>
 <html>
@@ -55,6 +24,7 @@ include("dbconnection.php");
   <link href="../assets/css/responsive.css" rel="stylesheet" type="text/css" />
   <link href="../assets/css/custom-icon-set.css" rel="stylesheet" type="text/css" />
   <link href="../assets/css/charts.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
   <!-- chartjs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -133,8 +103,7 @@ include("dbconnection.php");
             <h3 align="center" style="color:red;">Sin registros que mostrar</h3>
           <?php } ?>
 
-          ?>
-        
+      
 
       </div>
     </div>

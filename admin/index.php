@@ -9,6 +9,7 @@ if (isset($_POST['login'])) {
     $extra = "home.php";
     $_SESSION['alogin'] = $_POST['username'];
     $_SESSION['id'] = $num['id'];
+    $_SESSION['admin_id'] = $num['id'];
     echo "<script>window.location.href='" . $extra . "'</script>";
     exit();
   } else {
