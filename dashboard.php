@@ -84,7 +84,81 @@ include("assets/php/dashboard.php");
         </div>
       </div>
     </div>
+    
+    <div class="noti-box">
+      <div class="noti-h">
+        <p class="noti-title">Notificaciones</p>
+        <i class="pull-right fa fa-solid fa-times-circle"></i>    
+      </div>
+      <div class="noti-b">
+          <div class="card">
+            <p>El ticket # fue actualizado</p>
+          </div>
+          <div class="card">
+            <p>El ticket # fue actualizado</p>
+          </div>
+          <div class="card">
+            <p>El ticket # fue actualizado</p>
+          </div>
+          <div class="card">
+            <p>El ticket # fue actualizado</p>
+          </div>
+          <div class="card">
+            <p>El ticket # fue actualizado</p>
+          </div>
+          
+      </div>
+    </div>
+  <br><br>
   </div>
+
+
+
+  
+  <style>
+    .noti-b{
+      overflow-y: scroll;
+      flex-grow: 1;       
+    }
+    .card{
+      height:65px;
+      border-bottom: 1px solid #fc7d1c;
+      
+    }
+    .noti-h{
+        border-radius: 12px 12px 0px 0px;
+        background-color: #fc7d1c;
+        height: 55px;
+        text-align: start;
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        padding: 0;              
+      }
+    .noti-title {
+      color: white;
+      margin: 20px;
+      font-weight: bold;  
+      font-size: 15px;
+    }
+    .noti-h i{
+      color: white;
+      font-size: medium;
+      margin: 20px;
+      cursor: pointer;
+    }
+
+    .noti-box{
+      margin: 0 auto;
+      background-color: white;
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      width: 30%;
+      height: 350px; 
+      display: flex;
+      flex-direction: column;   
+    }
+  </style>
 
 
   

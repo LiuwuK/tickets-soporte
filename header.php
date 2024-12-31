@@ -20,10 +20,11 @@
 
         </ul>
       </div>
+      
       <div class="pull-right">
         <ul class="nav quick-section ">
           <li class="quicklinks"> <a data-toggle="dropdown" class="dropdown-toggle  pull-right " href="#" id="user-options">
-              <div class="iconset top-settings-dark "></div>
+              <i class="fa fa-solid fa-gear head-icons" style="font-size:large"></i>
             </a>
             <ul class="dropdown-menu  pull-right" role="menu" aria-labelledby="user-options">
               <li class="divider"></li>
@@ -33,6 +34,29 @@
 
         </ul>
       </div>
+
+      <!-- Mostrar notificaciones -->
+      <div class="pull-right notification">
+        <i class="fa fa-solid fa-bell head-icons"></i>
+      </div>
+
+  
+
+      <style>
+        .head-icons{
+          font-size: medium;
+        }
+        .head-icons:hover{
+          cursor: pointer;
+        }
+        .notification{
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          height: 97%;
+        }
+      </style>
+      
       <!-- END CHAT TOGGLER -->
     </div>
     <!-- END TOP NAVIGATION MENU -->

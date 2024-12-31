@@ -116,16 +116,15 @@ if (isset($_POST['update'])) {
   $stmtCliente->execute();
   $stmtCliente->bind_result($clienteEmail);
   $stmtCliente->fetch();
-
+ 
   if ($clienteEmail) {
-      //  Enviar la notificación por correo
-      echo '<script>alert("Ticket actualizado correctamente "); location.replace(document.referrer);</script>';  
+      //  Enviar la notificación por correo  
       Notificaciones::enviarCorreo($clienteEmail, $fid,null, $adminremark ,$ticketStatus, $taskStatus);
   }
+  $stmtCliente->close();
+  echo '<script>alert("Ticket actualizado correctamente "); location.replace(document.referrer);</script>';
   //enviar notificacion al usuario
   updateNoti($fid, $userId);
-
-  $stmtCliente->close();
 }
 //Cerrar ticket -------------------------------------------------------------------------------------------------------------
 else if (isset($_POST['end'])) {
@@ -180,6 +179,7 @@ else if (isset($_POST['end'])) {
         Notificaciones::enviarCorreo($clienteEmail, $fid,null, $adminremark ,$ticketStatus, $taskStatus);
     }
 
+    //funcion para enviar notificaciones a tiempo real y almacenarlas en la db
     updateNoti($fid, $userId);
     $stmtCliente->close();
 }
