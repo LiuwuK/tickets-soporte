@@ -48,7 +48,7 @@
   <header class="masthead text-center text-white">
     <div class="masthead-content">
       <div class="container">
-        <h1 class="masthead-heading mb-0">Sistema de prueba</h1>
+        <h1 class="masthead-heading mb-0">desarrollo</h1>
         <h2 class="masthead-subheading mb-0"></h2>
         <a href="registration.php" class="btn btn-primary btn-xl rounded-pill mt-5">Registro de Usuario</a>
       </div>

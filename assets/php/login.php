@@ -30,18 +30,25 @@ if (isset($_POST['login'])) {
         $result = $stmt->get_result();
         $num = $result->fetch_array();
         
-        if ($num && password_verify($password, $num['password'])) {
-            $_SESSION['login'] = $username;
-            $_SESSION['user_id'] = $num['id'];
-            $_SESSION['name'] = $num['name'];
-            $_SESSION['id'] = $num['id'];
-            echo "<script>window.location.href='dashboard.php'</script>";
-            exit();
-        } else {
-            $_SESSION['action1'] = "Usuario o Contraseña Inválidos";
+        if ($num['status']){        
+            if ($num && password_verify($password, $num['password'])) {
+                $_SESSION['login'] = $username;
+                $_SESSION['user_id'] = $num['id'];
+                $_SESSION['name'] = $num['name'];
+                $_SESSION['id'] = $num['id'];
+                echo "<script>window.location.href='dashboard.php'</script>";
+                exit();
+            } else {
+                $_SESSION['action1'] = "Usuario o Contraseña Inválidos";
+                echo "<script>window.location.href='login.php'</script>";
+                exit();
+
+            }
+        }else{
+            $_SESSION['action1'] = "La cuenta no esta activa";
             echo "<script>window.location.href='login.php'</script>";
-            exit();
-        }
+            exit();        
+        }   
     } else {
         // Si el rol no es ni admin ni user
         $_SESSION['action1'] = "Selección de rol inválida";
