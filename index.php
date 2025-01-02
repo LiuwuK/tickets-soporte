@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>CRM Project using PHP and MySQL</title>
+  <title>SafeTeck</title>
 
   <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -28,7 +28,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="#">ConfiguroWeb</a>
+      <a class="navbar-brand" href="#">test</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -40,10 +40,6 @@
           <li class="nav-item">
             <a class="nav-link" href="login.php">Acceder</a>
           </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="admin/">Acceso Admin</a>
-          </li>
         </ul>
       </div>
     </div>
@@ -52,7 +48,7 @@
   <header class="masthead text-center text-white">
     <div class="masthead-content">
       <div class="container">
-        <h1 class="masthead-heading mb-0">Sistema de Generación de Tickets</h1>
+        <h1 class="masthead-heading mb-0">Sistema de prueba</h1>
         <h2 class="masthead-subheading mb-0"></h2>
         <a href="registration.php" class="btn btn-primary btn-xl rounded-pill mt-5">Registro de Usuario</a>
       </div>

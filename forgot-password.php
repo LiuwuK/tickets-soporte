@@ -44,7 +44,7 @@ if (isset($_POST['submit'])) {
       <div class="col-md-5 col-md-offset-1">
         <h2>Forgot Password </h2>
         <p>
-          <a href="registration.php">Sign up Now!</a> for a webarch account,It's free and always will be..
+          <a href="registration.php">Sign up Now!</a>
         </p>
         <br>
 

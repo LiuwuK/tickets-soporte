@@ -43,16 +43,14 @@ if (isset($_POST["addtsk"])) {
                 //  Enviar la notificación por correo
                 Notificaciones::enviarCorreo($clienteEmail, $tId,$titles, null,$ticketStatus, null);
             }
-
-            updateNoti($tId, $userId);
           } else {
               echo "Error al insertar tareas: " . mysqli_error($con);
           }
       }
   }
 
-  
   $stmtCliente->close();
+  updateNoti($tId, $userId);
 }
 //Eliminar tareas-------------------------------------------------------------------------------------------
 elseif (isset($_POST["deltsk"])) {

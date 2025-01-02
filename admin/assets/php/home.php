@@ -29,6 +29,13 @@
       WHERE status = 12 ";
     
       $ti_total = mysqli_query($con, $query);
-      $cerr = mysqli_num_rows($ti_total);    
+      $cerr = mysqli_num_rows($ti_total); 
+      
+      //Notificaciones 
+      $noti_query = "SELECT * 
+                      FROM notificaciones
+                      WHERE admin = 1
+                      ORDER BY creada_en DESC";
+      $noti = mysqli_query($con, $noti_query);
 
 ?>

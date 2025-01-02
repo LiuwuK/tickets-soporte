@@ -7,10 +7,6 @@
        <div class="user-info">
          <div class="greeting" style="font-size:14px;">Bienvenid@</div>
          <div class="username" style="font-size:12px;"><?php echo $_SESSION['name']; ?></div>
-         <div class="status" style="font-size:10px;"><a href="#">
-             <div class="status-icon green"></div>
-             Conectado
-           </a></div>
        </div>
      </div>
      <!-- END MINI-PROFILE -->

@@ -1,7 +1,7 @@
 <?php
 include("dbconnection.php");
 
-//Informacion para grafico y demas
+//Informacion para graficos y demas-----------------------------------------------
 //General
   $query = "SELECT * 
             FROM ticket 
@@ -35,4 +35,13 @@ include("dbconnection.php");
 
   $ti_total = mysqli_query($con, $query);
   $cerr = mysqli_num_rows($ti_total);
+//--------------------------------------------------------------------------
+//Notificaciones 
+  $noti_query = "SELECT * 
+                  FROM notificaciones
+                  WHERE usuario_id = '".$_SESSION['user_id']."' 
+                  AND admin = 0
+                  ORDER BY creada_en DESC";
+  $noti = mysqli_query($con, $noti_query);
+
 ?>

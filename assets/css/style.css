@@ -8136,3 +8136,134 @@ body.rtl .footer-widget {
   border: 1px solid #c2c2c2 !important;
   border-radius: 0px !important;
 }
+
+
+.head-icons{
+  font-size: medium;
+}
+.head-icons:hover{
+  cursor: pointer;
+}
+
+
+
+/*Container de notificaciones e icono */
+.notification{
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  position: relative;
+  height: 97%;
+}
+
+.arrow-down {
+  position: absolute;
+  display: none;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #000; /* El color de la flecha */
+} 
+.noti-b{
+  overflow-y: scroll;
+  scrollbar-width: none; 
+  -ms-overflow-style: none;
+  flex-grow: 1;       
+}
+.noti-b::-webkit-scrollbar {
+  display: none; 
+}
+.card{
+  height:65px;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid rgba(255, 161, 89, 0.76);
+  cursor: pointer;
+}
+.card:hover{
+  transform: scale(1.05);
+  background-color:rgba(255, 137, 40, 0.15);
+}
+.bdy{
+  margin-left: 20px;
+}
+.bdy h6{
+  margin: 0px;
+}
+.msg{ 
+  font-size: larger;
+  margin: 0px;
+}
+.new{
+  margin-left: 20px;
+  border-radius: 5px;
+  background-color:rgb(68, 187, 25);
+}
+.new p{
+  color: white;
+  margin: 0px 5px;
+}
+.img{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0px 0px 0px 30px;
+  background-color:rgba(130, 130, 130, 0.27);
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+}
+.img i{
+  margin: 0px auto;
+  font-size: 27px;
+}
+
+.noti-h{
+  border-radius: 12px 12px 0px 0px;
+  background-color: #fc7d1c;
+  height: 55px;
+  text-align: start;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 0;              
+}
+.noti-title {
+  color: white;
+  margin: 20px;
+  font-weight: bold;  
+  font-size: 15px;
+}
+.noti-h i{
+  color: white;
+  font-size: medium;
+  margin: 20px;
+  cursor: pointer;
+}
+.noti-h i:active{
+  transform: scale(0.9);
+}
+.noti-box {
+  margin: 0 auto;
+  background-color: white;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  width: 30%;
+  height: 350px;
+  visibility: hidden; 
+  opacity: 0; 
+  transition: opacity 0.3s ease, visibility 0.3s ease; 
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  right: 10px;
+}
+
+.noti-box.visible {
+  visibility: visible;
+  opacity: 1; 
+} 

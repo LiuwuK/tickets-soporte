@@ -3,18 +3,8 @@ session_start();
 include("dbconnection.php");
 include("checklogin.php");
 check_login();
-if (isset($_POST['update'])) {
-    $name = $_POST['name'];
-    $aemail = $_POST['alt_email'];
-    $mobile = $_POST['phone'];
-    $gender = $_POST['gender'];
-    $address = $_POST['address'];
-    $a = mysqli_query($con, "update user set name='$name',mobile='$mobile',gender='$gender',alt_email='$aemail',address='$address' where email='" . $_SESSION['login'] . "'");
-    if ($a) {
-        echo "<script>alert('Tu perfil ha sido actualizado correctamente');location.replace(document.referrer)</script>";
-    }
-}
 
+include("assets/php/profile.php");
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +13,7 @@ if (isset($_POST['update'])) {
 <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <meta charset="utf-8" />
-    <title>CWEB Perfil de Usuario</title>
+    <title>Perfil de Usuario</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta content="" name="description" />
     <meta content="" name="author" />

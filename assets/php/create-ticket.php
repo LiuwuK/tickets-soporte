@@ -16,13 +16,14 @@
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         
         if ($stmt = mysqli_prepare($con, $query)) {
-    
-            mysqli_stmt_bind_param($stmt, "sssisisi",  $email, $subject, $tt, $priority, $ticket, $st, $pdate, $userId);
             
+            mysqli_stmt_bind_param($stmt, "sssisisi",  $email, $subject, $tt, $priority, $ticket, $st, $pdate, $userId);            
             // Ejecutar la consulta
             if (mysqli_stmt_execute($stmt)) {
+                
+                $ticketId = mysqli_insert_id($con);
                 echo "<script>alert('Ticket Registrado Correctamente'); location.replace(document.referrer)</script>";
-                ticketNoti();
+                ticketNoti($ticketId,$userId );
             } else {
                 echo "<script>alert('Error al registrar el ticket');</script>";
             }
