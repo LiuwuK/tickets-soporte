@@ -21,27 +21,9 @@ include("assets/php/login.php");
   <link href="assets/css/style.css" rel="stylesheet" type="text/css" />
   <link href="assets/css/responsive.css" rel="stylesheet" type="text/css" />
   <link href="assets/css/custom-icon-set.css" rel="stylesheet" type="text/css" />
-  <script type="text/javascript">
-    function checkpass() {
-      //Validar numero
-      var numero =  document.signup.phone.value;
-      const regex = /^\+56\d{9}$/;
-    
-      if (!regex.test(numero) ){
-        alert('Debe ser un numero valido');
-        document.signup.phone.focus();
-        return false;
-      }
+  <link href="assets/css/login.css" rel="stylesheet" type="text/css" />
+  
 
-      //validar contraseñas
-      if (document.signup.password.value != document.signup.cpassword.value) {
-        alert('Los campos contraseña y confirmar contraseña no coinciden');
-        document.signup.cpassword.focus();
-        return false;
-      }
-      return true;
-    }
-  </script>
 </head>
 
 <body>
@@ -146,63 +128,6 @@ include("assets/php/login.php");
     </div>
   </div>
 
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0;
-      background-image: url('assets/img/bg.jpg') no-repeat center center / cover; 
-      background-color: #f0f0f0; 
-    }
-    .login-div {
-      display: flex;
-      width: 95%;
-      height: 95%;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
-      overflow: hidden;
-      background-color: white;
-    }
-
-    .loginImg {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex: 1;
-      background: url('assets/img/bgimg.jpg') no-repeat center center / cover;
-    }
-
-    .loginCtn {
-      color: #2C3E50;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .notactive-form {
-      display: none;
-      opacity: 0;
-    }
-
-    .active-form {
-      display: flex;
-      opacity: 1;
-    }
-
-    .btn-login{
-      background-color: #34435e;
-      color: white;
-      width: 100%;
-    }
-
-    .double-container{
-      display: flex;
-      justify-content: space-between;
-    }
-
-  </style>
 
   <script src="assets/plugins/jquery-1.8.3.min.js" type="text/javascript"></script>
   <script src="assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>

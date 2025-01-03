@@ -43,3 +43,24 @@ $(document).ready(function() {
             });	
 
 });
+
+//Validaciones 
+function checkpass() {
+    /*Validar numero
+    var numero =  document.signup.phone.value;
+    const regex = /^\+56\d{9}$/;
+
+    if (!regex.test(numero) ){
+        alert('Debe ser un numero valido');
+        document.signup.phone.focus();
+        return false;
+    }*/
+
+    //validar contraseñas
+    if (document.signup.password.value != document.signup.cpassword.value) {
+        alert('Los campos contraseña y confirmar contraseña no coinciden');
+        document.signup.cpassword.focus();
+        return false;
+    }
+    return true;
+}
