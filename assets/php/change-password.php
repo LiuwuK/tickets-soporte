@@ -8,11 +8,11 @@
         $stmt->execute();
         $result = $stmt->get_result();
         $user = $result->fetch_assoc();
-    
+        
+        //se valida que la contraseña ingresada como actual sea igual a la almacenada
         if ($user && password_verify($_POST['oldpass'], $user['password'])) {
             // Validar que la nueva contraseña y la confirmación coincidan
             if ($_POST['newpass'] === $_POST['confirmpassword']) {
-                // Actualizar la contraseña
                 $hashed_password = password_hash($_POST['newpass'], PASSWORD_DEFAULT);
                 $update_stmt = $con->prepare("UPDATE user SET password = ? WHERE email = ?");
                 $update_stmt->bind_param("ss", $hashed_password, $_SESSION['login']);

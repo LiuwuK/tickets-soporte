@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-01-2025 a las 21:44:02
+-- Tiempo de generación: 03-01-2025 a las 21:18:51
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -38,8 +38,8 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `name`, `password`) VALUES
-(2, 'configuroweb', '1234abcd..'),
-(3, 'Admin', 'asd1234');
+(2, 'configuroweb', '$2y$10$CNP8.TRWp6QKEbVNovEjue93r0AiG.gwWCtAs7p3BIqcj0Zda/T0K'),
+(3, 'Admin', '$2y$10$MpnPtlf.wol8.CShsgpnVeeJucUe3VOmin5t2S3K4JSzzGkXRY98G');
 
 -- --------------------------------------------------------
 
@@ -163,7 +163,7 @@ CREATE TABLE `user` (
   `mobile` varchar(255) DEFAULT NULL,
   `gender` varchar(255) DEFAULT NULL,
   `address` varchar(500) DEFAULT NULL,
-  `status` int(11) DEFAULT NULL,
+  `status` tinyint(1) DEFAULT 0,
   `posting_date` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
@@ -172,8 +172,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `name`, `email`, `alt_email`, `password`, `mobile`, `gender`, `address`, `status`, `posting_date`) VALUES
-(8, 'test 2', 'desarrolladorsafeteck@hotmail.com', NULL, '$2y$10$9R9rHq27vTEq7WgmkYrVIOHs6MReOf2bVrsI4jaHPz/M.AyVl7L.m', '1231231312', 'male', NULL, NULL, '2025-01-02 12:13:45'),
-(9, 'test 1', 'desarrolladorsafeteck2@hotmail.com', NULL, '$2y$10$TBIemYbzhSCXGRvXQRRGA.WVYrpchV0DSIoyvABjY5Qndqqc2lELy', '1231231312', 'male', NULL, NULL, '2025-01-02 19:14:24');
+(11, 'Kevin Antecao', 'desarrolladorsafeteck@hotmail.com', NULL, '$2y$10$pCYT1DDd5z0NbBBeIv9gv.Wj1tNYLH0qAdK5gYdKE/MT1gH1xMySy', '999357718', 'male', NULL, 1, '2025-01-03 17:00:38');
 
 --
 -- Índices para tablas volcadas
@@ -270,7 +269,7 @@ ALTER TABLE `ticket`
 -- AUTO_INCREMENT de la tabla `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Restricciones para tablas volcadas

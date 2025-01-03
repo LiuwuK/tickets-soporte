@@ -28,31 +28,24 @@ include("assets/php/change-password.php")
     <link href="assets/css/custom-icon-set.css" rel="stylesheet" type="text/css" />
     <script language="javascript" type="text/javascript">
         function valid() {
-            if (document.form1.oldpass.value == "") {
-                alert(" Old Password Field Empty !!");
-                document.form1.oldpass.focus();
-                return false;
-            } else if (document.form1.newpass.value == "") {
-                alert(" New Password Field Empty !!");
+            const password = document.form1.newpass.value;
+            const confirmPassword = document.form1.confirmpassword.value;
+
+            // Expresión regular (Como minimo = 6 caracteres,1 mayuscula,1 minuscula, 1 numero y un caracter especial: @$!%*?&. )
+            const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{6,}$/;
+
+            if (!passwordRegex.test(password)) {
+                alert("La contraseña debe tener al menos 6 caracteres e incluir: una letra mayúscula, una letra minúscula, un número y un carácter especial.");
                 document.form1.newpass.focus();
                 return false;
-            } else if (document.form1.confirmpassword.value == "") {
-                alert(" Re-Type Password Field Empty !!");
+            } 
+
+            if (password !== confirmPassword) {
+                alert("La contraseña y la confirmación no coinciden.");
                 document.form1.confirmpassword.focus();
-                return false;
-            } else if (document.form1.newpass.value.length < 6) {
-                alert(" Password Field length must be atleast of 6 characters !!");
-                document.form1.newpass.focus();
-                return false;
-            } else if (document.form1.confirmpassword.value.length < 6) {
-                alert(" Re-Type Password Field less than 6 characters !!");
-                document.form1.confirmpassword.focus();
-                return false;
-            } else if (document.form1.newpass.value != document.form1.confirmpassword.value) {
-                alert("Password and Re-Type Password Field do not match  !!");
-                document.form1.newpass.focus();
                 return false;
             }
+
             return true;
         }
     </script>
@@ -99,7 +92,7 @@ include("assets/php/change-password.php")
                                         <div class="col-md-6 col-xs-12">
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-unlock-alt"></span></span>
-                                                <input type="password" name="oldpass" id="oldpass" value="" class="form-control" />
+                                                <input type="password" name="oldpass" id="oldpass" value="" class="form-control" required/>
                                             </div>
 
                                         </div>
@@ -111,7 +104,7 @@ include("assets/php/change-password.php")
                                         <div class="col-md-6 col-xs-12">
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-unlock-alt"></span></span>
-                                                <input type="password" name="newpass" id="newpass" value="" class="form-control" />
+                                                <input type="password" name="newpass" id="newpass" value="" class="form-control" required />
                                             </div>
                                         </div>
                                     </div>
@@ -120,7 +113,7 @@ include("assets/php/change-password.php")
                                         <div class="col-md-6 col-xs-12">
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-unlock-alt"></span></span>
-                                                <input type="password" name="confirmpassword" id="confirmpassword" class="form-control" />
+                                                <input type="password" name="confirmpassword" id="confirmpassword" class="form-control" required/>
                                             </div>
                                         </div>
                                     </div>

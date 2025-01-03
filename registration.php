@@ -21,16 +21,7 @@ include ("assets/php/signup.php");
   <link href="assets/css/style.css" rel="stylesheet" type="text/css" />
   <link href="assets/css/responsive.css" rel="stylesheet" type="text/css" />
   <link href="assets/css/custom-icon-set.css" rel="stylesheet" type="text/css" />
-  <script type="text/javascript">
-    function checkpass() {
-      if (document.signup.password.value != document.signup.cpassword.value) {
-        alert('Los campos Nueva contraseña y Nueva contraseña no coinciden');
-        document.signup.cpassword.focus();
-        return false;
-      }
-      return true;
-    }
-  </script>
+
 
 </head>
 
@@ -69,7 +60,7 @@ include ("assets/php/signup.php");
 
           <div class="form-group">
             <label for="gender" class="control-label">Genero</label>
-            <select class="form-control" name="gender" id="gender" required>
+            <select class="form-control" name="gender" style="" id="gender" required>
               <option value="male">Male</option>
               <option value="female">Female</option>
             </select>

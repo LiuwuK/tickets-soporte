@@ -40,48 +40,7 @@ include("assets/php/dashboard.php");
     <div class="content">
       <div class="page-title">
         <h3>Dashboard</h3>
-        <div class="row 2col">
-          
-          <div class="d-flex col-md-3 col-sm-3 spacing-bottom-sm spacing-bottom">
-            <div class="tiles blue added-margin">
-              <div class="tiles-body">
-                <div class="controller"> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
-                <div class="heading"><a href="view-tickets.php" style="color:#FFF"> Total de Tickets</a></div>
-                <h3 class="text-right text-white"><span class="animate-number" data-value="<?php echo $general; ?>" data-animation-duration="1200"><?= $general ?></span></h3>
-              </div>
-            </div>
-          </div>
-
-          <div class="d-flex col-md-3 col-sm-3 spacing-bottom-sm spacing-bottom">
-            <div class="tiles bg-green added-margin">
-              <div class="tiles-body">
-                <div class="controller"> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
-                <div class="heading"><a href="view-tickets.php?statusF=11" style="color:#FFF">Tickets Abiertos</a></div>
-                <h3 class="text-right text-white"><span class="animate-number" data-value="<?php echo $abi; ?>" data-animation-duration="1200"><?= $abi?></span></h3>
-              </div>
-            </div>
-          </div>
-          
-          <div class="d-flex col-md-3 col-sm-3 spacing-bottom-sm spacing-bottom">
-            <div class="tiles bg-yellow added-margin">
-              <div class="tiles-body">
-                <div class="controller"> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
-                <div class="heading"><a href="view-tickets.php?statusF=10" style="color:#FFF">Tickets en revisión</a></div>
-                <h3 class="text-right text-white"><span class="animate-number" data-value="<?php echo $revi; ?>" data-animation-duration="1200"><?= $revi?></span></h3>
-              </div>
-            </div>
-          </div>
-
-          <div class="d-flex col-md-3 col-sm-3 spacing-bottom-sm spacing-bottom">
-            <div class="tiles bg-red added-margin">
-              <div class="tiles-body">
-                <div class="controller"> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
-                <div class="heading"><a href="view-tickets.php?statusF=12" style="color:#FFF">Tickets Resueltos</a></div>
-                <h3 class="text-right text-white"><span class="animate-number" data-value="<?php echo $cerr; ?>" data-animation-duration="1200"><?= $cerr?></span></h3>
-              </div>
-            </div>
-          </div>
-        </div>
+      
       </div>
     </div>
         

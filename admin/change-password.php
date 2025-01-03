@@ -4,20 +4,7 @@ error_reporting(0);
 include("checklogin.php");
 check_login();
 include("dbconnection.php");
-if (isset($_POST['change'])) {
-  $oldpas = $_POST['oldpass'];
-  $adminid = $_SESSION['id'];
-  $newpassword = $_POST['newpass'];
-  $sql = mysqli_query($con, "SELECT `password` FROM  `admin` where `password`='$oldpas' and id='$adminid'");
-  $num = mysqli_fetch_array($sql);
-  if ($num > 0) {
-    $con = mysqli_query($con, "UPDATE  admin set password='$newpassword' where id='$adminid'");
-    echo '<script>alert("La contraseña ha sido actualizada correctamente."); location.replace(document.referrer)</script>';
-    //header('location:user.php');
-  } else {
-    $_SESSION['msg1'] = "Contraseña anterior no coincide !!";
-  }
-}
+include("./assets/php/password-change.php");
 ?>
 
 <!DOCTYPE html>
@@ -42,31 +29,24 @@ if (isset($_POST['change'])) {
   <link href="../assets/css/custom-icon-set.css" rel="stylesheet" type="text/css" />
   <script language="javascript" type="text/javascript">
     function valid() {
-      if (document.form1.oldpass.value == "") {
-        alert(" Campo de contraseña anterior vacío !!");
-        document.form1.oldpass.focus();
-        return false;
-      } else if (document.form1.newpass.value == "") {
-        alert(" Nuevo campo de contraseña vacío !!");
-        document.form1.newpass.focus();
-        return false;
-      } else if (document.form1.confirmpassword.value == "") {
-        alert(" Vuelva a escribir la contraseña Campo vacío !!");
-        document.form1.confirmpassword.focus();
-        return false;
-      } else if (document.form1.newpass.value.length < 6) {
-        alert(" La longitud del campo de contraseña debe tener al menos 6 caracteres !!");
-        document.form1.newpass.focus();
-        return false;
-      } else if (document.form1.confirmpassword.value.length < 6) {
-        alert(" Vuelva a escribir el campo de contraseña de menos de 6 caracteres !!");
-        document.form1.confirmpassword.focus();
-        return false;
-      } else if (document.form1.newpass.value != document.form1.confirmpassword.value) {
-        alert("La contraseña y el campo Volver a escribir la contraseña no coinciden  !!");
-        document.form1.newpass.focus();
-        return false;
+      const password = document.form1.newpass.value;
+      const confirmPassword = document.form1.confirmpassword.value;
+
+      // Expresión regular (Como minimo = 6 caracteres,1 mayuscula,1 minuscula, 1 numero y un caracter especial: @$!%*?&. )
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{6,}$/;
+
+      if (!passwordRegex.test(password)) {
+          alert("La contraseña debe tener al menos 6 caracteres e incluir: una letra mayúscula, una letra minúscula, un número y un carácter especial.");
+          document.form1.newpass.focus();
+          return false;
+      } 
+
+      if (password !== confirmPassword) {
+          alert("La contraseña y la confirmación no coinciden.");
+          document.form1.confirmpassword.focus();
+          return false;
       }
+
       return true;
     }
   </script>

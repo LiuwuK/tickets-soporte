@@ -2910,7 +2910,6 @@ div.DTTT_print_info p {
   position: absolute;
 }
 .login-container {
-  margin-top: 13%;
   display: flex;
   flex-direction: column;
   justify-content: center;
