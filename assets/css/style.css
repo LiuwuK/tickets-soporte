@@ -1983,6 +1983,9 @@ blockquote.pull-right small:after {
 .muted {
   color: #b6bfc5;
 }
+.bg-white {
+  background-color: #fff !important;
+}
 .bg-blue {
   background-color: #0090d9 !important;
 }
