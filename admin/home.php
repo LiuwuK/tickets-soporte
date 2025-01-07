@@ -3,6 +3,7 @@ session_start();
 include("checklogin.php");
 check_login();
 include("assets/php/home.php");
+
 ?>
 <!DOCTYPE html>
 <html>

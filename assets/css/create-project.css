@@ -1,0 +1,65 @@
+.hidden{
+    display: none;
+  }
+  .project-main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 5px;
+  }
+  .form-row {
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+    gap: 20px; 
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1; 
+  }
+
+  .expenses{
+    display: flex;
+    flex-direction: row;
+    align-items: center; 
+    justify-content: start; 
+    flex: 1;
+    margin: 20px 0px 20px 0px; 
+  }
+  .expenses label{
+    margin: 0px;
+  }
+  .expenses input{
+    margin: 0px 0px 0px 10px ;
+  }
+
+  .footer{
+    display: flex;
+    width: 80%;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+
+  .label-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 20%; 
+    margin-bottom: 20px;
+  }
+
+  .btn-add-task {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+  }
+
+  .btn-add-task:active{
+    transform: scale(0.9);
+  }

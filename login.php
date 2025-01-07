@@ -39,21 +39,12 @@ include("assets/php/login.php");
           <p style="color:#F00"><?php echo $_SESSION['action1']; ?><?php echo $_SESSION['action1'] = ""; ?></p>
           <form id="login-form" class="login-form" action="" method="post">
             <div class="form-group">
-              <label for="email" class="control-label">Usuario</label>
-              <input type="text" class="form-control rounded-0" id="email" name="email" required="required" placeholder="Username/Email"> 
+              <label for="email" class="control-label">Email</label>
+              <input type="text" class="form-control rounded-0" id="email" name="email" required="required" placeholder="test@safeteck.com"> 
             </div>
             <div class="form-group">
               <label for="password" class="control-label">Contraseña</label>
               <input type="password" class="form-control rounded-0" id="password" name="password" required="required" placeholder="**************">
-            </div>
-            <div class="form-group">
-                <label for="role" class="control-label">Rol</label>
-                <label class="radio-inline">
-                    <input type="radio" name="role" value="admin" id="role_admin" required> Admin
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="role" value="user" id="role_user" required> User
-                </label>
             </div>
             <div class="form-group text-center">
               <button class="btn btn-login" name="login" type="submit">Acceder</button>

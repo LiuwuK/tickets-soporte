@@ -105,7 +105,7 @@ if (isset($_POST['delete'])) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php $ret = mysqli_query($con, "select * from user");
+                                            <?php $ret = mysqli_query($con, "select * from user where rol != 'admin' ");
                                             $cnt = 1;
                                             while ($row = mysqli_fetch_array($ret)) {
                                                 $_SESSION['ids'] = $row['id'];

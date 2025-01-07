@@ -4,14 +4,14 @@
         $adminid = $_SESSION['id'];
         $newpassword = $_POST['newpass'];
         
-        $sql = mysqli_query($con, "SELECT `password` FROM `admin` WHERE id='$adminid'");
+        $sql = mysqli_query($con, "SELECT `password` FROM `user` WHERE id='$adminid'");
         $num = mysqli_fetch_array($sql);
       
         if ($num && password_verify($oldpas, $num['password'])) {
             // hasheo contraseña nueva
             $hashedPassword = password_hash($newpassword, PASSWORD_BCRYPT);
       
-            $update = mysqli_query($con, "UPDATE `admin` SET `password`='$hashedPassword' WHERE id='$adminid'");
+            $update = mysqli_query($con, "UPDATE `user` SET `password`='$hashedPassword' WHERE id='$adminid'");
             if ($update) {
               
                 echo '<script>alert("La contraseña ha sido actualizada correctamente."); location.replace(document.referrer)</script>';
