@@ -23,15 +23,17 @@ check_login();
 <link href="assets/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css" />
 <link href="assets/css/animate.min.css" rel="stylesheet" type="text/css" />
 <link href="assets/plugins/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" />
+
+<!-- Bootstrap 5 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-<!-- css -->
+<!-- CSS personalizados -->
 <link href="assets/css/style.css" rel="stylesheet" type="text/css" />
 <link href="assets/css/responsive.css" rel="stylesheet" type="text/css" />
 <link href="assets/css/custom-icon-set.css" rel="stylesheet" type="text/css" />
 <link href="assets/css/create-project.css" rel="stylesheet" type="text/css" />
 
-<!-- toast notificaciones -->
+<!-- Toast notificaciones -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 </head>
 
@@ -64,7 +66,7 @@ check_login();
               <div class ="form-group">
                 <label>Tipo de proyecto</label>
                 <div>
-                  <select name="type" id="pType" class="form-control select" required>
+                  <select name="pType" id="pType" class="form-control select" required>
                     <option value="">Seleccionar</option> 
                     <?php
                       while ($row = mysqli_fetch_assoc($types)) {
@@ -78,7 +80,7 @@ check_login();
             <div class ="form-group">
               <label>Clasificación</label>
               <div>
-                <select name="sorting" id="pClass" class="form-control select" required>
+                <select name="pClass" id="pClass" class="form-control select" required>
                   <option value="">Seleccionar</option>
                   <?php
                     while ($row = mysqli_fetch_assoc($class)) {
@@ -89,19 +91,17 @@ check_login();
               </div>
             </div>
             </div>
-            <!-- datos de licitacion y contacto -->
-            <div class="form-row"  id="licitacion">
+            <div class="form-row"  id="licitacion" style="display: none;">
                   <div class="form-group">
                     <strong>Datos Licitación</strong>
                     <label for="licID" class="control-label">ID licitación</label>
                     <input type="text" class="form-control rounded-0" id="licID" name="licID" >
                   </div>
-            </div>
-            
-            <div class="form-row" id="contacto">
+            </div>            
+            <div class="form-row" id="contactoT" style="display: none;">
                 <strong>Datos de Contacto</strong>
             </div>
-            <div class="form-row" id="contacto">
+            <div class="form-row" id="contacto" style="display: none;">
                     <div class="form-group">
                       <label for="cName" class="control-label">Nombre</label>
                       <input type="text" class="form-control rounded-0" id="cName" name="cName" >
@@ -119,7 +119,6 @@ check_login();
                     </div>
             
             </div>
-            <!--  -->
             <div class="form-row">
               <div class ="form-group">
                 <label>Ciudad</label>
@@ -158,6 +157,11 @@ check_login();
                 <div >
                   <select name="ingeniero" class="form-control select" >
                       <option value="">Seleccionar</option>
+                      <?php
+                      while ($row = mysqli_fetch_assoc($inge)) {
+                          echo "<option value=".$row['id'].">".$row['name'] ."</option>";
+                      };
+                    ?>
                   </select>
                 </div>
               </div>
@@ -173,22 +177,27 @@ check_login();
               </div>
             </div>
             <div class="form-row" style="display:none" id="classInfo">
-                <div class="expenses">
-                  <label for="soft" class="control-label">Software</label>
-                  <input type="checkbox" id="software" name="software">
+                <div class="expenses ">
+                  <div class="title">
+                    <label for="soft" class="control-label">Software</label>
+                    <input type="checkbox" id="software" name="software">
+                  </div>
                   <input type="text" id="software-input" name="software-input" class="hidden" placeholder="USD 0">
-                </div>
-
-                <div class="expenses">
-                  <label for="hard" class="control-label">Hardware</label>
-                  <input type="checkbox" id="hardware" name="hardware">   
+                      <br>
+                  <div class="title">
+                    <label for="hard" class="control-label">Hardware</label>
+                    <input type="checkbox" id="hardware" name="hardware">   
+                  </div>
                   <input type="text" id="hardware-input" name="hardware-input" class="hidden" placeholder="USD 0">
                 </div>
+
             </div>
             <div class="form-row">
               <div class="expenses">
-                <label for="bom" class="control-label">BOM</label>
-                <input type="checkbox" id="bom" name="bom">
+                <div class="title">
+                  <label for="bom" class="control-label">BOM</label>
+                  <input type="checkbox" id="bom" name="bom">
+                </div>
                 <input type="file" id="bom-input" name="bom-input" class="hidden" placeholder="BOM">
               </div>
             </div>  
@@ -259,26 +268,16 @@ check_login();
   </div>
   </div>
   
-  <!-- Biblioteca base -->
-<script src="assets/plugins/jquery-1.8.3.min.js" type="text/javascript"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<!-- Biblioteca base (Bootstrap 5) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Complementos/Plugins -->
-<script src="assets/plugins/jquery-ui/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
-<script src="assets/plugins/breakpoints.js" type="text/javascript"></script>
-<script src="assets/plugins/jquery-unveil/jquery.unveil.min.js" type="text/javascript"></script>
-<script src="assets/plugins/jquery-block-ui/jqueryblockui.js" type="text/javascript"></script>
-<script src="assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js" type="text/javascript"></script>
-<script src="assets/plugins/pace/pace.min.js" type="text/javascript"></script>
-<script src="assets/plugins/jquery-numberAnimate/jquery.animateNumbers.js" type="text/javascript"></script>
+<!-- Complementos/Plugins (sin jQuery) -->
+<script src="assets/plugins/breakpoints.js"></script>
+<script src="assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<script src="assets/plugins/pace/pace.min.js"></script>
 
 <!-- Scripts propios -->
-<script src="assets/js/core.js" type="text/javascript"></script>
-<script src="assets/js/chat.js" type="text/javascript"></script>
-<script src="assets/js/demo.js" type="text/javascript"></script>
-<script src="assets/js/calendar.js" type="text/javascript"></script>
-<script src="assets/js/create-project.js" type="text/javascript"></script>
-
+<script src="assets/js/create-project.js"></script>
 </body>
 
 </html>

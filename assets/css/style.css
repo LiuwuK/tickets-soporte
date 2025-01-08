@@ -28,11 +28,13 @@ body {
   color: #6f7b8a;
   font-family: 'Arial';
   font-size: 13px;
-  padding: 0px !important;
-  margin: 0px !important;
+  padding: 0;
+  margin: 0;
   line-height: 1.5;
   font-style: normal;
   font-weight: normal;
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }
 body.condense-menu .header-seperation {
@@ -8146,9 +8148,6 @@ body.rtl .footer-widget {
 .head-icons:hover{
   cursor: pointer;
 }
-
-
-
 /*Container de notificaciones e icono */
 .notification{
   display: flex; 

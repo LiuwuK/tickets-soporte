@@ -1,7 +1,6 @@
 <?php
 session_start();
 include("assets/php/login.php");
-
 ?>
 <!DOCTYPE html>
 <html>

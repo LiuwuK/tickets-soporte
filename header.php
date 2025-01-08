@@ -22,19 +22,6 @@
         </ul>
       </div>
       
-      <div class="pull-right">
-        <ul class="nav quick-section ">
-          <li class="quicklinks"> <a data-toggle="dropdown" class="dropdown-toggle  pull-right " href="#" id="user-options">
-              <i class="fa fa-solid fa-gear head-icons" style="font-size:large"></i>
-            </a>
-            <ul class="dropdown-menu  pull-right" role="menu" aria-labelledby="user-options">
-              <li class="divider"></li>
-              <li><a href="logout.php"><i class="fa fa-power-off"></i>&nbsp;&nbsp;Cerrar Sesión</a></li>
-            </ul>
-          </li>
-
-        </ul>
-      </div>
 
       <!-- Mostrar notificaciones -->
       <div class="pull-right notification" id="nt">

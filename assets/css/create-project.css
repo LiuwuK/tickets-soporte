@@ -1,65 +1,122 @@
+label, input{
+  font-weight: lighter;
+  color:#34435E;
+}
+input, .form-control, .form-select{
+  background-color: #E9F4F9;
+}
 .hidden{
-    display: none;
-  }
-  .project-main{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    background-color: #fff;
-    border-radius: 5px;
-  }
-  .form-row {
-    display: flex;
-    justify-content: space-between;
-    width: 60%;
-    gap: 20px; 
-  }
+  display: none;
+}
+.page-title h2{
+  font-weight: 600;
+  font-style: italic;
+  color: #34435E;
+}
 
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    flex: 1; 
-  }
+.project-main{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 10px;
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 40px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
 
-  .expenses{
-    display: flex;
-    flex-direction: row;
-    align-items: center; 
-    justify-content: start; 
-    flex: 1;
-    margin: 20px 0px 20px 0px; 
-  }
-  .expenses label{
-    margin: 0px;
-  }
-  .expenses input{
-    margin: 0px 0px 0px 10px ;
-  }
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  width: 70%;
+  gap: 20px; 
+}
 
-  .footer{
-    display: flex;
-    width: 80%;
-    justify-content: space-between;
-    margin-bottom: 30px;
-  }
+.form-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-bottom: 20px; 
+}
 
-  .label-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 20%; 
-    margin-bottom: 20px;
-  }
+.title{
+  display: flex;
+  flex-direction: row;
+}
 
-  .btn-add-task {
-    width: 25px;
-    height: 25px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-  }
+.expenses{
+  display: flex;
+  flex-direction: column;
+  align-items: start; 
+  justify-content: start; 
+  flex: 1;
+  margin: 20px 0px 20px 0px; 
+}
+.expenses label{
+  margin: 0px;
+}
+.expenses input{
+  margin: 0px 0px 0px 10px ;
+}
 
-  .btn-add-task:active{
-    transform: scale(0.9);
-  }
+.footer{
+  display: flex;
+  width: 80%;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.label-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 20%; 
+  margin-bottom: 20px;
+}
+
+.btn-add-task {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #34435E;;
+  color: #fff;
+}
+.btn-add-task:hover{
+  background-color: #34435E;;
+  color: #fff;
+}
+
+.btn-add-task:active{
+  transform: scale(0.9);
+  background-color: #34435E;;
+  color: #fff;
+}
+
+.modal-title{
+  color: #34435E;
+}
+.list-group-item{
+  color: #34435E;
+}
+
+.btn-reset, .btn-reset:hover{
+  background-color: #e5e5e5;
+  color: #34435E;
+  width: 20%;
+  transition: transform 0.3s ease
+}
+
+.pull-right, .pull-right:hover{
+  background-color: #34435E;
+  color: #fff;
+  width: 20%;
+  transition: transform 0.3s ease
+}
+.pull-right:hover, .btn-reset:hover{
+  transform: scale(0.95);
+}
