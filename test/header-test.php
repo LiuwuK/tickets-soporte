@@ -1,10 +1,9 @@
-<?php include("assets/php/dashboard.php"); ?>
+<?php include("../assets/php/dashboard.php"); ?>
 <div class="header navbar navbar-inverse ">
   <div class="navbar-inner">
 
     <div class="header-quick-nav">
       <div class="ml-2 pull-left" style="padding-top: 0.5em;padding-left: 1em">
-
         <h4>
           <a href="dashboard.php" class="text-reset"><strong>Sistema de Generación de Tickets - Acceso Cliente</strong></a>
         </h4>
@@ -13,7 +12,8 @@
         </ul>
       </div>
       
-<!-- mostrar notificaciones -->
+
+        <!-- Mostrar notificaciones 
       <div class="pull-right notification" id="nt">
         <i class="fa fa-solid fa-bell head-icons" ></i>
         <div class="arrow-down" id="arrow"></div>
@@ -55,7 +55,7 @@
             ?>
             
         </div>
-      </div>
+      </div>-->
       
       <!-- END CHAT TOGGLER -->
     </div>
@@ -72,4 +72,4 @@
  </script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-  <script src="assets/js/new_notifications.js" type="text/javascript"></script>
+  <!-- <script src="../assets/js/new_notifications.js" type="text/javascript"></script>  -->
