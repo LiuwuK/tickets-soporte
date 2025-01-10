@@ -1,15 +1,15 @@
-document.getElementById("toggleFiltersBtn").addEventListener("click", function () {
+document.getElementById("toggleFiltersBtn").addEventListener("click", function() {
     var form = document.getElementById("filtersForm");
     var icon = this.querySelector("i");
 
-    // Alternar la clase 'expanded' para la animación
-    if (form.classList.contains("expanded")) {
-        form.classList.remove("expanded");
-        icon.classList.remove("bi-arrow-up-short");
-        icon.classList.add("bi-arrow-down-short");
+    // Alternar la visibilidad del formulario
+    if (form.style.display === "none" || form.style.display === "") {
+        form.style.display = "block";
+        icon.classList.remove("glyphicon-chevron-down");
+        icon.classList.add("glyphicon-chevron-up");
     } else {
-        form.classList.add("expanded");
-        icon.classList.remove("bi-arrow-down-short");
-        icon.classList.add("bi-arrow-up-short");
+        form.style.display = "none";
+        icon.classList.remove("glyphicon-chevron-up");
+        icon.classList.add("glyphicon-chevron-down");
     }
 });

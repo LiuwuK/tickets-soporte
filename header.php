@@ -1,7 +1,16 @@
 <?php include("assets/php/dashboard.php"); ?>
 <div class="header navbar navbar-inverse ">
   <div class="navbar-inner">
-
+    <div class="header-seperation text-center">
+      <ul class="nav pull-left notifcation-center" id="main-menu-toggle-wrapper" style="display:none">
+        <li class="dropdown"> <a id="main-menu-toggle" href="#main-menu" class="">
+            <div class="iconset top-menu-toggle-white"></div>
+          </a> </li>
+      </ul>
+      <h2>
+        <a href="dashboard.php" class="text-white"><strong>Test</strong></a>
+      </h2>
+    </div>
     <div class="header-quick-nav">
       <div class="ml-2 pull-left" style="padding-top: 0.5em;padding-left: 1em">
 
@@ -13,16 +22,17 @@
         </ul>
       </div>
       
-<!-- mostrar notificaciones -->
+
+      <!-- Mostrar notificaciones -->
       <div class="pull-right notification" id="nt">
         <i class="fa fa-solid fa-bell head-icons" ></i>
         <div class="arrow-down" id="arrow"></div>
       </div>
-
+      <!-- Container de las notificaciones -->
       <div class="noti-box" display="none" id="nt-div">
         <div class="noti-h">
           <p class="noti-title">Notificaciones</p>
-          <i class="pull-right fa fa-solid fa-times-circle" id="close-btn"></i>   
+          <i class="pull-right fa fa-solid fa-times-circle" id="close-btn"></i>    
         </div>
         <div class="noti-b">
             <?php 
@@ -53,7 +63,6 @@
                 //echo "No hay notificaciones ";
               }
             ?>
-            
         </div>
       </div>
       

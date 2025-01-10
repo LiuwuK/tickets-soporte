@@ -50,7 +50,6 @@ checkboxes.forEach((checkbox) => {
 });
 
 
-
 // actividades 
 document.getElementById('formActividad').addEventListener('submit', function (e) {
   e.preventDefault(); 

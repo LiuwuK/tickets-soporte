@@ -1,5 +1,5 @@
 <?php
-    include("../dbconnection.php");
+    include("dbconnection.php");
 
     if (isset($_POST['change'])) {
         // Obtener la contraseña actual del usuario

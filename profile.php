@@ -1,4 +1,4 @@
-1<?php
+<?php
 session_start();
 include("dbconnection.php");
 include("checklogin.php");

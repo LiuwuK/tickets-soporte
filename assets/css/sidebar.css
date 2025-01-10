@@ -4,28 +4,12 @@
 *{
     font-family: 'Roboto'; /* Open Sans  */
 }
-
-
-/* Estilos para el Header */
-.header {
-    margin-left: 70px; 
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: calc(100% - 70px);
-    background-color: #ffffff;
-    color: #34435E;
-    transition: width 0.3s ease;
-}
-
 .page-container {
     display: flex; 
     height: 100vh; 
-    flex-direction: row;
 }
 .page-content {
     margin-left: 70px; 
-    margin-top: 70px;
     padding: 20px; 
     width: calc(100% - 70px); /* Resta el ancho de la sidebar */
     background-color: #e5e9ec;
