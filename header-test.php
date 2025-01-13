@@ -1,4 +1,4 @@
-<?php include("../assets/php/dashboard.php"); ?>
+<?php include("assets/php/dashboard.php"); ?>
 <div class="header navbar navbar-inverse ">
   <div class="navbar-inner">
 
@@ -72,4 +72,4 @@
  </script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-  <!-- <script src="../assets/js/new_notifications.js" type="text/javascript"></script>  -->
+  <!-- <script src="assets/js/new_notifications.js" type="text/javascript"></script>  -->

@@ -1,19 +1,23 @@
-document.addEventListener('DOMContentLoaded', function() {
-    var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
-        locale: 'es',  // Establecer el idioma español
-        initialView: 'dayGridMonth', 
-        headerToolbar: {
-            left: 'title',
-            center: 'prev,next today', 
-            right: 'dayGridMonth,timeGridWeek'
+ document.addEventListener('DOMContentLoaded', function() {
+    const picker = new Litepicker({
+        element: document.getElementById('calendar'),
+        format: 'YYYY-MM-DD',
+        singleMode: true,
+        selectable: false,
+        inlineMode: true,
+        lang: 'es',
+        theme: 'light',
+        dropdowns: {
+           minYear: 2020,
+           maxYear: 2025,
         },
-        buttonText: {
-            today: 'Hoy',
-            month: 'Mes',
-            week: 'Semana',
-            day: 'Día'
-        }
-        //
-        });
-    calendar.render();
-});
+        numberOfMonths: 1,
+        showTooltip: false,
+        showWeekNumbers: false,
+     });
+
+     picker.container.querySelectorAll('.day').forEach(day => {
+        day.style.pointerEvents = 'none';
+        day.style.opacity = '0.5';
+    });
+ });

@@ -22,6 +22,7 @@ if (isset($_POST['login'])) {
             $_SESSION['name'] = $num['name'];
             $_SESSION['admin_id'] = $num['id'];
             $_SESSION['role'] = $num['rol']; 
+            $_SESSION['cargo'] = $num['cargo'];
             echo "<script>window.location.href='admin/home.php'</script>";
             exit(); 
         } else {
@@ -38,6 +39,7 @@ if (isset($_POST['login'])) {
                 $_SESSION['name'] = $num['name'];
                 $_SESSION['id'] = $num['id'];
                 $_SESSION['role'] = $num['rol']; 
+                $_SESSION['cargo'] = $num['cargo']; 
                 echo "<script>window.location.href='dashboard.php'</script>";
                 exit();
             } else {

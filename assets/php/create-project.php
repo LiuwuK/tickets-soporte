@@ -39,6 +39,7 @@ if(isset($_POST['newProject'])){
     $resumen   = $_POST['desc'];
     $comercial = $_SESSION['user_id']; //id del usuario
     $monto     = $_POST['monto'];
+    $pdate     = date('Y-m-d'); 
   
 
     print_r($_POST);
@@ -50,12 +51,12 @@ if(isset($_POST['newProject'])){
 
     $query = "INSERT INTO proyectos (nombre, cliente, ciudad, estado_id, 
                 ingeniero_responsable, bom, distribuidor, costo_software,
-                costo_hardware, resumen, comercial_responsable, monto, tipo, clasificacion) 
+                costo_hardware, resumen, fecha_creacion, comercial_responsable, monto, tipo, clasificacion) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
     if ($stmt = mysqli_prepare($con, $query)) {
-        mysqli_stmt_bind_param($stmt, "ssiiissiisiiii", $nameP, $client, $city, $status, 
-                                $ingeniero, $bom, $dist, $software, $hardware, $resumen, $comercial, $monto, $pType, $pClass ); 
+        mysqli_stmt_bind_param($stmt, "ssiiissiissiiii", $nameP, $client, $city, $status, 
+                                $ingeniero, $bom, $dist, $software, $hardware, $resumen, $pdate, $comercial, $monto, $pType, $pClass ); 
         if (mysqli_stmt_execute($stmt)) {
             $pId = mysqli_insert_id($con);
 

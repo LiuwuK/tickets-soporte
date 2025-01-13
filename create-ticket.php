@@ -1,143 +1,116 @@
 <?php
 session_start();
-//echo $_SESSION['id'];
-//$_SESSION['msg'];
-
-include("dbconnection.php");
 include("checklogin.php");
+include("dbconnection.php");
 include("admin/notificaciones.php");
-check_login();
 include("assets/php/create-ticket.php");
-?>
 
+check_login();
+?>
 <!DOCTYPE html>
 <html>
 
 <head>
-    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-    <meta charset="utf-8" />
-    <title>Crear Ticket</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta content="" name="description" />
-    <meta content="" name="author" />
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <meta charset="utf-8" />
+  <title>Tickets</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta content="" name="description" />
+  <meta content="" name="author" />
 
-    <link href="assets/plugins/pace/pace-theme-flash.css" rel="stylesheet" type="text/css" media="screen" />
-    <link href="assets/plugins/boostrapv3/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="assets/plugins/boostrapv3/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
-    <link href="assets/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/animate.min.css" rel="stylesheet" type="text/css" />
-    <link href="assets/plugins/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/responsive.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/custom-icon-set.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<!-- CSS personalizados -->
+<link href="assets/css/sidebar.css" rel="stylesheet" type="text/css" />
+<link href="assets/css/create-project.css" rel="stylesheet" type="text/css" />
+
+<!-- Toast notificaciones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 </head>
 
-<body class="">
-    <?php include("header.php"); ?>
-    <div class="page-container row-fluid">
-        <?php include("leftbar.php"); ?>
-        <div class="clearfix"></div>
-        <!-- END SIDEBAR MENU -->
+<body class="test" >
+    <!-- Sidebar -->
+  <div class="page-container ">
+
+    <div class="sidebar">
+    <?php include("header-test.php"); ?>
+      
     </div>
-    </div>
-    <!-- END SIDEBAR -->
-    <!-- BEGIN PAGE CONTAINER-->
     <div class="page-content">
-        <div class="clearfix"></div>
+    <?php include("leftbar-test.php"); ?>
         <div class="content">
             <div class="page-title">
-                <h3>Crear ticket</h3>
-                <div class="row">
-                    <div class="col-md-12">
-
-                        <form class="form-horizontal" name="form1" method="post" action="" onSubmit="return valid();">
-                            <div class="panel panel-default">
-
-                                <div class="panel-body bg-white">
-                                    <?php if (isset($_SESSION['msg1'])) : ?>
-                                        <p align="center" style="color:#FF0000"><?= $_SESSION['msg1']; ?><?= $_SESSION['msg1'] = ""; ?></p>
-                                    <?php endif; ?>
-                                    <div class="form-group">
-                                        <label class="col-md-3 col-xs-12 control-label">Asunto</label>
-                                        <div class="col-md-6 col-xs-12">
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><span class="fa fa-pencil"></span></span>
-                                                <input type="text" name="subject" id="subject" value="" required class="form-control" />
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label class="col-md-3 col-xs-12 control-label">Tipo de Tarea</label>
-                                        <div class="col-md-6 col-xs-12">
-                                            <select name="tasktype" class="form-control select" required>
-                                                <option value="">Seleccionar</option>
-                                                <option>Incidente Lógica</option>
-                                                <option>Fallo a Nivel de Servidor</option>
-                                                <option>Error capa de aplicación</option>
-
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-md-3 col-xs-12 control-label">Prioridad</label>
-                                        <div class="col-md-6 col-xs-12">
-                                            <select name="priority" class="form-control select">
-                                            <?php
-                                            while ($row = mysqli_fetch_assoc($prioridad)) {
-                                                echo "<option value=". $row['id'] .">". $row['nombre'] ."</option>";
-                                            };
-                                            ?>
-                                            </select>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label class="col-md-3 col-xs-12 control-label">Descripción</label>
-                                        <div class="col-md-6 col-xs-12">
-                                            <textarea name="description" required class="form-control" rows="5"></textarea>
-
-                                        </div>
-                                    </div>
-
-
-                                </div>
-
-                            </div>
-
-                            <div class="panel-footer">
-                                <button class="btn btn-default">Resetear</button>
-                                <input type="submit" value="Enviar" name="send" class="btn btn-primary pull-right">
-                            </div>
-                    </div>
-                    </form>
-
-                </div>
+                <h2>Crear Ticket</h2>
             </div>
+            <!-- Formulario crear Ticket -->
 
-        </div>
-    </div>
+            <form class="form-horizontal" name="form1" method="post" action="" onSubmit="return valid();">
+                    <div class="ticket-main">
+                        <?php if (isset($_SESSION['msg1'])) : ?>
+                            <p align="center" style="color:#FF0000"><?= $_SESSION['msg1']; ?><?= $_SESSION['msg1'] = ""; ?></p>
+                        <?php endif; ?>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="subject" class="form-label">Asunto</label>
+                                <input type="text" name="subject" id="subject" value="" required class="form-control form-control-sm" />
+                            </div>
+                        </div>
+
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tasktype" class="form-label">Tipo de Tarea</label>
+                                    <select id="tasktype" name="tasktype" class="form-select" required>
+                                        <option value="">Seleccionar</option>
+                                        <option>Incidente Lógica</option>
+                                        <option>Fallo a Nivel de Servidor</option>
+                                        <option>Error capa de aplicación</option>
+                                    </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="priority" class="form-label">Prioridad</label>
+                                <select id="priority" name="priority" class="form-select">
+                                <?php
+                                while ($row = mysqli_fetch_assoc($prioridad)) {
+                                    echo "<option value=". $row['id'] .">". $row['nombre'] ."</option>";
+                                };
+                                ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label or="description" class="form-label">Descripción</label>
+                                <textarea id="description" name="description" required class="form-control form-control-sm" rows="5"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="footer">
+                            <button class="btn btn-default">Resetear</button>
+                            <button type="submit" name="send" class="btn btn-primary pull-right">Enviar</button>
+                        </div>
+                    </div>
+            </form>
+        </div>   
+    
     </div>
 
-    </div>
-    <script src="assets/plugins/jquery-1.8.3.min.js" type="text/javascript"></script>
-    <script src="assets/plugins/jquery-ui/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
-    <script src="assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-    <script src="assets/plugins/breakpoints.js" type="text/javascript"></script>
-    <script src="assets/plugins/jquery-unveil/jquery.unveil.min.js" type="text/javascript"></script>
-    <script src="assets/plugins/jquery-block-ui/jqueryblockui.js" type="text/javascript"></script>
-    <script src="assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js" type="text/javascript"></script>
-    <script src="assets/plugins/pace/pace.min.js" type="text/javascript"></script>
-    <script src="assets/plugins/jquery-numberAnimate/jquery.animateNumbers.js" type="text/javascript"></script>
-    <script src="assets/js/core.js" type="text/javascript"></script>
-    <script src="assets/js/chat.js" type="text/javascript"></script>
-    <script src="assets/js/demo.js" type="text/javascript"></script>
+  </div>
 
+
+<!-- Popper.js (para tooltips y otros componentes) -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<!-- Bootstrap Bundle (con Popper.js) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Complementos/Plugins-->
+<!-- Scripts propios -->
+<script src="assets/js/sidebar.js"></script>
 </body>
 
 </html>

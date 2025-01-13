@@ -15,13 +15,23 @@
               <i class="bi bi-house-door"></i>
             </a>
           </li>
-          <li class="nav-item active">
-            <a href="create-project.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Crear Proyectos">
-              <i class="bi bi-clipboard2-plus"></i> 
-            </a>
-          </li>
-          <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" title="Ver Tickets">
-            <a href="view-tickets.php" class="nav-link">
+          <?php 
+            if($_SESSION['cargo'] == '2'){ ?>
+              <li class="nav-item active">
+                <a href="create-project.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Crear Proyectos">
+                  <i class="bi bi-clipboard2-plus"></i> 
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="view-projects.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Ver Proyectos">
+                  <i class="bi bi-clipboard2"></i>
+                </a>
+              </li>
+            <?php  
+          }
+          ?>
+          <li class="nav-item">
+            <a href="view-tickets.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Ver Tickets">
               <i class="bi bi-ticket-perforated"></i>
             </a>
           </li>
@@ -30,8 +40,8 @@
               <i class="bi bi-person-gear"></i> 
             </a>
           </li>
-          <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" title="Cambiar Contraseña">
-            <a href="change-password.php" class="nav-link">
+          <li class="nav-item" >
+            <a href="change-password.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Cambiar Contraseña">
               <i class="bi bi-lock"></i>
             </a>
           </li>

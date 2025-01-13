@@ -2,9 +2,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 @import url('http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700');
 *{
-    font-family: 'Roboto'; /* Open Sans  */
+    font-family: 'Open Sans'; /* roboto  */
 }
 
+/* estilos titulos e inputs*/
+label, input{
+    font-weight: lighter;
+    color:#34435E;
+}
+input, .form-control, .form-select{
+    background-color: #E9F4F9;
+}
+.hidden{
+    display: none;
+}
+.page-title h2{
+    font-weight: 600;
+    font-style: italic;
+    color: #34435E;
+}
+
+.comm ul, .info-wrapper p{
+    font-size: small;
+}
 
 /* Estilos para el Header */
 .header {
@@ -120,3 +140,38 @@
 }
 
 
+/*Botones*/
+.btn-default{
+    background-color: #e5e5e5;
+    font-size: small;
+    transition: transform 0.2s ease-in-out;
+    width: 150px;
+}
+.btn-default:hover{
+    background-color: #e5e5e5;
+    transform: scale(1.05);
+}
+.btn-default:active{
+    transform: scale(0.9);
+    background-color: #e5e5e5;
+}
+.btn-updt{
+    background-color: #34435E;;
+    color: #fff;
+    font-size: small;
+    transition: transform 0.2s ease-in-out;
+    width: 150px;
+}
+
+.btn-updt:hover{
+    background-color: #34435E;;
+    color: #fff;
+    transform: scale(1.05);
+  }
+  
+.btn-updt:active{
+    transform: scale(0.9);
+    background-color: #34435E;;
+    color: #fff;
+}
+  
