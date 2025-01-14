@@ -96,10 +96,13 @@ include("assets/php/login.php");
             </div>
 
             <div class="form-group">
-              <label for="gender" class="control-label">Genero</label>
-              <select class="form-control" style="width: 185px;" name="gender" id="gender" required>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
+              <label for="gender" class="control-label">Cargo</label>
+              <select class="form-control" style="width: 185px;" name="cargo" id="gender" required>
+              <?php
+                while ($row = mysqli_fetch_assoc($cargo)) {
+                  echo "<option value=".$row['id'].">".$row['nombre']."</option>";
+                };
+                ?>
               </select>
             </div>
           </div>

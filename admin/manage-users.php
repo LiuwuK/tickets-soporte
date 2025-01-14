@@ -2,26 +2,8 @@
 session_start();
 include("dbconnection.php");
 include("checklogin.php");
+include("assets/php/manage-users.php");
 check_login();
-
-if (isset($_POST['delete'])) {
-    $userId = $_POST['user_id'];
-
-    if (!empty($userId) && is_numeric($userId)) {
-        $query = "delete FROM user WHERE id = ?";
-        $stmt = mysqli_prepare($con, $query);
-        mysqli_stmt_bind_param($stmt, "i", $userId);
-        mysqli_stmt_execute($stmt);
-
-        if (mysqli_stmt_affected_rows($stmt) > 0) {
-            echo "<script>alert('Usuario eliminado con éxito.'); location.reload();</script>";
-        };
-
-        mysqli_stmt_close($stmt);
-    } else {
-        echo "<script>alert('ID de usuario no válido.');</script>";
-    }
-}
 ?>
 <!DOCTYPE html>
 <html>
@@ -33,55 +15,37 @@ if (isset($_POST['delete'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta content="" name="description" />
     <meta content="" name="author" />
-    <link href="../assets/plugins/pace/pace-theme-flash.css" rel="stylesheet" type="text/css" media="screen" />
-    <link href="../assets/plugins/boostrapv3/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="../assets/plugins/boostrapv3/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
-    <link href="../assets/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css" />
-    <link href="../assets/css/animate.min.css" rel="stylesheet" type="text/css" />
-    <link href="../assets/plugins/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" />
-    <link href="../assets/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="../assets/css/responsive.css" rel="stylesheet" type="text/css" />
-    <link href="../assets/css/custom-icon-set.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Calendario CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker@0.6.6/dist/css/litepicker.css"/>
+    <!-- CSS personalizados -->
+    <link href="../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/css/manage-users.css" rel="stylesheet" type="text/css" />
+    <!-- Toast notificaciones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 </head>
 
-<body class="">
+
+<body class="test" >
+    <!-- Sidebar -->
+  <div class="page-container ">
+    <div class="sidebar">
     <?php include("header.php"); ?>
-    <div class="page-container row">
-
-        <?php include("leftbar.php"); ?>
-
-        <div class="clearfix"></div>
-        <!-- END SIDEBAR MENU -->
-    </div>
     </div>
     <div class="page-content">
-        <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-        <div id="portlet-config" class="modal hide">
-            <div class="modal-header">
-                <button data-dismiss="modal" class="close" type="button"></button>
-                <h3>Widget Settings</h3>
-
-            </div>
-            <div class="modal-body">Widget settings form goes here</div>
-        </div>
-        <div class="clearfix"></div>
+    <?php include("leftbar.php"); ?>
         <div class="content">
-            <ul class="breadcrumb">
-                <li>
-                    <p>Inicio</p>
-                </li>
-                <li><a href="#" class="active">Gestionar Usuarios</a>
-
-                </li>
-            </ul>
             <div class="page-title">
-                <i class="fa fa-users"></i>
-
-                <h3>Gestionar Usuarios </h3>
+                <h2>Gestionar usuarios</h2>
             </div>
-
-            <div class="row">
+            <br>
+            <div class="row main-table">
                 <div class="col-md-12">
                     <div class="row">
                         <div class="col-md-12">
@@ -99,7 +63,7 @@ if (isset($_POST['delete'])) {
                                                 <th>#</th>
                                                 <th>Nombre Completo</th>
                                                 <th>Correo</th>
-                                                <th># Contacto</th>
+                                                <th>Numero de Contacto</th>
                                                 <th>Fecha de Registro</th>
                                                 <th>Acción</th>
                                             </tr>
@@ -116,11 +80,11 @@ if (isset($_POST['delete'])) {
                                                     <td><?php echo $row['email']; ?></td>
                                                     <td><?php echo $row['mobile']; ?></td>
                                                     <td><?php echo $row['posting_date']; ?></td>
-                                                    <td>
+                                                    <td class="text-center">
                                                         <form name="abc" action="" method="post">
-                                                            <a href="edit-user.php?id=<?php echo $row['id']; ?>" class="btn btn-primary btn-xs btn-mini rounded-0">Editar</a>
+                                                            <a href="edit-user.php?id=<?php echo $row['id']; ?>" class="btn btn-updt ">Editar</a>
                                                             <input type="hidden" name="user_id" value="<?php echo $row['id']; ?>">
-                                                            <button type="submit" name="delete" class="btn btn-danger btn-xs btn-mini rounded-0">Eliminar</button>
+                                                            <button type="submit" name="delete" class="btn btn-del">Eliminar</button>
                                                         </form>
                                                     </td>
                                                 </tr>
@@ -134,52 +98,24 @@ if (isset($_POST['delete'])) {
                         </div>
                     </div>
                 </div>
-
             </div>
-        </div>
+        </div>   
     </div>
-    <!-- END PAGE -->
-    </div>
+  </div>
 
-    </div>
-    <!-- END CONTAINER -->
-    <!-- BEGIN CORE JS FRAMEWORK-->
-    <script src="../assets/plugins/jquery-1.8.3.min.js" type="text/javascript"></script>
-    <script src="../assets/plugins/jquery-ui/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
-    <script src="../assets/plugins/boostrapv3/js/bootstrap.min.js" type="text/javascript"></script>
-    <script src="../assets/plugins/breakpoints.js" type="text/javascript"></script>
-    <script src="../assets/plugins/jquery-unveil/jquery.unveil.min.js" type="text/javascript"></script>
-    <!-- END CORE JS FRAMEWORK -->
-    <!-- BEGIN PAGE LEVEL JS -->
-    <script src="../assets/plugins/pace/pace.min.js" type="text/javascript"></script>
-    <script src="../assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js" type="text/javascript"></script>
-    <script src="../assets/plugins/jquery-block-ui/jqueryblockui.js" type="text/javascript"></script>
-    <script src="../assets/plugins/jquery-sparkline/jquery-sparkline.js"></script>
-    <script src="../assets/plugins/jquery-numberAnimate/jquery.animateNumbers.js" type="text/javascript"></script>
-    <!-- END PAGE LEVEL PLUGINS -->
-    <script>
-        //Too Small for new file - Helps the to tick all options in the table 
-        $('table .checkbox input').click(function() {
-            if ($(this).is(':checked')) {
-                $(this).parent().parent().parent().toggleClass('row_selected');
-            } else {
-                $(this).parent().parent().parent().toggleClass('row_selected');
-            }
-        });
-        // Demo charts - not required 
-        $('.customer-sparkline').each(function() {
-            $(this).sparkline('html', {
-                type: $(this).attr("data-sparkline-type"),
-                barColor: $(this).attr("data-sparkline-color"),
-                enableTagOptions: true
-            });
-        });
-    </script>
-    <!-- BEGIN CORE TEMPLATE JS -->
-    <script src="../assets/js/core.js" type="text/javascript"></script>
-    <script src="../assets/js/chat.js" type="text/javascript"></script>
-    <script src="../assets/js/demo.js" type="text/javascript"></script>
-    <!-- END CORE TEMPLATE JS -->
+  <!-- Popper.js (para tooltips y otros componentes) -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <!-- Bootstrap Bundle (con Popper.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Calendario -->
+  <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
+  <!-- Scripts propios -->
+  <script src="../assets/js/sidebar.js"></script>
+
+</body>
+
 </body>
 
 </html>
+
+

@@ -16,7 +16,7 @@
             </a>
           </li>
           <?php 
-            if($_SESSION['cargo'] == '2'){ ?>
+            if($_SESSION['cargo'] == '1' or $_SESSION['cargo'] == '2' ){ ?>
               <li class="nav-item active">
                 <a href="create-project.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Crear Proyectos">
                   <i class="bi bi-clipboard2-plus"></i> 
@@ -27,8 +27,8 @@
                   <i class="bi bi-clipboard2"></i>
                 </a>
               </li>
-            <?php  
-          }
+          <?php  
+            }
           ?>
           <li class="nav-item">
             <a href="view-tickets.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Ver Tickets">

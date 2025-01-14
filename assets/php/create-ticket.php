@@ -3,7 +3,7 @@
 
     if (isset($_POST['send'])) {
         $email = $_SESSION['login'];
-        $userId = $_SESSION['user_id'];
+        $userId = $_SESSION['id'];
         $subject = $_POST['subject'];
         $tt = $_POST['tasktype'];
         $priority = $_POST['priority'];

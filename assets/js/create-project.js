@@ -5,7 +5,9 @@ const classInfo = document.getElementById('classInfo');
 
 //select y contenedor de licitacion y datos de contacto
 const selectPtype = document.getElementById('pType');
+const licTitle = document.getElementById('licitacionT');
 const licMain = document.getElementById('licitacion');
+
 const contTitle = document.getElementById('contactoT');
 const contMain = document.getElementById('contacto');
 //Mostrar campos software y hardware si la clasificacion es tecnología
@@ -21,15 +23,18 @@ selectElement.addEventListener('change', function() {
 selectPtype.addEventListener('change', function(){
   if (this.value == 1){
     licMain.style.display = '';
+    licTitle.style.display = '';
     contTitle.style.display = 'none';
     contMain.style.display = 'none';
   } else if (this.value == 2){
     licMain.style.display = 'none';
+    licTitle.style.display = 'none';
     contTitle.style.display = '';
     contMain.style.display = '';
   } else {
     contMain.style.display = 'none';
     contTitle.style.display = 'none';
+    licTitle.style.display = 'none';
     licMain.style.display =   'none';
   }
 

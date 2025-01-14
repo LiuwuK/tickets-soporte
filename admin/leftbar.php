@@ -1,25 +1,68 @@
- <!-- BEGIN SIDEBAR -->
- <div class="page-sidebar" id="main-menu">
-   <!-- BEGIN MINI-PROFILE -->
-   <div class="page-sidebar-wrapper scrollbar-dynamic" id="main-menu-wrapper">
-     <div class="user-info-wrapper">
-       <div class="profile-wrapper" >
-         <img src="../assets/img/user.png" alt="" data-src="../assets/img/user.png" data-src-retina="../assets/img/user.png" class="side-user-img" />
-       </div>
-       <div class="user-info">
-         <div class="greeting" style="font-size:14px;">Bienvenid@</div>
-         <div class="username" style="font-size:12px;"><?php echo $_SESSION["name"]; ?></div>
+<div class="sidebar" id="sidebar">
+  <div class="text-center">
+    <br> 
+    <a href="create-ticket.php" > 
+      <button class="add-ticket btn" data-bs-toggle="tooltip" data-bs-placement="right" title="Crear ticket">
+        <i class="bi bi-plus"></i>
+      </button>
+    </a>
+    <br><br>
+  </div>
+  
+  <ul class="nav flex-column sidebar-nav">
+    <li class="nav-item" >
+      <a href="home.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
+        <i class="bi bi-house-door"></i>
+      </a>
+    </li>
+    <?php 
+      if($_SESSION['cargo'] == '1' or $_SESSION['cargo'] == '2' ){ ?>
+        <li class="nav-item active">
+          <a href="create-project.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Crear Proyectos">
+            <i class="bi bi-clipboard2-plus"></i> 
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="view-projects.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Ver Proyectos">
+            <i class="bi bi-clipboard2"></i>
+          </a>
+        </li>
+    <?php  
+      }
+    ?>
+    <li class="nav-item">
+      <a href="manage-tickets.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Gestionar Tickets">
+        <i class="bi bi-ticket-perforated"></i>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="manage-users.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Gestionar Usuarios">
+        <i class="bi bi-person-gear"></i> 
+      </a>
+    </li>
+    <li class="nav-item" >
+      <a href="change-password.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Cambiar Contraseña">
+        <i class="bi bi-lock"></i>
+      </a>
+    </li>
+    <li class="nav-item logout-item">
+      <a href="logout.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Cerrar Sesión">
+        <i class="bi bi-box-arrow-right"></i> 
+      </a>
+    </li>
+      <!-- <button class="btn" id="toggleButton">
+              <i class="bi bi-arrow-right"></i>
+          </button>
+            <script>
+              document.getElementById('toggleButton').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('expanded');
+            });
+    </script>
+      -->
+    </li>
+  </ul>
+</div>
 
-       </div>
-     </div>
-     <!-- END MINI-PROFILE -->
-     <!-- BEGIN SIDEBAR MENU -->
-     <p class="menu-title">Opciones <span class="pull-right"><a href="#" onclick="location.reload()"><i class="fa fa-refresh"></i></a></span></p>
 
-     <ul>
-       <li class="start"> <a href="home.php"> <i class="icon-custom-home"></i><span class="title">Dashboard</span> </a>
-       </li>
-       <li><a href="manage-tickets.php"><span class="fa fa-ticket"></span> Gestionar Ticket</a></li>
-       <li><a href="manage-users.php"><span class="fa fa-users"></span> Usuarios</a></li>
-       <li><a href="change-password.php"><span class="fa fa-file-text-o"></span> Cambiar Contraseña</a></li>
-     </ul>
+
+    

@@ -21,8 +21,8 @@ check_login();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- CSS personalizados -->
-    <link href="assets/css/sidebar.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/manage_tickets.css" rel="stylesheet" type="text/css"/>
+    <link href="../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/css/manage_tickets.css" rel="stylesheet" type="text/css"/>
     <!-- Toast notificaciones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 </head>
@@ -32,11 +32,11 @@ check_login();
   <div class="page-container ">
 
     <div class="sidebar">
-    <?php include("header-test.php"); ?>
+    <?php include("header.php"); ?>
       
     </div>
     <div class="page-content">
-    <?php include("leftbar-test.php"); ?>
+    <?php include("leftbar.php"); ?>
         <div class="content">
             <div class="page-title">
                 <h2>Proyectos</h2>
@@ -194,9 +194,9 @@ check_login();
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div class="footer d-flex">
-                                            <!-- <button class="btn btn-updt">Actualizar</button> -->
+                                        
+                                        <div class="footer d-flex ">
+                                            <button id="editButton" class="btn btn-updt" data-id="<?php echo $row['projectId']; ?>">Editar</button>
                                         </div>
                                     </div>
                                     
@@ -219,11 +219,12 @@ check_login();
     </div>
   </div>
 
-
-
-
-
-
+<script>
+     document.getElementById("editButton").addEventListener("click", function() {
+        const projectId = this.getAttribute("data-id");
+        window.location.href = `update-project.php?projectId=${projectId}`;
+    });
+</script>
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <!-- Bootstrap Bundle (con Popper.js) -->
@@ -232,9 +233,9 @@ check_login();
 <script src="assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js" type="text/javascript"></script>
 <!-- Scripts propios -->
-<script src="assets/js/support_ticket.js" type="text/javascript"></script>
-<script src="assets/js/general.js"></script>
-<script src="assets/js/sidebar.js"></script>
+<script src="../assets/js/support_ticket.js" type="text/javascript"></script>
+<script src="../assets/js/general.js"></script>
+<script src="../assets/js/sidebar.js"></script>
 </body>
 
 </html>

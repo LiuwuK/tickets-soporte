@@ -23,6 +23,42 @@ $query =  "SELECT id, name
             WHERE cargo = '1'";
 $inge = mysqli_query($con, $query);
 
+if(isset($_GET['projectId']) ){
+    //obtener todos los proyectos
+    $pID = $_GET['projectId'];
+    $query =  "SELECT *
+                FROM proyectos
+                WHERE id = $pID";
+    $project = mysqli_query($con, $query);
+    $projectData = mysqli_fetch_assoc($project);
+    
+    //obtener la ciudad correspondiente
+    $cityID = $projectData["ciudad"];
+    $queryC = "SELECT *
+                FROM ciudades
+                WHERE id = $cityID";
+    $ciudad = mysqli_query($con, $queryC);
+    $cityData = mysqli_fetch_assoc($ciudad);            
+
+
+    //obtener datos de licitacion/contacto
+    if ($projectData['tipo'] == 1) {
+        $query =  "SELECT *
+                    FROM licitacion_proyecto
+                    WHERE proyecto_id = $pID";
+        $lic = mysqli_query($con, $query);
+        $licData = mysqli_fetch_assoc($lic);  
+    
+    } else if ($projectData['tipo'] == 2){
+        $query =  "SELECT *
+                    FROM contactos_proyecto
+                    WHERE proyecto_id = $pID";
+        $ct = mysqli_query($con, $query);
+        $ctData = mysqli_fetch_assoc($ct);
+    }
+    
+}
+  
 //Insertar proyectos nuevos
 if(isset($_POST['newProject'])){
     $nameP     = $_POST['name']; 
@@ -31,7 +67,7 @@ if(isset($_POST['newProject'])){
     $status    = $_POST['status'];
     $pType     = $_POST['pType'];  
     $pClass    = $_POST['pClass']; //id clase
-    $ingeniero = $_POST['ingeniero']; 
+    $ingeniero = '11';
     $bom       = isset($_POST['bom']) ? $_POST['bom'] : 0;
     $dist      = $_POST['dist'];
     $software  = ($pClass == 1 && isset($_POST['software-input'])) ? $_POST['software-input'] : 0;
@@ -50,13 +86,13 @@ if(isset($_POST['newProject'])){
     echo $comercial;
 
     $query = "INSERT INTO proyectos (nombre, cliente, ciudad, estado_id, 
-                ingeniero_responsable, bom, distribuidor, costo_software,
-                costo_hardware, resumen, fecha_creacion, comercial_responsable, monto, tipo, clasificacion) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                ingeniero_responsable, costo_software, costo_hardware, resumen, 
+                fecha_creacion, comercial_responsable, tipo, clasificacion) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
     if ($stmt = mysqli_prepare($con, $query)) {
-        mysqli_stmt_bind_param($stmt, "ssiiissiissiiii", $nameP, $client, $city, $status, 
-                                $ingeniero, $bom, $dist, $software, $hardware, $resumen, $pdate, $comercial, $monto, $pType, $pClass ); 
+        mysqli_stmt_bind_param($stmt, "ssiiiiissiii", $nameP, $client, $city, $status, 
+                                $ingeniero,$software, $hardware, $resumen, $pdate, $comercial, $pType, $pClass ); 
         if (mysqli_stmt_execute($stmt)) {
             $pId = mysqli_insert_id($con);
 
@@ -76,10 +112,11 @@ if(isset($_POST['newProject'])){
             }
             //Si el tipo es licitacion (ID 1) o contacto (ID 2)
             if($pType == 1){
+                $portal = $_POST['portal'];
                 $licID = $_POST['licID'];
-                $query = 'INSERT INTO licitacion_proyecto (licitacion_id, proyecto_id) VALUES(?, ?)'; 
+                $query = 'INSERT INTO licitacion_proyecto (licitacion_id, proyecto_id, portal) VALUES(?, ?, ?)'; 
                 $lc_stmt = mysqli_prepare($con, $query);
-                mysqli_stmt_bind_param($lc_stmt, "si", $licID, $pId); 
+                mysqli_stmt_bind_param($lc_stmt, "sis", $licID, $pId, $portal); 
                 mysqli_stmt_execute($lc_stmt);
                 mysqli_stmt_close($lc_stmt);
 
@@ -106,5 +143,10 @@ if(isset($_POST['newProject'])){
     } else {
         echo "<script>alert('Error al preparar la consulta');</script>";
     }
-};
+} 
+//Actualizar proyectos
+else if(isset($_POST['updtProject'])) {
+    echo "hola";
+}
+
 ?>

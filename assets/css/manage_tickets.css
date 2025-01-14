@@ -97,6 +97,8 @@ input, .form-control, .form-select{
 .grid.simple .grid-body h3 {
   margin: 10px 0;
   color: #34435E;
+  font-weight: 100;
+  text-align: center;
 }
 .grid.simple .grid-body.invoice-body {
   padding: 30px;
@@ -260,7 +262,7 @@ input, .form-control, .form-select{
 }
 
 .form-actions {
-  background-color: #E9F4F9;
+  background-color: #f4f4f4;
   border: 0px;
   margin-bottom: 20px;
   margin-top: 20px;
@@ -280,20 +282,20 @@ input, .form-control, .form-select{
 /*tasks y admin*/
 .info-ticket{
   display: inline-block;
-  float: left;
 }
 .status-div{
   display: flex; 
   align-items: center; 
   justify-content: space-between;
   margin: 30px;
+  width: 90%;
   margin-top: 0;
 }
 .status-div select{
   width: auto;
 }
 .comm{
-  margin-bottom: 20px;
+  margin: 30px 0px;
 }
 
 .btn-div{
@@ -320,6 +322,7 @@ input, .form-control, .form-select{
 }
 .del-modal{
   text-align: center;
+  color: #34435E;
 }
 .del-footer{
   display: flex;
@@ -327,6 +330,19 @@ input, .form-control, .form-select{
 }
 .tasks p{
   padding-left: 40px;
+}
+.t-header{
+  width: 98%;
+  margin: 0 auto;
+  text-transform: capitalize;
+}
+
+.fil-main label{
+  margin: 0px
+}
+
+.group li {
+  text-transform: capitalize;
 }
 
 /*filtros*/
@@ -354,6 +370,7 @@ input, .form-control, .form-select{
 
 .fil-main{
   display: flex;
+  justify-content: center;
 }
 .fil-div {
   width: 20%;

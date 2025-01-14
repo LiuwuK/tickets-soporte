@@ -2,8 +2,8 @@
 session_start();
 include("checklogin.php");
 include("dbconnection.php");
-include("admin/notificaciones.php");
-include("assets/php/create-ticket.php");
+include("notificaciones.php");
+include("../assets/php/create-ticket.php");
 
 check_login();
 ?>
@@ -22,8 +22,8 @@ check_login();
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <!-- CSS personalizados -->
-<link href="assets/css/sidebar.css" rel="stylesheet" type="text/css" />
-<link href="assets/css/create-project.css" rel="stylesheet" type="text/css" />
+<link href="../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
+<link href="../assets/css/create-project.css" rel="stylesheet" type="text/css" />
 
 <!-- Toast notificaciones -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
@@ -34,11 +34,11 @@ check_login();
   <div class="page-container ">
 
     <div class="sidebar">
-    <?php include("header-test.php"); ?>
+    <?php include("header.php"); ?>
       
     </div>
     <div class="page-content">
-    <?php include("leftbar-test.php"); ?>
+    <?php include("leftbar.php"); ?>
         <div class="content">
             <div class="page-title">
                 <h2>Crear Ticket</h2>
@@ -112,7 +112,7 @@ check_login();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Complementos/Plugins-->
 <!-- Scripts propios -->
-<script src="assets/js/sidebar.js"></script>
+<script src="../assets/js/sidebar.js"></script>
 </body>
 
 </html>

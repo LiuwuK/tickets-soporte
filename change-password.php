@@ -56,19 +56,19 @@ check_login();
                            <div class="form-row">
                                 <div class="form-group">
                                     <label for="oldpass" class="form-label">Contraseña Actual</label>
-                                    <input type="password" name="oldpass" id="oldpass" value="" class="form-control form-control-sm" placeholder="******************" required/>
+                                    <input type="password" name="oldpass" id="oldpass" value="" class="form-control form-control-sm" placeholder="" required/>
                                 </div>
                            </div>
                             <div class="form-row">    
                                 <div class="form-group">
                                     <label for="newpass" class="form-label">Nueva Contraseña</label>
-                                    <input type="password" name="newpass" id="newpass" value="" class="form-control form-control-sm" placeholder="******************" required />
+                                    <input type="password" name="newpass" id="newpass" value="" class="form-control form-control-sm" placeholder="" required />
                                 </div>
                             </div>
                             <div class="form-row">                                
                                 <div class="form-group">
                                     <label class="form-label">Confirmar Contraseña</label>
-                                    <input type="password" name="confirmpassword" id="confirmpassword" class="form-control form-control-sm" placeholder="******************" required/>
+                                    <input type="password" name="confirmpassword" id="confirmpassword" class="form-control form-control-sm" placeholder="" required/>
                                 </div>
                             </div>
                         </div>

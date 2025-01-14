@@ -33,7 +33,6 @@ check_login();
 
     <div class="sidebar">
     <?php include("header-test.php"); ?>
-      
     </div>
     <div class="page-content">
     <?php include("leftbar-test.php"); ?>
@@ -56,19 +55,6 @@ check_login();
                             <input type="text" class="form-control form-control-sm" id="textSearch" name="textSearch" placeholder="Nombre/ID del ticket">
                         </div>
                         <div class="fil-div">
-                            <label class="form-label" for="prio">Prioridad</label>
-                            <select name="priority" class="form-select form-select-sm" id="prio">
-                                <option value="">Ver todo</option> 
-                                <?php
-                                while ($row = mysqli_fetch_assoc($prioridad)) {
-                                    // Opcion para filtrar por prioridad
-                                    $selected = isset($_GET['priority']) && $_GET['priority'] == $row['id'] ? 'selected' : '';
-                                    echo "<option value='" . $row['id'] . "' $selected>" . $row['nombre'] . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="fil-div">
                             <label class="form-label" for="st">Estado</label>
                             <select name="statusF" class="form-select form-select-sm" id="st">
                                 <option value="">Ver todo</option>    
@@ -87,10 +73,7 @@ check_login();
                     <br>
                 </form>
                 <br>
-            </div>
-
-
-
+            </div
             <?php 
             if ($num > 0) {
                 while ($row = mysqli_fetch_array($rt)) {
@@ -141,45 +124,45 @@ check_login();
                                 </div>
                                 <div class="info-wrapper">
                                 <br>
-                                <div class="comm">
-                                    <h4>Procedimiento a seguir</h4>
-                                    <div>
-                                    <ul>
-                                        <?php
-                                        //Obtener las task asociadas al ticket
-                                        $tkid = $row['ticketId'];
-                                        $query = "SELECT ta.id AS tskId, ta.titulo, es.nombre
-                                                    FROM tasks ta
-                                                    JOIN estados es ON(ta.estado_id = es.id)
-                                                    WHERE ta.ticket_id = ?";
+                                    <div class="comm">
+                                        <h4>Procedimiento a seguir</h4>
+                                        <div>
+                                        <ul>
+                                            <?php
+                                            //Obtener las task asociadas al ticket
+                                            $tkid = $row['ticketId'];
+                                            $query = "SELECT ta.id AS tskId, ta.titulo, es.nombre
+                                                        FROM tasks ta
+                                                        JOIN estados es ON(ta.estado_id = es.id)
+                                                        WHERE ta.ticket_id = ?";
 
-                                        $stmt = $con->prepare($query);
-                                        
-                                        if($stmt){
-                                            $stmt->bind_param("i", $tkid); 
-                                            $stmt->execute();
-                                            $tasks = $stmt->get_result();
-                                            if($tasks->num_rows > 0) {
-                                            while($tsk = $tasks->fetch_assoc()) {
-                                                ?>
-                                                    <li><?php echo $tsk["titulo"]?> </li>
-                                                    <p style="margin-left:15px"> Estado: <?php echo $tsk["nombre"]?></p>
-                                                <?php
+                                            $stmt = $con->prepare($query);
+                                            
+                                            if($stmt){
+                                                $stmt->bind_param("i", $tkid); 
+                                                $stmt->execute();
+                                                $tasks = $stmt->get_result();
+                                                if($tasks->num_rows > 0) {
+                                                while($tsk = $tasks->fetch_assoc()) {
+                                                    ?>
+                                                        <li><?php echo $tsk["titulo"]?> </li>
+                                                        <p style="margin-left:15px"> Estado: <?php echo $tsk["nombre"]?></p>
+                                                    <?php
 
-                                            }
+                                                }
 
-                                            }else {
-                                            echo "Actualmente no tiene tareas asignadas";
-                                            }
-                                            $stmt->close(); 
-                                            }  
-                                            else {
-                                            echo "Error en la consulta: ".$con->error;
-                                            }
-                                        ?>
-                                    </ul>
+                                                }else {
+                                                echo "Actualmente no tiene tareas asignadas";
+                                                }
+                                                $stmt->close(); 
+                                                }  
+                                                else {
+                                                echo "Error en la consulta: ".$con->error;
+                                                }
+                                            ?>
+                                        </ul>
+                                        </div>
                                     </div>
-                                </div>
                                 <div class="tasks">
                                     <h4>Comentario</h4>
                                     <p><?php echo $row['admin_remark']; ?></p>

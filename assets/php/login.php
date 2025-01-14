@@ -2,6 +2,13 @@
 error_reporting(0);
 include("dbconnection.php");
 
+
+//obtener cargos para el registro de usuario
+$query = "SELECT * FROM cargos ";
+$cargo = mysqli_query($con, $query);
+
+
+//----------------------------------------------
 if (isset($_POST['login'])) {
     $username = $_POST['email'];    
     $password = $_POST['password'];
@@ -59,7 +66,7 @@ if (isset($_POST['login'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
     $mobile = $_POST['phone'];
-    $gender = $_POST['gender'];
+    $cargo = $_POST['cargo'];
 
     // Validar si el correo ya está registrado
     $stmt = $con->prepare("SELECT email FROM user WHERE email = ?");
@@ -73,8 +80,8 @@ if (isset($_POST['login'])) {
     } else {
         // Hashear la contraseña antes de insertarla
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $con->prepare("INSERT INTO user (name, email, password, mobile, gender) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssss", $name, $email, $hashed_password, $mobile, $gender);
+        $stmt = $con->prepare("INSERT INTO user (name, email, password, mobile, cargo) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssi", $name, $email, $hashed_password, $mobile, $cargo);
         $stmt->execute();
 
         echo "<script>alert('Tu cuenta ha sido creada correctamente, esta sera activada por un administrador lo antes posible');</script>";
