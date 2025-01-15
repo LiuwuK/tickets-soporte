@@ -58,9 +58,9 @@ check_login();
                                 <div class="actions"> 
                                     <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> 
                                 </div>
-                                <p>
-                                    <span><?php echo $row['ciudadN']; ?></span>
-                                </p>
+                                <p>Ciudad: <span><?php echo $row['ciudadN']; ?></span></p>
+                                <p><span>Ingeniero responsable</span>: <?php echo $row['ingeniero_responsable'] ? $row['ingeniero'] : "Sin asignar" ;?></p>
+
                             </div>
 
                             <!-- Vista completa -->
@@ -81,10 +81,6 @@ check_login();
                                                 <div class="group">
                                                     <strong>Cliente</strong>
                                                     <p><?php echo $row['cliente'];?></p>
-                                                </div>
-                                                <div class="group">
-                                                    <strong>Ingeniero responsable</strong>
-                                                    <p><?php echo $row['ingeniero'];?></p>
                                                 </div>
                                                 <div class="group">
                                                     <strong>Tipo Proyecto</strong>

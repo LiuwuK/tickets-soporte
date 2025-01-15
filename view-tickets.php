@@ -96,9 +96,7 @@ check_login();
                             }else{?>
                             <span class="label label-warning"><?php echo $row['statusN']; ?></span>
                             <?php
-                            };
-                        
-                        
+                            };  
                         ?>
                         </p>
                         <div class="actions"> <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> </div>
@@ -106,13 +104,21 @@ check_login();
                         <div class="grid-body  no-border" style="display:none">
                         <div class="post">
                             <div class="user-profile-pic-wrapper">
-                            <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="assets/img/user.png" data-src="assets/img/user.png" src="assets/img/user.png" alt=""> </div>
+                                <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="assets/img/user.png" data-src="assets/img/user.png" src="assets/img/user.png" alt=""> </div>
                             </div>
                             <div class="info-wrapper">
-                            <div class="info"><?php echo $row['ticket']; ?> </div>
-                            <div class="clearfix"></div>
+                                <div class="info">
+                                        <?php echo $row['ticket'];?> 
+                                </div>
+                                <?php
+                                if (isset($row['ticket_img'])) { ?>
+                                    <div class="img">
+                                        <img src="<?php echo $row['ticket_img'];?>" alt="">
+                                    </div>
+                                <?php                                            
+                                }
+                                ?>
                             </div>
-                            <div class="clearfix"></div>
                         </div>
                         <br>
 

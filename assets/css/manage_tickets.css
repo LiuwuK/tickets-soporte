@@ -29,6 +29,11 @@ input, .form-control, .form-select{
 
 /*Estilos ticket*/
 
+.img img{
+  margin-top: 2%;
+  width: 50%;
+}
+
 .grid {
   clear: both;
   margin-top: 0px;
@@ -428,4 +433,26 @@ label, .group li{
 }
 .pr-row{
   margin-bottom: 5%;
+}
+
+.ing-main{
+  align-items: center;
+  margin-bottom: 5px;
+}
+.ing-main p{
+  width: 10% !important;
+}
+.ing-main select{
+  font-size: 12px;
+  width: 150px;
+}
+.post{
+  display: flex;
+  justify-content: center;
+}
+
+.ing-main button {
+  width: auto;
+  margin-left: 5px;
+  font-size: 12px;
 }

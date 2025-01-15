@@ -6,7 +6,9 @@ $query = "SELECT *
 $status = mysqli_query($con, $query);
 
 //obtener ciudades
-$query = "SELECT * FROM ciudades";
+$query = "SELECT * 
+            FROM ciudades
+            ORDER BY nombre_ciudad ASC";
 $cities = mysqli_query($con, $query);
 
 //obtener tipos de proyecto
@@ -23,8 +25,9 @@ $query =  "SELECT id, name
             WHERE cargo = '1'";
 $inge = mysqli_query($con, $query);
 
+// cargar proyecto que va a ser actualizado
 if(isset($_GET['projectId']) ){
-    //obtener todos los proyectos
+    //obtener todos los datos del proyecto
     $pID = $_GET['projectId'];
     $query =  "SELECT *
                 FROM proyectos
@@ -32,15 +35,6 @@ if(isset($_GET['projectId']) ){
     $project = mysqli_query($con, $query);
     $projectData = mysqli_fetch_assoc($project);
     
-    //obtener la ciudad correspondiente
-    $cityID = $projectData["ciudad"];
-    $queryC = "SELECT *
-                FROM ciudades
-                WHERE id = $cityID";
-    $ciudad = mysqli_query($con, $queryC);
-    $cityData = mysqli_fetch_assoc($ciudad);            
-
-
     //obtener datos de licitacion/contacto
     if ($projectData['tipo'] == 1) {
         $query =  "SELECT *
@@ -67,32 +61,30 @@ if(isset($_POST['newProject'])){
     $status    = $_POST['status'];
     $pType     = $_POST['pType'];  
     $pClass    = $_POST['pClass']; //id clase
-    $ingeniero = '11';
     $bom       = isset($_POST['bom']) ? $_POST['bom'] : 0;
-    $dist      = $_POST['dist'];
+    $dist      = 'Sin asignar';
     $software  = ($pClass == 1 && isset($_POST['software-input'])) ? $_POST['software-input'] : 0;
     $hardware  = ($pClass == 1 && isset($_POST['hardware-input'])) ? $_POST['hardware-input'] : 0; 
     $resumen   = $_POST['desc'];
-    $comercial = $_SESSION['user_id']; //id del usuario
-    $monto     = $_POST['monto'];
+    $comercial = $_SESSION['id']; //id del usuario
     $pdate     = date('Y-m-d'); 
   
 
     print_r($_POST);
-    echo $ingeniero;
+
     echo $software;
     echo $hardware;
     echo $bom;
     echo $comercial;
 
     $query = "INSERT INTO proyectos (nombre, cliente, ciudad, estado_id, 
-                ingeniero_responsable, costo_software, costo_hardware, resumen, 
+                costo_software, costo_hardware, resumen, 
                 fecha_creacion, comercial_responsable, tipo, clasificacion) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
     if ($stmt = mysqli_prepare($con, $query)) {
-        mysqli_stmt_bind_param($stmt, "ssiiiiissiii", $nameP, $client, $city, $status, 
-                                $ingeniero,$software, $hardware, $resumen, $pdate, $comercial, $pType, $pClass ); 
+        mysqli_stmt_bind_param($stmt, "ssiiiissiii", $nameP, $client, $city, $status, $software,
+                                 $hardware, $resumen, $pdate, $comercial, $pType, $pClass ); 
         if (mysqli_stmt_execute($stmt)) {
             $pId = mysqli_insert_id($con);
 
@@ -146,7 +138,116 @@ if(isset($_POST['newProject'])){
 } 
 //Actualizar proyectos
 else if(isset($_POST['updtProject'])) {
-    echo "hola";
+    //ACTUALIZAR DATOS DEL PROTECTO
+    $pClass = $projectData['clasificacion'];
+    $bom =  isset($_POST['bom']) ? $_POST['bom'] : NULL; 
+    $software  = ($pClass == 1 && isset($_POST['software-input'])) ? $_POST['software-input'] : 0;
+    $hardware  = ($pClass == 1 && isset($_POST['hardware-input'])) ? $_POST['hardware-input'] : 0; 
+    //datos del formulario
+    $newData = [
+        'id'                    => $_GET['projectId'],
+        'nombre'                => $_POST['name'],
+        'cliente'               => $_POST['client'],
+        'ciudad'                => $_POST['city'],
+        'estado_id'             => $_POST['status'],
+        'ingeniero_responsable' => $_POST['ingeniero'],
+        'bom'                   => $bom,
+        'distribuidor'          => $_POST['dist'],
+        'costo_software'        => $software,
+        'costo_hardware'        => $hardware,
+        'resumen'               => $_POST['desc'],
+        'fecha_creacion'        => $projectData['fecha_creacion'],
+        'comercial_responsable' => $projectData['comercial_responsable'],
+        'monto'                 => $_POST['monto'],
+        'tipo'                  => $projectData['tipo'],
+        'clasificacion'         => $pClass,
+    ];
+    //Datos de la db
+    $currentJson = json_encode($projectData);
+    //Datos nuevos (del formulario)
+    $newJson     = json_encode($newData);
+
+    //se comparan los datos de la db con los del formulario, si son distintos se actualiza el proyecto
+    if($newJson !== $currentJson){
+        $query =  " UPDATE proyectos 
+                    SET
+                        nombre = ?, cliente = ?,
+                        ciudad = ?, estado_id = ?,
+                        ingeniero_responsable = ?,
+                        distribuidor = ?, monto = ?,
+                        costo_software = ?, 
+                        costo_hardware = ?,
+                        resumen = ?
+                    WHERE id = ?";
+        $stmt = $con->prepare($query);
+        $stmt->bind_param("ssiiisiiisi",   
+        $newData['nombre'], $newData['cliente'], $newData['ciudad'], $newData['estado_id'], $newData['ingeniero_responsable'],
+        $newData['distribuidor'], $newData['monto'], $newData['costo_software'], $newData['costo_hardware'], $newData['resumen'], $newData['id'] );
+
+        if ($stmt->execute()) {
+            echo "<script>alert('Su proyecto ha sido actualizado correctamente');location.replace(document.referrer)</script>";
+        } else {
+            echo "<script>alert('Error al actualizar');location.replace(document.referrer)</script>";
+        }
+
+        $stmt->close();
+    }else{
+        echo "<script>alert('No se ha cambiado ningun dato');location.replace(document.referrer)</script>";
+    }
+
+    //ACTUALIZAR DATOS DE LICITACION(1)/CONTACTO (2)
+    if($projectData["tipo"] == "1"){
+        //datos de licitacion (formulario)
+        $newLic = [
+            'id'            => $licData["id"],
+            'licitacion_id' => $_POST['licID'],
+            'proyecto_id'   => $_GET['projectId'],
+            'portal'        => $_POST['portal']
+        ];
+        $licJson = json_encode($newLic);
+        //datos db
+        $currentLic = json_encode($licData);
+ 
+        if($licJson !== $currentLic){
+            $query =  " UPDATE licitacion_proyecto 
+                    SET
+                        licitacion_id = ?,
+                        proyecto_id = ?,
+                        portal = ?                    
+                    WHERE id = ?";
+            $stmt = $con->prepare($query);
+            $stmt->bind_param("iisi", $newLic['licitacion_id'], $newLic['proyecto_id'], $newLic['portal'], $newLic['id'] );
+            $stmt->execute();
+            $stmt->close();
+        }
+    }else if($projectData["tipo"] == "2"){
+        //datos de contacto (formulario)
+        $newCt = [
+            "id"            => $ctData["id"],
+            "nombre"        => $_POST["cName"],
+            "correo"        => $_POST["cEmail"],
+            "cargo"         => $_POST["cargo"],
+            "numero"        => $_POST["cNumero"],
+            "proyecto_id"   => $_GET["projectId"],
+        ];      
+        $ctJson = json_encode($newCt);
+        //datos db
+        $currentCt = json_encode($ctData);
+        
+        if($ctJson !== $currentCt){
+            $query =  " UPDATE contactos_proyecto 
+                    SET
+                        nombre = ?,
+                        correo = ?,
+                        cargo = ?,
+                        numero = ?
+                    WHERE id = ?";
+            $stmt = $con->prepare($query);
+            $stmt->bind_param("sssii", $newCt['nombre'], $newCt['correo'], $newCt['cargo'], $newCt['numero'], $ctData['id']);
+            $stmt->execute();
+            $stmt->close();
+        }
+    }
 }
 
 ?>

@@ -55,12 +55,34 @@ check_login();
                                     <span class="text-success bold">Proyecto #<?php echo $row['id']; ?></span> - Fecha de Creación <?php echo $row['fecha_creacion']; ?> 
                                     <span class="label label-success"><?php echo $row['estado']; ?></span>
                                 </p>
+
+    
                                 <div class="actions"> 
                                     <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> 
                                 </div>
-                                <p>
-                                    <span><?php echo $row['ciudadN']; ?></span>
-                                </p>
+                                <p>Ciudad: <span><?php echo $row['ciudadN']; ?></span></p>
+                                <form  name="asignarIng" id="asignarIng" method="post">
+                                    <div class="ing-main d-flex justify-content-start">
+                                        <p><span>Ingeniero responsable</span></p>
+                                        <select id="ingenieroSelect" name="ingeniero"  class="ingeniero-select form-select form-select-sm" data-initial-value="<?php echo $row['ingeniero_responsable'] ? $row['ingeniero_responsable'] : "Sin asignar" ;?>">
+                                            <?php
+                                            if (empty($row['ingeniero_responsable'])) {
+                                                echo "<option selected>Sin asignar</option>";
+                                            }
+                                            foreach ($ingenieros as $row_inge) {
+                                                if ($row_inge['id'] == $row['ingeniero_responsable']) {
+                                                    echo "<option value=\"".$row_inge['id']."\" selected>".$row_inge['name']."</option>";
+                                                } else {
+                                                    echo "<option value=\"".$row_inge['id']."\">".$row_inge['name']."</option>";
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                        <input type="hidden" id="pId" name="pId" value="<?php echo $row['id']; ?>">
+                                        <button type="submit" class="btn btn-updt save-button" name="asignarIng" style="display:none">Asignar</button>
+                                        
+                                    </div>
+                                </form>
                             </div>
 
                             <!-- Vista completa -->
@@ -81,10 +103,6 @@ check_login();
                                                 <div class="group">
                                                     <strong>Cliente</strong>
                                                     <p><?php echo $row['cliente'];?></p>
-                                                </div>
-                                                <div class="group">
-                                                    <strong>Ingeniero responsable</strong>
-                                                    <p><?php echo $row['ingeniero'];?></p>
                                                 </div>
                                                 <div class="group">
                                                     <strong>Tipo Proyecto</strong>
@@ -220,9 +238,11 @@ check_login();
   </div>
 
 <script>
-     document.getElementById("editButton").addEventListener("click", function() {
-        const projectId = this.getAttribute("data-id");
-        window.location.href = `update-project.php?projectId=${projectId}`;
+    document.querySelectorAll("#editButton").forEach(function(btn) {
+        btn.addEventListener("click",function() {
+            const projectId = this.getAttribute("data-id");
+            window.location.href = `update-project.php?projectId=${projectId}`;
+        });
     });
 </script>
 <!-- Popper.js (para tooltips y otros componentes) -->
@@ -230,11 +250,11 @@ check_login();
 <!-- Bootstrap Bundle (con Popper.js) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Complementos/Plugins-->
-<script src="assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js" type="text/javascript"></script>
 <!-- Scripts propios -->
 <script src="../assets/js/support_ticket.js" type="text/javascript"></script>
 <script src="../assets/js/general.js"></script>
+<script src="../assets/js/view-projects.js"></script>
 <script src="../assets/js/sidebar.js"></script>
 </body>
 

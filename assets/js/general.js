@@ -1,3 +1,4 @@
+//filtro
 document.getElementById("toggleFiltersBtn").addEventListener("click", function () {
     var form = document.getElementById("filtersForm");
     var icon = this.querySelector("i");

@@ -44,7 +44,7 @@ check_login();
                 <h2>Editar Proyecto</h2>
             </div>
             <!-- Formulario crear proyectos -->
-            <form name="newProject" id="updtProject" method="post">
+            <form name="updtProject" id="updtProject" method="post">
             <?php
              $row_p = $projectData
             ?>
@@ -65,9 +65,9 @@ check_login();
                             <div>
                             <select name="pType" id="pType" class="form-select form-select-sm" disabled>
                             <?php
-                                if ($lic) {
+                                if (isset($lic)) {
                                     echo "<option value='1'>Licitación</option>";
-                                } else if ($ct) {
+                                } else if (isset($ct)) {
                                     echo "<option value='2'>Contacto</option>";
                                 };
                             ?>
@@ -90,7 +90,7 @@ check_login();
                         </div>
                     </div>
                     <?php
-                    if($lic) {?>
+                    if(isset($lic)) {?>
                         <div class="form-row" id="licitacionT">
                             <strong>Datos Licitación</strong>
                         </div>
@@ -106,7 +106,7 @@ check_login();
                             </div>
                         </div>      
                     <?php 
-                    } else if ($ct){?>
+                    } else if (isset($ct)){?>
                         <div class="form-row" id="contactoT" >
                             <strong>Datos de Contacto</strong>
                         </div>
@@ -139,12 +139,13 @@ check_login();
                         <div >
                         <select name="city" class="form-select form-select-sm" required>
                             <?php
-                                echo "<option value=".$cityData['id'].">".$cityData['nombre_ciudad'] ."</option>";
-                                while ($row = mysqli_fetch_assoc($cities) ) {
-                                    if($row['id'] !== $cityData['id']){
-                                        echo "<option value=".$row['id'].">".$row['nombre_ciudad'] ."</option>";
-                                    }
-                                };
+                            while ($row = mysqli_fetch_assoc($cities)) {
+                                if ($row['id'] == $row_p['ciudad']) {
+                                    echo "<option value=".$row['id']." selected>".$row['nombre_ciudad']."</option>";
+                                } else {
+                                    echo "<option value=".$row['id'].">".$row['nombre_ciudad']."</option>";
+                                }
+                            };
                             ?>
                         </select>
                         </div>
@@ -156,7 +157,11 @@ check_login();
                         <select name="status" class="form-select form-select-sm" required>
                             <?php
                             while ($row = mysqli_fetch_assoc($status)) {
-                                echo "<option value=". $row['id'].">".$row['nombre'] ."</option>";
+                                if ($row['id'] == $row_p['estado_id']) {
+                                    echo "<option value=".$row['id']." selected>".$row['nombre']."</option>";
+                                } else {
+                                    echo "<option value=".$row['id'].">".$row['nombre']."</option>";
+                                }
                             };
                             ?>
                         </select>
@@ -173,11 +178,14 @@ check_login();
                             <label class="form-label">Ingeniero responsable</label>
                             <div >
                             <select name="ingeniero" class="form-select form-select-sm" >
-                                <option value="">Seleccionar</option>
                                 <?php
-                                while ($row = mysqli_fetch_assoc($inge)) {
-                                    echo "<option value=".$row['id'].">".$row['name'] ."</option>";
-                                };
+                                    while ($row = mysqli_fetch_assoc($inge)) {
+                                        if ($row['id'] == $row_p['ingeniero_responsable']) {
+                                            echo "<option value=".$row['id']." selected>".$row['name']."</option>";
+                                        } else {
+                                            echo "<option value=".$row['id'].">".$row['name']."</option>";
+                                        }
+                                    };
                                 ?>
                             </select>
                             </div>
@@ -195,19 +203,21 @@ check_login();
                         </div>
                     </div>
 
-                    <div class="form-row" style="display:none" id="classInfo">
+                    <div class="form-row" id="classInfo">
                         <div class="expenses ">
                         <div class="title">
                             <label for="soft" class="form-label">Software</label>
-                            <input type="checkbox" id="software" name="software">
+                            <input type="checkbox" id="software" name="software" >
                         </div>
-                        <input type="text" id="software-input" name="software-input" class="hidden form-control" placeholder="USD 0">
+                            <br>
+                        <input type="text" id="software-input" name="software-input" class="hidden form-control form-control-sm" placeholder="USD 0" value="<?php echo $row_p['costo_software'];?>">
                             <br>
                         <div class="title">
                             <label for="hard" class="form-label">Hardware</label>
                             <input type="checkbox" id="hardware" name="hardware">   
                         </div>
-                        <input type="text" id="hardware-input" name="hardware-input" class="hidden form-control" placeholder="USD 0">
+                            <br>
+                        <input type="text" id="hardware-input" name="hardware-input" class="hidden form-control form-control-sm" placeholder="USD 0" value="<?php echo $row_p['costo_hardware'];?>">
                         </div>
 
                     </div>

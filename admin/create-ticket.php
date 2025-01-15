@@ -45,8 +45,7 @@ check_login();
             </div>
             <!-- Formulario crear Ticket -->
 
-            <form class="form-horizontal" name="form1" method="post" action="" onSubmit="return valid();">
-                    
+            <form class="form-horizontal" name="form1" method="POST" action="" onSubmit="return valid();" enctype="multipart/form-data">
                     <div class="ticket-main">
                         <br>
                         <?php if (isset($_SESSION['msg1'])) : ?>
@@ -86,6 +85,12 @@ check_login();
                             </div>
                         </div>
 
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="ticketImage" class="form-label">Subir Imagen</label>
+                                <input class="form-control form-control-sm" type="file" id="ticketImage" name="ticketImage" accept="image/*" required>
+                            </div>
+                        </div>     
                         <div class="form-row">
                             <div class="form-group">
                                 <label or="description" class="form-label">Descripción</label>

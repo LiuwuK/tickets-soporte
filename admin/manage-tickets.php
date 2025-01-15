@@ -126,6 +126,14 @@ check_login();
                             </div>
                             <div class="info-wrapper">
                               <div class="info"><?php echo $row['ticket']; ?> </div>
+                              <?php
+                                if (isset($row['ticket_img'])) { ?>
+                                  <div class="img">
+                                      <img src="../<?php echo $row['ticket_img'];?>" alt="">
+                                  </div>
+                              <?php                                            
+                              }
+                              ?>
                               <div class="clearfix"></div>
                             </div>
                             <div class="clearfix"></div>

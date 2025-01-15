@@ -45,7 +45,7 @@ check_login();
             </div>
             <!-- Formulario crear Ticket -->
 
-            <form class="form-horizontal" name="form1" method="post" action="" onSubmit="return valid();">
+            <form class="form-horizontal" name="form1" method="POST" action=""  onSubmit="return valid();" enctype="multipart/form-data">
                     
                     <div class="ticket-main">
                         <br>
@@ -64,19 +64,17 @@ check_login();
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="tasktype" class="form-label">Tipo de Tarea</label>
-                                    <select id="tasktype" name="tasktype" class="form-select" required>
+                                    <select id="tasktype" name="tasktype" class="form-select form-select-sm" required>
                                         <option value="">Seleccionar</option>
                                         <option>Incidente Lógica</option>
                                         <option>Fallo a Nivel de Servidor</option>
-                                        <option>Error capa de aplicación</option>
                                     </select>
                             </div>
                         </div>
-
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="priority" class="form-label">Prioridad</label>
-                                <select id="priority" name="priority" class="form-select">
+                                <select id="priority" name="priority" class="form-select form-select-sm">
                                 <?php
                                 while ($row = mysqli_fetch_assoc($prioridad)) {
                                     echo "<option value=". $row['id'] .">". $row['nombre'] ."</option>";
@@ -85,7 +83,12 @@ check_login();
                                 </select>
                             </div>
                         </div>
-
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="ticketImage" class="form-label">Subir Imagen</label>
+                                <input class="form-control form-control-sm" type="file" id="ticketImage" name="ticketImage" accept="image/*" required>
+                            </div>
+                        </div>       
                         <div class="form-row">
                             <div class="form-group">
                                 <label or="description" class="form-label">Descripción</label>
@@ -100,7 +103,6 @@ check_login();
                     </div>
             </form>
         </div>   
-    
     </div>
 
   </div>
