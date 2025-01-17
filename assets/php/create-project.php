@@ -57,7 +57,8 @@ if(isset($_GET['projectId']) ){
 if(isset($_POST['newProject'])){
     $nameP     = $_POST['name']; 
     $client    = $_POST['client']; 
-    $city      = $_POST['city']; 
+    $city      = $_POST['city'];
+    $monto     = $_POST['monto']; 
     $status    = '19';
     $pType     = $_POST['pType'];  
     $pClass    = $_POST['pClass']; //id clase
@@ -71,12 +72,12 @@ if(isset($_POST['newProject'])){
 
     $query = "INSERT INTO proyectos (nombre, cliente, ciudad, estado_id, 
                 costo_software, costo_hardware, resumen, 
-                fecha_creacion, comercial_responsable, tipo, clasificacion) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                fecha_creacion, comercial_responsable, monto, tipo, clasificacion) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
     if ($stmt = mysqli_prepare($con, $query)) {
-        mysqli_stmt_bind_param($stmt, "ssiiiissiii", $nameP, $client, $city, $status, $software,
-                                 $hardware, $resumen, $pdate, $comercial, $pType, $pClass ); 
+        mysqli_stmt_bind_param($stmt, "ssiiiissiiii", $nameP, $client, $city, $status, $software,
+                                 $hardware, $resumen, $pdate, $comercial, $monto, $pType, $pClass ); 
         if (mysqli_stmt_execute($stmt)) {
             $pId = mysqli_insert_id($con);
 
@@ -118,7 +119,7 @@ if(isset($_POST['newProject'])){
             } else{
                 echo "<script>alert('Error al registrar el proyecto');</script>";
             }
-            
+            Notificaciones::crearTicketMail($pId,'project');
             echo "<script>alert('Proyecto Registrado Correctamente'); location.replace(document.referrer)</script>";
         } else {
             echo "<script>alert('Error al registrar el proyecto');</script>";
@@ -158,34 +159,6 @@ else if(isset($_POST['updtProject'])) {
     $currentJson = json_encode($projectData);
     //Datos nuevos (del formulario)
     $newJson     = json_encode($newData);
-
-    //se comparan los datos de la db con los del formulario, si son distintos se actualiza el proyecto
-    if($newJson !== $currentJson){
-        $query =  " UPDATE proyectos 
-                    SET
-                        nombre = ?, cliente = ?,
-                        ciudad = ?, estado_id = ?,
-                        ingeniero_responsable = ?,
-                        distribuidor = ?, monto = ?,
-                        costo_software = ?, 
-                        costo_hardware = ?,
-                        resumen = ?
-                    WHERE id = ?";
-        $stmt = $con->prepare($query);
-        $stmt->bind_param("ssiiisiiisi",   
-        $newData['nombre'], $newData['cliente'], $newData['ciudad'], $newData['estado_id'], $newData['ingeniero_responsable'],
-        $newData['distribuidor'], $newData['monto'], $newData['costo_software'], $newData['costo_hardware'], $newData['resumen'], $newData['id'] );
-
-        if ($stmt->execute()) {
-            echo "<script>alert('Su proyecto ha sido actualizado correctamente');location.replace(document.referrer)</script>";
-        } else {
-            echo "<script>alert('Error al actualizar');location.replace(document.referrer)</script>";
-        }
-
-        $stmt->close();
-    }else{
-        echo "<script>alert('No se ha cambiado ningun dato');location.replace(document.referrer)</script>";
-    }
 
     //ACTUALIZAR DATOS DE LICITACION(1)/CONTACTO (2)
     if($projectData["tipo"] == "1"){
@@ -240,6 +213,39 @@ else if(isset($_POST['updtProject'])) {
             $stmt->close();
         }
     }
+    
+    //se comparan los datos de la db con los del formulario, si son distintos se actualiza el proyecto
+    if($newJson !== $currentJson){
+        $query =  " UPDATE proyectos 
+                    SET
+                        nombre = ?, cliente = ?,
+                        ciudad = ?, estado_id = ?,
+                        ingeniero_responsable = ?,
+                        distribuidor = ?, monto = ?,
+                        costo_software = ?, 
+                        costo_hardware = ?,
+                        resumen = ?
+                    WHERE id = ?";
+        $stmt = $con->prepare($query);
+        $stmt->bind_param("ssiiisiiisi",   
+        $newData['nombre'], $newData['cliente'], $newData['ciudad'], $newData['estado_id'], $newData['ingeniero_responsable'],
+        $newData['distribuidor'], $newData['monto'], $newData['costo_software'], $newData['costo_hardware'], $newData['resumen'], $newData['id'] );
+
+        if ($stmt->execute()) {
+            echo "<script>alert('Su proyecto ha sido actualizado correctamente');location.replace(document.referrer)</script>";
+        } else {
+            echo "<script>alert('Error al actualizar');location.replace(document.referrer)</script>";
+        }
+
+        $stmt->close();
+    }else if (isset($newLic) && $licJson !== $currentLic){
+        echo "<script>alert('Su proyecto ha sido actualizado correctamente');location.replace(document.referrer)</script>";
+    }else if (isset($newCt) && $ctJson !== $currentCt){
+        echo "<script>alert('Su proyecto ha sido actualizado correctamente');location.replace(document.referrer)</script>";
+    }else{
+        echo "<script>alert('No se ha cambiado ningun dato');location.replace(document.referrer)</script>";
+    }
+
 }
 
 ?>

@@ -40,7 +40,10 @@ check_login();
     <?php include("leftbar.php"); ?>
         <div class="content">
             <div class="page-title">
-                <h2>Proyectos</h2>
+                <h2>
+                    <i class="bi bi-clipboard2"></i>
+                    Proyectos
+                </h2>
             </div>
             <!-- filtros  -->
             <div class="d-flex justify-content-end">

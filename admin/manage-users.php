@@ -42,7 +42,10 @@ check_login();
     <?php include("leftbar.php"); ?>
         <div class="content">
             <div class="page-title">
-                <h2>Gestionar usuarios</h2>
+                <h2>
+                    <i class="bi bi-person-gear"></i> 
+                    Gestionar usuarios
+                </h2>
             </div>
             <br>
             <div class="row main-table">

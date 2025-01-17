@@ -2,7 +2,7 @@
 session_start();
 include("checklogin.php");
 include("dbconnection.php");
-include("admin/notificaciones.php");
+include("admin/phpmail.php");
 include("assets/php/create-ticket.php");
 
 check_login();
@@ -45,62 +45,65 @@ check_login();
             </div>
             <!-- Formulario crear Ticket -->
 
-            <form class="form-horizontal" name="form1" method="POST" action=""  onSubmit="return valid();" enctype="multipart/form-data">
-                    
-                    <div class="ticket-main">
-                        <br>
-                        <?php if (isset($_SESSION['msg1'])) : ?>
-                            <p align="center" style="color:#FF0000"><?= $_SESSION['msg1']; ?><?= $_SESSION['msg1'] = ""; ?></p>
-                        <?php endif; ?>
+            <form class="form-horizontal" name="form" method="POST" action=""  onSubmit="return valid();" enctype="multipart/form-data">
+                <div id="loading" style="display:none ;">
+                    <div class="loading-spinner"></div>
+                    <p>Procesando...</p>
+                </div>  
+                <div class="ticket-main">
+                    <br>
+                    <?php if (isset($_SESSION['msg1'])) : ?>
+                        <p align="center" style="color:#FF0000"><?= $_SESSION['msg1']; ?><?= $_SESSION['msg1'] = ""; ?></p>
+                    <?php endif; ?>
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="subject" class="form-label">Asunto</label>
-                                <input type="text" name="subject" id="subject" value="" required class="form-control form-control-sm" />
-                            </div>
-                        </div>
-
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="tasktype" class="form-label">Tipo de Tarea</label>
-                                    <select id="tasktype" name="tasktype" class="form-select form-select-sm" required>
-                                        <option value="">Seleccionar</option>
-                                        <option>Incidente Lógica</option>
-                                        <option>Fallo a Nivel de Servidor</option>
-                                    </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="priority" class="form-label">Prioridad</label>
-                                <select id="priority" name="priority" class="form-select form-select-sm">
-                                <?php
-                                while ($row = mysqli_fetch_assoc($prioridad)) {
-                                    echo "<option value=". $row['id'] .">". $row['nombre'] ."</option>";
-                                };
-                                ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="ticketImage" class="form-label">Subir Imagen</label>
-                                <input class="form-control form-control-sm" type="file" id="ticketImage" name="ticketImage" accept="image/*" required>
-                            </div>
-                        </div>       
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label or="description" class="form-label">Descripción</label>
-                                <textarea id="description" name="description" required class="form-control form-control-sm" rows="5"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="footer">
-                            <button class="btn btn-default">Resetear</button>
-                            <button type="submit" name="send" class="btn btn-updt">Enviar</button>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="subject" class="form-label">Asunto</label>
+                            <input type="text" name="subject" id="subject" value="" required class="form-control form-control-sm" />
                         </div>
                     </div>
+
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tasktype" class="form-label">Tipo de Tarea</label>
+                                <select id="tasktype" name="tasktype" class="form-select form-select-sm" required>
+                                    <option value="">Seleccionar</option>
+                                    <option>Incidente Lógica</option>
+                                    <option>Fallo a Nivel de Servidor</option>
+                                </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="priority" class="form-label">Prioridad</label>
+                            <select id="priority" name="priority" class="form-select form-select-sm">
+                            <?php
+                            while ($row = mysqli_fetch_assoc($prioridad)) {
+                                echo "<option value=". $row['id'] .">". $row['nombre'] ."</option>";
+                            };
+                            ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ticketImage" class="form-label">Subir Imagen</label>
+                            <input class="form-control form-control-sm" type="file" id="ticketImage" name="ticketImage" accept="image/*" required>
+                        </div>
+                    </div>       
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label or="description" class="form-label">Descripción</label>
+                            <textarea id="description" name="description" required class="form-control form-control-sm" rows="5"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="footer">
+                        <button class="btn btn-default">Resetear</button>
+                        <button type="submit" name="send" class="btn btn-updt">Enviar</button>
+                    </div>
+                </div>
             </form>
         </div>   
     </div>

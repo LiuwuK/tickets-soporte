@@ -2,7 +2,7 @@
 session_start();
 include("checklogin.php");
 include("dbconnection.php");
-include("admin/notificaciones.php");
+include("admin/phpmail.php");
 include("assets/php/create-project.php");
 
 check_login();
@@ -44,7 +44,11 @@ check_login();
                 <h2>Crear Proyecto</h2>
             </div>
             <!-- Formulario crear proyectos -->
-            <form name="newProject" id="newProject" method="post">
+            <form name="form" id="newProject" method="post">
+                <div id="loading" style="display:none ;">
+                    <div class="loading-spinner"></div>
+                    <p>Procesando...</p>
+                </div>  
                 <div class="project-main" >  <br><br>      
                     <div class="form-row">
                         <div class="form-group">

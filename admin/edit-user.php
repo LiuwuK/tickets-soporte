@@ -37,8 +37,14 @@ include("assets/php/edit-user.php");
     <div class="page-content">
     <?php include("leftbar.php"); ?>
         <div class="content">
-            <div class="page-title">
-                <h2>Editar Usuario</h2>
+            <div class="page-title d-flex justify-content-between">
+                <h2>
+                  <i class="bi bi-person-gear"></i>   
+                  Editar Usuario
+                </h2>
+                <button class="btn btn-back" onclick="window.location.href='manage-users.php';"> 
+                    <i class="bi bi-arrow-left" ></i>
+                </button>
             </div>
             <?php 
               while ($rw = mysqli_fetch_array($rt)) { ?>

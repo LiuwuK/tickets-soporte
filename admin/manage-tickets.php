@@ -40,7 +40,10 @@ check_login();
       <?php include("leftbar.php"); ?>
         <div class="content">
             <div class="page-title">
-                <h2>Tickets</h2>
+                <h2>
+                  <i class="bi bi-ticket-perforated"></i>  
+                  Tickets
+                </h2>
             </div>
 
             <!-- filtros  -->
@@ -165,7 +168,11 @@ check_login();
                             <div class="post col-md-12">
 
                               <div class="info-ticket d-flex justify-content-center">
-                                <form name="adminr" method="post" enctype="multipart/form-data">
+                                <form name="form" method="post" enctype="multipart/form-data">
+                                <div id="loading" style="display:none ;">
+                                  <div class="loading-spinner"></div>
+                                  <p>Procesando...</p>
+                                </div>
                                   <br>    
                                   <!-- listar tareas -->
                                   <div>

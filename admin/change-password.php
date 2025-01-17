@@ -4,7 +4,6 @@ error_reporting(0);
 include("checklogin.php");
 check_login();
 include("dbconnection.php");
-include("notificaciones.php");
 include("assets/php/password-change.php");
 ?>
 
@@ -40,7 +39,10 @@ include("assets/php/password-change.php");
     <?php include("leftbar.php"); ?>
         <div class="content">
             <div class="page-title">
-                <h2>Cambiar Contraseña</h2>
+                <h2> 
+                    <i class="bi bi-lock"></i>
+                    Cambiar Contraseña
+                </h2>
             </div>
             <div class="form-content">
                 <form class="form-horizontal" name="form1" method="post" action="" onSubmit="return valid();">

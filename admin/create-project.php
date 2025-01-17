@@ -2,7 +2,7 @@
 session_start();
 include("checklogin.php");
 include("dbconnection.php");
-include("notificaciones.php");
+include("phpmail.php");
 include("../assets/php/create-project.php");
 
 check_login();
@@ -41,10 +41,17 @@ check_login();
     <?php include("leftbar.php"); ?>
         <div class="content">
             <div class="page-title">
-                <h2>Crear Proyecto</h2>
+                <h2>
+                    <i class="bi bi-clipboard2-plus"></i> 
+                    Crear Proyecto
+                </h2>
             </div>
             <!-- Formulario crear proyectos -->
-            <form name="newProject" id="newProject" method="post">
+            <form name="form" id="newProject" method="post">
+                <div id="loading" style="display:none ;">
+                    <div class="loading-spinner"></div>
+                    <p>Procesando...</p>
+                </div>  
                 <div class="project-main" >  <br><br>      
                     <div class="form-row">
                         <div class="form-group">

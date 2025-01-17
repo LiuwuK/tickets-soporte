@@ -2,7 +2,6 @@
 session_start();
 include("checklogin.php");
 include("dbconnection.php");
-include("notificaciones.php");
 include("../assets/php/create-project.php");
 
 check_login();
@@ -40,8 +39,14 @@ check_login();
     <div class="page-content">
     <?php include("leftbar.php"); ?>
         <div class="content">
-            <div class="page-title">
-                <h2>Editar Proyecto</h2>
+            <div class="page-title d-flex justify-content-between">
+                <h2>
+                    <i class="bi bi-clipboard2"></i>
+                    Editar Proyecto
+                </h2>
+                <button class="btn btn-back" onclick="window.location.href='view-projects.php';"> 
+                    <i class="bi bi-arrow-left" ></i>
+                </button>
             </div>
             <!-- Formulario crear proyectos -->
             <form name="updtProject" id="updtProject" method="post">
@@ -203,24 +208,29 @@ check_login();
                         </div>
                     </div>
 
-                    <div class="form-row" id="classInfo">
-                        <div class="expenses ">
-                        <div class="title">
-                            <label for="soft" class="form-label">Software</label>
-                            <input type="checkbox" id="software" name="software" >
-                        </div>
-                            <br>
-                        <input type="text" id="software-input" name="software-input" class="hidden form-control form-control-sm" placeholder="USD 0" value="<?php echo $row_p['costo_software'];?>">
-                            <br>
-                        <div class="title">
-                            <label for="hard" class="form-label">Hardware</label>
-                            <input type="checkbox" id="hardware" name="hardware">   
-                        </div>
-                            <br>
-                        <input type="text" id="hardware-input" name="hardware-input" class="hidden form-control form-control-sm" placeholder="USD 0" value="<?php echo $row_p['costo_hardware'];?>">
-                        </div>
+                    <?php
+                        if($projectData['clasificacion'] == 1){?>
+                            <div class="form-row" id="classInfo">
+                                <div class="expenses ">
+                                <div class="title">
+                                    <label for="soft" class="form-label">Software</label>
+                                    <input type="checkbox" id="software" name="software" >
+                                </div>
+                                    <br>
+                                <input type="text" id="software-input" name="software-input" class="hidden form-control form-control-sm" placeholder="USD 0" value="<?php echo $row_p['costo_software'];?>">
+                                    <br>
+                                <div class="title">
+                                    <label for="hard" class="form-label">Hardware</label>
+                                    <input type="checkbox" id="hardware" name="hardware">   
+                                </div>
+                                    <br>
+                                <input type="text" id="hardware-input" name="hardware-input" class="hidden form-control form-control-sm" placeholder="USD 0" value="<?php echo $row_p['costo_hardware'];?>">
+                                </div>
+                            </div>
+                    <?php
+                        }
+                    ?>
 
-                    </div>
                     <div class="form-row">
                         <div class="expenses">
                             <div class="title">

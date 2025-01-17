@@ -2,7 +2,7 @@
 session_start();
 include("checklogin.php");
 include("dbconnection.php");
-include("admin/notificaciones.php");
+
 include("assets/php/profile.php");
 
 check_login();

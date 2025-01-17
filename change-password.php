@@ -2,7 +2,6 @@
 session_start();
 include("checklogin.php");
 include("dbconnection.php");
-include("admin/notificaciones.php");
 include("assets/php/change-password.php");
 
 check_login();
