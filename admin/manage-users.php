@@ -51,7 +51,7 @@ check_login();
                         <div class="col-md-12">
                             <div class="grid simple ">
                                 <div class="grid-title no-border">
-                                    <h4>Toda la Información de los Usuarios</h4>
+                                    <h4>Información de los Usuarios</h4>
                                     <div class="tools"> <a href="javascript:;" class="collapse"></a>
                                     </div>
                                 </div>
@@ -65,6 +65,7 @@ check_login();
                                                 <th>Correo</th>
                                                 <th>Numero de Contacto</th>
                                                 <th>Fecha de Registro</th>
+                                                <th>Activo</th>
                                                 <th>Acción</th>
                                             </tr>
                                         </thead>
@@ -80,6 +81,15 @@ check_login();
                                                     <td><?php echo $row['email']; ?></td>
                                                     <td><?php echo $row['mobile']; ?></td>
                                                     <td><?php echo $row['posting_date']; ?></td>
+                                                    <td class="icons d-flex justify-content-center">
+                                                    <?php
+                                                        if( $row['status'] == 1 ){
+                                                            echo '<i class="bi bi-check-circle"></i>';
+                                                        } else {
+                                                            echo '<i class="bi bi-x-circle"></i>'; 
+                                                        }
+                                                    ?>
+                                                    </td>
                                                     <td class="text-center">
                                                         <form name="abc" action="" method="post">
                                                             <a href="edit-user.php?id=<?php echo $row['id']; ?>" class="btn btn-updt ">Editar</a>

@@ -23,6 +23,7 @@ check_login();
     <!-- CSS personalizados -->
     <link href="assets/css/sidebar.css" rel="stylesheet" type="text/css" />
     <link href="assets/css/manage_tickets.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/view-projects.css" rel="stylesheet" type="text/css"/>
     <!-- Toast notificaciones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 </head>
@@ -41,7 +42,34 @@ check_login();
             <div class="page-title">
                 <h2>Proyectos</h2>
             </div>
-            <br>
+            <!-- filtros  -->
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-sm" id="toggleFiltersBtn">
+                    <i class="bi bi-arrow-down-short"></i> Filtros
+                </button>
+            </div>
+            <div>        
+                <form method="GET" action="" id="filtersForm" class="mt-3" >
+                    <div class="fil-main form-group">
+                        <div class="search-div d-flex">
+                            <label class="form-label" >Buscar</labe>
+                            <input type="text" class="form-control form-control-sm" id="textSearch" name="textSearch" placeholder="Nombre/ID del ticket">
+                        </div>
+                        <div class="fil-div">
+                            <label class="form-label" for="st">Estado</label>
+                            <select name="statusF" class="form-select form-select-sm" id="st">
+                                <option value="">Ver todo</option>    
+
+                            </select>
+                        </div>
+                        <div class="fil-btn">
+                            <button type="submit" class="btn">Filtrar</button>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+                <br>
+            </div>
             <?php 
             if ($num > 0) {
                 while ($row = mysqli_fetch_array($rt)) {?>
@@ -53,7 +81,21 @@ check_login();
                                 <h4 class="semi-bold"><?php echo $row['nombre']; ?></h4>
                                 <p>
                                     <span class="text-success bold">Proyecto #<?php echo $row['id']; ?></span> - Fecha de Creación <?php echo $row['fecha_creacion']; ?> 
-                                    <span class="label label-success"><?php echo $row['estado']; ?></span>
+                                    <?php
+                                        if ($row['estado_id'] == '20') {
+                                        ?>
+                                        <span class="label label-success"><?php echo $row['estado']; ?></span>
+                                        <?php
+                                        }else if ($row['estado_id'] == '21'){
+                                        ?>
+                                        <span class="label label-important"><?php echo $row['estado']; ?></span>
+                                        <?php
+                                        }else{?>
+                                            <span class="label label-warning"><?php echo $row['estado']; ?></span>
+                                            <?php
+                                        };
+                                        
+                                    ?>
                                 </p>
                                 <div class="actions"> 
                                     <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> 
@@ -67,138 +109,165 @@ check_login();
                             <div class="grid-body  no-border" style="display:none">
                             <hr>
                                 <div class="post">
-                                    <div class="info-wrapper">
-                                        <div class="info">
-                                            <!-- Descripcion del proyecto -->
-                                            <div class="pr-row">
-                                                <div class="group">
-                                                    <strong>Descripción</strong>
-                                                    <p><?php echo $row['resumen']; ?></p>
-                                                </div>
-                                            </div>
-                                            <!-- Datos cliente/ingeniero/tipo/distribuidor -->
-                                            <div class="pr-row d-flex flex-row justify-content-between">
-                                                <div class="group">
-                                                    <strong>Cliente</strong>
-                                                    <p><?php echo $row['cliente'];?></p>
-                                                </div>
-                                                <div class="group">
-                                                    <strong>Tipo Proyecto</strong>
-                                                    <p><?php echo $row['tipoP'];?></p>
-                                                </div>
-                                                <div class="group">
-                                                    <strong>Distribuidor</strong>
-                                                    <p><?php echo $row['distribuidor'];?></p>
-                                                </div>
-                                            </div>
-                                            <!-- Datos de tipo proyecto (contacto/licitacion)  -->
-                                            <div class="pr-row">
-                                                <strong>Datos de <?php echo $row['tipoP'];?></strong>   
-                                                <hr>
-                                            <?php
-                                                //Licitacion
-                                                if($row['tipo'] == '1' ){
-                                                    $id =  $row['projectId'];
-                                                    $query = "SELECT * 
-                                                                FROM licitacion_proyecto
-                                                                WHERE proyecto_id = $id";    
-                                                    $licitacion = $con->prepare($query);
-                                                    $licitacion->execute();
-                                                    $result = $licitacion->get_result();
-                                                    $row_lt = $result->fetch_assoc();
-                                                    $licitacion->close();
-                                                    ?>
-                                                <div class="group">
-                                                    <label class="form-label">ID Licitación</label>
-                                                    <p><?php echo $row_lt['licitacion_id'];?></p>
-                                                    
-                                                    <label class="form-label">Portal</label>
-                                                    <p><?php echo $row_lt['portal'];?></p>
-                                                </div>                                                          
-                                            <?php
-                                                //Contacto 
-                                                }else if($row['tipo'] == '2'){
-                                                    $id =  $row['projectId'];
-                                                    $query = "SELECT * 
-                                                                FROM contactos_proyecto
-                                                                WHERE proyecto_id = $id";    
-                                                    $contacto = $con->prepare($query);
-                                                    $contacto->execute();
-                                                    $result = $contacto->get_result();
-                                                    $row_ct = $result->fetch_assoc();
-                                                    $contacto->close();
-                                                ?>
-                                                <div class=" d-flex flex-row justify-content-evenly">
+                                    <div class="info-wrapper"> 
+                                        <div class="info d-flex">
+                                            <div class="left-bar"></div>
+                                            <div class="main-info">
+                                                <!-- Descripcion del proyecto -->
+                                                <div class="pr-row">
                                                     <div class="group">
-                                                        <label class="form-label">Nombre</label>
-                                                        <p><?php echo $row_ct['nombre'];?></p>
-
-                                                        <label class="form-label">Correo</label>
-                                                        <p><?php echo $row_ct['correo'];?></p>
+                                                        <strong>Descripción</strong>
+                                                        <p><?php echo $row['resumen']; ?></p>
                                                     </div>
+                                                </div>
+                                                <!-- Datos cliente/ingeniero/tipo/distribuidor -->
+                                                <div class="pr-row ">
                                                     <div class="group">
-                                                        <label class="form-label">Cargo</label>
-                                                        <p><?php echo $row_ct['cargo'];?></p>
-
-                                                        <label class="form-label">Numero Contacto</label>
-                                                        <p><?php echo $row_ct['numero'];?></p>
+                                                        <strong>Cliente</strong>
+                                                        <p><?php echo $row['cliente'];?></p>
                                                     </div>
-                                                </div>    
-                                            <?php 
-                                                }?>
-                                            </div>
+                                                </div>
+                                                <div class="pr-row"> 
+                                                    <div class="group">
+                                                        <strong>Distribuidor</strong>
+                                                        <p><?php echo $row['distribuidor'];?></p>
+                                                    </div> 
+                                                </div>
+                                                <div class="pr-row">
+                                                    <div class="group">
+                                                        <strong>Comercial responsable</strong>
+                                                        <p><?php echo $row['comercial'];?></p>
+                                                    </div>
+                                                </div>
+                                                <div class="pr-row">
+                                                    <div class="group">
+                                                        <strong>Tipo Proyecto</strong>
+                                                        <p><?php echo $row['tipoP'];?></p>
+                                                    </div>
+                                                </div>
+                                                <!-- Datos de tipo proyecto (contacto/licitacion)  -->
+                                                <div class="pr-row">
+                                                    <strong>Datos de <?php echo $row['tipoP'];?></strong>   
 
-                                            <div class="pr-row">
-                                                <div class="group">
-                                                    <strong>Actividades</strong>
-                                                    <hr>
-                                                    <ul>
-                                                    <?php 
+                                                <?php
+                                                    //Licitacion
+                                                    if($row['tipo'] == '1' ){
                                                         $id =  $row['projectId'];
                                                         $query = "SELECT * 
-                                                                    FROM actividades
+                                                                    FROM licitacion_proyecto
                                                                     WHERE proyecto_id = $id";    
-                                                        $actividades = $con->prepare($query);
-                                                        $actividades->execute();
-                                                        $result = $actividades->get_result();
-                                                        
-                                                        while ($row_ac = $result->fetch_assoc()) {?>
-                                                            <li><?php echo $row_ac['nombre'];?> -- <?php echo $row_ac['fecha'];?></li>    
-                                                        <?php }
+                                                        $licitacion = $con->prepare($query);
+                                                        $licitacion->execute();
+                                                        $result = $licitacion->get_result();
+                                                        $row_lt = $result->fetch_assoc();
+                                                        $licitacion->close();
+                                                        ?>
+                                                    <div class="group lic d-flex">
+                                                        <strong class="form-label">ID Licitación</strong>
+                                                        <p>: <?php echo $row_lt['licitacion_id'];?></p>
+                                                    </div>      
+                                                    <div class="group lic d-flex">                                                        
+                                                        <strong>Portal </strong>
+                                                        <p>: <?php echo$row_lt['portal'];?></p>
+                                                    </div>                                                    
+                                                <?php
+                                                    //Contacto 
+                                                    }else if($row['tipo'] == '2'){
+                                                        $id =  $row['projectId'];
+                                                        $query = "SELECT * 
+                                                                    FROM contactos_proyecto
+                                                                    WHERE proyecto_id = $id";    
+                                                        $contacto = $con->prepare($query);
+                                                        $contacto->execute();
+                                                        $result = $contacto->get_result();
+                                                        $row_ct = $result->fetch_assoc();
+                                                        $contacto->close();
                                                     ?>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <?php 
-                                                if( $row['clasificacion'] == '1' ){ ?>
                                                     <div class="pr-row">
-                                                        <strong>Gastos</strong>
-                                                        <div class="group">
-                                                            <ul>
-                                                                <li>Software : <?php echo $row['costo_software'];?></li>
-                                                                <li>Hardware : <?php echo $row['costo_hardware'];?></li>
-                                                            </ul>
+                                                        <div class="group d-flex cnt">
+                                                            <strong class="form-label">Nombre</strong>
+                                                            <p>: <?php echo $row_ct['nombre'];?></p>
                                                         </div>
-                                                    </div>
-                                            <?php } 
-                                            ?>
 
-                                            <div class="pr-row">
-                                                <div class="group">
-                                                    <strong>Monto</strong>
-                                                    <p>$<?php echo $row['monto'];?></p>
+                                                        <div class="group d-flex cnt">
+                                                            <strong class="form-label">Correo</strong>
+                                                            <p>: <?php echo $row_ct['correo'];?></p>
+                                                        </div>
+                                                        <div class="group d-flex cnt">
+                                                            <strong class="form-label">Cargo</strong>
+                                                            <p>: <?php echo $row_ct['cargo'];?></p>
+                                                        </div>
+
+                                                        <div class="group d-flex cnt">
+                                                            <strong class="form-label">Numero Contacto</strong>
+                                                            <p>: <?php echo $row_ct['numero'];?></p>
+                                                        </div>
+                                                    </div>    
+                                                <?php 
+                                                    }?>
+                                                </div>
+
+                                                <div class="pr-row">
+                                                    <div class="group">
+                                                        <strong>Actividades</strong>
+                                                        <ul>
+                                                        <?php 
+                                                            $id =  $row['projectId'];
+                                                            $query = "SELECT * 
+                                                                        FROM actividades
+                                                                        WHERE proyecto_id = $id";    
+                                                            $actividades = $con->prepare($query);
+                                                            $actividades->execute();
+                                                            $result = $actividades->get_result();
+                                                            
+                                                            while ($row_ac = $result->fetch_assoc()) {
+                                                                $fecha_original = $row_ac['fecha']; 
+                                                                setlocale(LC_TIME, 'es_ES.UTF-8', 'spanish');
+                                                                // Formatear la fecha
+                                                                $timestamp = strtotime($fecha_original);
+                                                                $fecha = strftime('%e de %B %Y', $timestamp);
+                                                            ?>
+                                                                <li><?php echo $row_ac['nombre'];?> -- <?php echo $fecha;?></li>    
+                                                            <?php }
+                                                        ?>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <?php 
+                                                    if( $row['clasificacion'] == '1' ){ ?>
+                                                        <div class="pr-row">
+                                                            <strong>Gastos</strong>
+                                                            <div class="group d-flex lic">
+                                                                <strong>Software</strong>
+                                                                <p>: $<?php echo $row['costo_software'];?></p>
+                                                            </div>
+                                                            <div class="group d-flex lic">
+                                                                <strong>Hardware</strong>
+                                                                <p>: $<?php echo $row['costo_hardware'];?></p>
+                                                            </div>
+                                                        </div>
+                                                <?php } 
+                                                ?>
+
+                                                <div class="pr-row">
+                                                    <div class="group">
+                                                        <strong>Monto Estimado</strong>
+                                                        <p>$<?php echo $row['monto'];?></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="pr-row">
+                                                    <div class="group">
+                                                        <strong>Total</strong>
+                                                        <p>$</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div class="footer d-flex">
-                                            <!-- <button class="btn btn-updt">Actualizar</button> -->
-                                        </div>
+                                        <br>
                                     </div>
                                     
                                 </div>
-
-                            <br>    
                             </div>
                             <!------------------>
                         </div>
@@ -209,7 +278,6 @@ check_login();
                     <h3 align="center" style="color:red;">Sin proyectos que mostrar</h3>
             <?php 
             } ?>
-        
 
         </div>   
     </div>
@@ -225,7 +293,7 @@ check_login();
 <!-- Bootstrap Bundle (con Popper.js) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Complementos/Plugins-->
-<script src="assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js" type="text/javascript"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js" type="text/javascript"></script>
 <!-- Scripts propios -->
 <script src="assets/js/support_ticket.js" type="text/javascript"></script>

@@ -1,0 +1,41 @@
+.post .info-wrapper{
+    width: 85% !important;
+}
+
+.info {
+    background-color: #f4f4f4;
+    margin: 0px auto;
+    border-radius: 15px;
+    width: 85%;
+    padding: 20px;
+}
+
+.group p{
+    font-size: smaller !important;
+}
+.group strong, .pr-row strong{
+    font-size: 14px;
+}
+
+.cnt, .lic{
+    margin-left: 30px;
+}
+.cnt strong, .lic strong{
+    font-size: 13px;
+}
+
+.cnt label, .lic label{
+    font-weight: 600;
+}
+.left-bar{
+    background-color: #33435e;
+    width: 4px;
+    margin-right: 20px;
+}
+.endModal{
+    color:#33435e
+}
+.endModal label{
+    font-weight: 600;
+    font-size: medium;
+}

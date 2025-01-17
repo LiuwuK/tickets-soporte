@@ -6,7 +6,11 @@
         $userId = $_SESSION['id'];
         $subject = $_POST['subject'];
         $tt = $_POST['tasktype'];
-        $priority = $_POST['priority'];
+        if($_SESSION['role'] == 'admin'){
+            $priority = $_POST['priority'];
+        } else {
+            $priority = null;
+        }
         $ticket = $_POST['description'];
         $st = 11; // El estado del ticket
         $pdate = date('Y-m-d'); 
@@ -22,24 +26,23 @@
         }
 
         // Procesar la imagen
-        $uploadedFile = $_FILES['ticketImage'];
-        $filePath = '';
+        if(isset($_FILES['ticketImage']) && $_FILES['ticketImage']['error'] === UPLOAD_ERR_OK){
+            $uploadedFile = $_FILES['ticketImage'];
+            $filePath = '';
 
-        if ($uploadedFile['error'] === UPLOAD_ERR_OK) {
-            $fileName = uniqid('ticket_', true) . '.' . pathinfo($_FILES['ticketImage']['name'], PATHINFO_EXTENSION);
+            $fileName = uniqid('ticket_', true) .'.'. pathinfo($_FILES['ticketImage']['name'], PATHINFO_EXTENSION);
             $targetPath = $uploadDir . $fileName;
 
             // Mover archivo a la carpeta de destino
             if (move_uploaded_file($uploadedFile['tmp_name'], $targetPath)) {
-                $filePath = $targetPath;
+                $dir = 'assets/uploads/';
+                $filePath = $dir . $fileName;
             } else {
                 echo "Error al subir la imagen.";
                 exit;
             }
-        } else {
-            echo "Error en la carga de la imagen.";
-            exit;
-        }
+            
+        } 
         
         $query = "INSERT INTO ticket (email_id, subject, task_type, prioprity, ticket, status, posting_date, user_id, ticket_img) 
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -52,6 +55,7 @@
                 
                 $ticketId = mysqli_insert_id($con);
                 echo "<script>alert('Ticket Registrado Correctamente'); location.replace(document.referrer)</script>";
+                //envio de notificacion a tiempo real 
                 ticketNoti($ticketId,$userId );
             } else {
                 echo "<script>alert('Error al registrar el ticket');</script>";

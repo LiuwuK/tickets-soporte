@@ -120,40 +120,25 @@ check_login();
                     
                     </div>
                     <div class="form-row">
-                    <div class ="form-group">
-                        <label class="form-label">Ciudad</label>
-                        <div >
-                        <select name="city" class="form-select form-select-sm" required>
-                            <option value="">Seleccionar</option>
-                            <?php
-                                while ($row = mysqli_fetch_assoc($cities)) {
-                                    echo "<option value=".$row['id'].">".$row['nombre_ciudad'] ."</option>";
-                                };
-                            ?>
-                        </select>
-                        </div>
-                    </div> 
-                    
-                    <div class ="form-group">
-                    <label class="form-label">Estatus</label>
-                    <div >
-                        <select name="status" class="form-select form-select-sm" required>
-                            <?php
-                            while ($row = mysqli_fetch_assoc($status)) {
-                                echo "<option value=". $row['id'].">".$row['nombre'] ."</option>";
-                            };
-                            ?>
-                        </select>
-                    </div>
-                    </div>
-                    </div>
-                    <div class="form-row">
-                    <div class ="form-group">
-                        <label class="form-label" for="comercial">Comercial responsable</label>
-                        <input class="form-control form-control-sm" type="text" name="comercial" id="comercial" value="<?php echo $_SESSION['name']; ?>" disabled>
-                    </div> 
-                    </div>
+                        <div class ="form-group">
+                            <label class="form-label">Ciudad</label>
+                            <div >
+                            <select name="city" class="form-select form-select-sm" required>
+                                <option value="">Seleccionar</option>
+                                <?php
+                                    while ($row = mysqli_fetch_assoc($cities)) {
+                                        echo "<option value=".$row['id'].">".$row['nombre_ciudad'] ."</option>";
+                                    };
+                                ?>
+                            </select>
+                            </div>
+                        </div> 
 
+                        <div class ="form-group">
+                            <label class="form-label" for="comercial">Comercial responsable</label>
+                            <input class="form-control form-control-sm" type="text" name="comercial" id="comercial" value="<?php echo $_SESSION['name']; ?>" disabled>
+                        </div> 
+                    </div>
                     <div class="form-row" style="display:none" id="classInfo">
                         <div class="expenses ">
                         <div class="title">

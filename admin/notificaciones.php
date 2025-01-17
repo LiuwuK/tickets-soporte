@@ -3,7 +3,7 @@ include("dbconnection.php");
 require __DIR__ . '/../vendor/autoload.php';
 use WebSocket\Client;
 
-//notificacion para clientes
+//notificacion actualizar ticket
 function updateNoti($ticketId, $userId) {
     
     $msg = "El ticket #{$ticketId} ha sido actualizado.";
@@ -18,7 +18,7 @@ function updateNoti($ticketId, $userId) {
     insertNoti($userId, $msg,$ticketId,false);
 }
 
-//notificacion para admin
+//notificacion crear ticket
 function ticketNoti($ticketId, $userId) {
     $client = new Client("ws://localhost:8080/notifications");
     $msg = "Se ha creado el ticket #{$ticketId}.";

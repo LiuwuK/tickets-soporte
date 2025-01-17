@@ -10,11 +10,20 @@
 
 .table th{
     color:#34435E;
-    font-size: medium;
+    font-size: 17px;
     font-weight: 600;
 }
 
 .table td{
     color: #34435E;
     font-size: smaller;
+}
+.icons i{
+    font-size: x-large;
+}
+.bi-check-circle{
+    color:green;
+}
+.bi-x-circle{
+    color: red;
 }

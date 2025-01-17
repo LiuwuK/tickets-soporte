@@ -12,7 +12,7 @@ class Notificaciones {
     public static function enviarCorreo($destinatario, $tId, $tareas = null, $comentario = null, $estadoTicket = null, $tasksStatus = null) {
         $mail = new PHPMailer(true);
         $asunto = "Actualización de su Ticket ";
-        //credenciales (cambiar)
+        //credenciales (cambiar) USER = CORREO / PASS = CLAVE DE APLICACION GOOGLE 
         $user = 'kevinantecao1206@gmail.com';
         $pass = '';
         
@@ -52,7 +52,7 @@ class Notificaciones {
                                         margin: 0 auto;
                                     }
                                     .email-header {
-                                        background-color: #4CAF50;
+                                        background-color: #33435e;
                                         color: #ffffff;
                                         padding: 10px;
                                         border-radius: 8px 8px 0 0;
@@ -73,7 +73,7 @@ class Notificaciones {
                                         text-align:center;
                                     }
                                     .button {
-                                        background-color: #4CAF50;
+                                        background-color: #33435e;
                                         color: white;
                                         padding: 10px 20px;
                                         text-decoration: none;

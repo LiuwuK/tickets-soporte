@@ -185,7 +185,10 @@ else if (isset($_POST['end'])) {
 
 //carga las prioridades y estados de ticket para filtrar--------------------------------------------------------------
 $query_prio = "SELECT * FROM prioridades ";
-$prioridad = mysqli_query($con, $query_prio);
+$prioData = mysqli_query($con, $query_prio);
+while ($row = mysqli_fetch_assoc($prioData)) {
+  $prioridades[] = $row; 
+}
 
 $query_st = "SELECT * FROM estados WHERE type = 'ticket'";
 $statusF = mysqli_query($con, $query_st);
@@ -203,7 +206,7 @@ $query = "SELECT ti.id AS ticketId,
                  st.nombre AS statusN,
                  ti.*, pr.*
           FROM ticket ti 
-          JOIN prioridades pr ON ti.prioprity = pr.id
+          LEFT JOIN prioridades pr ON ti.prioprity = pr.id
           JOIN estados st ON ti.status = st.id";
 
 // Filtros dinámicos
@@ -261,4 +264,22 @@ while ($estado = $status->fetch_assoc()) {
 }
 //----------------------------------------------------------------------------------------------------------
 
+if (isset($_POST["asignarPrio"])) {
+  $prioId =  $_POST['prioridad'];
+  $tID    =  $_POST['tId'];
+
+  $query =  " UPDATE ticket
+              SET prioprity = ?
+              WHERE id = ?";
+  $stmt = $con->prepare($query);
+  $stmt->bind_param("ii",$prioId, $tID);
+
+  if ($stmt->execute()) {
+      echo "<script>alert('Prioridad asignada correctamente');location.replace(document.referrer)</script>";
+  } else {
+      echo "<script>alert('error');location.replace(document.referrer)</script>";
+  }
+
+  $stmt->close();
+}
 ?>

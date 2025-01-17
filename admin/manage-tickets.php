@@ -61,7 +61,7 @@ check_login();
                             <select name="priority" class="form-select form-select-sm" id="prio">
                                 <option value="">Ver todo</option> 
                                 <?php
-                                while ($row = mysqli_fetch_assoc($prioridad)) {
+                                foreach ($prioridades as $row) {
                                     // Opcion para filtrar por prioridad
                                     $selected = isset($_GET['priority']) && $_GET['priority'] == $row['id'] ? 'selected' : '';
                                     echo "<option value='" . $row['id'] . "' $selected>" . $row['nombre'] . "</option>";
@@ -118,6 +118,28 @@ check_login();
                         
                           
                           <div class="actions"> <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> </div>
+                          <form  name="asignarPrio" id="asignarPrio" method="post">
+                            <br>
+                            <div class="ing-main d-flex justify-content-start">
+                                <p><strong>Prioridad</strong></p>
+                                <select id="prioridadSelect" name="prioridad"  class="prioridad-select form-select form-select-sm" data-initial-value="<?php echo $row['prioprity'] ? $row['prioprity'] : "Sin asignar" ;?>">
+                                    <?php
+                                    if (empty($row['prioprity'])) {
+                                        echo "<option selected>Sin asignar</option>";
+                                    }
+                                    foreach ($prioridades as $row_prio) {
+                                        if ($row_prio['id'] == $row['prioprity']) {
+                                            echo "<option value=\"".$row_prio['id']."\" selected>".$row_prio['nombre']."</option>";
+                                        } else {
+                                            echo "<option value=\"".$row_prio['id']."\">".$row_prio['nombre']."</option>";
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                                <input type="hidden" id="tId" name="tId" value="<?php echo $row['ticketId']; ?>">
+                                <button type="submit" class="btn btn-updt save-button" name="asignarPrio" style="display:none">Asignar</button>
+                            </div>
+                        </form>
                         </div>
                         <div class="grid-body  no-border" style="display:none">
                           <div class="post">
@@ -163,7 +185,7 @@ check_login();
                                         $tasks = $stmt->get_result();
             
                                         if($tasks->num_rows > 0) {
-                                          echo "<h4>Tareas </h4> <hr>";
+                                          echo "<h3>Tareas </h3> <hr>";
                                           while($tsk = $tasks->fetch_assoc()) {
                                             ?>
                                               <div class="t-header d-flex justify-content-between w-80">
@@ -195,7 +217,7 @@ check_login();
                                             <?php
                                           }
                                         }else{
-                                          echo "<h3>No hay tareas asociadas </h3>";
+                                          echo "<h4>No hay tareas asociadas </h4>";
                                         }
                                         $stmt->close(); 
                                       }  

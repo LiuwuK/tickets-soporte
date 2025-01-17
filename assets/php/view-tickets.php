@@ -12,7 +12,7 @@ $query = "SELECT ti.id AS ticketId,
                  st.nombre AS statusN,
                  ti.*, pr.*
           FROM ticket ti 
-          JOIN prioridades pr ON ti.prioprity = pr.id
+          LEFT JOIN prioridades pr ON ti.prioprity = pr.id
           JOIN estados st ON ti.status = st.id
           WHERE email_id='" . $_SESSION['login'] . "'";
 

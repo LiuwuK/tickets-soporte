@@ -58,7 +58,7 @@ if(isset($_POST['newProject'])){
     $nameP     = $_POST['name']; 
     $client    = $_POST['client']; 
     $city      = $_POST['city']; 
-    $status    = $_POST['status'];
+    $status    = '19';
     $pType     = $_POST['pType'];  
     $pClass    = $_POST['pClass']; //id clase
     $bom       = isset($_POST['bom']) ? $_POST['bom'] : 0;
@@ -68,14 +68,6 @@ if(isset($_POST['newProject'])){
     $resumen   = $_POST['desc'];
     $comercial = $_SESSION['id']; //id del usuario
     $pdate     = date('Y-m-d'); 
-  
-
-    print_r($_POST);
-
-    echo $software;
-    echo $hardware;
-    echo $bom;
-    echo $comercial;
 
     $query = "INSERT INTO proyectos (nombre, cliente, ciudad, estado_id, 
                 costo_software, costo_hardware, resumen, 

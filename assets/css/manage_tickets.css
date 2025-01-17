@@ -95,15 +95,16 @@ input, .form-control, .form-select{
   padding-top: 1px;
 }
 .grid.simple .grid-body h4 {
-  font-weight: 300;
+  font-weight: 100;
   margin: 10px 0;
   color: #34435E;
+  text-align: center;
 }
 .grid.simple .grid-body h3 {
   margin: 10px 0;
   color: #34435E;
   font-weight: 100;
-  text-align: center;
+
 }
 .grid.simple .grid-body.invoice-body {
   padding: 30px;
@@ -375,7 +376,7 @@ input, .form-control, .form-select{
 
 .fil-main{
   display: flex;
-  justify-content: center;
+  justify-content: start;
 }
 .fil-div {
   width: 20%;
@@ -389,7 +390,7 @@ input, .form-control, .form-select{
 }
 .fil-btn button{
   width: 150px;
-  height: 50px;
+  height: 42px;
   background-color: #34435E;
   color: #fff;
   transition: transform 0.2s ease-in-out;
@@ -404,11 +405,11 @@ input, .form-control, .form-select{
   width: 30%;
 }
 .search-div input{
-  width: 250px;
-  margin-top: 8px;
+  width: 400px;
+  margin-top: 4px;
 }
 
-/*Proyectos */
+/* proyectos */
 .grid-title h4{
   color:#34435E
 }
@@ -419,8 +420,11 @@ input, .form-control, .form-select{
 .grid-body hr{
   margin: 0 auto;
 }
+
+.group{
+  color: #34435E;
+}
 .group p{
-  margin-left: 40px;
 }
 
 label, .group li{

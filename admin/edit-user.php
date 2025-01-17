@@ -69,13 +69,36 @@ include("assets/php/edit-user.php");
                           <input type="text" class="form-control form-control-sm" id="mobile" name="mobile" value="<?php echo $rw['mobile']; ?>" required="required">
                         </div>
                         <div class="form-group">
-                          <label for="gender" class="form-label">Cargo</label>
-                          <select class="form-select form-select-sm" id="gender" name="gender" >
-                          
+                          <label for="cargo" class="form-label">Cargo</label>
+                          <select class="form-select form-select-sm" id="cargo" name="cargo" >
+                          <?php
+                            while ($row = mysqli_fetch_assoc($cargos)) {
+                              if ($rw['cargo'] == $row['id']){
+                                echo "<option selected value=".$row['id'].">".$row['nombre'] ."</option>";
+                              } else {
+                                echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
+                              }
+                            };
+                          ?>
                           </select>
-                        </div>
+                        </div>  
                       </div>
 
+                      <div class="form-row">
+                        <div class="form-check">
+                          <?php 
+                            if($rw['status'] == 1){?>
+                              <input class="form-check-input" name="status" type="checkbox" value="1" id="status" checked>
+                          <?php  
+                            }else{ ?>
+                              <input class="form-check-input" name="status" type="checkbox" value="1" id="status">
+                          <?php   
+                            }
+                          ?>
+
+                          <label class="form-check-label" for="status">Activar Cuenta?</label>
+                        </div>
+                      </div>
                       <div class="form-row">
                         <div class="form-group">
                           <label for="address" class="form-label">Direccion</label>
@@ -83,8 +106,8 @@ include("assets/php/edit-user.php");
                         </div>
                       </div>
 
-
-                      <div class="panel-footer d-flex justify-content-end">
+                      <div class="panel-footer d-flex justify-content-between">
+                        <a href="manage-users.php" class="btn btn-default">Volver</a>
                         <button type="submit" name="update" class="btn btn-updt">Actualizar</button>
                       </div>
       

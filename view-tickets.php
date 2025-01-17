@@ -50,7 +50,7 @@ check_login();
             <div>        
                 <form method="GET" action="" id="filtersForm" class="mt-3" >
                     <div class="fil-main form-group">
-                        <div class="search-div d-flex justify-content-center">
+                        <div class="search-div d-flex">
                             <label class="form-label" >Buscar</labe>
                             <input type="text" class="form-control form-control-sm" id="textSearch" name="textSearch" placeholder="Nombre/ID del ticket">
                         </div>
@@ -131,7 +131,7 @@ check_login();
                                 <div class="info-wrapper">
                                 <br>
                                     <div class="comm">
-                                        <h4>Procedimiento a seguir</h4>
+                                        <h5>Procedimiento a seguir</h5>
                                         <div>
                                         <ul>
                                             <?php
@@ -170,7 +170,7 @@ check_login();
                                         </div>
                                     </div>
                                 <div class="tasks">
-                                    <h4>Comentario</h4>
+                                    <h5>Comentario</h5>
                                     <p><?php echo $row['admin_remark']; ?></p>
                                 </div>
                                 <hr>
@@ -207,7 +207,6 @@ check_login();
 <!-- Bootstrap Bundle (con Popper.js) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Complementos/Plugins-->
-<script src="assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js" type="text/javascript"></script>
 <!-- Scripts propios -->
 <script src="assets/js/support_ticket.js" type="text/javascript"></script>
