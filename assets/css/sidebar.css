@@ -149,10 +149,10 @@ input, .form-control, .form-select{
 }
 .btn-default:hover{
     background-color: #e5e5e5;
-    transform: scale(1.05);
+    transform: scale(1.02);
 }
 .btn-default:active{
-    transform: scale(0.9);
+    transform: scale(0.98);
     background-color: #e5e5e5;
 }
 .btn-updt{
@@ -166,7 +166,7 @@ input, .form-control, .form-select{
 .btn-updt:hover{
     background-color: #34435E;;
     color: #fff;
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
   
 .btn-updt:active{
@@ -186,7 +186,7 @@ input, .form-control, .form-select{
   .btn-del:hover{
     background-color: #ef1e1ed1;;;
     color: #fff;
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
   
   .btn-del:active{
@@ -203,7 +203,7 @@ input, .form-control, .form-select{
     transition: transform 0.2s ease-in-out;
   }
   .btn-back:hover{
-    transform: scale(1.2);
+    transform: scale(1.1);
   }
 
   .btn-back:active{

@@ -1,0 +1,18 @@
+.comm label{
+    font-size: large !important;
+}
+.img{
+    text-align: center;
+    margin-bottom: 5px;
+}
+.img img{
+    border: 2px solid #33435e;
+    border-radius: 5px;
+    max-width: 500px;
+}
+.prio-main{
+    margin-bottom: 5px;
+}
+.prio-main p{
+    width: 5% !important;
+}

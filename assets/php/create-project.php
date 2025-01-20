@@ -24,6 +24,14 @@ $query =  "SELECT id, name
             FROM user
             WHERE cargo = '1'";
 $inge = mysqli_query($con, $query);
+//obtener verticales
+$query = "SELECT * FROM verticales";
+$vertical = mysqli_query($con, $query);
+
+//obtener distribuidores
+$query = "SELECT * FROM distribuidores";
+$distribuidor = mysqli_query($con, $query);
+
 
 // cargar proyecto que va a ser actualizado
 if(isset($_GET['projectId']) ){
@@ -58,26 +66,26 @@ if(isset($_POST['newProject'])){
     $nameP     = $_POST['name']; 
     $client    = $_POST['client']; 
     $city      = $_POST['city'];
-    $monto     = $_POST['monto']; 
+    $monto     = $_POST['montoP']; 
     $status    = '19';
     $pType     = $_POST['pType'];  
     $pClass    = $_POST['pClass']; //id clase
     $bom       = isset($_POST['bom']) ? $_POST['bom'] : 0;
-    $dist      = 'Sin asignar';
+    $vertical      = $_POST['vertical'];
     $software  = ($pClass == 1 && isset($_POST['software-input'])) ? $_POST['software-input'] : 0;
     $hardware  = ($pClass == 1 && isset($_POST['hardware-input'])) ? $_POST['hardware-input'] : 0; 
     $resumen   = $_POST['desc'];
-    $comercial = $_SESSION['id']; //id del usuario
+    $comercial = $_SESSION['id'];
     $pdate     = date('Y-m-d'); 
 
     $query = "INSERT INTO proyectos (nombre, cliente, ciudad, estado_id, 
                 costo_software, costo_hardware, resumen, 
-                fecha_creacion, comercial_responsable, monto, tipo, clasificacion) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                fecha_creacion, comercial_responsable, monto, tipo, clasificacion, vertical) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
     if ($stmt = mysqli_prepare($con, $query)) {
-        mysqli_stmt_bind_param($stmt, "ssiiiissiiii", $nameP, $client, $city, $status, $software,
-                                 $hardware, $resumen, $pdate, $comercial, $monto, $pType, $pClass ); 
+        mysqli_stmt_bind_param($stmt, "ssiiiissiiiii", $nameP, $client, $city, $status, $software,
+                                 $hardware, $resumen, $pdate, $comercial, $monto, $pType, $pClass, $vertical); 
         if (mysqli_stmt_execute($stmt)) {
             $pId = mysqli_insert_id($con);
 
@@ -133,7 +141,7 @@ if(isset($_POST['newProject'])){
 else if(isset($_POST['updtProject'])) {
     //ACTUALIZAR DATOS DEL PROTECTO
     $pClass = $projectData['clasificacion'];
-    $bom =  isset($_POST['bom']) ? $_POST['bom'] : NULL; 
+    $bom =  isset($_POST['bom']) ? $_POST['bom'] : 0; 
     $software  = ($pClass == 1 && isset($_POST['software-input'])) ? $_POST['software-input'] : 0;
     $hardware  = ($pClass == 1 && isset($_POST['hardware-input'])) ? $_POST['hardware-input'] : 0; 
     //datos del formulario
@@ -145,21 +153,24 @@ else if(isset($_POST['updtProject'])) {
         'estado_id'             => $_POST['status'],
         'ingeniero_responsable' => $_POST['ingeniero'],
         'bom'                   => $bom,
-        'distribuidor'          => $_POST['dist'],
         'costo_software'        => $software,
         'costo_hardware'        => $hardware,
         'resumen'               => $_POST['desc'],
         'fecha_creacion'        => $projectData['fecha_creacion'],
         'comercial_responsable' => $projectData['comercial_responsable'],
-        'monto'                 => $_POST['monto'],
+        'monto'                 => $_POST['montoP'],
         'tipo'                  => $projectData['tipo'],
         'clasificacion'         => $pClass,
+        'costo_real'            => $_POST['costoR'],
+        'distribuidor'          => $_POST['dist'],
+        'vertical'              => $_POST['vertical'],
     ];
+
     //Datos de la db
     $currentJson = json_encode($projectData);
     //Datos nuevos (del formulario)
     $newJson     = json_encode($newData);
-
+    
     //ACTUALIZAR DATOS DE LICITACION(1)/CONTACTO (2)
     if($projectData["tipo"] == "1"){
         //datos de licitacion (formulario)
@@ -221,15 +232,17 @@ else if(isset($_POST['updtProject'])) {
                         nombre = ?, cliente = ?,
                         ciudad = ?, estado_id = ?,
                         ingeniero_responsable = ?,
-                        distribuidor = ?, monto = ?,
+                        distribuidor = ?, vertical = ?,
+                        monto = ?,
                         costo_software = ?, 
                         costo_hardware = ?,
-                        resumen = ?
+                        costo_real = ?,
+                        resumen = ? 
                     WHERE id = ?";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("ssiiisiiisi",   
+        $stmt->bind_param("ssiiiiiiiiisi",   
         $newData['nombre'], $newData['cliente'], $newData['ciudad'], $newData['estado_id'], $newData['ingeniero_responsable'],
-        $newData['distribuidor'], $newData['monto'], $newData['costo_software'], $newData['costo_hardware'], $newData['resumen'], $newData['id'] );
+        $newData['distribuidor'], $newData['vertical'], $newData['monto'], $newData['costo_software'], $newData['costo_hardware'], $newData['costo_real'], $newData['resumen'], $newData['id'] );
 
         if ($stmt->execute()) {
             echo "<script>alert('Su proyecto ha sido actualizado correctamente');location.replace(document.referrer)</script>";

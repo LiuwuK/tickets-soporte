@@ -236,7 +236,7 @@ check_login();
                                   <!-- Final listar tareas -->
                                   <hr>
                                   <div class="comm">
-                                    <textarea class="form-control " name="aremark" cols="110" rows="4" required="true"><?php echo $row['admin_remark']; ?></textarea>
+                                    <textarea class="form-control form-control-sm" name="aremark" cols="110" rows="4" required="true"><?php echo $row['admin_remark']; ?></textarea>
                                   </div>
                                   <div class="btn-div">
                                     <button 

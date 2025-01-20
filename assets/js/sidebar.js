@@ -5,6 +5,8 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 });
 
 //animacion de carga 
-document.querySelector("form[name='form']").addEventListener("submit", function() {
-    document.getElementById("loading").style.display = "flex";
+document.querySelectorAll("form[name='form']").forEach(form => {
+    form.addEventListener("submit", function() {
+        document.getElementById("loading").style.display = "flex";
+    });
 });

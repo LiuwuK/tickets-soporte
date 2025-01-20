@@ -9,6 +9,20 @@ while ($row = mysqli_fetch_assoc($inge)) {
     $ingenieros[] = $row;
 }
 
+//carga las verticales y distribuidores para filtrar--------------------------------------------------------------
+$query = "SELECT * FROM verticales ";
+$verticalData = mysqli_query($con, $query);
+while ($row = mysqli_fetch_assoc($verticalData)) {
+  $verticales[] = $row; 
+}
+
+$query = "SELECT * FROM distribuidores ";
+$distribuidorData = mysqli_query($con, $query);
+while ($row = mysqli_fetch_assoc($distribuidorData)) {
+  $distData[] = $row; 
+}
+//----------------------------------------------------------------------------------------------------------
+
 //Se obtienen todos los proyectos
 $query = "SELECT pr.id AS projectId, pr.*, es.nombre AS estado, ci.nombre_ciudad AS ciudadN, us.name AS ingeniero, us_com.name AS comercial, tp.nombre AS tipoP
             FROM proyectos pr 
@@ -61,4 +75,6 @@ if(isset($_POST['endBtn'])){
 
     $stmt->close();
 }
+
+
 ?>

@@ -99,6 +99,7 @@ check_login();
                                         };
                                         
                                         ?>
+                                    <span class="label label-success"><?php echo '$'.number_format($row['monto'], 0, '.', ',');?></span>
                                 </p>
 
     
@@ -145,7 +146,7 @@ check_login();
                                                         <p><?php echo $row['resumen']; ?></p>
                                                     </div>
                                                 </div>
-                                                <!-- Datos cliente/ingeniero/tipo/distribuidor -->
+                                                <!-- Datos cliente/ingeniero/tipo/distribuidor/vertical -->
                                                 <div class="pr-row ">
                                                     <div class="group">
                                                         <strong>Cliente</strong>
@@ -155,7 +156,33 @@ check_login();
                                                 <div class="pr-row"> 
                                                     <div class="group">
                                                         <strong>Distribuidor</strong>
-                                                        <p><?php echo $row['distribuidor'];?></p>
+                                                        <?php
+                                                            if(isset($row['distribuidor'])){
+                                                                foreach ($distData as $row_dist) {
+                                                                  if ($row_dist['id'] == $row['distribuidor']) {
+                                                                      echo "<p>".$row_dist['nombre']."</p>";
+                                                                  } 
+                                                                }
+                                                            }else{
+                                                                echo "<p> Sin asignar </p>";
+                                                            }
+                                                        ?>
+                                                    </div> 
+                                                </div>
+                                                <div class="pr-row"> 
+                                                    <div class="group">
+                                                        <strong>Vertical</strong>
+                                                        <?php
+                                                            if(isset($row['vertical'])){
+                                                                foreach ($verticales as $row_vertical) {
+                                                                  if ($row_vertical['id'] == $row['vertical']) {
+                                                                      echo "<p>".$row_vertical['nombre']."</p>";
+                                                                  } 
+                                                                }
+                                                            }else{
+                                                                echo "<p> Sin asignar </p>";
+                                                            }
+                                                        ?>
                                                     </div> 
                                                 </div>
                                                 <div class="pr-row">
@@ -277,14 +304,14 @@ check_login();
                                                 <div class="pr-row">
                                                     <div class="group">
                                                         <strong>Monto Estimado</strong>
-                                                        <p>$<?php echo $row['monto'];?></p>
+                                                        <p> <span><?php echo '$'.number_format($row['monto'], 0, '.', ',');?></span></p>
                                                     </div>
                                                 </div>
 
                                                 <div class="pr-row">
                                                     <div class="group">
-                                                        <strong>Total</strong>
-                                                        <p>$</p>
+                                                        <strong>Costo Real</strong>
+                                                        <p> <span><?php echo '$'.number_format($row['costo_real'], 0, '.', ',');?></span></p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -337,31 +364,6 @@ check_login();
     </div>
     </form>
 </div>
-<script>
-    document.querySelectorAll("#editButton").forEach(function(btn) {
-        btn.addEventListener("click",function() {
-            const projectId = this.getAttribute("data-id");
-            window.location.href = `update-project.php?projectId=${projectId}`;
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-    var endBtns = document.querySelectorAll('[data-bs-target="#closeModal"]');
-    
-    endBtns.forEach(function(button) {
-            button.addEventListener('click', function() {
-                var pId = this.getAttribute('data-pid');
-                var modal = document.getElementById('closeModal');
-                var hiddenInput = modal.querySelector('input[name="pId"]');
-                
-                // Asignar el 'pId' al input del modal
-                if (hiddenInput) {
-                    hiddenInput.value = pId;
-                }
-            });
-        });
-    });
-</script>
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <!-- Bootstrap Bundle (con Popper.js) -->
@@ -373,6 +375,7 @@ check_login();
 <script src="../assets/js/general.js"></script>
 <script src="../assets/js/view-projects.js"></script>
 <script src="../assets/js/sidebar.js"></script>
+
 </body>
 
 </html>

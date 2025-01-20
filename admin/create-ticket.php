@@ -70,7 +70,7 @@ check_login();
                     <div class="form-row">
                         <div class="form-group">
                             <label for="tasktype" class="form-label">Tipo de Tarea</label>
-                                <select id="tasktype" name="tasktype" class="form-select" required>
+                                <select id="tasktype" name="tasktype" class="form-select form-select-sm" required>
                                     <option value="">Seleccionar</option>
                                     <option>Incidente Lógica</option>
                                     <option>Fallo a Nivel de Servidor</option>
@@ -82,7 +82,7 @@ check_login();
                     <div class="form-row">
                         <div class="form-group">
                             <label for="priority" class="form-label">Prioridad</label>
-                            <select id="priority" name="priority" class="form-select">
+                            <select id="priority" name="priority" class="form-select form-select-sm">
                             <?php
                             while ($row = mysqli_fetch_assoc($prioridad)) {
                                 echo "<option value=". $row['id'] .">". $row['nombre'] ."</option>";

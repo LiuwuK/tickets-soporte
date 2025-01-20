@@ -186,7 +186,7 @@ check_login();
                     </div>
                     <?php }
                 } else { ?>
-                    <h3 align="center" style="color:red;">Sin registros que mostrar</h3>
+                     <h3 align="center" style="color:red;">Sin proyectos que mostrar</h3>
             <?php 
             } ?>
                     </div>

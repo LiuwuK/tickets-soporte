@@ -17,35 +17,35 @@
         $pdate = date('Y-m-d'); 
 
         //Subida de imagen-------------------------------------------------------------------------------------------------------
-        // Configuración del directorio de carga
-        if ($_SESSION['role'] == 'admin'){
-            $uploadDir = '../assets/uploads/';
-        }else{
-            $uploadDir = 'assets/uploads/';
-        }
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-
-        // Procesar la imagen
-        if(isset($_FILES['ticketImage']) && $_FILES['ticketImage']['error'] === UPLOAD_ERR_OK){
-            $uploadedFile = $_FILES['ticketImage'];
-            $filePath = '';
-
-            $fileName = uniqid('ticket_', true) .'.'. pathinfo($_FILES['ticketImage']['name'], PATHINFO_EXTENSION);
-            $targetPath = $uploadDir . $fileName;
-
-            // Mover archivo a la carpeta de destino
-            if (move_uploaded_file($uploadedFile['tmp_name'], $targetPath)) {
-                $dir = 'assets/uploads/';
-                $filePath = $dir . $fileName;
-            } else {
-                echo "Error al subir la imagen.";
-                exit;
+            // Configuración del directorio de carga
+            if ($_SESSION['role'] == 'admin'){
+                $uploadDir = '../assets/uploads/';
+            }else{
+                $uploadDir = 'assets/uploads/';
             }
-            
-        } 
-        //----------------------------------------------------------------------------------------------------------------------------------
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            // Procesar la imagen
+            if(isset($_FILES['ticketImage']) && $_FILES['ticketImage']['error'] === UPLOAD_ERR_OK){
+                $uploadedFile = $_FILES['ticketImage'];
+                $filePath = '';
+
+                $fileName = uniqid('ticket_', true) .'.'. pathinfo($_FILES['ticketImage']['name'], PATHINFO_EXTENSION);
+                $targetPath = $uploadDir . $fileName;
+
+                // Mover archivo a la carpeta de destino
+                if (move_uploaded_file($uploadedFile['tmp_name'], $targetPath)) {
+                    $dir = 'assets/uploads/';
+                    $filePath = $dir . $fileName;
+                } else {
+                    echo "Error al subir la imagen.";
+                    exit;
+                }
+                
+            } 
+        //-----------------------------------------------------------------------------------------------------------------------
 
         $query = "INSERT INTO ticket (email_id, subject, task_type, prioprity, ticket, status, posting_date, user_id, ticket_img) 
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";

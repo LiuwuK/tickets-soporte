@@ -2,7 +2,7 @@
 session_start();
 include("checklogin.php");
 include("dbconnection.php");
-include("../assets/php/create-project.php");
+include("assets/php/create-project.php");
 
 check_login();
 ?>
@@ -21,8 +21,8 @@ check_login();
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <!-- CSS personalizados -->
-<link href="../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
-<link href="../assets/css/create-project.css" rel="stylesheet" type="text/css" />
+<link href="assets/css/sidebar.css" rel="stylesheet" type="text/css" />
+<link href="assets/css/create-project.css" rel="stylesheet" type="text/css" />
 
 <!-- Toast notificaciones -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
@@ -33,11 +33,11 @@ check_login();
   <div class="page-container ">
 
     <div class="sidebar">
-    <?php include("header.php"); ?>
+    <?php include("header-test.php"); ?>
       
     </div>
     <div class="page-content">
-    <?php include("leftbar.php"); ?>
+    <?php include("leftbar-test.php"); ?>
         <div class="content">
             <div class="page-title d-flex justify-content-between">
                 <h2>
@@ -163,7 +163,7 @@ check_login();
                     <div class ="form-group">
                     <label class="form-label">Estado</label>
                     <div >
-                        <select name="status" class="form-select form-select-sm" required>
+                        <select name="status" class="form-select form-select-sm" disabled>
                             <?php
                             while ($row = mysqli_fetch_assoc($status)) {
                                 if ($row['id'] == $row_p['estado_id']) {
@@ -186,7 +186,7 @@ check_login();
                         <div class ="form-group">
                             <label class="form-label">Ingeniero responsable</label>
                             <div >
-                            <select name="ingeniero" class="form-select form-select-sm" required>
+                            <select name="ingeniero" class="form-select form-select-sm" disabled>
                                 <?php
                                     echo "<option value='' >Sin asignar</option>";
                                     while ($row = mysqli_fetch_assoc(result: $inge)) {
@@ -206,7 +206,7 @@ check_login();
                         <div class="form-group">
                             <label class="form-label">Distribuidor</label>
                                 <div>
-                                    <select name="dist" class="form-select form-select-sm" required>
+                                    <select name="dist" class="form-select form-select-sm" disabled>
                                         <?php
                                             echo "<option value='' >Sin asignar</option>";
                                             while ($row = mysqli_fetch_assoc(result: $distribuidor)) {
@@ -224,7 +224,7 @@ check_login();
                         <div class="form-group">
                             <label class="form-label">Vertical</label>
                                 <div>
-                                    <select name="vertical" class="form-select form-select-sm" required>
+                                    <select name="vertical" class="form-select form-select-sm" disabled>
                                         <?php
                                             echo "<option value='' >Sin asignar</option>";
                                             while ($row = mysqli_fetch_assoc(result: $vertical)) {
@@ -254,7 +254,7 @@ check_login();
                             <label for="">Costo Real</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="costoR">$</span>
-                                <input name="costoR" type="number" class="form-control form-control-sm" value="<?php echo $row_p['costo_real'];?>" aria-label="Costo" aria-describedby="costoR">
+                                <input name="costoR" type="number" class="form-control form-control-sm" value="<?php echo $row_p['costo_real'];?>" aria-label="Costo" aria-describedby="costoR" disabled>
                             </div>
                         </div>
                     </div>
@@ -283,16 +283,6 @@ check_login();
                     <?php
                         }
                     ?>
-
-                    <div class="form-row">
-                        <div class="expenses">
-                            <div class="title">
-                            <label for="bom" class="form-label">BOM</label>
-                            <input type="checkbox" id="bom" name="bom">
-                            </div>
-                            <input type="file" id="bom-input" name="bom-input" class="hidden" placeholder="BOM">
-                        </div>
-                    </div>  
 
                     <div class="form-row">
                     <div class="form-group">
@@ -367,8 +357,8 @@ check_login();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Scripts propios -->
-<script src="../assets/js/create-project.js"></script>
-<script src="../assets/js/sidebar.js"></script>
+<script src="assets/js/create-project.js"></script>
+<script src="assets/js/sidebar.js"></script>
 </body>
 
 </html>

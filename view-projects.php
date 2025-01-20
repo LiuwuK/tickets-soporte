@@ -96,6 +96,7 @@ check_login();
                                         };
                                         
                                     ?>
+                                    <span class="label label-success"><?php echo '$'.number_format($row['monto'], 0, '.', ',');?></span>
                                 </p>
                                 <div class="actions"> 
                                     <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> 
@@ -130,7 +131,33 @@ check_login();
                                                 <div class="pr-row"> 
                                                     <div class="group">
                                                         <strong>Distribuidor</strong>
-                                                        <p><?php echo $row['distribuidor'];?></p>
+                                                        <?php
+                                                            if(isset($row['distribuidor'])){
+                                                                foreach ($distData as $row_dist) {
+                                                                  if ($row_dist['id'] == $row['distribuidor']) {
+                                                                      echo "<p>".$row_dist['nombre']."</p>";
+                                                                  } 
+                                                                }
+                                                            }else{
+                                                                echo "<p> Sin asignar </p>";
+                                                            }
+                                                        ?>
+                                                    </div> 
+                                                </div>
+                                                <div class="pr-row"> 
+                                                    <div class="group">
+                                                        <strong>Vertical</strong>
+                                                        <?php
+                                                            if(isset($row['vertical'])){
+                                                                foreach ($verticales as $row_vertical) {
+                                                                  if ($row_vertical['id'] == $row['vertical']) {
+                                                                      echo "<p>".$row_vertical['nombre']."</p>";
+                                                                  } 
+                                                                }
+                                                            }else{
+                                                                echo "<p> Sin asignar </p>";
+                                                            }
+                                                        ?>
                                                     </div> 
                                                 </div>
                                                 <div class="pr-row">
@@ -219,16 +246,20 @@ check_login();
                                                             $actividades = $con->prepare($query);
                                                             $actividades->execute();
                                                             $result = $actividades->get_result();
-                                                            
-                                                            while ($row_ac = $result->fetch_assoc()) {
-                                                                $fecha_original = $row_ac['fecha']; 
-                                                                setlocale(LC_TIME, 'es_ES.UTF-8', 'spanish');
-                                                                // Formatear la fecha
-                                                                $timestamp = strtotime($fecha_original);
-                                                                $fecha = strftime('%e de %B %Y', $timestamp);
-                                                            ?>
-                                                                <li><?php echo $row_ac['nombre'];?> -- <?php echo $fecha;?></li>    
-                                                            <?php }
+                                                            $act_num = $result->num_rows;
+                                                            if($act_num < 0 ){
+                                                                while ($row_ac = $result->fetch_assoc()) {
+                                                                    $fecha_original = $row_ac['fecha']; 
+                                                                    setlocale(LC_TIME, 'es_ES.UTF-8', 'spanish');
+                                                                    // Formatear la fecha
+                                                                    $timestamp = strtotime($fecha_original);
+                                                                    $fecha = strftime('%e de %B %Y', $timestamp);
+                                                                ?>
+                                                                    <li><?php echo $row_ac['nombre'];?> -- <?php echo $fecha;?></li>    
+                                                                <?php }
+                                                            }else{
+                                                                echo "<li>Sin actividades asignadas</li>";
+                                                            }
                                                         ?>
                                                         </ul>
                                                     </div>
@@ -252,19 +283,22 @@ check_login();
                                                 <div class="pr-row">
                                                     <div class="group">
                                                         <strong>Monto Estimado</strong>
-                                                        <p>$<?php echo $row['monto'];?></p>
+                                                        <p><?php echo '$'.number_format($row['monto'], 0, '.', ',');?></p>
                                                     </div>
                                                 </div>
 
                                                 <div class="pr-row">
                                                     <div class="group">
-                                                        <strong>Total</strong>
-                                                        <p>$</p>
+                                                        <strong>Costo Real</strong>
+                                                        <p><?php echo '$'.number_format($row['costo_real'], 0, '.', ','); ?></p>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <br>
+                                        <div class="footer d-flex justify-content-between">
+                                            <button id="editButton" class="btn btn-updt" data-id="<?php echo $row['projectId']; ?>">Editar</button>
+                                        </div>
                                     </div>
                                     
                                 </div>
@@ -283,7 +317,14 @@ check_login();
     </div>
   </div>
 
-
+<script>
+        document.querySelectorAll("#editButton").forEach(function(btn) {
+        btn.addEventListener("click",function() {
+            const projectId = this.getAttribute("data-id");
+            window.location.href = `update-project.php?projectId=${projectId}`;
+        });
+    });
+</script>
 
 
 

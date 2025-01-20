@@ -89,3 +89,9 @@ function formatearFecha(fecha) {
   const opciones = { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' };
   return date.toLocaleDateString('es-ES', opciones);
 }
+
+
+//activar select para actualizar proyecto
+document.querySelector('form').addEventListener('submit', function() {
+  document.querySelectorAll('[disabled]').forEach(el => el.disabled = false);
+});

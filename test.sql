@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-01-2025 a las 22:01:32
+-- Tiempo de generación: 20-01-2025 a las 21:56:44
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -40,10 +40,22 @@ CREATE TABLE `actividades` (
 --
 
 INSERT INTO `actividades` (`id`, `nombre`, `fecha`, `proyecto_id`, `descripcion`) VALUES
-(25, 'Actividad 1', '2025-01-09', 13, 'asd'),
-(26, 'actividad 2', '2025-01-26', 13, 'asd'),
-(27, 'actividad 1', '2025-01-04', 14, 'tst'),
-(28, 'Actividad 1', '2025-01-16', 15, 'asdasd');
+(38, 'primera visita', '2025-01-25', 26, 'Primera visita al cliente');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `bom`
+--
+
+CREATE TABLE `bom` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(255) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `precio_unitario` decimal(10,2) NOT NULL,
+  `total` decimal(10,2) GENERATED ALWAYS AS (`cantidad` * `precio_unitario`) STORED,
+  `distribuidor_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -63,7 +75,10 @@ CREATE TABLE `cargos` (
 INSERT INTO `cargos` (`id`, `nombre`) VALUES
 (1, 'Ingeniero'),
 (2, 'Comercial'),
-(3, 'Gerencia/Finanzas');
+(3, 'Contabilidad y Finanzas'),
+(4, 'Gerencia'),
+(5, 'Técnico'),
+(6, 'Compras');
 
 -- --------------------------------------------------------
 
@@ -138,7 +153,35 @@ CREATE TABLE `contactos_proyecto` (
 --
 
 INSERT INTO `contactos_proyecto` (`id`, `nombre`, `correo`, `cargo`, `numero`, `proyecto_id`) VALUES
-(4, 'Juan ', 'juan@gmail.com', 'ingeniero', '56949291218', 15);
+(8, 'Juan', 'juan@gmail.com', 'ingeniero', '949291218', 26);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `distribuidores`
+--
+
+CREATE TABLE `distribuidores` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(255) NOT NULL,
+  `monto` int(11) DEFAULT NULL,
+  `monto_restante` int(11) DEFAULT NULL,
+  `estado` tinyint(4) DEFAULT 1,
+  `observacion` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `distribuidores`
+--
+
+INSERT INTO `distribuidores` (`id`, `nombre`, `monto`, `monto_restante`, `estado`, `observacion`) VALUES
+(1, 'Automa Electrónica', 10000000, 8000000, 1, 'OC 30 DIAS'),
+(2, 'Vitel', 0, 0, 1, 'Condición de pago a 30 y 60 días'),
+(3, 'Estec', 10000000, 5000000, 1, 'Condición de pago a 30 días'),
+(4, 'Synerlink', 20000000, 20000000, 1, 'Condición de pago a 30 días'),
+(5, 'PC Factory', 5000000, 5000000, 1, 'Condición de pago a 30 días'),
+(6, 'Full Alarms', 18000000, 10000000, 1, 'OC 30 días'),
+(7, 'Mobile Security', 0, 0, 1, 'Condición de pago 50% transferencia 50% pago cheque a 30 días');
 
 -- --------------------------------------------------------
 
@@ -163,12 +206,16 @@ INSERT INTO `estados` (`id`, `nombre`, `type`) VALUES
 (10, 'En revisión', 'ticket'),
 (11, 'Abierto', 'ticket'),
 (12, 'Cerrado', 'ticket'),
-(13, 'Primer visita o contacto con Cliente', 'project'),
-(14, 'Verificando si existe Proyecto', 'project'),
-(15, 'Calificando la oportunidad', 'project'),
-(16, 'Desarrollando la Solución (Config)', 'project'),
-(17, 'Cotizado al Cliente', 'project'),
-(18, 'Negociando y Cerrando el Proyecto', 'project');
+(13, 'Primer visita o contacto con Cliente', 'projectSales'),
+(14, 'Verificando si existe Proyecto', 'projectSales'),
+(15, 'Calificando la oportunidad', 'projectSales'),
+(16, 'Desarrollando la Solución (Config)', 'projectSales'),
+(17, 'Cotizado al Cliente', 'projectSales'),
+(18, 'Negociando y Cerrando el Proyecto', 'projectSales'),
+(19, 'En Evaluación', 'project'),
+(20, 'Ganado', 'project'),
+(21, 'Perdido', 'project'),
+(22, 'Pendiente de Cierre', 'ticket');
 
 -- --------------------------------------------------------
 
@@ -188,8 +235,7 @@ CREATE TABLE `licitacion_proyecto` (
 --
 
 INSERT INTO `licitacion_proyecto` (`id`, `licitacion_id`, `proyecto_id`, `portal`) VALUES
-(3, '17413034134', 13, 'test2'),
-(4, '123', 14, 'portal test');
+(11, '017413034134', 25, 'portal test');
 
 -- --------------------------------------------------------
 
@@ -243,8 +289,7 @@ CREATE TABLE `proyectos` (
   `ciudad` int(11) DEFAULT NULL,
   `estado_id` int(11) NOT NULL,
   `ingeniero_responsable` int(11) DEFAULT NULL,
-  `bom` text DEFAULT NULL,
-  `distribuidor` varchar(255) DEFAULT 'Por definir',
+  `bom` tinyint(1) DEFAULT 0,
   `costo_software` int(20) DEFAULT 0,
   `costo_hardware` int(20) DEFAULT 0,
   `resumen` text DEFAULT NULL,
@@ -252,17 +297,19 @@ CREATE TABLE `proyectos` (
   `comercial_responsable` int(11) NOT NULL,
   `monto` int(20) DEFAULT 0,
   `tipo` int(2) NOT NULL,
-  `clasificacion` int(2) DEFAULT NULL
+  `clasificacion` int(2) DEFAULT NULL,
+  `costo_real` int(11) DEFAULT 0,
+  `distribuidor` int(2) DEFAULT NULL,
+  `vertical` int(2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Volcado de datos para la tabla `proyectos`
 --
 
-INSERT INTO `proyectos` (`id`, `nombre`, `cliente`, `ciudad`, `estado_id`, `ingeniero_responsable`, `bom`, `distribuidor`, `costo_software`, `costo_hardware`, `resumen`, `fecha_creacion`, `comercial_responsable`, `monto`, `tipo`, `clasificacion`) VALUES
-(13, 'proyecto 2', 'Cliente test', 9, 17, 11, NULL, 'Safeteck', 200, 300, 'asdasdad', '2025-01-14', 11, 1208123, 1, 1),
-(14, 'test', 'Cliente test', 6, 13, NULL, NULL, 'Por definir', 0, 100, 'proyecto test', '2025-01-14', 11, 0, 1, 1),
-(15, 'test', 'Cliente test', 6, 13, 13, NULL, 'Por definir', 0, 150, 'test', '2025-01-15', 13, 0, 2, 1);
+INSERT INTO `proyectos` (`id`, `nombre`, `cliente`, `ciudad`, `estado_id`, `ingeniero_responsable`, `bom`, `costo_software`, `costo_hardware`, `resumen`, `fecha_creacion`, `comercial_responsable`, `monto`, `tipo`, `clasificacion`, `costo_real`, `distribuidor`, `vertical`) VALUES
+(25, 'Proyecto Licitacion', 'cliente ', 13, 19, 13, 0, 0, 0, 'Proyecto licitacion', '2025-01-20', 15, 8000000, 1, 2, 1000, 2, 1),
+(26, 'Proyecto contacto', 'Cliente test', 1, 19, NULL, 0, 0, 0, 'proyecto contacto admin', '2025-01-20', 13, 2000000, 2, 2, 0, NULL, 6);
 
 -- --------------------------------------------------------
 
@@ -309,16 +356,16 @@ CREATE TABLE `tasks` (
   `titulo` text NOT NULL,
   `fecha_creacion` datetime DEFAULT current_timestamp(),
   `fecha_actualizacion` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `estado_id` int(11) DEFAULT 7
+  `estado_id` int(11) DEFAULT 7,
+  `usuario_asignado` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `tasks`
 --
 
-INSERT INTO `tasks` (`id`, `ticket_id`, `titulo`, `fecha_creacion`, `fecha_actualizacion`, `estado_id`) VALUES
-(112, 35, 'task 1', '2025-01-14 10:27:43', '2025-01-14 10:27:43', 7),
-(113, 35, 'task 2', '2025-01-14 10:38:07', '2025-01-14 10:38:07', 7);
+INSERT INTO `tasks` (`id`, `ticket_id`, `titulo`, `fecha_creacion`, `fecha_actualizacion`, `estado_id`, `usuario_asignado`) VALUES
+(115, 85, 'Nueva tarea', '2025-01-17 11:51:16', '2025-01-17 11:51:49', 8, NULL);
 
 -- --------------------------------------------------------
 
@@ -333,25 +380,23 @@ CREATE TABLE `ticket` (
   `task_type` varchar(300) DEFAULT NULL,
   `prioprity` int(11) DEFAULT NULL,
   `ticket` longtext DEFAULT NULL,
-  `attachment` varchar(300) DEFAULT NULL,
   `admin_remark` longtext DEFAULT NULL,
   `posting_date` date DEFAULT NULL,
   `admin_remark_date` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `status` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `ticket_img` varchar(225) DEFAULT NULL
+  `ticket_img` varchar(225) DEFAULT NULL,
+  `tecnico_asignado` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Volcado de datos para la tabla `ticket`
 --
 
-INSERT INTO `ticket` (`id`, `email_id`, `subject`, `task_type`, `prioprity`, `ticket`, `attachment`, `admin_remark`, `posting_date`, `admin_remark_date`, `status`, `user_id`, `ticket_img`) VALUES
-(35, 'desarrolladorsafeteck@hotmail.com', 'Ticket de prueba', 'Incidente Lógica', 3, 'test', NULL, 'SI', '2025-01-02', '2025-01-14 14:12:29', 10, 8, NULL),
-(36, 'desarrolladorsafeteck@hotmail.com', 'Ticket de prueba 2', 'Fallo a Nivel de Servidor', 5, 'test 2', NULL, 'test2', '2025-01-02', '2025-01-02 16:44:09', 10, 8, NULL),
-(50, 'desarrolladorsafeteck@hotmail.com', 'test imagen admin', 'Incidente Lógica', 3, 'test imagen admin', NULL, NULL, '2025-01-15', '2025-01-15 20:57:38', 11, 11, 'assets/uploads/ticket_678820e96eb729.63443395.png'),
-(51, 'desarrolladorsafeteck@hotmail.com', 'test imagen cliente', 'Fallo a Nivel de Servidor', 4, 'asas', NULL, NULL, '2025-01-15', '2025-01-15 20:58:28', 11, 11, 'assets/uploads/ticket_6788217460e789.35945211.png'),
-(52, 'test@test.com', 'test imagen 2', 'Incidente Lógica', 3, 'asdad', NULL, NULL, '2025-01-15', '2025-01-15 20:58:56', 11, 13, '../assets/uploads/ticket_678821900bbb68.88942021.png');
+INSERT INTO `ticket` (`id`, `email_id`, `subject`, `task_type`, `prioprity`, `ticket`, `admin_remark`, `posting_date`, `admin_remark_date`, `status`, `user_id`, `ticket_img`, `tecnico_asignado`) VALUES
+(85, 'desarrolladorsafeteck@hotmail.com', 'Ticket', 'Incidente Lógica', 3, 'ticket', 'Se esta revisando el ticket', '2025-01-17', '2025-01-20 17:19:07', 12, 11, 'assets/uploads/ticket_678e7dc0821b21.75169373.jpg', 11),
+(86, 'test@test.com', 'test email', 'Incidente Lógica', 3, 'asd', 'revisado', '2025-01-17', '2025-01-20 17:19:18', 10, 11, 'assets/uploads/ticket_678a79b4333e73.77922033.jpg', NULL),
+(87, 'comercialuser@gmail.com', 'test email', 'Incidente Lógica', NULL, 'asd', 'revisado', '2025-01-20', '2025-01-20 17:10:16', 10, 15, 'assets/uploads/ticket_678e7f40525bc9.69148165.jpg', NULL);
 
 -- --------------------------------------------------------
 
@@ -398,9 +443,35 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `name`, `email`, `alt_email`, `password`, `mobile`, `gender`, `address`, `status`, `posting_date`, `rol`, `cargo`) VALUES
-(11, 'Kevin Antecao', 'desarrolladorsafeteck@hotmail.com', 'test@test.com', '$2y$10$pCYT1DDd5z0NbBBeIv9gv.Wj1tNYLH0qAdK5gYdKE/MT1gH1xMySy', '999357718', 'male', 'asd123', 1, '2025-01-03 17:00:38', 'user', 1),
-(13, 'New user', 'test@test.com', NULL, '$2y$10$68AmtkGRTqCqC6qVEvQ3AeiqFLOz01MKUOtqEohlzynNDO.jDatX2', '999357718', 'male', NULL, 1, '2025-01-03 17:00:38', 'admin', 1),
-(15, 'test user', 'test2@test.com', NULL, '$2y$10$6NcnerdAtQu9eAsQaUUnaOs9X1DZgKLa7C48PzalWosIB410oY1eW', '1231231312', NULL, NULL, 1, '2025-01-14 16:35:08', 'user', 2);
+(11, 'Kevin Antecao', 'comprasuser@gmail.com', 'test@test.com', '$2y$10$pCYT1DDd5z0NbBBeIv9gv.Wj1tNYLH0qAdK5gYdKE/MT1gH1xMySy', '999357718', 'male', 'asd123', 1, '2025-01-03 17:00:38', 'user', 6),
+(13, 'Comercial admin', 'desarrolladorsafeteck@hotmail.com', NULL, '$2y$10$68AmtkGRTqCqC6qVEvQ3AeiqFLOz01MKUOtqEohlzynNDO.jDatX2', '999357718', 'male', NULL, 1, '2025-01-03 17:00:38', 'admin', 1),
+(15, 'Comercial  user', 'comercialuser@gmail.com', 'test@test.com', '$2y$10$6NcnerdAtQu9eAsQaUUnaOs9X1DZgKLa7C48PzalWosIB410oY1eW', '1231231312', NULL, 'asd', 1, '2025-01-14 16:35:08', 'user', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `verticales`
+--
+
+CREATE TABLE `verticales` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `verticales`
+--
+
+INSERT INTO `verticales` (`id`, `nombre`) VALUES
+(1, 'Banca/Finanzas'),
+(2, 'Industrias Manufactureras, Materiales Y Minería'),
+(3, 'Retail Y Servicios De Consumo'),
+(4, 'Cadena De Suministro'),
+(5, 'Construcción Inmobiliaria'),
+(6, 'Educación'),
+(7, 'Turismo, Hoteles Y Restaurantes'),
+(8, 'Transportes Y Servicios Automotrices'),
+(9, 'Agricultura, Ganadería Y Pesca');
 
 --
 -- Índices para tablas volcadas
@@ -412,6 +483,13 @@ INSERT INTO `user` (`id`, `name`, `email`, `alt_email`, `password`, `mobile`, `g
 ALTER TABLE `actividades`
   ADD PRIMARY KEY (`id`),
   ADD KEY `proyecto_id` (`proyecto_id`);
+
+--
+-- Indices de la tabla `bom`
+--
+ALTER TABLE `bom`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `distribuidor_id` (`distribuidor_id`);
 
 --
 -- Indices de la tabla `cargos`
@@ -438,6 +516,12 @@ ALTER TABLE `clasificacion_proyecto`
 ALTER TABLE `contactos_proyecto`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK_proyecto_id` (`proyecto_id`);
+
+--
+-- Indices de la tabla `distribuidores`
+--
+ALTER TABLE `distribuidores`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `estados`
@@ -475,7 +559,9 @@ ALTER TABLE `proyectos`
   ADD KEY `fk_type` (`tipo`),
   ADD KEY `fk_class` (`clasificacion`),
   ADD KEY `fk_ciudad` (`ciudad`),
-  ADD KEY `fk_ingeniero_id` (`ingeniero_responsable`);
+  ADD KEY `fk_ingeniero_id` (`ingeniero_responsable`),
+  ADD KEY `fk_proyectos_distribuidor` (`distribuidor`),
+  ADD KEY `fk_proyectos_verticales` (`vertical`);
 
 --
 -- Indices de la tabla `regiones`
@@ -513,6 +599,12 @@ ALTER TABLE `user`
   ADD KEY `fk_cargo_id` (`cargo`);
 
 --
+-- Indices de la tabla `verticales`
+--
+ALTER TABLE `verticales`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -520,13 +612,19 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT de la tabla `actividades`
 --
 ALTER TABLE `actividades`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+
+--
+-- AUTO_INCREMENT de la tabla `bom`
+--
+ALTER TABLE `bom`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `cargos`
 --
 ALTER TABLE `cargos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `ciudades`
@@ -544,25 +642,31 @@ ALTER TABLE `clasificacion_proyecto`
 -- AUTO_INCREMENT de la tabla `contactos_proyecto`
 --
 ALTER TABLE `contactos_proyecto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT de la tabla `distribuidores`
+--
+ALTER TABLE `distribuidores`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `estados`
 --
 ALTER TABLE `estados`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de la tabla `licitacion_proyecto`
 --
 ALTER TABLE `licitacion_proyecto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT de la tabla `prioridades`
@@ -574,7 +678,7 @@ ALTER TABLE `prioridades`
 -- AUTO_INCREMENT de la tabla `proyectos`
 --
 ALTER TABLE `proyectos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `regiones`
@@ -586,13 +690,13 @@ ALTER TABLE `regiones`
 -- AUTO_INCREMENT de la tabla `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
 
 --
 -- AUTO_INCREMENT de la tabla `ticket`
 --
 ALTER TABLE `ticket`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_proyecto`
@@ -607,6 +711,12 @@ ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
+-- AUTO_INCREMENT de la tabla `verticales`
+--
+ALTER TABLE `verticales`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
 -- Restricciones para tablas volcadas
 --
 
@@ -615,6 +725,12 @@ ALTER TABLE `user`
 --
 ALTER TABLE `actividades`
   ADD CONSTRAINT `actividades_ibfk_1` FOREIGN KEY (`proyecto_id`) REFERENCES `proyectos` (`id`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `bom`
+--
+ALTER TABLE `bom`
+  ADD CONSTRAINT `bom_ibfk_1` FOREIGN KEY (`distribuidor_id`) REFERENCES `distribuidores` (`id`);
 
 --
 -- Filtros para la tabla `ciudades`
@@ -647,6 +763,8 @@ ALTER TABLE `proyectos`
   ADD CONSTRAINT `fk_ciudad` FOREIGN KEY (`ciudad`) REFERENCES `ciudades` (`id`),
   ADD CONSTRAINT `fk_class` FOREIGN KEY (`clasificacion`) REFERENCES `clasificacion_proyecto` (`id`),
   ADD CONSTRAINT `fk_ingeniero_id` FOREIGN KEY (`ingeniero_responsable`) REFERENCES `user` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_proyectos_distribuidor` FOREIGN KEY (`distribuidor`) REFERENCES `distribuidores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_proyectos_verticales` FOREIGN KEY (`vertical`) REFERENCES `verticales` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_type` FOREIGN KEY (`tipo`) REFERENCES `tipo_proyecto` (`id`),
   ADD CONSTRAINT `fk_user_proyecto` FOREIGN KEY (`comercial_responsable`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `proyectos_ibfk_1` FOREIGN KEY (`estado_id`) REFERENCES `estados` (`id`) ON UPDATE CASCADE;

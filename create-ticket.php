@@ -89,7 +89,7 @@ check_login();
                     <div class="form-row">
                         <div class="form-group">
                             <label for="ticketImage" class="form-label">Subir Imagen</label>
-                            <input class="form-control form-control-sm" type="file" id="ticketImage" name="ticketImage" accept="image/*" required>
+                            <input class="form-control form-control-sm" type="file" id="ticketImage" name="ticketImage" accept="image/*">
                         </div>
                     </div>       
                     <div class="form-row">
