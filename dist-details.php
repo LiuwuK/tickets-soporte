@@ -54,8 +54,16 @@ check_login();
                 <?php 
                   while ($row = mysqli_fetch_assoc($proyectos)){
                 ?>
-                  <div class="card">
-                      
+                  <div class="card d-flex flex-row align-items-center p-3 mb-2">
+                    <div class="flex-grow-1">
+                      <strong><?php echo $row['nombre']; ?></strong>
+                    </div>
+                    <div class="text-center" style="width: 150px;">
+                      <p><?php echo $row['fecha_creacion']; ?></p>
+                    </div>
+                    <div class="text-end" style="width: 150px;">
+                      <p><?php echo '$' . number_format($row['costo_real'], 0, '.', ','); ?></p>
+                    </div>
                   </div>
                 <?php
                   }

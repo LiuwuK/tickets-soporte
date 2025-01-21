@@ -8,7 +8,7 @@ $distribuidor = mysqli_fetch_assoc($distribuidorData);
 //obtener proyectos asociados
 $query = "SELECT *
             FROM proyectos
-            WHERE distribuidor = '".$_GET['id']."'";
+            WHERE distribuidor = '".$_GET['id']."' AND estado_id = '20'";
 $proyectos = mysqli_query($con, $query);
 
 ?>

@@ -41,14 +41,14 @@
             </li>
         <?php };
 
-      if($_SESSION['cargo'] == '1' or $_SESSION['cargo'] == '2' ){ ?>
+      if($_SESSION['cargo'] == '1' or $_SESSION['cargo'] == '2' or $_SESSION['cargo'] == '4'  ){ ?>
         <li class="nav-item active">
-          <a href="create-project.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Crear Proyectos">
+          <a href="create-project.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Crear Proyecto">
             <i class="bi bi-clipboard2-plus"></i> 
           </a>
         </li>
         <li class="nav-item">
-          <a href="view-projects.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Ver Proyectos">
+          <a href="view-projects.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Proyectos">
             <i class="bi bi-clipboard2"></i>
           </a>
         </li>
@@ -58,6 +58,15 @@
         <li class="nav-item">
           <a href="tickets-asignados.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Tickets Asignados">
             <i class="bi bi-pin-angle"></i>
+          </a>
+        </li>
+    <?php 
+      };
+    
+      if($_SESSION['cargo'] == '3'){ ?>
+        <li class="nav-item">
+          <a href="bill-projects.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Facturar Proyectos">
+            <i class="bi bi-clipboard2"></i>
           </a>
         </li>
     <?php 

@@ -61,6 +61,7 @@ if (isset($_POST["asignarIng"])) {
 if(isset($_POST['endBtn'])){
     $pID    =  $_POST['pId'];
     $estado = $_POST['estado'];
+    
     $query =  " UPDATE proyectos
                 SET estado_id = ?
                 WHERE id = ?";

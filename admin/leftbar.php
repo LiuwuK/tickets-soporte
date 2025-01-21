@@ -23,7 +23,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="view-projects.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Ver Proyectos">
+          <a href="view-projects.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Gestionar Proyectos">
             <i class="bi bi-clipboard2"></i>
           </a>
         </li>

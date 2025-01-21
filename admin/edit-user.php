@@ -65,7 +65,7 @@ include("assets/php/edit-user.php");
                         </div>
                         <div class="form-group">
                           <label for="alt_email" class="form-label">Correo Alternativo</label>
-                          <input type="email" class="form-control form-control-sm" id="alt_email" name="alt_email" value="<?php echo $rw['alt_email']; ?>" required="required">
+                          <input type="email" class="form-control form-control-sm" id="alt_email" name="alt_email" value="<?php echo $rw['alt_email']; ?>" >
                         </div>
                       </div>
 
