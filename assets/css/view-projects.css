@@ -44,6 +44,7 @@
     justify-content: space-between; 
     align-items: center;
     min-width: 300px;
+    width: 50%
 }
 .material-item p, .materials p{
     margin: 0px;
