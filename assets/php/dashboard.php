@@ -7,7 +7,10 @@ if ($_SESSION['cargo'] == 5){
             FROM ticket
             WHERE tecnico_asignado = '".$_SESSION['user_id']."'
             ORDER BY posting_date ASC";
-  $tickets_pendiente = mysqli_query($con, $query);
+  $ticketsData = $con->prepare($query);
+  $ticketsData->execute();
+  $tickets_pendiente = $ticketsData->get_result();
+  $num_t = $tickets_pendiente->num_rows;
 } 
 //user comercial
 else if ($_SESSION['cargo'] == 2 or $_SESSION['cargo'] == 4){
@@ -23,9 +26,14 @@ else if ($_SESSION['cargo'] == 2 or $_SESSION['cargo'] == 4){
     $query .= "WHERE  estado_id IN('19','20')
                 ORDER BY monto DESC";
   }      
-  $top_proyectos = mysqli_query($con, $query);
 
-  $total_query = "SELECT COUNT(id) AS total_proyectos, SUM(monto) AS total_monto, SUM(CASE WHEN estado_id = '20' THEN monto ELSE 0 END) AS total_ganados
+  $top = $con->prepare($query);
+  $top->execute();
+  $top_proyectos = $top->get_result();
+  $num_top = $top_proyectos->num_rows;
+
+  //TOTAL DE LOS PROYECTOS
+ $total_query = "SELECT COUNT(id) AS total_proyectos, SUM(monto) AS total_monto, SUM(CASE WHEN estado_id = '20' THEN monto ELSE 0 END) AS total_ganados
                   FROM proyectos";
   if($_SESSION['cargo'] == 2){
     $total_query .= " WHERE comercial_responsable = '".$_SESSION['user_id']."'";
@@ -45,15 +53,20 @@ else if ($_SESSION['cargo'] == 3){
             WHERE pr.estado_id = '20' AND pr.xfacturar = '1'
             ORDER BY pr.fecha_creacion DESC";
   $xfacturar = mysqli_query($con, $query);
+
+  $pdata = $con->prepare($query);
+  $pdata->execute();
+  $xfacturar = $pdata->get_result();
+  $num_xf = $xfacturar->num_rows;
 }
 
 //Informacion para graficos ------------------------------------------------
 if($_SESSION['cargo'] == 4){
-  $query = "SELECT	es.nombre, SUM(pr.monto) AS total_proyecto 
-            FROM proyectos pr 
-            RIGHT JOIN estados es ON(pr.estado_id = es.id)
+  $query = "SELECT es.nombre, COALESCE(SUM(pr.monto), 0) AS total_proyecto 
+            FROM estados es
+            LEFT JOIN proyectos pr ON (pr.estado_id = es.id)
             WHERE es.type = 'project'
-            GROUP BY pr.estado_id
+            GROUP BY es.id
             ORDER BY es.nombre ASC";
   $proyectos_data = mysqli_query($con, $query);
   $tProject = [];
@@ -66,12 +79,13 @@ if($_SESSION['cargo'] == 4){
   }
 
 
-  $query = "SELECT	es.nombre, COUNT(pr.estado_id) AS total_proyecto 
-  FROM proyectos pr 
-  RIGHT JOIN estados es ON(pr.estado_id = es.id)
-  WHERE es.type = 'project'
-  GROUP BY pr.estado_id
-  ORDER BY es.nombre desc";
+  $query = "SELECT es.nombre, COALESCE(COUNT(pr.id), 0) AS total_proyecto
+            FROM estados es
+            LEFT JOIN proyectos pr ON (pr.estado_id = es.id) 
+            WHERE es.type = 'project'
+            GROUP BY es.id
+            ORDER BY es.nombre DESC";
+
   $proyectos_data = mysqli_query($con, $query);
   $cProject = [];
   $cProjectData = [];

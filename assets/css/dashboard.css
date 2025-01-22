@@ -6,6 +6,7 @@
     width: 60%;
     margin-top: 50px;
     color: #33435e;
+    min-height: 20rem;
 }
 
 .first-row h3, .graficos h3{

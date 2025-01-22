@@ -53,60 +53,68 @@ check_login();
                 <div class="t-head">
                   <h3>Tickets pendientes</h3>
                 </div>
-                <div class="t-body">
-                  <div class="d-flex flex-row align-items-center pl-3 mb-3 ">
-                    <div class="flex-grow-1 text-center">
-                      <strong>Asunto</strong>
-                    </div>
-                    <div class="text-center" style="width: 50%;">
-                      <strong>Resumen</strong>
-                    </div>
-                    <div class="text-center" style="width: 25%;">
-                      <strong>Tiempo transcurrido</strong>
-                    </div>
-                    <div class="text-end" style="width: 10%;">
-                      <p></p>
-                    </div>
-                  </div>
-                  <?php                     
-                    while ($row = mysqli_fetch_assoc($tickets_pendiente)){
-                      $posting_date = $row['posting_date'];
-                      $date_posting = new DateTime($posting_date);
-                      $today = new DateTime();
-                      $interval = $today->diff($date_posting);
-                      $days_passed = $interval->days;
-                      $months_passed = $interval->m + ($interval->y * 12);
-
-                      if ($days_passed > 30) {
-                          $time_passed = $months_passed . " Meses";
-                      } else if($days_passed <= 0){
-                        $time_passed = "Hoy";
-                      } else {
-                          $time_passed = $days_passed . " Días";
-                      }
-                  ?>
-                    <div class="card d-flex flex-row align-items-center p-3 mb-2">
+                <?php
+                  if($num_t > 0){
+                ?>
+                  <div class="t-body">
+                    <div class="d-flex flex-row align-items-center pl-3 mb-3 ">
                       <div class="flex-grow-1 text-center">
-                        <strong><?php echo $row['subject']; ?></strong>
+                        <strong>Asunto</strong>
                       </div>
-                      <div class="text-center" style="width: 50%; overflow:hidden;">
-                        <p><?php echo $row['ticket']; ?></p>
+                      <div class="text-center" style="width: 50%;">
+                        <strong>Resumen</strong>
                       </div>
-                      <div class="text-center" style="width: 20%;">
-                        <p>Hace <?php echo $time_passed ?></p>
+                      <div class="text-center" style="width: 25%;">
+                        <strong>Fecha de subida</strong>
                       </div>
-                      <div class="text-end" style="width: 100px;">
-                        <p><button class="btn btn-updt" onclick="window.location.href='tickets-asignados.php?textSearch=<?php echo $row['id']; ?>&priority=<?php echo $row['prioprity']; ?>';">Ver</button></p>
+                      <div class="text-end" style="width: 10%;">
+                        <p></p>
                       </div>
                     </div>
-                  <?php
-                      $counter++; 
-                      if ($counter >= 5) { 
-                          break;
+                    <?php                     
+                      while ($row = $tickets_pendiente->fetch_assoc()){
+                        $posting_date = $row['posting_date'];
+                        $date_posting = new DateTime($posting_date);
+                        $today = new DateTime();
+                        $interval = $today->diff($date_posting);
+                        $days_passed = $interval->days;
+                        $months_passed = $interval->m + ($interval->y * 12);
+
+                        if ($days_passed > 30) {
+                            $time_passed = "Hace ".$months_passed." Meses";
+                        } else if($days_passed <= 0){
+                          $time_passed = "Hoy";
+                        } else {
+                            $time_passed = "Hace". $days_passed . " Días";
+                        }
+                    ?>
+                      <div class="card d-flex flex-row align-items-center p-3 mb-2">
+                        <div class="flex-grow-1 text-center">
+                          <strong><?php echo $row['subject']; ?></strong>
+                        </div>
+                        <div class="text-center" style="width: 50%; overflow:hidden;">
+                          <p><?php echo $row['ticket']; ?></p>
+                        </div>
+                        <div class="text-center" style="width: 20%;">
+                          <p><?php echo $time_passed ?></p>
+                        </div>
+                        <div class="text-end" style="width: 100px;">
+                          <p><button class="btn btn-updt" onclick="window.location.href='tickets-asignados.php?textSearch=<?php echo $row['id']; ?>&priority=<?php echo $row['prioprity']; ?>';">Ver</button></p>
+                        </div>
+                      </div>
+                    <?php
+                        $counter++; 
+                        if ($counter >= 5) { 
+                            break;
+                        }
                       }
-                    }
-                  ?>
-                </div>
+                    ?>
+                  </div>
+                <?php 
+                  }else{
+                    echo "<h4 class='text-center' >No hay tickets pendientes</h4>";
+                  }
+                ?>
               </div>
             <?php
               }
@@ -117,78 +125,9 @@ check_login();
                   <div class="t-head">
                     <h3>Top 5 Proyectos</h3>
                   </div>
-                  <div class="t-body">
-                    <div class="d-flex flex-row align-items-center pr-3 mb-2">
-                        <div class="flex-grow-1 text-center" style="width: 20%;">
-                          <strong>Nombre</strong>
-                        </div>
-                        <div class="text-center" style="width: 30%; overflow:hidden;">
-                          <strong>Clasificación</strong>
-                        </div>
-                        <div class="text-center" style="width: 20%;">
-                          <strong>Monto proyecto</strong>
-                        </div>
-                        <div class="text-center" style="width: 20%;">
-                          <strong>Estado</strong>
-                        </div>
-                        <div class="text-end" style="width: 12%;">
-                        </div>
-                    </div>
-                    <?php                     
-                      while ($row = mysqli_fetch_assoc($top_proyectos)){
-                      ?>
-                      <div class="card d-flex flex-row align-items-center p-3 mb-2">
-                        <div class="flex-grow-1 text-center" style="width: 20%;">
-                          <strong><?php echo $row['nombre'] ;?></strong>
-                        </div>
-                        <div class="text-center" style="width: 30%; overflow:hidden;">
-                          <p><?php echo $row['clasiN'] ;?></p>
-                        </div>
-                        <div class="text-center" style="width: 20%;">
-                          <p><?php echo '$'.number_format($row['monto'], 0, '.', ',');?></p>
-                        </div>
-                        <div class="text-center" style="width: 20%;">
-                          <?php
-                          if ($row['estado_id'] == '20') {
-                          ?>
-                            <span class="label label-success"><?php echo $row['estado']; ?></span>
-                            <?php
-                            }else if ($row['estado_id'] == '21'){
-                            ?>
-                              <span class="label label-important"><?php echo $row['estado']; ?></span>
-                              <?php
-                            }else{?>
-                              <span class="label label-warning"><?php echo $row['estado']; ?></span>
-                              <?php
-                          };?>
-                        </div>
-                        <div class="text-end" style="width: 10%;">
-                          <p><button class="btn btn-updt" onclick="window.location.href='view-projects.php';">Ver</button></p>
-                        </div>
-                      </div>
-                    <?php
-                      $counter++; 
-                        if ($counter >= 5) { 
-                            break;
-                        }
-                      }
-                    ?>
-                  </div>
-                  <div class="t-footer d-flex justify-content-between ">
-                      <strong>Proyectos: <?php echo $total_proyectos ?> </strong>
-                      <strong>Monto total proyectos: <?php echo '$'.number_format($monto_general, 0, '.', ',');?></strong>
-                      <strong>Monto proyectos ganados: <?php echo '$'.number_format($monto_ganados, 0, '.', ',');?> </strong>
-                  </div>
-                </div>
-              <?php
-              }
-              // user contabilidad y finanzas
-              else if($_SESSION['cargo'] == 3){
-                ?>
-                  <div class="first-row">
-                    <div class="t-head">
-                      <h3>Proyectos por facturar</h3>
-                    </div>
+                  <?php
+                    if($num_top > 0){
+                  ?>
                     <div class="t-body">
                       <div class="d-flex flex-row align-items-center pr-3 mb-2">
                           <div class="flex-grow-1 text-center" style="width: 20%;">
@@ -198,30 +137,16 @@ check_login();
                             <strong>Clasificación</strong>
                           </div>
                           <div class="text-center" style="width: 20%;">
-                            <strong>Costo proyecto</strong>
+                            <strong>Monto proyecto</strong>
                           </div>
                           <div class="text-center" style="width: 20%;">
-                            <strong>Tiempo transcurrido</strong>
+                            <strong>Estado</strong>
                           </div>
                           <div class="text-end" style="width: 12%;">
                           </div>
                       </div>
                       <?php                     
-                        while ($row = mysqli_fetch_assoc($xfacturar)){
-                          $posting_date = $row['fecha_actualizacion'];
-                          $date_posting = new DateTime($posting_date);
-                          $today = new DateTime();
-                          $interval = $today->diff($date_posting);
-                          $days_passed = $interval->days;
-                          $months_passed = $interval->m + ($interval->y * 12);
-
-                          if ($days_passed > 30) {
-                              $time_passed = $months_passed . " Meses";
-                          } else if($days_passed <= 0){
-                            $time_passed = "Hoy";
-                          } else {
-                              $time_passed = $days_passed . " Días";
-                          }
+                        while ($row = $top_proyectos -> fetch_assoc()){
                         ?>
                         <div class="card d-flex flex-row align-items-center p-3 mb-2">
                           <div class="flex-grow-1 text-center" style="width: 20%;">
@@ -231,13 +156,25 @@ check_login();
                             <p><?php echo $row['clasiN'] ;?></p>
                           </div>
                           <div class="text-center" style="width: 20%;">
-                            <p><?php echo '$'.number_format($row['costo_real'], 0, '.', ',');?></p>
+                            <p><?php echo '$'.number_format($row['monto'], 0, '.', ',');?></p>
                           </div>
                           <div class="text-center" style="width: 20%;">
-                            <p><?php echo $time_passed ;?></p>
+                            <?php
+                            if ($row['estado_id'] == '20') {
+                            ?>
+                              <span class="label label-success"><?php echo $row['estado']; ?></span>
+                              <?php
+                              }else if ($row['estado_id'] == '21'){
+                              ?>
+                                <span class="label label-important"><?php echo $row['estado']; ?></span>
+                                <?php
+                              }else{?>
+                                <span class="label label-warning"><?php echo $row['estado']; ?></span>
+                                <?php
+                            };?>
                           </div>
                           <div class="text-end" style="width: 10%;">
-                            <p><button class="btn btn-updt" onclick="window.location.href='bill-projects.php';">Ver</button></p>
+                            <p><button class="btn btn-updt" onclick="window.location.href='view-projects.php';">Ver</button></p>
                           </div>
                         </div>
                       <?php
@@ -249,7 +186,91 @@ check_login();
                       ?>
                     </div>
                     <div class="t-footer d-flex justify-content-between ">
-                       
+                        <strong>Proyectos: <?php echo $total_proyectos ?> </strong>
+                        <strong>Monto total proyectos: <?php echo '$'.number_format($monto_general, 0, '.', ',');?></strong>
+                        <strong>Monto proyectos ganados: <?php echo '$'.number_format($monto_ganados, 0, '.', ',');?> </strong>
+                    </div> 
+                  <?php
+                    }else{
+                      echo "<div class't-body'><h4>No existen proyectos</h4></div>";
+                    }
+                  ?>
+                </div>
+              <?php
+              }
+              // user contabilidad y finanzas
+              else if($_SESSION['cargo'] == 3){
+                ?>
+                  <div class="first-row">
+                    <div class="t-head">
+                      <h3>Proyectos por facturar</h3>
+                    </div>
+                    <div class="t-body">
+                        <?php
+                          if($num_xf){
+                        ?>
+                          <div class="d-flex flex-row align-items-center pr-3 mb-2">
+                            <div class="flex-grow-1 text-center" style="width: 20%;">
+                              <strong>Nombre</strong>
+                            </div>
+                            <div class="text-center" style="width: 30%; overflow:hidden;">
+                              <strong>Clasificación</strong>
+                            </div>
+                            <div class="text-center" style="width: 20%;">
+                              <strong>Costo proyecto</strong>
+                            </div>
+                            <div class="text-center" style="width: 20%;">
+                              <strong>Tiempo transcurrido</strong>
+                            </div>
+                            <div class="text-end" style="width: 12%;">
+                            </div>
+                          </div>
+                        <?php                     
+                          while ($row =$xfacturar ->fetch_assoc()){
+                            $posting_date = $row['fecha_actualizacion'];
+                            $date_posting = new DateTime($posting_date);
+                            $today = new DateTime();
+                            $interval = $today->diff($date_posting);
+                            $days_passed = $interval->days;
+                            $months_passed = $interval->m + ($interval->y * 12);
+
+                            if ($days_passed > 30) {
+                                $time_passed = $months_passed . " Meses";
+                            } else if($days_passed <= 0){
+                              $time_passed = "Hoy";
+                            } else {
+                                $time_passed = $days_passed . " Días";
+                            }
+                          ?>
+                          <div class="card d-flex flex-row align-items-center p-3 mb-2">
+                            <div class="flex-grow-1 text-center" style="width: 20%;">
+                              <strong><?php echo $row['nombre'] ;?></strong>
+                            </div>
+                            <div class="text-center" style="width: 30%; overflow:hidden;">
+                              <p><?php echo $row['clasiN'] ;?></p>
+                            </div>
+                            <div class="text-center" style="width: 20%;">
+                              <p><?php echo '$'.number_format($row['costo_real'], 0, '.', ',');?></p>
+                            </div>
+                            <div class="text-center" style="width: 20%;">
+                              <p><?php echo $time_passed ;?></p>
+                            </div>
+                            <div class="text-end" style="width: 10%;">
+                              <p><button class="btn btn-updt" onclick="window.location.href='bill-projects.php';">Ver</button></p>
+                            </div>
+                          </div>
+                        <?php
+                          $counter++; 
+                            if ($counter >= 5) { 
+                                break;
+                            }
+                          }
+                        ?>
+                        <?php
+                          }else{
+                            echo "<h4 class='text-center'>No hay proyectos por facturar</h4>";
+                          }
+                        ?>
                     </div>
                   </div>
                 <?php
