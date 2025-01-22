@@ -154,14 +154,14 @@ check_login();
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="">Monto</label>
+                            <label for="">Monto Proyecto</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="montoP">$</span>
                                 <input name="montoP" type="number" class="form-control form-control-sm" placeholder="1,000,000" aria-label="Monto" aria-describedby="montoP">
                             </div>
                         </div>
                     </div>
-
+                     <!-- costos software hardware 
                     <div class="form-row" style="display:none" id="classInfo">
                         <div class="expenses ">
                         <div class="title">
@@ -178,6 +178,7 @@ check_login();
                         </div>
 
                     </div>
+                     -->
                     <div class="form-row">
                     <div class="form-group">
                         <div class="label-container">

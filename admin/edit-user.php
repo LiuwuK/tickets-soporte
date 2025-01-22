@@ -108,7 +108,7 @@ include("assets/php/edit-user.php");
                       <div class="form-row">
                         <div class="form-group">
                           <label for="address" class="form-label">Direccion</label>
-                          <textarea rows="3" class="form-control form-control-sm" id="address" name="address" required="required"><?php echo $rw['address']; ?></textarea>
+                          <textarea rows="3" class="form-control form-control-sm" id="address" name="address" ><?php echo $rw['address']; ?></textarea>
                         </div>
                       </div>
 

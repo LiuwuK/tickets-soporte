@@ -268,9 +268,10 @@ check_login();
                                                 </div>
                                                 <div class="pr-row">
                                                     <div class="group">
-                                                        <strong>Lista de materiales</strong>
+                                                        <strong>Lista de materiales (BOM)</strong>
                                                         <ul>
                                                         <?php 
+                                                            $total = 0;
                                                             $id =  $row['projectId'];
                                                             $query = "SELECT * 
                                                                         FROM bom
@@ -282,6 +283,7 @@ check_login();
                                                             
                                                             if($num > 0){
                                                                 while ($row_bom = $result->fetch_assoc()) {
+                                                                    $total = $total +  $row_bom['total'];
                                                                 ?>
                                                                    <div class="material-item">
                                                                         <div>
@@ -306,7 +308,19 @@ check_login();
                                                         ?>
                                                         </ul>
                                                     </div>
+                                                    <div class="group">
+                                                        <strong>Total BOM</strong>
+                                                        <p><?php
+                                                                if($total > 0){
+                                                                    echo '$'.number_format($total, 0, '.', ','); 
+                                                                }else{
+                                                                    echo "<p> No se le han asignado materiales</p>";
+                                                                } 
+                                                                ?>
+                                                            </p>
+                                                    </div>
                                                 </div>
+                                                <!-- 
                                                 <?php 
                                                     if( $row['clasificacion'] == '1' ){ ?>
                                                         <div class="pr-row">
@@ -322,20 +336,21 @@ check_login();
                                                         </div>
                                                 <?php } 
                                                 ?>
-
+                                                 -->
                                                 <div class="pr-row">
                                                     <div class="group">
-                                                        <strong>Monto Estimado</strong>
+                                                        <strong>Monto Proyecto</strong>
                                                         <p><?php echo '$'.number_format($row['monto'], 0, '.', ',');?></p>
                                                     </div>
                                                 </div>
-
+                                                <!--
                                                 <div class="pr-row">
                                                     <div class="group">
                                                         <strong>Costo Real</strong>
                                                         <p><?php echo '$'.number_format($row['costo_real'], 0, '.', ','); ?></p>
                                                     </div>
                                                 </div>
+                                                -->
                                             </div>
                                         </div>
                                         <br>

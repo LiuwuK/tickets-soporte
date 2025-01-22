@@ -165,7 +165,7 @@ check_login();
                             </div>
                         </div>
                     </div>
-
+                <!--  Costo software y hardware
                     <div class="form-row" style="display:none" id="classInfo">
                         <div class="expenses ">
                         <div class="title">
@@ -180,8 +180,8 @@ check_login();
                         </div>
                         <input type="text" id="hardware-input" name="hardware-input" class="hidden form-control" placeholder="USD 0">
                         </div>
-
                     </div>
+                    -->
                     <div class="form-row">
                     <div class="form-group">
                         <div class="label-container">

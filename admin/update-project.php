@@ -242,16 +242,17 @@ check_login();
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="">Monto</label>
+                            <label for="">Monto Proyecto</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="montoP">$</span>
                                 <input name="montoP" type="number" class="form-control form-control-sm" value="<?php echo $row_p['monto'];?>" aria-label="Monto" aria-describedby="montoP">
                             </div>
                         </div>
                     </div>
+                    <!-- 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="">Costo Real</label>
+                            <label for="">Costo Proyecto</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="costoR">$</span>
                                 <input name="costoR" type="number" class="form-control form-control-sm" value="<?php echo $row_p['costo_real'];?>" aria-label="Costo" aria-describedby="costoR">
@@ -283,6 +284,7 @@ check_login();
                     <?php
                         }
                     ?>
+                     -->
 
                     <div class="form-row">
                         <div class="form-group">
