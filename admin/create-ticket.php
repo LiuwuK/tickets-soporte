@@ -72,9 +72,7 @@ check_login();
                             <label for="tasktype" class="form-label">Tipo de Tarea</label>
                                 <select id="tasktype" name="tasktype" class="form-select form-select-sm" required>
                                     <option value="">Seleccionar</option>
-                                    <option>Incidente Lógica</option>
-                                    <option>Fallo a Nivel de Servidor</option>
-                                    <option>Error capa de aplicación</option>
+                                    <option>Ingeniería</option>
                                 </select>
                         </div>
                     </div>

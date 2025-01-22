@@ -24,7 +24,7 @@ while ($row = mysqli_fetch_assoc($distribuidorData)) {
 //----------------------------------------------------------------------------------------------------------
 $userId = $_SESSION["user_id"];
 if($_SESSION['cargo'] == 3){
-  //Se obtienen los proyectos asociados al usuario
+  //Se obtienen los proyectos ganados por facturar
   $query = "SELECT pr.id AS projectId, pr.*, es.nombre AS estado, ci.nombre_ciudad AS ciudadN, us.name AS ingeniero, 
                   us_com.name AS comercial, tp.nombre AS tipoP, dt.nombre AS distribuidorN
               FROM proyectos pr 
@@ -42,7 +42,7 @@ if($_SESSION['cargo'] == 3){
   //total de resultados
   $num = $rt->num_rows; 
 } else if($_SESSION['cargo'] == 4){
-  //Se obtienen los proyectos asociados al usuario
+  //Se obtienen todos los proyectos 
   $query = "SELECT pr.id AS projectId, pr.*, es.nombre AS estado, ci.nombre_ciudad AS ciudadN, us.name AS ingeniero, 
                   us_com.name AS comercial, tp.nombre AS tipoP, dt.nombre AS distribuidorN
               FROM proyectos pr 

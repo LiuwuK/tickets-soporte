@@ -53,18 +53,59 @@ check_login();
                 <h3><?php echo $distribuidor['nombre']; ?></h3>
                 <?php 
                   while ($row = mysqli_fetch_assoc($proyectos)){
+                  $fecha_original = $row['fecha_creacion']; 
+                  setlocale(LC_TIME, 'es_ES.UTF-8', 'spanish');
+                  // Formatear la fecha
+                  $timestamp = strtotime($fecha_original);
+                  $fecha = strftime('%e de %B %Y', $timestamp);
                 ?>
+                <div class="maincard" onclick="toggleDetails(this)">
                   <div class="card d-flex flex-row align-items-center p-3 mb-2">
                     <div class="flex-grow-1">
                       <strong><?php echo $row['nombre']; ?></strong>
                     </div>
-                    <div class="text-center" style="width: 150px;">
-                      <p><?php echo $row['fecha_creacion']; ?></p>
+                    <div class="text-center" style="width: 200px;">
+                      <p><?php echo $fecha; ?></p>
                     </div>
                     <div class="text-end" style="width: 150px;">
                       <p><?php echo '$' . number_format($row['costo_real'], 0, '.', ','); ?></p>
                     </div>
                   </div>
+                  <div class="additional-info">
+                    <div class="title">
+                      <h4>Lista de materiales</h4>
+                    </div>
+                    <div class="info">
+                      <?php
+                        $total = 0;
+                        $id =  $row['id'];
+                        $query = "SELECT * 
+                                    FROM bom
+                                    WHERE proyecto_id = $id";    
+                        $bom = $con->prepare($query);
+                        $bom->execute();
+                        $result = $bom->get_result();
+                        $num = $result->num_rows;
+                       if ($num > 0){
+                        while($material = $result->fetch_assoc() ){
+                          $total = $total + $material['total'];
+                      ?>       
+                          <div class="material-item list-group-item">
+                              <div><?php echo $material['nombre'];?></div>
+                              <div><i class="bi bi-x-lg"></i></div>
+                              <div><?php echo $material['cantidad'];?></div>
+                              <div><?php echo '$'.number_format($material['total'], 0, '.', ',');;?></div>
+                          </div>
+                      <?php
+                        }
+                        echo "<div class='material-total'>Total: $".number_format($total, 0, '.', ',')."</div>";  
+                       }else{
+                        echo "<p>Aun no tiene materiales asociados</p>";
+                       }
+                      ?>
+                    </div>
+                  </div>
+                </div>
                 <?php
                   }
                 ?>
@@ -72,6 +113,13 @@ check_login();
         </div>   
     </div>
   </div>
+
+  <script>
+  function toggleDetails(maincard) {
+    const additionalInfo = maincard.querySelector('.additional-info');
+    additionalInfo.classList.toggle('open');
+  }
+</script>
 
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

@@ -49,16 +49,9 @@
       <a href="logout.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Cerrar Sesión">
         <i class="bi bi-box-arrow-right"></i> 
       </a>
+      <img src="../assets/img/admin.jpg" alt="" >
     </li>
-      <!-- <button class="btn" id="toggleButton">
-              <i class="bi bi-arrow-right"></i>
-          </button>
-            <script>
-              document.getElementById('toggleButton').addEventListener('click', function() {
-                document.getElementById('sidebar').classList.toggle('expanded');
-            });
-    </script>
-      -->
+
     </li>
   </ul>
 </div>

@@ -39,3 +39,37 @@
     font-weight: 600;
     font-size: medium;
 }
+.material-item{
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+
+    width: 200%;
+}
+.material-item p, .materials p{
+    margin: 0px;
+}
+.material-item div, .materials div{
+    width: 25%;
+    margin-bottom: 2%;
+    text-align: center; 
+}
+
+.materials div{
+    color: #33435e;
+}
+.materials{
+    display: flex;
+    margin: 0 auto;
+    justify-content: space-between; 
+    align-items: center; 
+    width: 85%;
+}
+.material-total{
+    display: flex;
+    margin: 0 auto;
+    justify-content: flex-end;
+    width: 85%;
+    border-top: 1px solid;
+    color: #33435e;
+}

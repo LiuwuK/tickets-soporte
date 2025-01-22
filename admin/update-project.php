@@ -285,27 +285,67 @@ check_login();
                     ?>
 
                     <div class="form-row">
-                        <div class="expenses">
-                            <div class="title">
-                            <label for="bom" class="form-label">BOM</label>
-                            <input type="checkbox" id="bom" name="bom">
-                            </div>
-                            <input type="file" id="bom-input" name="bom-input" class="hidden" placeholder="BOM">
+                        <div class="form-group">
+                            <div class="label-container">
+                                <label class="label">Lista de materiales</label>
+                                <button type="button" class="btn btn-add-task" data-bs-toggle="modal" data-bs-target="#modalBom">
+                                    <i class="bi bi-card-list"></i>
+                                </button>
+                            </div>  
+                            <?php 
+                                if(isset($materiales)){
+                                echo '<div id="materialContainer" class="p-3 material-list">';
+                                echo '<div id="sumaTotal" class="font-weight-bold"></div>';    
+                                    foreach($materiales as $material){
+                                ?>       
+                                        <div class="material-item list-group-item">
+                                            <div><?php echo $material['nombre'];?></div>
+                                            <div><i class="bi bi-x-lg"></i></div>
+                                            <div><?php echo $material['cantidad'];?></div>
+                                            <div><?php echo '$'.number_format($material['total'], 0, '.', ',');;?></div>
+                                        </div>
+                                <?php
+                                    }
+                                echo '</div>';
+                                }else{
+                                    echo '<div id="materialContainer" class="material-list" style="display:none"></div>';
+                                }    
+                            ?>    
                         </div>
                     </div>  
 
                     <div class="form-row">
-                    <div class="form-group">
-                        <div class="label-container">
-                        <label class="label">Actividades</label>
-                        <button type="button" class="btn btn-add-task" data-bs-toggle="modal" data-bs-target="#actividadModal">
-                            <i class="bi bi-calendar-plus"></i> 
-                        </button>
-                        </div>  
-                        <div id="events-list">
-                        <ul id="listadoActividades" class="list-group"></ul>
+                        <div class="form-group">
+                            <div class="label-container">
+                            <label class="label">Actividades</label>
+                            <button type="button" class="btn btn-add-task" data-bs-toggle="modal" data-bs-target="#actividadModal">
+                                <i class="bi bi-calendar-plus"></i> 
+                            </button>
+                            </div>  
+                            <div id="events-list">                                
+                                <?php 
+                                if(isset($actividades)){
+                                echo '<ul id="listadoActividades" class="list-group">';
+                                    foreach($actividades as $actividad){
+                                        $fecha_original = $actividad['fecha']; 
+                                        setlocale(LC_TIME, 'es_ES.UTF-8', 'spanish');
+                                        // Formatear la fecha
+                                        $timestamp = strtotime($fecha_original);
+                                        $fecha = strftime('%e de %B del %Y', $timestamp);
+                                ?>       
+                                    <li class="list-group-item">
+                                        <h6><?php echo $actividad['nombre'];?> -- <?php echo $fecha;?></h6>
+                                        <p><?php echo $actividad['descripcion'];?></p>
+                                    </li>
+                                <?php
+                                    }
+                                echo '</ul>'; 
+                                }else{
+                                    echo '<ul id="listadoActividades" class="list-group"></ul>';
+                                }    
+                            ?>
+                            </div>
                         </div>
-                    </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -325,34 +365,67 @@ check_login();
 
     <!-- Modal actividades -->
     <div class="modal fade" id="actividadModal" tabindex="-1" aria-labelledby="actividadModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="actividadModalLabel">Agregar Actividad</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <form id="formActividad">
-            <div class="mb-3">
-                <label for="nombreActividad" class="form-label">Nombre de la Actividad</label>
-                <input type="text" class="form-control form-control-sm" id="nombreActividad" name="nombreActividad" required>
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="actividadModalLabel">Agregar Actividad</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="mb-3">
-                <label for="fechaActividad" class="form-label">Fecha</label>
-                <input type="date" class="form-control form-control-sm" id="fechaActividad" name="fechaActividad" required>
+            <div class="modal-body">
+                <form id="formActividad">
+                <div class="mb-3">
+                    <label for="nombreActividad" class="form-label">Nombre de la Actividad</label>
+                    <input type="text" class="form-control form-control-sm" id="nombreActividad" name="nombreActividad" required>
+                </div>
+                <div class="mb-3">
+                    <label for="fechaActividad" class="form-label">Fecha</label>
+                    <input type="date" class="form-control form-control-sm" id="fechaActividad" name="fechaActividad" required>
+                </div>
+                <div class="mb-3">
+                    <label for="descripcionActividad" class="form-label">Descripción</label>
+                    <textarea class="form-control form-control-sm" id="descripcionActividad" name="descripcionActividad" rows="3"></textarea>
+                </div>
+                </form>
             </div>
-            <div class="mb-3">
-                <label for="descripcionActividad" class="form-label">Descripción</label>
-                <textarea class="form-control form-control-sm" id="descripcionActividad" name="descripcionActividad" rows="3"></textarea>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-reset" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" form="formActividad" class="btn pull-right">Agregar</button>
             </div>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-reset" data-bs-dismiss="modal">Cerrar</button>
-            <button type="submit" form="formActividad" class="btn pull-right">Agregar</button>
-        </div>
+            </div>
         </div>
     </div>
+    <!-- Modal bom -->
+    <div class="modal fade" id="modalBom" tabindex="-1" aria-labelledby="bomModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bomModalLabel">Agregar materiales</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formBom">
+                    <div class="mb-3">
+                        <label for="nombreMaterial" class="form-label">Nombre</label>
+                        <input type="text" class="form-control form-control-sm" id="nombreMaterial" name="nombreMaterial" required>
+                    </div>
+                    <div class="mb-3 bom-info">
+                        <div class="group">
+                            <label for="cantidadMaterial" class="form-label">Cantidad</label>
+                            <input type="number" class="form-control form-control-sm" id="cantidadMaterial" name="cantidadMaterial" required>
+                        </div>
+                        <div class="group">
+                            <label for="totalMaterial" class="form-label">Costo </label>
+                            <input type="number" class="form-control form-control-sm" id="totalMaterial" name="totalMaterial" required>    
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-reset" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" form="formBom" class="btn pull-right">Agregar</button>
+            </div>
+            </div>
+        </div>
     </div>
 
     <br><br>

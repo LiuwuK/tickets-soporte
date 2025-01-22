@@ -285,17 +285,37 @@ check_login();
                     ?>
 
                     <div class="form-row">
-                    <div class="form-group">
-                        <div class="label-container">
-                        <label class="label">Actividades</label>
-                        <button type="button" class="btn btn-add-task" data-bs-toggle="modal" data-bs-target="#actividadModal">
-                            <i class="bi bi-calendar-plus"></i> 
-                        </button>
-                        </div>  
-                        <div id="events-list">
-                        <ul id="listadoActividades" class="list-group"></ul>
+                        <div class="form-group">
+                            <div class="label-container">
+                            <label class="label">Actividades</label>
+                            <button type="button" class="btn btn-add-task" data-bs-toggle="modal" data-bs-target="#actividadModal">
+                                <i class="bi bi-calendar-plus"></i> 
+                            </button>
+                            </div>  
+                            <div id="events-list">                                
+                                <?php 
+                                if(isset($actividades)){
+                                echo '<ul id="listadoActividades" class="list-group">';
+                                    foreach($actividades as $actividad){
+                                        $fecha_original = $actividad['fecha']; 
+                                        setlocale(LC_TIME, 'es_ES.UTF-8', 'spanish');
+                                        // Formatear la fecha
+                                        $timestamp = strtotime($fecha_original);
+                                        $fecha = strftime('%e de %B del %Y', $timestamp);
+                                ?>       
+                                    <li class="list-group-item">
+                                        <h6><?php echo $actividad['nombre'];?> -- <?php echo $fecha;?></h6>
+                                        <p><?php echo $actividad['descripcion'];?></p>
+                                    </li>
+                                <?php
+                                    }
+                                echo '</ul>'; 
+                                }else{
+                                    echo '<ul id="listadoActividades" class="list-group"></ul>';
+                                }    
+                            ?>
+                            </div>
                         </div>
-                    </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">

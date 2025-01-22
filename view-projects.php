@@ -236,6 +236,7 @@ check_login();
 
                                                 <div class="pr-row">
                                                     <div class="group">
+
                                                         <strong>Actividades</strong>
                                                         <ul>
                                                         <?php 
@@ -246,8 +247,9 @@ check_login();
                                                             $actividades = $con->prepare($query);
                                                             $actividades->execute();
                                                             $result = $actividades->get_result();
-                                                            $act_num = $result->num_rows;
-                                                            if($act_num < 0 ){
+                                                            $num = $result->num_rows;
+                                                            
+                                                            if($num > 0){
                                                                 while ($row_ac = $result->fetch_assoc()) {
                                                                     $fecha_original = $row_ac['fecha']; 
                                                                     setlocale(LC_TIME, 'es_ES.UTF-8', 'spanish');
@@ -258,7 +260,48 @@ check_login();
                                                                     <li><?php echo $row_ac['nombre'];?> -- <?php echo $fecha;?></li>    
                                                                 <?php }
                                                             }else{
-                                                                echo "<li>Sin actividades asignadas</li>";
+                                                                echo "<p> Sin tareas asignadas </p>";
+                                                            }
+                                                        ?>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="pr-row">
+                                                    <div class="group">
+                                                        <strong>Lista de materiales</strong>
+                                                        <ul>
+                                                        <?php 
+                                                            $id =  $row['projectId'];
+                                                            $query = "SELECT * 
+                                                                        FROM bom
+                                                                        WHERE proyecto_id = $id";    
+                                                            $actividades = $con->prepare($query);
+                                                            $actividades->execute();
+                                                            $result = $actividades->get_result();
+                                                            $num = $result->num_rows;
+                                                            
+                                                            if($num > 0){
+                                                                while ($row_bom = $result->fetch_assoc()) {
+                                                                ?>
+                                                                   <div class="material-item">
+                                                                        <div>
+                                                                            <li> <?php echo $row_bom['nombre'];?></li>   
+                                                                        </div>
+                                                                        <div>
+                                                                            <i class="bi bi-x-lg"></i>
+                                                                        </div> 
+                                                                        <div>
+                                                                            <p><?php echo $row_bom['cantidad']?></p>
+                                                                        </div>
+                                                                        <div>
+                                                                            <p>
+                                                                                <?php echo '$'.number_format($row_bom['total'], 0, '.', ','); ?>
+                                                                            </p>
+                                                                        </div>
+                                                                   </div>
+                                                                <?php }
+                                                            }else{
+                                                                echo "<p> No se le han asignado materiales</p>";
                                                             }
                                                         ?>
                                                         </ul>

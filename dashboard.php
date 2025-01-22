@@ -260,17 +260,16 @@ check_login();
            <div class="row">
             <?php
               if($_SESSION['cargo'] == 4){
-            ?>
-              <div class="col-sm-12 col-md-12 col-lg-8 col-xl-5 graficos">
-                <h3>Cantidad de Proyectos</h3>
-                <canvas id="projects"></canvas>
-              </div>
-                
+            ?>  
               <div class="col-sm-12 col-md-12 col-lg-8 col-xl-6 graficos">
                 <h3>Total Proyectos</h3>
                 <canvas id="totalProjects"></canvas>
               </div>
-
+              
+              <div class="col-sm-12 col-md-12 col-lg-8 col-xl-5 graficos">
+                <h3>Cantidad de Proyectos</h3>
+                <canvas id="projects"></canvas>
+              </div>
             <?php
               }
             ?>

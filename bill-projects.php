@@ -113,187 +113,36 @@ check_login();
                                     <div class="info-wrapper"> 
                                         <div class="info d-flex">
                                             <div class="left-bar"></div>
-                                            <div class="main-info">
-                                                <!-- Descripcion del proyecto -->
-                                                <div class="pr-row">
-                                                    <div class="group">
-                                                        <strong>Descripción</strong>
-                                                        <p><?php echo $row['resumen']; ?></p>
-                                                    </div>
+                                            <div class="info">
+                                                <h3 class="mb-3">Lista de materiales</h3>
+                                            <?php
+                                                $total = 0;
+                                                $id =  $row['id'];
+                                                $query = "SELECT * 
+                                                            FROM bom
+                                                            WHERE proyecto_id = $id";    
+                                                $bom = $con->prepare($query);
+                                                $bom->execute();
+                                                $result = $bom->get_result();
+                                                $num = $result->num_rows;
+                                            if ($num > 0){
+                                                while($material = $result->fetch_assoc() ){
+                                                $total = $total + $material['total'];
+                                            ?>       
+                                                <div class="materials list-group-item">
+                                                    <div><?php echo $material['nombre'];?></div>
+                                                    <div><i class="bi bi-x-lg"></i></div>
+                                                    <div><?php echo $material['cantidad'];?></div>
+                                                    <div><?php echo '$'.number_format($material['total'], 0, '.', ',');;?></div>
                                                 </div>
-                                                <!-- Datos cliente/ingeniero/tipo/distribuidor -->
-                                                <div class="pr-row ">
-                                                    <div class="group">
-                                                        <strong>Cliente</strong>
-                                                        <p><?php echo $row['cliente'];?></p>
-                                                    </div>
-                                                </div>
-                                                <div class="pr-row"> 
-                                                    <div class="group">
-                                                        <strong>Distribuidor</strong>
-                                                        <?php
-                                                            if(isset($row['distribuidor'])){
-                                                                foreach ($distData as $row_dist) {
-                                                                  if ($row_dist['id'] == $row['distribuidor']) {
-                                                                      echo "<p>".$row_dist['nombre']."</p>";
-                                                                  } 
-                                                                }
-                                                            }else{
-                                                                echo "<p> Sin asignar </p>";
-                                                            }
-                                                        ?>
-                                                    </div> 
-                                                </div>
-                                                <div class="pr-row"> 
-                                                    <div class="group">
-                                                        <strong>Vertical</strong>
-                                                        <?php
-                                                            if(isset($row['vertical'])){
-                                                                foreach ($verticales as $row_vertical) {
-                                                                  if ($row_vertical['id'] == $row['vertical']) {
-                                                                      echo "<p>".$row_vertical['nombre']."</p>";
-                                                                  } 
-                                                                }
-                                                            }else{
-                                                                echo "<p> Sin asignar </p>";
-                                                            }
-                                                        ?>
-                                                    </div> 
-                                                </div>
-                                                <div class="pr-row">
-                                                    <div class="group">
-                                                        <strong>Comercial responsable</strong>
-                                                        <p><?php echo $row['comercial'];?></p>
-                                                    </div>
-                                                </div>
-                                                <div class="pr-row">
-                                                    <div class="group">
-                                                        <strong>Tipo Proyecto</strong>
-                                                        <p><?php echo $row['tipoP'];?></p>
-                                                    </div>
-                                                </div>
-                                                <!-- Datos de tipo proyecto (contacto/licitacion)  -->
-                                                <div class="pr-row">
-                                                    <strong>Datos de <?php echo $row['tipoP'];?></strong>   
-
-                                                <?php
-                                                    //Licitacion
-                                                    if($row['tipo'] == '1' ){
-                                                        $id =  $row['projectId'];
-                                                        $query = "SELECT * 
-                                                                    FROM licitacion_proyecto
-                                                                    WHERE proyecto_id = $id";    
-                                                        $licitacion = $con->prepare($query);
-                                                        $licitacion->execute();
-                                                        $result = $licitacion->get_result();
-                                                        $row_lt = $result->fetch_assoc();
-                                                        $licitacion->close();
-                                                        ?>
-                                                    <div class="group lic d-flex">
-                                                        <strong class="form-label">ID Licitación</strong>
-                                                        <p>: <?php echo $row_lt['licitacion_id'];?></p>
-                                                    </div>      
-                                                    <div class="group lic d-flex">                                                        
-                                                        <strong>Portal </strong>
-                                                        <p>: <?php echo$row_lt['portal'];?></p>
-                                                    </div>                                                    
-                                                <?php
-                                                    //Contacto 
-                                                    }else if($row['tipo'] == '2'){
-                                                        $id =  $row['projectId'];
-                                                        $query = "SELECT * 
-                                                                    FROM contactos_proyecto
-                                                                    WHERE proyecto_id = $id";    
-                                                        $contacto = $con->prepare($query);
-                                                        $contacto->execute();
-                                                        $result = $contacto->get_result();
-                                                        $row_ct = $result->fetch_assoc();
-                                                        $contacto->close();
-                                                    ?>
-                                                    <div class="pr-row">
-                                                        <div class="group d-flex cnt">
-                                                            <strong class="form-label">Nombre</strong>
-                                                            <p>: <?php echo $row_ct['nombre'];?></p>
-                                                        </div>
-
-                                                        <div class="group d-flex cnt">
-                                                            <strong class="form-label">Correo</strong>
-                                                            <p>: <?php echo $row_ct['correo'];?></p>
-                                                        </div>
-                                                        <div class="group d-flex cnt">
-                                                            <strong class="form-label">Cargo</strong>
-                                                            <p>: <?php echo $row_ct['cargo'];?></p>
-                                                        </div>
-
-                                                        <div class="group d-flex cnt">
-                                                            <strong class="form-label">Numero Contacto</strong>
-                                                            <p>: <?php echo $row_ct['numero'];?></p>
-                                                        </div>
-                                                    </div>    
-                                                <?php 
-                                                    }?>
-                                                </div>
-
-                                                <div class="pr-row">
-                                                    <div class="group">
-                                                        <strong>Actividades</strong>
-                                                        <ul>
-                                                        <?php 
-                                                            $id =  $row['projectId'];
-                                                            $query = "SELECT * 
-                                                                        FROM actividades
-                                                                        WHERE proyecto_id = $id";    
-                                                            $actividades = $con->prepare($query);
-                                                            $actividades->execute();
-                                                            $result = $actividades->get_result();
-                                                            $act_num = $result->num_rows;
-                                                            if($act_num < 0 ){
-                                                                while ($row_ac = $result->fetch_assoc()) {
-                                                                    $fecha_original = $row_ac['fecha']; 
-                                                                    setlocale(LC_TIME, 'es_ES.UTF-8', 'spanish');
-                                                                    // Formatear la fecha
-                                                                    $timestamp = strtotime($fecha_original);
-                                                                    $fecha = strftime('%e de %B %Y', $timestamp);
-                                                                ?>
-                                                                    <li><?php echo $row_ac['nombre'];?> -- <?php echo $fecha;?></li>    
-                                                                <?php }
-                                                            }else{
-                                                                echo "<li>Sin actividades asignadas</li>";
-                                                            }
-                                                        ?>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                <?php 
-                                                    if( $row['clasificacion'] == '1' ){ ?>
-                                                        <div class="pr-row">
-                                                            <strong>Gastos</strong>
-                                                            <div class="group d-flex lic">
-                                                                <strong>Software</strong>
-                                                                <p>: $<?php echo $row['costo_software'];?></p>
-                                                            </div>
-                                                            <div class="group d-flex lic">
-                                                                <strong>Hardware</strong>
-                                                                <p>: $<?php echo $row['costo_hardware'];?></p>
-                                                            </div>
-                                                        </div>
-                                                <?php } 
-                                                ?>
-
-                                                <div class="pr-row">
-                                                    <div class="group">
-                                                        <strong>Monto Estimado</strong>
-                                                        <p><?php echo '$'.number_format($row['monto'], 0, '.', ',');?></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="pr-row">
-                                                    <div class="group">
-                                                        <strong>Costo Real</strong>
-                                                        <p><?php echo '$'.number_format($row['costo_real'], 0, '.', ','); ?></p>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <?php
+                                                }
+                                                echo "<div class='material-total'>Total: $".number_format($total, 0, '.', ',')."</div>";  
+                                            }else{
+                                                echo "<p>Aun no tiene materiales asociados</p>";
+                                            }
+                                            ?>
+                                        </div>
                                         </div>
                                         <br>
                                         <div class="footer d-flex justify-content-between">

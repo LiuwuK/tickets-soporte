@@ -107,3 +107,47 @@
 .pull-right:hover, .btn-reset:hover{
   transform: scale(0.95);
 }
+
+/*BOM*/
+
+.bom-info{
+  display: flex;
+  justify-content: space-between;
+}
+.bom-info .group{
+  width: 49%;
+}
+.list-group-item p{
+  margin-left: 3%;
+}
+.materials{
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.materials h6{
+  padding: 0px;
+  margin: 0px;
+}
+
+.material-list {
+  display: flex;
+  flex-direction: column;
+  background-color: #e9f4f9;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.material-item {
+  display: flex;
+  justify-content: space-between; 
+  padding: 5px 0;
+  border-bottom: 1px solid #ccc; 
+  width: 95%;
+  margin: 0 auto;
+}
+
+.material-item div {
+  width: 25%;
+  text-align: center; 
+}

@@ -42,7 +42,12 @@ if(isset($_GET['projectId']) ){
                 WHERE id = $pID";
     $project = mysqli_query($con, $query);
     $projectData = mysqli_fetch_assoc($project);
-    
+    //obtener actividades asociadas al proyecto
+    $query = "SELECT * 
+                FROM actividades
+                WHERE proyecto_id = $pID";
+    $act = mysqli_query($con, $query);
+    $actividades = mysqli_fetch_all($act, MYSQLI_ASSOC);
     //obtener datos de licitacion/contacto
     if ($projectData['tipo'] == 1) {
         $query =  "SELECT *
@@ -58,7 +63,15 @@ if(isset($_GET['projectId']) ){
         $ct = mysqli_query($con, $query);
         $ctData = mysqli_fetch_assoc($ct);
     }
-    
+    //obtener lista de materiales
+    if($projectData['bom'] = 1){
+        $query = "SELECT * 
+                    FROM bom
+                    WHERE proyecto_id = $pID";
+        $bom = mysqli_query($con, $query);
+        $materiales = mysqli_fetch_all($bom, MYSQLI_ASSOC);
+    } 
+      
 }
   
 //Insertar proyectos nuevos
@@ -140,8 +153,12 @@ if(isset($_POST['newProject'])){
 //Actualizar proyectos
 else if(isset($_POST['updtProject'])) {
     //ACTUALIZAR DATOS DEL PROTECTO
+    $pId = $_GET['projectId'];
     $pClass = $projectData['clasificacion'];
-    $bom =  isset($_POST['bom']) ? $_POST['bom'] : 0; 
+    $bom    = 0; 
+    if(isset($_POST['material'])){
+        $bom = 1; 
+    }
     $software  = ($pClass == 1 && isset($_POST['software-input'])) ? $_POST['software-input'] : 0;
     $hardware  = ($pClass == 1 && isset($_POST['hardware-input'])) ? $_POST['hardware-input'] : 0; 
     //datos del formulario
@@ -224,7 +241,59 @@ else if(isset($_POST['updtProject'])) {
             $stmt->close();
         }
     }
-    
+     //Si tiene actividades nuevas, estas se registran
+    if(isset($_POST['actividades'])){
+        foreach ($_POST['actividades']['nombre'] as $key => $name) {
+            $fecha = $_POST['actividades']['fecha'][$key];
+            $desc = $_POST['actividades']['descripcion'][$key];
+
+            $query = 'INSERT INTO actividades (nombre, fecha, proyecto_id, descripcion)
+            VALUES (?, ?, ?, ?)';
+            $act_stmt = mysqli_prepare($con, $query);
+            mysqli_stmt_bind_param($act_stmt, "ssis", $name, $fecha, $pId, $desc); 
+            mysqli_stmt_execute($act_stmt);
+            mysqli_stmt_close($act_stmt);
+        }
+    }
+    //si hay materiales nuevos se registran
+    if(isset($_POST['material'])){
+        $distribuidor = $_POST['dist'];
+        foreach ($_POST['material']['nombre'] as $key => $name) {
+            $cantidad = $_POST['material']['cantidad'][$key];
+            $total = $_POST['material']['total'][$key];
+
+            $query = 'INSERT INTO bom (nombre, cantidad, total, distribuidor_id, proyecto_id)
+                        VALUES (?, ?, ?, ?, ?)';
+            $bom_stmt = mysqli_prepare($con, $query);
+            mysqli_stmt_bind_param($bom_stmt, "siiii", $name, $cantidad, $total, $distribuidor, $pId); 
+            mysqli_stmt_execute($bom_stmt);
+            mysqli_stmt_close($bom_stmt);
+        }
+    }
+
+    //si cambia el costo 
+    if($_POST['costoR'] != $projectData['costo_real']){
+
+        $distID = $newData['distribuidor'];
+        $query = "SELECT * 
+                    FROM distribuidores
+                    WHERE id = $distID";
+        $distribuidor = mysqli_query($con, $query);
+        $dist = mysqli_fetch_assoc($distribuidor);
+        
+        $montoInicial = $dist['monto'];        
+        $montoRestante = $dist['monto_restante'];
+        if($montoInicial != 0){
+            $costo = floatval($_POST['costoR']);
+            $nuevoMonto = $montoRestante - $costo;
+            $query =  " UPDATE distribuidores 
+                        SET monto_restante = ?
+                        WHERE id = ?";
+            $stmt = $con->prepare($query);
+            $stmt->bind_param("ii", $nuevoMonto, $distID); 
+            $stmt->execute();
+        }
+    }
     //se comparan los datos de la db con los del formulario, si son distintos se actualiza el proyecto
     if($newJson !== $currentJson){
         $query =  " UPDATE proyectos 
@@ -237,12 +306,12 @@ else if(isset($_POST['updtProject'])) {
                         costo_software = ?, 
                         costo_hardware = ?,
                         costo_real = ?,
-                        resumen = ? 
+                        resumen = ?, bom = ? 
                     WHERE id = ?";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("ssiiiiiiiiisi",   
+        $stmt->bind_param("ssiiiiiiiiisii",   
         $newData['nombre'], $newData['cliente'], $newData['ciudad'], $newData['estado_id'], $newData['ingeniero_responsable'],
-        $newData['distribuidor'], $newData['vertical'], $newData['monto'], $newData['costo_software'], $newData['costo_hardware'], $newData['costo_real'], $newData['resumen'], $newData['id'] );
+        $newData['distribuidor'], $newData['vertical'], $newData['monto'], $newData['costo_software'], $newData['costo_hardware'], $newData['costo_real'], $newData['resumen'], $newData['bom'], $newData['id'] );
 
         if ($stmt->execute()) {
             echo "<script>alert('Su proyecto ha sido actualizado correctamente');location.replace(document.referrer)</script>";

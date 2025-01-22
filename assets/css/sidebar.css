@@ -83,6 +83,13 @@ input, .form-control, .form-select{
     margin-top: auto;
 }
   
+.logout-item img{
+    display: flex;
+    border-radius: 50%;
+    width: 60%;
+    margin: 0 auto;
+}
+
 .sidebar a {
     color: white;
     text-decoration: none;

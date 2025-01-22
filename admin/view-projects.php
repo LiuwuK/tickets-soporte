@@ -261,6 +261,7 @@ check_login();
 
                                                 <div class="pr-row">
                                                     <div class="group">
+
                                                         <strong>Actividades</strong>
                                                         <ul>
                                                         <?php 
@@ -271,33 +272,80 @@ check_login();
                                                             $actividades = $con->prepare($query);
                                                             $actividades->execute();
                                                             $result = $actividades->get_result();
+                                                            $num = $result->num_rows;
                                                             
-                                                            while ($row_ac = $result->fetch_assoc()) {
-                                                                $fecha_original = $row_ac['fecha']; 
-                                                                setlocale(LC_TIME, 'es_ES.UTF-8', 'spanish');
-                                                                // Formatear la fecha
-                                                                $timestamp = strtotime($fecha_original);
-                                                                $fecha = strftime('%e de %B %Y', $timestamp);
-                                                            ?>
-                                                                <li><?php echo $row_ac['nombre'];?> -- <?php echo $fecha;?></li>    
-                                                            <?php }
+                                                            if($num > 0){
+                                                                while ($row_ac = $result->fetch_assoc()) {
+                                                                    $fecha_original = $row_ac['fecha']; 
+                                                                    setlocale(LC_TIME, 'es_ES.UTF-8', 'spanish');
+                                                                    // Formatear la fecha
+                                                                    $timestamp = strtotime($fecha_original);
+                                                                    $fecha = strftime('%e de %B %Y', $timestamp);
+                                                                ?>
+                                                                    <li><?php echo $row_ac['nombre'];?> -- <?php echo $fecha;?></li>    
+                                                                <?php }
+                                                            }else{
+                                                                echo "<p> Sin tareas asignadas </p>";
+                                                            }
                                                         ?>
                                                         </ul>
                                                     </div>
                                                 </div>
+                                                <div class="pr-row">
+                                                <div class="group">
+                                                        <strong>Lista de materiales</strong>
+                                                        <ul>
+                                                        <?php 
+                                                            $id =  $row['projectId'];
+                                                            $query = "SELECT * 
+                                                                        FROM bom
+                                                                        WHERE proyecto_id = $id";    
+                                                            $actividades = $con->prepare($query);
+                                                            $actividades->execute();
+                                                            $result = $actividades->get_result();
+                                                            $num = $result->num_rows;
+                                                            
+                                                            if($num > 0){
+                                                                while ($row_bom = $result->fetch_assoc()) {
+                                                                ?>
+                                                                   <div class="material-item">
+                                                                        <div>
+                                                                            <li> <?php echo $row_bom['nombre'];?></li>   
+                                                                        </div>
+                                                                        <div>
+                                                                            <i class="bi bi-x-lg"></i>
+                                                                        </div> 
+                                                                        <div>
+                                                                            <p><?php echo $row_bom['cantidad']?></p>
+                                                                        </div>
+                                                                        <div>
+                                                                            <p>
+                                                                                <?php echo '$'.number_format($row_bom['total'], 0, '.', ','); ?>
+                                                                            </p>
+                                                                        </div>
+                                                                   </div>
+                                                                <?php }
+                                                            }else{
+                                                                echo "<p> No se le han asignado materiales</p>";
+                                                            }
+                                                        ?>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+
                                                 <?php 
-                                                    if( $row['clasificacion'] == '1' ){ ?>
-                                                        <div class="pr-row">
-                                                            <strong>Gastos</strong>
-                                                            <div class="group d-flex lic">
-                                                                <strong>Software</strong>
-                                                                <p>: $<?php echo $row['costo_software'];?></p>
-                                                            </div>
-                                                            <div class="group d-flex lic">
-                                                                <strong>Hardware</strong>
-                                                                <p>: $<?php echo $row['costo_hardware'];?></p>
-                                                            </div>
+                                                if( $row['clasificacion'] == '1' ){ ?>
+                                                    <div class="pr-row">
+                                                        <strong>Gastos</strong>
+                                                        <div class="group d-flex lic">
+                                                            <strong>Software</strong>
+                                                            <p>: $<?php echo $row['costo_software'];?></p>
                                                         </div>
+                                                        <div class="group d-flex lic">
+                                                            <strong>Hardware</strong>
+                                                            <p>: $<?php echo $row['costo_hardware'];?></p>
+                                                        </div>
+                                                    </div>
                                                 <?php } 
                                                 ?>
 
@@ -322,7 +370,6 @@ check_login();
                                             <button type="button" class="btn btn-del" data-bs-toggle="modal" data-bs-target="#closeModal" data-pid="<?php echo $row['id']; ?>">Cerrar</button>
                                         </div>
                                     </div>
-                                    
                                 </div>
                             </div>
                             <!------------------>

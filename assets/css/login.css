@@ -3,7 +3,7 @@ body {
     justify-content: center;
     align-items: center;
     margin: 0;
-    background-image: url('assets/img/bg.jpg') no-repeat center center / cover; 
+    background-image: url('../img/bg.jpg') no-repeat center center / cover; 
     background-color: #f0f0f0; 
 }
 .login-div {
@@ -21,7 +21,7 @@ body {
     justify-content: center;
     align-items: center;
     flex: 1;
-    background: url('assets/img/bgimg.jpg') no-repeat center center / cover;
+    background: url('../img/admin.jpg') no-repeat center center / cover;
 }
 
 .loginCtn {

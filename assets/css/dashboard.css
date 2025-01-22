@@ -65,16 +65,14 @@
   margin: 0px auto;
   margin-top: 20px;
 }
-/* Flexbox en la fila */
+
 .row {
   display: flex;
-  flex-wrap: wrap; /* Permite el comportamiento responsivo */
-  align-items: flex-start; /* Las columnas se alinean arriba, no se estiran */
+  flex-wrap: wrap; 
+  align-items: flex-start; 
 }
 
-/* Configuración para cada contenedor de gráficos */
 .graficos {
-
-  margin-bottom: 10px; /* Espaciado entre columnas */
-  display: block; /* Asegura el comportamiento independiente */
+  margin-bottom: 10px; 
+  display: block; 
 }

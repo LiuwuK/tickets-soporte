@@ -58,7 +58,7 @@ include("assets/php/login.php");
     </div>
 
     <div class="loginImg col-md-7" id="login-img-container">
-        <h2>IMAGEN</h2>
+        
     </div>
 
     <div class="notactive-form container loginCtn col-md-5" id="register-form-container">
