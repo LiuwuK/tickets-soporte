@@ -27,7 +27,7 @@ $statusF = mysqli_query($con, $query_st);
 //----------------------------------------------------------------------------------------------------------------
 //La query cambia dependiendo si se filtra por prioridad y/o estado (FILTROS)
 $vertical_id = isset($_GET['verticalF']) ? intval($_GET['verticalF']) : '';
-$distribuidor_id = isset($_GET['distribuidorF']) ? intval($_GET['distribuidorF']) : '';
+$status_id = isset($_GET['statusF']) ? intval($_GET['statusF']) : '';
 $searchText = isset($_GET['textSearch']) ? trim($_GET['textSearch']) : '';
 //----------------------------------------------------------------------------------------------------------
 $userId = $_SESSION["user_id"];
@@ -104,11 +104,11 @@ if($_SESSION['cargo'] == 3){
   $params = [];
   $types = '';
 
-  // Filtrar por distribuidor
-  if (!empty($distribuidor_id)) {
-  $conditions[] = "pr.distribuidor = ?";
-  $params[] = $distribuidor_id;
-  $types .= 'i';
+  // Filtrar por estado
+  if (!empty($status_id)) {
+    $conditions[] = "pr.estado_id = ?";
+    $params[] = $status_id;
+    $types .= 'i';
   }
 
   // Filtrar por prioridad
@@ -118,21 +118,15 @@ if($_SESSION['cargo'] == 3){
   $types .= 'i';
   }
 
-  // Filtrar por estado
-  if (!empty($status_id)) {
-  $conditions[] = "pr.estado_id = ?";
-  $params[] = $status_id;
-  $types .= 'i';
-  }
-
-  // Filtrar por texto (nombre del ticket o ID)
+  // Filtrar por texto (nombre del proyecto o ID)
   if (!empty($searchText)) {
-  $conditions[] = "(ti.id LIKE ? OR ti.subject LIKE ?)";
+  $conditions[] = "(pr.id LIKE ? OR pr.nombre LIKE ?)";
   $searchWildcard = '%' . $searchText . '%';
   $params[] = $searchWildcard;
   $params[] = $searchWildcard;
   $types .= 'ss';
   }
+
 
   // Combinar las condiciones
   if (!empty($conditions)) {
@@ -168,11 +162,11 @@ if($_SESSION['cargo'] == 3){
   $params = [];
   $types = '';
 
-  // Filtrar por distribuidor
-  if (!empty($distribuidor_id)) {
-  $conditions[] = "pr.distribuidor = ?";
-  $params[] = $distribuidor_id;
-  $types .= 'i';
+  // Filtrar por estado
+  if (!empty($status_id)) {
+    $conditions[] = "pr.estado_id = ?";
+    $params[] = $status_id;
+    $types .= 'i';
   }
 
   // Filtrar por prioridad
@@ -182,21 +176,15 @@ if($_SESSION['cargo'] == 3){
   $types .= 'i';
   }
 
-  // Filtrar por estado
-  if (!empty($status_id)) {
-  $conditions[] = "pr.estado_id = ?";
-  $params[] = $status_id;
-  $types .= 'i';
-  }
-
-  // Filtrar por texto (nombre del ticket o ID)
+  // Filtrar por texto (nombre del proyecto o ID)
   if (!empty($searchText)) {
-  $conditions[] = "(ti.id LIKE ? OR ti.subject LIKE ?)";
+  $conditions[] = "(pr.id LIKE ? OR pr.nombre LIKE ?)";
   $searchWildcard = '%' . $searchText . '%';
   $params[] = $searchWildcard;
   $params[] = $searchWildcard;
   $types .= 'ss';
   }
+
 
   // Combinar las condiciones
   if (!empty($conditions)) {
