@@ -80,19 +80,7 @@ check_login();
                                 ?>
                             </select>
                         </div>
-                        <div class="fil-div">
-                            <label class="form-label" for="prio">Distribuidor</label>
-                            <select name="distribuidorF" class="form-select form-select-sm" id="prio">
-                                <option value="">Ver todo</option> 
-                                <?php
-                                foreach ($distData as $row) {
-                                    // Opcion para filtrar por vertical
-                                    $selected = isset($_GET['distribuidorF']) && $_GET['distribuidorF'] == $row['id'] ? 'selected' : '';
-                                    echo "<option value='" . $row['id'] . "' $selected>" . $row['nombre'] . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
+
                         <div class="fil-btn">
                             <button type="submit" class="btn">Filtrar</button>
                         </div>

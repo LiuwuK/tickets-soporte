@@ -75,6 +75,18 @@ check_login();
                                     <option>Ingeniería</option>
                                 </select>
                         </div>
+                        
+                        <div class="form-group">
+                            <label for="tecnico" class="form-label">Técnico asociado</label>
+                            <select id="tecnico" name="tecnico" class="form-select form-select-sm">
+                            <?php
+                            while ($row = mysqli_fetch_assoc($tecnicos)) {
+                                echo "<option value=''>Seleccionar</option>";
+                                echo "<option value=". $row['id'] .">". $row['name'] ."</option>";
+                            };
+                            ?>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="form-row">

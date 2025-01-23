@@ -356,7 +356,7 @@ input, .form-control, .form-select{
 #filtersForm {
   overflow: hidden; 
   max-height: 0; 
-  transition: max-height 0.7s ease-in-out; 
+  transition: max-height 0.3s ease-in-out; 
 }
 
 #filtersForm.expanded {

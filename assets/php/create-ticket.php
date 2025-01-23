@@ -2,6 +2,14 @@
 
     $prioridad = mysqli_query($con, "select * from prioridades ");
 
+
+
+    //obtener tecnicos
+    $query = "SELECT * 
+                FROM  user
+                WHERE cargo = '5'";
+    $tecnicos = mysqli_query($con,$query);
+
     if (isset($_POST['send'])) {
         $email = isset($_SESSION['login']) ? $_SESSION['login'] : $_SESSION['alogin'];
         $userId = $_SESSION['id'];

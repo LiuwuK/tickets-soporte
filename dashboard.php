@@ -119,7 +119,7 @@ check_login();
             <?php
               }
               // User comercial Y Gerencia
-              else if($_SESSION['cargo'] == 2 or $_SESSION['cargo'] == 4){
+              else if($_SESSION['cargo'] == 2 ){
               ?>
                 <div class="first-row">
                   <div class="t-head">
@@ -277,19 +277,118 @@ check_login();
                 }
             ?>
           </div>
-          <!-- Segunda fila  -->
+            <!-- segunda fila -->
+          <div class="row">
+            <?php
+              if($_SESSION['cargo'] == 4){
+            ?>
+              <div class="gerencia  col-md-12 col-xl-5">
+                <div class="t-head">
+                  <h3>Top 5 Proyectos</h3>
+                </div>
+                <?php
+                  if($num_top > 0){
+                ?>
+                  <div class="t-body">
+                    <div class="d-flex flex-row align-items-center pr-3 mb-2">
+                        <div class="flex-grow-1 text-center" style="width: 20%;">
+                          <strong>Nombre</strong>
+                        </div>
+                        <div class="flex-grow-1 text-center" style="width: 30%; overflow:hidden;">
+                          <strong>Clasificación</strong>
+                        </div>
+                        <div class="flex-grow-1 text-center" style="width: 20%;">
+                          <strong>Monto proyecto</strong>
+                        </div>
+                        <div class="flex-grow-1 text-center" style="width: 20%;">
+                          <strong>Estado</strong>
+                        </div>
+                        <div class="flex-grow-1 text-end" style="width: 15%;">
+                        </div>
+                    </div>
+                    <?php                     
+                      while ($row = $top_proyectos -> fetch_assoc()){
+                      ?>
+                      <div class="card d-flex flex-row align-items-center p-3 mb-2">
+                        <div class="flex-grow-1 text-center" style="width: 20%;">
+                          <strong><?php echo $row['nombre'] ;?></strong>
+                        </div>
+                        <div class="text-center" style="width: 30%; overflow:hidden;">
+                          <p><?php echo $row['clasiN'] ;?></p>
+                        </div>
+                        <div class="text-center" style="width: 20%;">
+                          <p><?php echo '$'.number_format($row['monto'], 0, '.', ',');?></p>
+                        </div>
+                        <div class="text-center" style="width: 20%;">
+                          <?php
+                          if ($row['estado_id'] == '20') {
+                          ?>
+                            <span class="label label-success"><?php echo $row['estado']; ?></span>
+                            <?php
+                            }else if ($row['estado_id'] == '21'){
+                            ?>
+                              <span class="label label-important"><?php echo $row['estado']; ?></span>
+                              <?php
+                            }else{?>
+                              <span class="label label-warning"><?php echo $row['estado']; ?></span>
+                              <?php
+                          };?>
+                        </div>
+                        <div class="text-end" style="width: 15%;">
+                          <p><button class="btn btn-updt" onclick="window.location.href='view-projects.php';">Ver</button></p>
+                        </div>
+                      </div>
+                    <?php
+                      $counter++; 
+                        if ($counter >= 5) { 
+                            break;
+                        }
+                      }
+                    ?>
+                  </div>
+                  <div class="t-footer d-flex justify-content-between ">
+                      <strong>Proyectos: <?php echo $total_proyectos ?> </strong>
+                      <strong>Monto total proyectos: <?php echo '$'.number_format($monto_general, 0, '.', ',');?></strong>
+                      <strong>Monto proyectos ganados: <?php echo '$'.number_format($monto_ganados, 0, '.', ',');?> </strong>
+                  </div> 
+                <?php
+                  }else{
+                    echo "<div class't-body'><h4>No existen proyectos</h4></div>";
+                  }
+                ?>
+              </div>
+
+              <div class="col-sm-12 col-md-12 col-lg-8 col-xl-6 graficos">
+                <div class="d-flex justify-content-between mb-3">
+                  <h3>Total Proyectos registrados</h3>
+                  <div class="btn-group" role="group" aria-label="Filtro por Trimestre">
+                    <button type="button" class="btn btn-updt" id="btnQ1" data-trimestre="1">Q1</button>
+                    <button type="button" class="btn btn-updt" id="btnQ2" data-trimestre="2">Q2</button>
+                    <button type="button" class="btn btn-updt" id="btnQ3" data-trimestre="3">Q3</button>
+                    <button type="button" class="btn btn-updt" id="btnQ4" data-trimestre="4">Q4</button>
+                  </div>
+                </div>
+                <!-- Botones de filtro -->
+                
+                <canvas id="lineTotalProjects"></canvas>
+              </div>
+            <?php
+              }
+            ?>
+          </div>
+          <!-- tercera fila  -->  
            <div class="row">
             <?php
               if($_SESSION['cargo'] == 4){
             ?>  
               <div class="col-sm-12 col-md-12 col-lg-8 col-xl-6 graficos">
-                <h3>Total Proyectos</h3>
-                <canvas id="totalProjects"></canvas>
+                <h3>Total Monto Proyectos</h3>
+                <canvas id="projects"></canvas>
               </div>
               
               <div class="col-sm-12 col-md-12 col-lg-8 col-xl-5 graficos">
-                <h3>Cantidad de Proyectos</h3>
-                <canvas id="projects"></canvas>
+                <h3>Total Monto  por vertical</h3>
+                <canvas id="totalProjects"></canvas>
               </div>
             <?php
               }
@@ -298,86 +397,51 @@ check_login();
         </div>   
     </div>
   </div>
-
   <script>
-    //datos de php a js
     //grafico total monto
     const tProjects = <?php echo json_encode($tProject); ?>;
     const tProjectsData = <?php echo json_encode($tProjectData); ?>;
     //grafico cantidad proyectos
-    const cProjects = <?php echo json_encode($cProject); ?>;
-    const cProjectsData = <?php echo json_encode($cProjectData); ?>;
-    
+    const mp = <?php echo $mp_json; ?>;
+    const datap = <?php echo $datap_json; ?>;
+    // grafico total proyectos registrados
+    const meses = <?php echo $meses_json; ?>;
+    const datasets = <?php echo $datasets_json; ?>;
+    const max = <?php echo $maximo; ?>;
+    //botones trimestre
+    const trimestreButtons = document.querySelectorAll('.btn-updt');
 
-    // Grafico total de proyectos generados
-    const configCount = {
-      type: 'bar', // Tipo de gráfico de barras
-      data: {
-        labels: cProjects,
-        datasets: [{
-          label: 'Total Proyectos', 
-          data: cProjectsData, 
-          backgroundColor: '#0aa699'
-        }]
-      },
-      options: {
-        responsive: true, // El gráfico será responsive (se adapta al tamaño de la pantalla)
-        scales: {
-          x: {
-            max: 20, 
-            title: {
-              display: true,
-              text: 'Estado del proyecto',
-            }
-          },
-          y: {
-            max: 10, 
-            beginAtZero: true // La escala del eje Y comenzará desde cero
-          }
-        }
-      }
-    }
-    // Grafico PIE total monto proyectos
-    const configTotal = {
-        type: 'pie',
-        data: {
-            labels: tProjects,
-            datasets: [{
-                data: tProjectsData,
-                backgroundColor: [
-                    '#fdd01c',  '#0aa699', '#f35958'
-                ],
-                hoverOffset: 4
-            }]
+    // cambiar trimestre
+    trimestreButtons.forEach(button => {
+      button.addEventListener('click', function () {
+        const trimestre = this.getAttribute('data-trimestre'); 
+        updateChart(trimestre); 
+      });
+    });
+
+    // Función para actualizar grafico x trimestre
+    function updateChart(trimestre) {
+      // Realiza una solicitud fetch al servidor para obtener los datos del trimestre seleccionado
+      fetch('assets/php/dashboard.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
         },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const value = context.raw;
-                            const formattedValue = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD',minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
-                            return `${context.label}: ${formattedValue}`;
-                        }
-                    }
-                }
-            }
-        }
-    };
+        body: JSON.stringify({ trimestre: trimestre })
+      })
+        .then(response => response.json())
+        .then(data => {
+          const meses = data.meses;
+          const datasets = data.datasets;
 
-    // Renderizar gráficos
-    window.onload = function() {
-      //grafico total monto
-        const projectTotal = document.getElementById('totalProjects').getContext('2d');
-        new Chart(projectTotal, configTotal);
-      //grafico cantidad proyectos
-        const projects = document.getElementById('projects').getContext('2d');
-        new Chart(projects, configCount);
-    };
+          myChart.data.labels = meses;
+          myChart.data.datasets = datasets;
+
+          myChart.update();
+        })
+        .catch(error => console.error('Error al actualizar el gráfico:', error));
+    }
+
   </script>
 
 <!-- Popper.js (para tooltips y otros componentes) -->
@@ -389,6 +453,8 @@ check_login();
 <!-- Scripts propios -->
 <script src="assets/js/sidebar.js"></script>
 <script src="assets/js/calendar.js"></script>
+<script src="assets/js/charts.js"></script>
+
 </body>
 
 </html>

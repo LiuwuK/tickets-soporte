@@ -62,12 +62,12 @@ else if ($_SESSION['cargo'] == 3){
 
 //Informacion para graficos ------------------------------------------------
 if($_SESSION['cargo'] == 4){
-  $query = "SELECT es.nombre, COALESCE(SUM(pr.monto), 0) AS total_proyecto 
-            FROM estados es
-            LEFT JOIN proyectos pr ON (pr.estado_id = es.id)
-            WHERE es.type = 'project'
-            GROUP BY es.id
-            ORDER BY es.nombre ASC";
+  //total monto por vertical 
+  $query = "SELECT vt.nombre, COALESCE(SUM(pr.monto), 0) AS total_proyecto 
+            FROM verticales vt
+            JOIN proyectos pr ON (pr.vertical = vt.id)
+            GROUP BY vt.id
+            ORDER BY vt.nombre ASC";
   $proyectos_data = mysqli_query($con, $query);
   $tProject = [];
   $tProjectData = [];
@@ -77,23 +77,128 @@ if($_SESSION['cargo'] == 4){
       $tProjectData[] = $row['total_proyecto']; 
       
   }
-
-
-  $query = "SELECT es.nombre, COALESCE(COUNT(pr.id), 0) AS total_proyecto
+  //-------------------------------------------------------------------------------
+  //Total monto proyectos por estado 
+  $query = "SELECT es.nombre AS estado, MONTH(pr.fecha_creacion) AS mes, COALESCE(SUM(pr.monto), 0) AS total_proyecto
             FROM estados es
-            LEFT JOIN proyectos pr ON (pr.estado_id = es.id) 
-            WHERE es.type = 'project'
-            GROUP BY es.id
-            ORDER BY es.nombre DESC";
+            LEFT JOIN proyectos pr ON pr.estado_id = es.id
+            WHERE es.type = 'project' AND YEAR(pr.fecha_creacion) = YEAR(CURDATE())
+            GROUP BY es.id, mes
+            ORDER BY mes ASC, es.nombre ASC";
 
-  $proyectos_data = mysqli_query($con, $query);
-  $cProject = [];
-  $cProjectData = [];
+  $pdata = $con->prepare($query);
+  $pdata->execute();
+  $results = $pdata->get_result();
 
-  while ($row = mysqli_fetch_assoc($proyectos_data)) {
-  $cProject[] = $row['nombre']; 
-  $cProjectData[] = $row['total_proyecto']; 
+  $mesesP = range(1, 12); 
+  $estados = ['Ganado', 'En Evaluación', 'Perdido']; 
+
+  // array para almacenar los datos
+  $dataEstados = array_fill(1, 12, array_fill_keys($estados, 0));
+
+  // Procesar resultados
+  while ($row = $results->fetch_assoc()) {
+      $estado = $row['estado'];
+      $mes = (int)$row['mes'];
+      $total = (float)$row['total_proyecto'];
+      
+      $data[$mes][$estado] = $total;
   }
+  
+  $datasetsP = [];
+  foreach ($estados as $estado) {
+      $datasetsP[] = [
+          'label' => $estado,
+          'data' => array_map(function($mes) use ($estado, $data) {
+              return isset($data[$mes][$estado]) ? $data[$mes][$estado] : 0;
+          }, $mesesP),
+          'fill' => false,
+      ];
+  }
+ 
+  // Generar los datos para JavaScript
+  $mp_json = json_encode($mesesP);
+  $datap_json = json_encode($datasetsP);
+  //-------------------------------------------------------------------------------
+
+  // datos para total proyectos registrados
+  $trimestre = isset($_POST['trimestre']) ? $_POST['trimestre'] : 1;
+  // trimestres
+  $meses_por_trimestre = [
+      1 => ['01', '02', '03'],  
+      2 => ['04', '05', '06'],  
+      3 => ['07', '08', '09'],  
+      4 => ['10', '11', '12']   
+  ];
+  if (!isset($meses_por_trimestre[$trimestre])) {
+      echo "Trimestre no válido.";
+      exit;
+  }
+  $meses_seleccionados = $meses_por_trimestre[$trimestre];
+  // Consulta SQL para filtrar por los meses del trimestre seleccionado
+  $con->query("SET lc_time_names = 'es_ES';");
+  $query = " SELECT es.nombre AS estado, MONTHNAME(pr.fecha_creacion) AS mes, MONTH(pr.fecha_creacion) AS mes_num, COALESCE(COUNT(pr.id), 0) AS total_proyecto
+              FROM estados es
+              LEFT JOIN proyectos pr ON (pr.estado_id = es.id)
+              WHERE es.type = 'project' AND YEAR(pr.fecha_creacion) = YEAR(CURDATE())
+              AND MONTH(pr.fecha_creacion) IN (" . implode(',', $meses_seleccionados) . ")
+              GROUP BY es.id, mes
+              ORDER BY mes_num ASC;";
+  
+  $pdata = $con->prepare($query);
+  $pdata->execute();
+  $results = $pdata->get_result();
+
+  $maximo = 0;
+  // Sumar cantidad proyectos 
+  if ($results->num_rows > 0) {
+      while ($row = $results->fetch_assoc()) {
+          $maximo += $row['total_proyecto'];
+      }
+  } else {
+      echo "No se encontraron datos.";
+  }
+  $data = [];
+  $meses = [];
+  foreach ($results as $row) {
+      $estado = $row['estado'];
+      $mes = $row['mes'];
+      $total = (int) $row['total_proyecto'];
+
+      if (!in_array($mes, $meses)) {
+          $meses[] = $mes;
+      }
+
+      // Organiza los datos por estado
+      if (!isset($data[$estado])) {
+          $data[$estado] = array_fill_keys($meses, 0); 
+      }
+      $data[$estado][$mes] = $total;
+  }
+
+
+  foreach ($data as $estado => &$values) {
+      foreach ($meses as $mes) {
+          if (!isset($values[$mes])) {
+              $values[$mes] = 0;
+          }
+      }
+  }
+  unset($values); 
+
+  // Organiza los datos 
+  $datasets = [];
+  foreach ($data as $estado => $values) {
+      $datasets[] = [
+          'label' => $estado,
+          'data' => array_values($values), 
+          'fill' => false,
+          'tension' => 0.4
+      ];
+  }
+
+  $meses_json = json_encode($meses);
+  $datasets_json = json_encode($datasets);
 }
 //--------------------------------------------------------------------------
 //Notificaciones 
