@@ -360,7 +360,7 @@ check_login();
 
               <div class="col-sm-12 col-md-12 col-lg-8 col-xl-6 graficos">
                 <div class="d-flex justify-content-between mb-3">
-                  <h3>Total Proyectos registrados</h3>
+                  <h3>Proyectos registrados</h3>
                   <div class="btn-group" role="group" aria-label="Filtro por Trimestre">
                     <button type="button" class="btn btn-updt" id="btnQ1" data-trimestre="1">Q1</button>
                     <button type="button" class="btn btn-updt" id="btnQ2" data-trimestre="2">Q2</button>
@@ -420,7 +420,7 @@ check_login();
     });
 
 
-  </script>
+  </script> 
 
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

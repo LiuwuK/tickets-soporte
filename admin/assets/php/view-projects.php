@@ -67,9 +67,9 @@ if (!empty($status_id)) {
     $types .= 'i';
 }
 
-// Filtrar por texto (nombre del ticket o ID)
+// Filtrar por texto (nombre del proyecto o ID)
 if (!empty($searchText)) {
-    $conditions[] = "(ti.id LIKE ? OR ti.subject LIKE ?)";
+    $conditions[] = "(pr.id LIKE ? OR pr.nombre LIKE ?)";
     $searchWildcard = '%' . $searchText . '%';
     $params[] = $searchWildcard;
     $params[] = $searchWildcard;

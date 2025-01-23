@@ -48,11 +48,11 @@ if($_SESSION['cargo'] == 3){
   $params = [];
   $types = '';
 
-  // Filtrar por distribuidor
-  if (!empty($distribuidor_id)) {
-  $conditions[] = "pr.distribuidor = ?";
-  $params[] = $distribuidor_id;
-  $types .= 'i';
+  // Filtrar por estado
+  if (!empty($status_id)) {
+    $conditions[] = "pr.estado_id = ?";
+    $params[] = $status_id;
+    $types .= 'i';
   }
 
   // Filtrar por prioridad
@@ -62,9 +62,9 @@ if($_SESSION['cargo'] == 3){
   $types .= 'i';
   }
 
-  // Filtrar por texto (nombre del ticket o ID)
+  // Filtrar por texto (nombre del proyecto o ID)
   if (!empty($searchText)) {
-  $conditions[] = "(ti.id LIKE ? OR ti.subject LIKE ?)";
+  $conditions[] = "(pr.id LIKE ? OR pr.nombre LIKE ?)";
   $searchWildcard = '%' . $searchText . '%';
   $params[] = $searchWildcard;
   $params[] = $searchWildcard;
