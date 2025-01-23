@@ -419,28 +419,6 @@ check_login();
       });
     });
 
-    // Función para actualizar grafico x trimestre
-    function updateChart(trimestre) {
-      // Realiza una solicitud fetch al servidor para obtener los datos del trimestre seleccionado
-      fetch('assets/php/dashboard.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ trimestre: trimestre })
-      })
-        .then(response => response.json())
-        .then(data => {
-          const meses = data.meses;
-          const datasets = data.datasets;
-
-          myChart.data.labels = meses;
-          myChart.data.datasets = datasets;
-
-          myChart.update();
-        })
-        .catch(error => console.error('Error al actualizar el gráfico:', error));
-    }
 
   </script>
 
