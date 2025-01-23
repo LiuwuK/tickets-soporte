@@ -53,13 +53,32 @@ check_login();
                     <div class="fil-main form-group">
                         <div class="search-div d-flex">
                             <label class="form-label" >Buscar</labe>
-                            <input type="text" class="form-control form-control-sm" id="textSearch" name="textSearch" placeholder="Nombre/ID del ticket">
+                            <input type="text" class="form-control form-control-sm" id="textSearch" name="textSearch" placeholder="Nombre/ID del proyecto">
                         </div>
                         <div class="fil-div">
-                            <label class="form-label" for="st">Estado</label>
-                            <select name="statusF" class="form-select form-select-sm" id="st">
-                                <option value="">Ver todo</option>    
-
+                            <label class="form-label" for="prio">Vertical</label>
+                            <select name="verticalF" class="form-select form-select-sm" id="prio">
+                                <option value="">Ver todo</option> 
+                                <?php
+                                foreach ($verticales as $row) {
+                                    // Opcion para filtrar por vertical
+                                    $selected = isset($_GET['verticalF']) && $_GET['verticalF'] == $row['id'] ? 'selected' : '';
+                                    echo "<option value='" . $row['id'] . "' $selected>" . $row['nombre'] . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="fil-div">
+                            <label class="form-label" for="prio">Distribuidor</label>
+                            <select name="distribuidorF" class="form-select form-select-sm" id="prio">
+                                <option value="">Ver todo</option> 
+                                <?php
+                                foreach ($distData as $row) {
+                                    // Opcion para filtrar por vertical
+                                    $selected = isset($_GET['distribuidorF']) && $_GET['distribuidorF'] == $row['id'] ? 'selected' : '';
+                                    echo "<option value='" . $row['id'] . "' $selected>" . $row['nombre'] . "</option>";
+                                }
+                                ?>
                             </select>
                         </div>
                         <div class="fil-btn">
@@ -102,6 +121,7 @@ check_login();
                                     <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> 
                                 </div>
                                 <p>Ciudad: <span><?php echo $row['ciudadN']; ?></span></p>
+                                <p>Distribuidor: <span><?php echo $row['distribuidorN']; ?></span></p>
                                 <p><span>Ingeniero responsable</span>: <?php echo $row['ingeniero_responsable'] ? $row['ingeniero'] : "Sin asignar" ;?></p>
 
                             </div>

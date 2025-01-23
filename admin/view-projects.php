@@ -56,7 +56,7 @@ check_login();
                     <div class="fil-main form-group">
                         <div class="search-div d-flex">
                             <label class="form-label" >Buscar</labe>
-                            <input type="text" class="form-control form-control-sm" id="textSearch" name="textSearch" placeholder="Nombre/ID del ticket">
+                            <input type="text" class="form-control form-control-sm" id="textSearch" name="textSearch" placeholder="Nombre/ID del proyecto">
                         </div>
                         <div class="fil-div">
                             <label class="form-label" for="st">Estado</label>
@@ -70,7 +70,6 @@ check_login();
                                 ?>
                             </select>
                         </div>
-
                         <div class="fil-div">
                             <label class="form-label" for="prio">Vertical</label>
                             <select name="verticalF" class="form-select form-select-sm" id="prio">
@@ -84,7 +83,6 @@ check_login();
                                 ?>
                             </select>
                         </div>
-
                         <div class="fil-div">
                             <label class="form-label" for="prio">Distribuidor</label>
                             <select name="distribuidorF" class="form-select form-select-sm" id="prio">
@@ -368,14 +366,13 @@ check_login();
                                                     </div>
                                                     <div class="group">
                                                         <strong>Total BOM</strong>
-                                                        <p><?php
-                                                                if($total > 0){
-                                                                    echo '$'.number_format($total, 0, '.', ','); 
-                                                                }else{
-                                                                    echo "<p> No se le han asignado materiales</p>";
-                                                                } 
-                                                                ?>
-                                                            </p>
+                                                        <?php
+                                                        if($total > 0){
+                                                            echo '<p> $'.number_format($total, 0, '.', ',').'</p>'; 
+                                                        }else{
+                                                            echo "<p> No se le han asignado materiales</p>";
+                                                        } 
+                                                        ?>
                                                     </div>
                                                 </div>
                                                 <!--
