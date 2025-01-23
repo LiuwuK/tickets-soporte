@@ -51,7 +51,7 @@ else if ($_SESSION['cargo'] == 3){
             FROM proyectos pr
             JOIN clasificacion_proyecto cl ON (pr.clasificacion = cl.id)
             WHERE pr.estado_id = '20' AND pr.xfacturar = '1'
-            ORDER BY pr.fecha_creacion DESC";
+            ORDER BY pr.fecha_actualizacion DESC";
   $xfacturar = mysqli_query($con, $query);
 
   $pdata = $con->prepare($query);

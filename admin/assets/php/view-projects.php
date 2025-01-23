@@ -9,7 +9,7 @@ while ($row = mysqli_fetch_assoc($inge)) {
     $ingenieros[] = $row;
 }
 
-//carga las verticales y distribuidores para filtrar--------------------------------------------------------------
+//carga las verticales, estados y distribuidores para filtrar--------------------------------------------------------------
 $query = "SELECT * FROM verticales ";
 $verticalData = mysqli_query($con, $query);
 while ($row = mysqli_fetch_assoc($verticalData)) {
@@ -21,6 +21,9 @@ $distribuidorData = mysqli_query($con, $query);
 while ($row = mysqli_fetch_assoc($distribuidorData)) {
   $distData[] = $row; 
 }
+
+$query_st = "SELECT * FROM estados WHERE type = 'project'";
+$statusF = mysqli_query($con, $query_st);
 //----------------------------------------------------------------------------------------------------------
 
 //Se obtienen todos los proyectos
@@ -31,14 +34,16 @@ $query = "SELECT pr.id AS projectId, pr.*, es.nombre AS estado, ci.nombre_ciudad
             LEFT JOIN user us ON(pr.ingeniero_responsable = us.id)
             JOIN user us_com ON (pr.comercial_responsable = us_com.id)
             JOIN tipo_proyecto tp ON(pr.tipo = tp.id)";
+
+            
 $stmt = $con->prepare($query);
 $stmt->execute();
 $rt = $stmt->get_result();
 
 //total de resultados
 $num = $rt->num_rows; 
-
-
+//-------------------------------------------------------------------------------------------------------------------------------------------
+//asignar ingeniero al proyecto
 if (isset($_POST["asignarIng"])) {
     $ingeId =  $_POST['ingeniero'];
     $pID    =  $_POST['pId'];
@@ -58,6 +63,7 @@ if (isset($_POST["asignarIng"])) {
     $stmt->close();
 }
 
+//cerrar proyecto
 if(isset($_POST['endBtn'])){
     $pID    =  $_POST['pId'];
     $estado = $_POST['estado'];

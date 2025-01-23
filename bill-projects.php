@@ -96,7 +96,7 @@ check_login();
                                         };
                                         
                                     ?>
-                                    <span class="label label-success"><?php echo '$'.number_format($row['costo_real'], 0, '.', ',');?></span>
+                                    <span class="label label-success"><?php echo '$'.number_format($row['monto'], 0, '.', ',');?></span>
                                 </p>
                                 <div class="actions"> 
                                     <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> 
@@ -146,7 +146,7 @@ check_login();
                                         </div>
                                         <br>
                                         <div class="footer d-flex justify-content-between">
-                                            <button id="billButton" class="btn btn-updt" data-id="<?php echo $row['projectId']; ?>">Facturar</button>
+                                            <button id="billButton" class="btn btn-updt" data-bs-toggle="modal" data-bs-target="#closeModal" data-id="<?php echo $row['id']; ?>">Facturar</button>
                                         </div>
                                     </div>
                                     
@@ -166,10 +166,29 @@ check_login();
     </div>
   </div>
 
-<script>
 
-</script>
 
+<!-- modal facturar proyecto -->
+<div class="modal fade" id="closeModal" tabindex="-1" aria-labelledby="closeModalLabel" aria-hidden="true">
+    <form name="form" id="endBtn" method="post">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="closeModalLabel"> Confirmación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body endModal">
+                    <p class="text-center">El proyecto # sera facturado</p>
+                    <input type="hidden" name="pId">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" name="billBtn" class="btn btn-updt">Facturar</button>
+                    <button type="button" class="btn btn-del" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
 
 
@@ -184,6 +203,7 @@ check_login();
 <script src="assets/js/support_ticket.js" type="text/javascript"></script>
 <script src="assets/js/general.js"></script>
 <script src="assets/js/sidebar.js"></script>
+<script src="assets/js/bill-projects.js"></script>
 </body>
 
 </html>

@@ -79,4 +79,24 @@ else{
   //total de resultados
   $num = $rt->num_rows; 
 }
+//----------------------------------------------------------------------------------------------------------------
+//facturar proyecto
+if(isset($_POST['billBtn'])){
+  $pID  =  $_POST['pId'];
+  $xfacturar = '0';
+  
+  $query =  " UPDATE proyectos
+              SET xfacturar = ?
+              WHERE id = ?";
+  $stmt = $con->prepare($query);
+  $stmt->bind_param("ii",$xfacturar, $pID);
+
+  if ($stmt->execute()) {
+      echo "<script>alert('Proyecto facturado correctamente');location.replace(document.referrer)</script>";
+  } else {
+      echo "<script>alert('error');location.replace(document.referrer)</script>";
+  }
+
+  $stmt->close();
+}
 ?>

@@ -62,7 +62,40 @@ check_login();
                             <label class="form-label" for="st">Estado</label>
                             <select name="statusF" class="form-select form-select-sm" id="st">
                                 <option value="">Ver todo</option>    
+                                <?php
+                                while ($st = mysqli_fetch_assoc($statusF)) {
+                                    $select = isset($_GET['statusF']) && $_GET['statusF'] == $st['id'] ? 'selected' : '';
+                                    echo "<option value='" . $st['id'] . "' $select>" . $st['nombre'] . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
 
+                        <div class="fil-div">
+                            <label class="form-label" for="prio">Vertical</label>
+                            <select name="verticalF" class="form-select form-select-sm" id="prio">
+                                <option value="">Ver todo</option> 
+                                <?php
+                                foreach ($verticales as $row) {
+                                    // Opcion para filtrar por vertical
+                                    $selected = isset($_GET['verticalF']) && $_GET['verticalF'] == $row['id'] ? 'selected' : '';
+                                    echo "<option value='" . $row['id'] . "' $selected>" . $row['nombre'] . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="fil-div">
+                            <label class="form-label" for="prio">Distribuidor</label>
+                            <select name="distribuidorF" class="form-select form-select-sm" id="prio">
+                                <option value="">Ver todo</option> 
+                                <?php
+                                foreach ($distData as $row) {
+                                    // Opcion para filtrar por vertical
+                                    $selected = isset($_GET['distribuidorF']) && $_GET['distribuidorF'] == $row['id'] ? 'selected' : '';
+                                    echo "<option value='" . $row['id'] . "' $selected>" . $row['nombre'] . "</option>";
+                                }
+                                ?>
                             </select>
                         </div>
                         <div class="fil-btn">
