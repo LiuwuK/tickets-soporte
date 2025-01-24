@@ -9,7 +9,7 @@ use PHPMailer\PHPMailer\Exception;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 //credenciales (cambiar) USER = CORREO / PASS = CLAVE DE APLICACION GOOGLE 
-$user = 'stsafeteck@gmail.com'; // Usuario de tu correo
+$user = 'stsafeteck@gmail.com'; // correo
 $pass = 'molc xtfj nfev kruf'; // Contraseña de aplicación
 $tId  = '$tId'; 
 
@@ -95,7 +95,7 @@ class Notificaciones {
             $mail->Port = 587;
         
             // Configuración del remitente y destinatario
-            $mail->setFrom('kevinantecao1206@gmail.com', 'Soporte');
+            $mail->setFrom('stsafeteck@gmail.com', 'Soporte');
             $mail->addAddress($destinatario);
             $mail->CharSet = 'UTF-8';
 
@@ -237,7 +237,7 @@ class Notificaciones {
                 while ($row = $result->fetch_assoc()) {
                     $destinatario = $row['email'];
                     $mail->clearAddresses(); // Limpia los destinatarios anteriores
-                    $mail->setFrom('kevinantecao1206@gmail.com', 'Soporte');
+                    $mail->setFrom('stsafeteck@gmail.com', 'Soporte');
                     $mail->addAddress($destinatario);
 
                     // Contenido del correo
