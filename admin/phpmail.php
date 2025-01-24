@@ -9,8 +9,8 @@ use PHPMailer\PHPMailer\Exception;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 //credenciales (cambiar) USER = CORREO / PASS = CLAVE DE APLICACION GOOGLE 
-$user = ''; // Usuario de tu correo
-$pass = ''; // Contraseña de aplicación
+$user = 'stsafeteck@gmail.com'; // Usuario de tu correo
+$pass = 'molc xtfj nfev kruf'; // Contraseña de aplicación
 $tId  = '$tId'; 
 
 //Body para la funcion CreateTicketMail (Nuevo ticket)

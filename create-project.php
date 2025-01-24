@@ -105,7 +105,7 @@ check_login();
                     <div class="form-row justify-content-start" id="contactoT" style="display: none;">
                         <strong>Datos de Contacto</strong>
                         <button type="button" class="btn btn-add-task" data-bs-toggle="modal" data-bs-target="#contactoModal">
-                            <i class="bi bi-calendar-plus"></i> 
+                            <i class="bi bi-plus-circle"></i> 
                         </button>
                     </div>
                     <div class="d-flex contactos" id="contacto" style="display: hidden;">
@@ -152,7 +152,7 @@ check_login();
                             <label for="">Fecha de Cierre</label>
                             <div class="input-group">
                                 <span class="input-group-text" id="fCierre"><i class="bi bi-exclamation-lg"></i></span>
-                                <input name="fCierre" type="date" class="form-control form-control-sm" placeholder="12-05-2025" aria-label="Date" aria-describedby="fCierre">
+                                <input name="fCierre" type="date" class="form-control form-control-sm"  aria-label="Date" aria-describedby="fCierre">
                             </div>
                         </div>
                     </div>
@@ -275,6 +275,52 @@ check_login();
         </div>
     </div>
 </div>
+
+<script>
+    //contactos
+    document.getElementById('formContacto').addEventListener('submit', function (e) {
+    e.preventDefault(); 
+
+    const nombre = document.getElementById('cName').value.trim();
+    const email = document.getElementById('cEmail').value.trim();
+    const cargo = document.getElementById('cargo').value.trim();
+    const contacto = document.getElementById('cNumero').value.trim();
+    
+
+    const nuevoContacto = document.createElement('div');
+    nuevoContacto.className = 'card mt-3 p-2';
+    nuevoContacto.innerHTML = `
+        <div class="d-flex justify-content-evenly">
+        <div class="cinfo">
+            <strong class="ml-3" >Nombre</strong> 
+            <p>${nombre}</p>
+        </div>  
+        <div class="cinfo">
+            <strong class="ml-3" >Cargo</strong> 
+            <p> ${cargo}</p>
+        </div> 
+        <div class="cinfo">
+            <strong class="ml-3" >Email</strong> 
+            <p> ${email}</p>
+        </div> 
+        <div class="cinfo">
+            <strong class="ml-3" >Numero de Contacto</strong> 
+            <p> ${contacto}</p>
+        </div> 
+        </div>
+        
+        <input type="hidden" name="contacto[nombre][]" value="${nombre}">
+        <input type="hidden" name="contacto[email][]" value="${email}">
+        <input type="hidden" name="contacto[cargo][]" value="${cargo}">
+        <input type="hidden" name="contacto[contacto][]" value="${contacto}">
+    `;
+    document.getElementById('contacto').appendChild(nuevoContacto);
+    document.getElementById('formContacto').reset();
+    const modalElement = document.getElementById('contactoModal');
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+    modalInstance.hide();
+});
+</script>
 
 
 <!-- Popper.js (para tooltips y otros componentes) -->

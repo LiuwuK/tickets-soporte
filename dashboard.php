@@ -340,9 +340,9 @@ check_login();
                       </div>
                     <?php
                       $counter++; 
-                        if ($counter >= 5) { 
-                            break;
-                        }
+                      if ($counter >= 5) { 
+                          break;
+                      }
                       }
                     ?>
                   </div>

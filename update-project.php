@@ -167,7 +167,7 @@ check_login();
                     <div class ="form-group">
                     <label class="form-label">Estado</label>
                     <div >
-                        <select name="status" class="form-select form-select-sm" disabled>
+                        <select name="status" class="form-select form-select-sm" >
                             <?php
                             while ($row = mysqli_fetch_assoc($status)) {
                                 if ($row['id'] == $row_p['estado_id']) {

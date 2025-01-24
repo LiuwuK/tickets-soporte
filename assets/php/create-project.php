@@ -71,7 +71,7 @@ if(isset($_GET['projectId']) ){
         $bom = mysqli_query($con, $query);
         $materiales = mysqli_fetch_all($bom, MYSQLI_ASSOC);
     } 
-      
+
 }
   
 //Crear proyectos nuevos
