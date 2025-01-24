@@ -229,10 +229,9 @@ check_login();
                                                     </div>
                                                 </div>
                                                 <!-- Datos de tipo proyecto (contacto/licitacion)  -->
-                                                <div class="pr-row">
-                                                    <strong>Datos de <?php echo $row['tipoP'];?></strong>   
-
                                                 <?php
+                                                if($row['tipo'] != 3){
+                                                    echo '<div class="pr-row"><strong>Datos de '.$row['tipoP'].'</strong>';
                                                     //Licitacion
                                                     if($row['tipo'] == '1' ){
                                                         $id =  $row['projectId'];
@@ -268,27 +267,32 @@ check_login();
                                                     ?>
                                                     <div class="pr-row">
                                                         <div class="group d-flex cnt">
-                                                            <strong class="form-label">Nombre</strong>
-                                                            <p>: <?php echo $row_ct['nombre'];?></p>
-                                                        </div>
+                                                            <div class="cnt-div d-flex">
+                                                                <strong class="form-label">Nombre </strong>
+                                                                <p>: <?php echo $row_ct['nombre'];?></p>
+                                                            </div>
 
-                                                        <div class="group d-flex cnt">
-                                                            <strong class="form-label">Correo</strong>
-                                                            <p>: <?php echo $row_ct['correo'];?></p>
-                                                        </div>
-                                                        <div class="group d-flex cnt">
-                                                            <strong class="form-label">Cargo</strong>
-                                                            <p>: <?php echo $row_ct['cargo'];?></p>
-                                                        </div>
+                                                            <div class="cnt-div d-flex">
+                                                                <strong class="form-label">Correo </strong>
+                                                                <p>: <?php echo $row_ct['correo'];?></p>
+                                                            </div >
 
-                                                        <div class="group d-flex cnt">
-                                                            <strong class="form-label">Numero Contacto</strong>
-                                                            <p>: <?php echo $row_ct['numero'];?></p>
+                                                            <div class="cnt-div d-flex">
+                                                                <strong class="form-label">Cargo </strong>
+                                                                <p>: <?php echo $row_ct['cargo'];?></p>
+                                                            </div>
+
+                                                            <div class="cnt-div d-flex">
+                                                                <strong class="form-label">Contacto </strong>
+                                                                <p>: <?php echo $row_ct['numero'];?></p>
+                                                            </div>
                                                         </div>
                                                     </div>    
                                                 <?php 
-                                                    }?>
-                                                </div>
+                                                    }
+                                                    echo '</div>';
+                                                }
+                                                ?>
 
                                                 <div class="pr-row">
                                                     <div class="group">

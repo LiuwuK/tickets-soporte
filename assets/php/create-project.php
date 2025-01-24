@@ -74,7 +74,7 @@ if(isset($_GET['projectId']) ){
       
 }
   
-//Insertar proyectos nuevos
+//Crear proyectos nuevos
 if(isset($_POST['newProject'])){
     $nameP     = $_POST['name']; 
     $client    = $_POST['client']; 
@@ -84,21 +84,22 @@ if(isset($_POST['newProject'])){
     $pType     = $_POST['pType'];  
     $pClass    = $_POST['pClass']; //id clase
     $bom       = isset($_POST['bom']) ? $_POST['bom'] : 0;
-    $vertical      = $_POST['vertical'];
+    $vertical  = $_POST['vertical'];
     $software  = ($pClass == 1 && isset($_POST['software-input'])) ? $_POST['software-input'] : 0;
     $hardware  = ($pClass == 1 && isset($_POST['hardware-input'])) ? $_POST['hardware-input'] : 0; 
     $resumen   = $_POST['desc'];
     $comercial = $_SESSION['id'];
-    $pdate     = date('Y-m-d'); 
+    $pdate     = date('Y-m-d');
+    $fCierre   = $_POST['fCierre'];  
 
     $query = "INSERT INTO proyectos (nombre, cliente, ciudad, estado_id, 
                 costo_software, costo_hardware, resumen, 
-                fecha_creacion, comercial_responsable, monto, tipo, clasificacion, vertical) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                fecha_creacion, comercial_responsable, monto, tipo, clasificacion, vertical, fecha_cierre) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
     if ($stmt = mysqli_prepare($con, $query)) {
-        mysqli_stmt_bind_param($stmt, "ssiiiissiiiii", $nameP, $client, $city, $status, $software,
-                                 $hardware, $resumen, $pdate, $comercial, $monto, $pType, $pClass, $vertical); 
+        mysqli_stmt_bind_param($stmt, "ssiiiissiiiiis", $nameP, $client, $city, $status, $software,
+                                 $hardware, $resumen, $pdate, $comercial, $monto, $pType, $pClass, $vertical, $fCierre); 
         if (mysqli_stmt_execute($stmt)) {
             $pId = mysqli_insert_id($con);
 
@@ -127,19 +128,18 @@ if(isset($_POST['newProject'])){
                 mysqli_stmt_close($lc_stmt);
 
             } else if ($pType == 2) {
-                $cname = $_POST['cName'];
-                $email = $_POST['cEmail'];
-                $cargo = $_POST['cargo'];
-                $numero = $_POST['cNumero'];
-
-                $query = 'INSERT INTO contactos_proyecto (nombre, correo, cargo, numero, proyecto_id) VALUES(?, ?, ?, ?, ?)'; 
-                $ct_stmt = mysqli_prepare($con, $query);
-                mysqli_stmt_bind_param($ct_stmt, "ssssi", $cname, $email, $cargo, $numero, $pId); 
-                mysqli_stmt_execute($ct_stmt);
-                mysqli_stmt_close($ct_stmt);
-            } else{
-                echo "<script>alert('Error al registrar el proyecto');</script>";
-            }
+                foreach ($_POST['contacto']['nombre'] as $key => $name) {
+                    $email = $_POST['contacto']['email'][$key];
+                    $cargo = $_POST['contacto']['cargo'][$key];
+                    $numero = $_POST['contacto']['contacto'][$key];
+            
+                    $query = 'INSERT INTO contactos_proyecto (nombre, correo, cargo, numero, proyecto_id) VALUES(?, ?, ?, ?, ?)'; 
+                    $ct_stmt = mysqli_prepare($con, $query);
+                    mysqli_stmt_bind_param($ct_stmt, "ssssi", $name, $email, $cargo, $numero, $pId); 
+                    mysqli_stmt_execute($ct_stmt);
+                    mysqli_stmt_close($ct_stmt);
+                }                   
+            } 
             Notificaciones::crearTicketMail($pId,'project');
             echo "<script>alert('Proyecto Registrado Correctamente'); location.replace(document.referrer)</script>";
         } else {
@@ -156,6 +156,8 @@ else if(isset($_POST['updtProject'])) {
     $pId = $_GET['projectId'];
     $pClass = $projectData['clasificacion'];
     $bom    = 0; 
+    $distribuidor = isset($_POST['dist']) && !empty($_POST['dist']) ? $_POST['dist'] : null;
+    $ingeniero = isset($_POST['ingeniero']) && !empty($_POST['ingeniero']) ? $_POST['ingeniero'] : null;
     if(isset($_POST['material'])){
         $bom = 1; 
     }
@@ -168,7 +170,7 @@ else if(isset($_POST['updtProject'])) {
         'cliente'               => $_POST['client'],
         'ciudad'                => $_POST['city'],
         'estado_id'             => $_POST['status'],
-        'ingeniero_responsable' => $_POST['ingeniero'],
+        'ingeniero_responsable' => $ingeniero,
         'bom'                   => $bom,
         'costo_software'        => $software,
         'costo_hardware'        => $hardware,
@@ -178,9 +180,10 @@ else if(isset($_POST['updtProject'])) {
         'monto'                 => $_POST['montoP'],
         'tipo'                  => $projectData['tipo'],
         'clasificacion'         => $pClass,
-        'costo_real'            => $_POST['costoR'],
-        'distribuidor'          => $_POST['dist'],
+        'costo_real'            => $projectData['costo_real'],//$_POST['costoR']
+        'distribuidor'          => $distribuidor,
         'vertical'              => $_POST['vertical'],
+        'fecha_cierre'          => $_POST['fCierre']
     ];
 
     //Datos de la db
@@ -213,7 +216,7 @@ else if(isset($_POST['updtProject'])) {
             $stmt->execute();
             $stmt->close();
         }
-    }else if($projectData["tipo"] == "2"){
+    }/*else if($projectData["tipo"] == "2"){
         //datos de contacto (formulario)
         $newCt = [
             "id"            => $ctData["id"],
@@ -240,8 +243,8 @@ else if(isset($_POST['updtProject'])) {
             $stmt->execute();
             $stmt->close();
         }
-    }
-     //Si tiene actividades nuevas, estas se registran
+    }*/
+    //Si tiene actividades nuevas, estas se registran
     if(isset($_POST['actividades'])){
         foreach ($_POST['actividades']['nombre'] as $key => $name) {
             $fecha = $_POST['actividades']['fecha'][$key];
@@ -271,7 +274,7 @@ else if(isset($_POST['updtProject'])) {
         }
     }
 
-    //si cambia el costo 
+    /*si cambia el costo 
     if($_POST['costoR'] != $projectData['costo_real']){
 
         $distID = $newData['distribuidor'];
@@ -293,7 +296,7 @@ else if(isset($_POST['updtProject'])) {
             $stmt->bind_param("ii", $nuevoMonto, $distID); 
             $stmt->execute();
         }
-    }
+    }*/
     //se comparan los datos de la db con los del formulario, si son distintos se actualiza el proyecto
     if($newJson !== $currentJson){
         $query =  " UPDATE proyectos 
@@ -306,12 +309,14 @@ else if(isset($_POST['updtProject'])) {
                         costo_software = ?, 
                         costo_hardware = ?,
                         costo_real = ?,
-                        resumen = ?, bom = ? 
+                        resumen = ?, bom = ?,
+                        fecha_cierre = ?
                     WHERE id = ?";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("ssiiiiiiiiisii",   
+        $stmt->bind_param("ssiiiiiiiiisisi",   
         $newData['nombre'], $newData['cliente'], $newData['ciudad'], $newData['estado_id'], $newData['ingeniero_responsable'],
-        $newData['distribuidor'], $newData['vertical'], $newData['monto'], $newData['costo_software'], $newData['costo_hardware'], $newData['costo_real'], $newData['resumen'], $newData['bom'], $newData['id'] );
+        $newData['distribuidor'], $newData['vertical'], $newData['monto'], $newData['costo_software'], $newData['costo_hardware'], 
+        $newData['costo_real'], $newData['resumen'], $newData['bom'], $newData['fecha_cierre'], $newData['id'] );
 
         if ($stmt->execute()) {
             echo "<script>alert('Su proyecto ha sido actualizado correctamente');location.replace(document.referrer)</script>";

@@ -13,6 +13,7 @@
 .group p{
     font-size: smaller !important;
 }
+
 .group strong, .pr-row strong{
     font-size: 14px;
 }
@@ -72,4 +73,9 @@
     width: 85%;
     border-top: 1px solid;
     color: #33435e;
+}
+
+.cnt-div{
+    margin-left: 5%;
+    width: 50%;
 }

@@ -118,7 +118,7 @@ check_login();
               </div>
             <?php
               }
-              // User comercial Y Gerencia
+              // User comercial 
               else if($_SESSION['cargo'] == 2 ){
               ?>
                 <div class="first-row">
@@ -174,7 +174,7 @@ check_login();
                             };?>
                           </div>
                           <div class="text-end" style="width: 10%;">
-                            <p><button class="btn btn-updt" onclick="window.location.href='view-projects.php';">Ver</button></p>
+                            <p><button class="btn btn-updt" onclick="window.location.href='view-projects.php?textSearch=<?php echo $row['id'];?>&statusF==<?php echo $row['estado_id'];?>';">Ver</button></p>
                           </div>
                         </div>
                       <?php
@@ -256,7 +256,7 @@ check_login();
                               <p><?php echo $time_passed ;?></p>
                             </div>
                             <div class="text-end" style="width: 10%;">
-                              <p><button class="btn btn-updt" onclick="window.location.href='bill-projects.php';">Ver</button></p>
+                              <p><button class="btn btn-updt" onclick="window.location.href='bill-projects.php?textSearch=<?php echo $row['id'];?>&statusF==<?php echo $row['estado_id'];?>';">Ver</button></p>
                             </div>
                           </div>
                         <?php
@@ -335,7 +335,7 @@ check_login();
                           };?>
                         </div>
                         <div class="text-end" style="width: 15%;">
-                          <p><button class="btn btn-updt" onclick="window.location.href='view-projects.php';">Ver</button></p>
+                          <p><button class="btn btn-updt" onclick="window.location.href='view-projects.php?textSearch=<?php echo $row['id'];?>&statusF==<?php echo $row['estado_id'];?>';">Ver</button></p>
                         </div>
                       </div>
                     <?php
@@ -362,14 +362,13 @@ check_login();
                 <div class="d-flex justify-content-between mb-3">
                   <h3>Proyectos registrados</h3>
                   <div class="btn-group" role="group" aria-label="Filtro por Trimestre">
-                    <button type="button" class="btn btn-updt" id="btnQ1" data-trimestre="1">Q1</button>
-                    <button type="button" class="btn btn-updt" id="btnQ2" data-trimestre="2">Q2</button>
-                    <button type="button" class="btn btn-updt" id="btnQ3" data-trimestre="3">Q3</button>
-                    <button type="button" class="btn btn-updt" id="btnQ4" data-trimestre="4">Q4</button>
+                    <button type="button" class="btn btn-updt btn-num" id="btnQ1" data-trimestre="1">Q1</button>
+                    <button type="button" class="btn btn-updt btn-num" id="btnQ2" data-trimestre="2">Q2</button>
+                    <button type="button" class="btn btn-updt btn-num" id="btnQ3" data-trimestre="3">Q3</button>
+                    <button type="button" class="btn btn-updt btn-num" id="btnQ4" data-trimestre="4">Q4</button>
                   </div>
                 </div>
                 <!-- Botones de filtro -->
-                
                 <canvas id="lineTotalProjects"></canvas>
               </div>
             <?php
@@ -382,7 +381,18 @@ check_login();
               if($_SESSION['cargo'] == 4){
             ?>  
               <div class="col-sm-12 col-md-12 col-lg-8 col-xl-6 graficos">
-                <h3>Total Monto Proyectos</h3>
+                <div class="d-flex justify-content-between mb-3">
+                  <h3>Total Monto Proyectos</h3>
+                  <select id="mesSelector" class="form-select form-select-sm">
+                    <option value="0" selected>Ver todo</option>
+                  </select>
+                  <div class="btn-group q-group" role="group" aria-label="Filtro por Trimestre">
+                    <button type="button" class="btn btn-updt btn-q" id="bQ1" data-trimestre="1">Q1</button>
+                    <button type="button" class="btn btn-updt btn-q" id="bQ2" data-trimestre="2">Q2</button>
+                    <button type="button" class="btn btn-updt btn-q" id="bQ3" data-trimestre="3">Q3</button>
+                    <button type="button" class="btn btn-updt btn-q" id="bQ4" data-trimestre="4">Q4</button>
+                  </div>
+                </div>
                 <canvas id="projects"></canvas>
               </div>
               
@@ -404,21 +414,11 @@ check_login();
     //grafico cantidad proyectos
     const mp = <?php echo $mp_json; ?>;
     const datap = <?php echo $datap_json; ?>;
-    // grafico total proyectos registrados
-    const meses = <?php echo $meses_json; ?>;
+    // grafico total proyectos registrados  
     const datasets = <?php echo $datasets_json; ?>;
-    const max = <?php echo $maximo; ?>;
-    //botones trimestre
-    const trimestreButtons = document.querySelectorAll('.btn-updt');
-
-    // cambiar trimestre
-    trimestreButtons.forEach(button => {
-      button.addEventListener('click', function () {
-        const trimestre = this.getAttribute('data-trimestre'); 
-        updateChart(trimestre); 
-      });
-    });
-
+    const trimestres = <?php echo $trimestres_json;?>;
+    const maxnum = <?php echo $maxnum;?>;
+    const maximo = <?php echo $maximo;?>;
 
   </script> 
 

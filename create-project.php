@@ -102,26 +102,13 @@ check_login();
                             <input type="text" class="form-control form-control-sm" id="portal" name="portal" >
                         </div>
                     </div>            
-                    <div class="form-row" id="contactoT" style="display: none;">
+                    <div class="form-row justify-content-start" id="contactoT" style="display: none;">
                         <strong>Datos de Contacto</strong>
+                        <button type="button" class="btn btn-add-task" data-bs-toggle="modal" data-bs-target="#contactoModal">
+                            <i class="bi bi-calendar-plus"></i> 
+                        </button>
                     </div>
-                    <div class="form-row" id="contacto" style="display: none;">
-                            <div class="form-group">
-                            <label for="cName" class="form-label">Nombre</label>
-                            <input type="text" class="form-control form-control-sm" id="cName" name="cName" >
-
-                            <label for="cEmail" class="form-label">Email </label>
-                            <input type="email" class="form-control form-control-sm" id="cEmail" name="cEmail" >
-                            </div>
-
-                            <div class="form-group">
-                            <label for="cargo" class="form-label">Cargo</label>
-                            <input type="text" class="form-control form-control-sm" id="cargo" name="cargo" >
-
-                            <label for="cNumero" class="form-label">Numero de contacto </label>
-                            <input type="text" class="form-control form-control-sm" id="cNumero" name="cNumero" >
-                            </div>
-                    
+                    <div class="d-flex contactos" id="contacto" style="display: hidden;">
                     </div>
                     <div class="form-row">
                         <div class ="form-group">
@@ -155,9 +142,17 @@ check_login();
                     <div class="form-row">
                         <div class="form-group">
                             <label for="">Monto Proyecto</label>
-                            <div class="input-group mb-3">
+                            <div class="input-group">
                                 <span class="input-group-text" id="montoP">$</span>
                                 <input name="montoP" type="number" class="form-control form-control-sm" placeholder="1,000,000" aria-label="Monto" aria-describedby="montoP">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">Fecha de Cierre</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="fCierre"><i class="bi bi-exclamation-lg"></i></span>
+                                <input name="fCierre" type="date" class="form-control form-control-sm" placeholder="12-05-2025" aria-label="Date" aria-describedby="fCierre">
                             </div>
                         </div>
                     </div>
@@ -244,6 +239,42 @@ check_login();
     </div>
 
   </div>
+<!-- Modal contactos -->
+  <div class="modal fade" id="contactoModal" tabindex="-1" aria-labelledby="contactoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="contactoModalLabel">Agregar Contacto</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="formContacto">
+                <div class="form-row-modal">
+                    <div class="form-group">
+                        <label for="cName" class="form-label">Nombre</label>
+                        <input type="text" class="form-control form-control-sm mb-3" id="cName" name="cName" >
+
+                        <label for="cEmail" class="form-label">Email </label>
+                        <input type="email" class="form-control form-control-sm" id="cEmail" name="cEmail" >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cargo" class="form-label">Cargo</label>
+                        <input type="text" class="form-control form-control-sm mb-3" id="cargo" name="cargo" >
+
+                        <label for="cNumero" class="form-label">Numero de contacto </label>
+                        <input type="text" class="form-control form-control-sm" id="cNumero" name="cNumero" >
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-reset" data-bs-dismiss="modal">Cerrar</button>
+            <button type="submit" form="formContacto" class="btn pull-right">Agregar</button>
+        </div>
+        </div>
+    </div>
+</div>
 
 
 <!-- Popper.js (para tooltips y otros componentes) -->

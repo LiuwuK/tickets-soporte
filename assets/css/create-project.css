@@ -151,3 +151,23 @@
   width: 25%;
   text-align: center; 
 }
+
+.form-row-modal{
+  display: flex;
+  justify-content: space-between;
+  gap: 20px; 
+}
+.card{
+  width: 98%;
+  margin: 0 auto;
+}
+.contactos{
+  flex-direction: column;
+  width: 70%;
+}
+.cinfo{
+  width: 25%;
+}
+.cinfo p{
+  margin-left: 5%;
+}

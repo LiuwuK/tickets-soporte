@@ -51,7 +51,8 @@ check_login();
             <!-- Formulario crear proyectos -->
             <form name="form" id="updtProject" method="post">
             <?php
-             $row_p = $projectData
+             $row_p = $projectData;
+             $fecha_cierre = $row_p['fecha_cierre'];
             ?>
             <div id="loading" style="display:none ;">
                 <div class="loading-spinner"></div>
@@ -78,6 +79,8 @@ check_login();
                                     echo "<option value='1'>Licitación</option>";
                                 } else if (isset($ct)) {
                                     echo "<option value='2'>Contacto</option>";
+                                }else{
+                                    echo "<option value='3'>Facility</option>";
                                 };
                             ?>
                             </select>
@@ -116,6 +119,7 @@ check_login();
                         </div>      
                     <?php 
                     } else if (isset($ct)){?>
+                    <!--                  
                         <div class="form-row" id="contactoT" >
                             <strong>Datos de Contacto</strong>
                         </div>
@@ -137,7 +141,7 @@ check_login();
                                 </div>
                         
                         </div>
-                            
+                    -->         
                     <?php 
                     }
                     ?>
@@ -246,6 +250,13 @@ check_login();
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="montoP">$</span>
                                 <input name="montoP" type="number" class="form-control form-control-sm" value="<?php echo $row_p['monto'];?>" aria-label="Monto" aria-describedby="montoP">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Fecha de Cierre</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="fCierre"><i class="bi bi-exclamation-lg"></i></span>
+                                <input name="fCierre" type="date" class="form-control form-control-sm" value="<?php echo $fecha_cierre;?>" aria-label="Date" aria-describedby="fCierre">
                             </div>
                         </div>
                     </div>
@@ -435,6 +446,7 @@ check_login();
 
   </div>
 
+                                
 
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

@@ -6,7 +6,6 @@
     width: 60%;
     margin-top: 50px;
     color: #33435e;
-    min-height: 20rem;
 }
 
 .first-row h3, .graficos h3{
@@ -85,3 +84,21 @@
   margin-bottom: 10px; 
   display: block; 
 }
+
+#mesSelector{
+  text-transform: capitalize;
+  width: 20%;
+}
+
+.active-btn{
+  background-color: #fff;
+  color:#33435e;
+  border: 1px solid #33435e;
+}
+.active-btn:hover{
+  background-color: #fff;
+  color:#33435e;
+  border: 1px solid #33435e;
+}
+
+

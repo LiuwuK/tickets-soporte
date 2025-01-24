@@ -192,10 +192,10 @@ check_login();
                                                     </div>
                                                 </div>
                                                 <!-- Datos de tipo proyecto (contacto/licitacion)  -->
-                                                <div class="pr-row">
-                                                    <strong>Datos de <?php echo $row['tipoP'];?></strong>   
-
+                                                 
                                                 <?php
+                                                if($row['tipo'] != 3){
+                                                    echo '<div class="pr-row"><strong>Datos de '.$row['tipoP'].'</strong>';
                                                     //Licitacion
                                                     if($row['tipo'] == '1' ){
                                                         $id =  $row['projectId'];
@@ -250,9 +250,11 @@ check_login();
                                                         </div>
                                                     </div>    
                                                 <?php 
-                                                    }?>
-                                                </div>
-
+                                                    }
+                                                    echo '</div>';
+                                                }
+                                                ?>
+                                                
                                                 <div class="pr-row">
                                                     <div class="group">
 
@@ -286,50 +288,60 @@ check_login();
                                                     </div>
                                                 </div>
                                                 <div class="pr-row">
-                                                    <div class="group">
-                                                        <strong>Lista de materiales (BOM)</strong>
-                                                        <ul>
-                                                        <?php 
-                                                            $total = 0;
-                                                            $id =  $row['projectId'];
-                                                            $query = "SELECT * 
-                                                                        FROM bom
-                                                                        WHERE proyecto_id = $id";    
-                                                            $actividades = $con->prepare($query);
-                                                            $actividades->execute();
-                                                            $result = $actividades->get_result();
-                                                            $num = $result->num_rows;
-                                                            
-                                                            if($num > 0){
-                                                                while ($row_bom = $result->fetch_assoc()) {
-                                                                    $total = $total +  $row_bom['total'];
-                                                                ?>
-                                                                   <div class="material-item">
-                                                                        <div>
-                                                                            <li> <?php echo $row_bom['nombre'];?></li>   
-                                                                        </div>
-                                                                        <div>
-                                                                            <i class="bi bi-x-lg"></i>
-                                                                        </div> 
-                                                                        <div>
-                                                                            <p><?php echo $row_bom['cantidad']?></p>
-                                                                        </div>
-                                                                        <div>
-                                                                            <p>
-                                                                                <?php echo '$'.number_format($row_bom['total'], 0, '.', ','); ?>
-                                                                            </p>
-                                                                        </div>
-                                                                   </div>
-                                                                <?php }
-                                                            }else{
-                                                                echo "<p> No se le han asignado materiales</p>";
-                                                            }
-                                                        ?>
-                                                        </ul>
-                                                    </div>
+                                                    <?php
+                                                        $total = 0;
+                                                        $id =  $row['projectId'];
+                                                        $query = "SELECT * 
+                                                                    FROM bom
+                                                                    WHERE proyecto_id = $id";    
+                                                        $actividades = $con->prepare($query);
+                                                        $actividades->execute();
+                                                        $result = $actividades->get_result();
+                                                        $num = $result->num_rows;
+                                                        if($_SESSION['role'] != 'user'){
+                                                    ?>
+                                                        <div class="group">
+                                                            <strong>Lista de materiales (BOM)</strong>
+                                                            <ul>
+                                                            <?php                                                                 
+                                                                if($num > 0){
+                                                                    while ($row_bom = $result->fetch_assoc()) {
+                                                                        $total = $total +  $row_bom['total'];
+                                                                    ?>
+                                                                    <div class="material-item">
+                                                                            <div>
+                                                                                <li> <?php echo $row_bom['nombre'];?></li>   
+                                                                            </div>
+                                                                            <div>
+                                                                                <i class="bi bi-x-lg"></i>
+                                                                            </div> 
+                                                                            <div>
+                                                                                <p><?php echo $row_bom['cantidad']?></p>
+                                                                            </div>
+                                                                            <div>
+                                                                                <p>
+                                                                                    <?php echo '$'.number_format($row_bom['total'], 0, '.', ','); ?>
+                                                                                </p>
+                                                                            </div>
+                                                                    </div>
+                                                                    <?php }
+                                                                }else{
+                                                                    echo "<p> No se le han asignado materiales</p>";
+                                                                }
+                                                            ?>
+                                                            </ul>
+                                                        </div>                                                    
+                                                    <?php
+                                                        }
+                                                    ?>
                                                     <div class="group">
                                                         <strong>Total BOM</strong>
                                                         <p><?php
+                                                                if($num > 0){
+                                                                    while ($row_bom = $result->fetch_assoc()) {
+                                                                        $total = $total +  $row_bom['total'];
+                                                                    }
+                                                                }
                                                                 if($total > 0){
                                                                     echo '$'.number_format($total, 0, '.', ','); 
                                                                 }else{
