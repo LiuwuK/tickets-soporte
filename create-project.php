@@ -217,9 +217,30 @@ check_login();
                 <label for="nombreActividad" class="form-label">Nombre de la Actividad</label>
                 <input type="text" class="form-control form-control-sm" id="nombreActividad" name="nombreActividad" required>
             </div>
-            <div class="mb-3">
-                <label for="fechaActividad" class="form-label">Fecha</label>
-                <input type="date" class="form-control form-control-sm" id="fechaActividad" name="fechaActividad" required>
+            <div class="form-row-modal mb-3 d-flex">
+                <div class="form-group">
+                    <label for="fechaInicio" class="form-label">Fecha inicio</label>
+                    <input type="datetime-local" class="form-control form-control-sm" id="fechaInicio" name="fechaInicio" required>
+                </div>
+                <div class="form-group">
+                    <label for="fechaTermino" class="form-label">Fecha termino</label>
+                    <input type="datetime-local" class="form-control form-control-sm" id="fechaTermino" name="fechaTermino" required>
+                </div>
+            </div>
+            <div class="form-row-modal mb-3 d-flex">
+                <div class="form-group">
+                    <label class="form-label">Tipo Actividad</label>
+                    <div>
+                        <select name="areaAct" id="areaAct" class="form-select form-select-sm" required>
+                            <option value="">Seleccionar</option>
+                            <?php
+                            while ($row = mysqli_fetch_assoc($cargos)) {
+                                echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
+                            };
+                            ?>  
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="mb-3">
                 <label for="descripcionActividad" class="form-label">Descripción</label>

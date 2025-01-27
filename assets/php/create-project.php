@@ -32,6 +32,10 @@ $vertical = mysqli_query($con, $query);
 $query = "SELECT * FROM distribuidores";
 $distribuidor = mysqli_query($con, $query);
 
+//obtener cargos
+$query = "SELECT * FROM cargos";
+$cargos = mysqli_query($con, $query);
+
 
 // cargar proyecto que va a ser actualizado
 if(isset($_GET['projectId']) ){
@@ -106,14 +110,15 @@ if(isset($_POST['newProject'])){
             //Si tiene actividades, se registran
             if(isset($_POST['actividades'])){
                 foreach ($_POST['actividades']['nombre'] as $key => $name) {
-                    $fecha = $_POST['actividades']['fecha'][$key];
+                    $fInicio = $_POST['actividades']['fechaInicio'][$key];
+                    $fTermino = $_POST['actividades']['fechaTermino'][$key];
                     $desc = $_POST['actividades']['descripcion'][$key];
                     $area = $_POST['actividades']['area'][$key];
             
-                    $query = 'INSERT INTO actividades (nombre, fecha, proyecto_id, descripcion, area)
-                            VALUES (?, ?, ?, ?, ?)';
+                    $query = 'INSERT INTO actividades (nombre, fecha_inicio, fecha_termino, proyecto_id, descripcion, area)
+                            VALUES (?, ?, ?, ?, ?, ?)';
                     $act_stmt = mysqli_prepare($con, $query);
-                    mysqli_stmt_bind_param($act_stmt, "ssiss", $name, $fecha, $pId, $desc, $area);
+                    mysqli_stmt_bind_param($act_stmt, "sssiss", $name, $fInicio, $fTermino, $pId, $desc, $area);
                     mysqli_stmt_execute($act_stmt);
                     mysqli_stmt_close($act_stmt);
                 }       
@@ -248,14 +253,15 @@ else if(isset($_POST['updtProject'])) {
     //Si tiene actividades nuevas, estas se registran
     if(isset($_POST['actividades'])){
         foreach ($_POST['actividades']['nombre'] as $key => $name) {
-            $fecha = $_POST['actividades']['fecha'][$key];
+            $fInicio = $_POST['actividades']['fechaInicio'][$key];
+            $fTermino = $_POST['actividades']['fechaTermino'][$key];
             $desc = $_POST['actividades']['descripcion'][$key];
             $area = $_POST['actividades']['area'][$key];
-            
-            $query = 'INSERT INTO actividades (nombre, fecha, proyecto_id, descripcion, area)
-                    VALUES (?, ?, ?, ?, ?)';
+    
+            $query = 'INSERT INTO actividades (nombre, fecha_inicio, fecha_termino, proyecto_id, descripcion, area)
+                    VALUES (?, ?, ?, ?, ?, ?)';
             $act_stmt = mysqli_prepare($con, $query);
-            mysqli_stmt_bind_param($act_stmt, "ssiss", $name, $fecha, $pId, $desc, $area);
+            mysqli_stmt_bind_param($act_stmt, "sssiss", $name, $fInicio, $fTermino, $pId, $desc, $area);
             mysqli_stmt_execute($act_stmt);
             mysqli_stmt_close($act_stmt);
         }

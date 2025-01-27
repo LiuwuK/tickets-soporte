@@ -2,8 +2,6 @@
 
     $prioridad = mysqli_query($con, "select * from prioridades ");
 
-
-
     //obtener tecnicos
     $query = "SELECT * 
                 FROM  user

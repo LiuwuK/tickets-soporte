@@ -62,18 +62,21 @@ document.getElementById('formActividad').addEventListener('submit', function (e)
   e.preventDefault(); 
 
   const nombre = document.getElementById('nombreActividad').value.trim();
-  const fecha = document.getElementById('fechaActividad').value.trim();
+  const fechaInicio = document.getElementById('fechaInicio').value.trim();
+  const fechaTermino = document.getElementById('fechaTermino').value.trim();
   const descripcion = document.getElementById('descripcionActividad').value.trim();
   const area = document.getElementById('areaAct').value.trim();
-  const fechaF = formatearFecha(fecha);
+  const fechaF = formatearFecha(fechaInicio,fechaTermino);
 
   const nuevaActividad = document.createElement('li');
   nuevaActividad.className = 'list-group-item';
   nuevaActividad.innerHTML = `
-    <h6>${nombre} -- ${fechaF}</h6>
+    <h6>${nombre}</h6>
+    <p>${fechaF}</p>
     <p>${descripcion}</p>
     <input type="hidden" name="actividades[nombre][]" value="${nombre}">
-    <input type="hidden" name="actividades[fecha][]" value="${fecha}">
+    <input type="hidden" name="actividades[fechaInicio][]" value="${fechaInicio}">
+    <input type="hidden" name="actividades[fechaTermino][]" value="${fechaTermino}">
     <input type="hidden" name="actividades[descripcion][]" value="${descripcion}">
     <input type="hidden" name="actividades[area][]" value="${area}">
   `;
@@ -84,14 +87,31 @@ document.getElementById('formActividad').addEventListener('submit', function (e)
   modalInstance.hide();
 });
 
-function formatearFecha(fecha) {
-  const partes = fecha.split('-');
-  const date = new Date(Date.UTC(partes[0], partes[1] - 1, partes[2]));
+function formatearFecha(fechaI, fechaT) {
+  const partesI = fechaI.split('T');
+  const datePartI = partesI[0].split('-');
+  const timePartI = partesI[1].split(':');
 
-  const opciones = { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' };
-  const fechaFormateada = date.toLocaleDateString('es-ES', opciones);
-  
-  return fechaFormateada.replace(/de (\d{4})$/, 'del $1');
+  const partesT = fechaT.split('T');
+  const datePartT = partesT[0].split('-');
+  const timePartT = partesT[1].split(':');
+
+  const startDate = new Date(Date.UTC(datePartI[0], datePartI[1] - 1, datePartI[2], timePartI[0], timePartI[1]));
+  const endDate = new Date(Date.UTC(datePartT[0], datePartT[1] - 1, datePartT[2], timePartT[0], timePartT[1]));
+
+
+  const opciones = { 
+    month: 'long', 
+    day: 'numeric', 
+    hour: 'numeric', 
+    minute: 'numeric',
+    timeZone: 'UTC'
+  };
+
+  const fechaInicioFormateada = startDate.toLocaleDateString('es-ES', opciones);
+  const fechaTerminoFormateada = endDate.toLocaleDateString('es-ES', opciones);
+
+  return `${fechaInicioFormateada.replace(/de (\d{4})$/, 'del $1')} - ${fechaTerminoFormateada.replace(/de (\d{4})$/, 'del $1')}`;
 }
 
 //BOM

@@ -20,6 +20,7 @@ check_login();
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <!-- Calendario CSS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
 <!-- CSS personalizados -->
 <link href="assets/css/sidebar.css" rel="stylesheet" type="text/css"/>
 <link href="assets/css/dashboard.css" rel="stylesheet" type="text/css"/>
@@ -40,8 +41,8 @@ check_login();
         <div class="content">
           <!-- Primera fila -->
           <div class="row">
-            <!-- <div id="calendar">
-            </div> -->
+            <div class="first-row col-md-12 col-xl-5" id="calendar">
+            </div> 
             <!-- Dependiendo del usuario cambia el dashboard -->
             <?php
               //  contador
@@ -173,8 +174,8 @@ check_login();
                                 <?php
                             };?>
                           </div>
-                          <div class="text-end" style="width: 10%;">
-                            <p><button class="btn btn-updt" onclick="window.location.href='view-projects.php?textSearch=<?php echo $row['id'];?>&statusF==<?php echo $row['estado_id'];?>';">Ver</button></p>
+                          <div class="text-end" style="width: 15%;">
+                            <p><button class="btn btn-updt" onclick="window.location.href='view-projects.php?textSearch=<?php echo $row['id'];?>&statusF=<?php echo $row['estado_id'];?>';">Ver</button></p>
                           </div>
                         </div>
                       <?php
@@ -256,7 +257,7 @@ check_login();
                               <p><?php echo $time_passed ;?></p>
                             </div>
                             <div class="text-end" style="width: 10%;">
-                              <p><button class="btn btn-updt" onclick="window.location.href='bill-projects.php?textSearch=<?php echo $row['id'];?>&statusF==<?php echo $row['estado_id'];?>';">Ver</button></p>
+                              <p><button class="btn btn-updt" onclick="window.location.href='bill-projects.php?textSearch=<?php echo $row['id'];?>&statusF=<?php echo $row['estado_id'];?>';">Ver</button></p>
                             </div>
                           </div>
                         <?php
@@ -335,7 +336,7 @@ check_login();
                           };?>
                         </div>
                         <div class="text-end" style="width: 15%;">
-                          <p><button class="btn btn-updt" onclick="window.location.href='view-projects.php?textSearch=<?php echo $row['id'];?>&statusF==<?php echo $row['estado_id'];?>';">Ver</button></p>
+                          <p><button class="btn btn-updt" onclick="window.location.href='view-projects.php?textSearch=<?php echo $row['id'];?>&statusF=<?php echo $row['estado_id'];?>';">Ver</button></p>
                         </div>
                       </div>
                     <?php
@@ -407,6 +408,20 @@ check_login();
         </div>   
     </div>
   </div>
+
+<!-- Popper.js (para tooltips y otros componentes) -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<!-- Bootstrap Bundle (con Popper.js) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Calendario -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+<!-- Scripts propios -->
+<script src="assets/js/sidebar.js"></script>
+<script src="assets/js/calendar.js"></script>
+<?php
+  if($_SESSION['cargo'] == 4 ){
+?>
   <script>
     //grafico total monto
     const tProjects = <?php echo json_encode($tProject); ?>;
@@ -420,18 +435,11 @@ check_login();
     const maxnum = <?php echo $maxnum;?>;
     const maximo = <?php echo $maximo;?>;
 
-  </script> 
-
-<!-- Popper.js (para tooltips y otros componentes) -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<!-- Bootstrap Bundle (con Popper.js) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Calendario -->
-
-<!-- Scripts propios -->
-<script src="assets/js/sidebar.js"></script>
-<script src="assets/js/calendar.js"></script>
-<script src="assets/js/charts.js"></script>
+  </script>
+  <script src="assets/js/charts.js"></script>';  
+<?php  
+}
+?>
 
 </body>
 
