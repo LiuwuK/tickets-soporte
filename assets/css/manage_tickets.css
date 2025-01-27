@@ -462,3 +462,16 @@ label, .group li{
   margin-left: 5px;
   font-size: 12px;
 }
+
+.user-profile-pic-normal img{
+  border:1px solid #34435E;
+  border-radius:50%;
+}
+
+.timg img{
+  border: 2px solid #33435e;
+  border-radius: 5px;
+  max-width: 500px;
+  display: flex;
+  margin: 0 auto;
+}

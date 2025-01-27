@@ -159,18 +159,18 @@ check_login();
                                     <label for="">Imagen</label>
                                     <div class="img">
                                       <?php
-                                        if (isset($row['ticket_img'])) { ?>
-                                          <input type="hidden" name="filePath" value="<?php echo $row['ticket_img'];?>">
-                                          <img src="<?php echo $row['ticket_img'];?>" alt="">
+                                        if (isset($row['tecnicoImg'])) { ?>
+                                          <input type="hidden" name="filePath" value="<?php echo $row['tecnicoImg'];?>">
+                                          <img src="<?php echo $row['tecnicoImg'];?>" alt="">
                                       <?php                                            
                                       } else{ ?>
-                                         <input class="form-control form-control-sm" type="file" id="ticketImage" name="ticketImage" accept="image/*" required>
+                                         <input class="form-control form-control-sm" type="file" id="tecnicoImg" name="tecnicoImg" accept="image/*" required>
                                       <?php
                                       }
                                       ?>
                                     </div>
-                                    <label for="aremark">Comentario</label>
-                                    <textarea class="form-control form-control-sm" id="aremark" name="aremark" cols="110" rows="4" required="true"><?php echo $row['admin_remark']; ?></textarea>
+                                    <label for="tmsg">Comentario</label>
+                                    <textarea class="form-control form-control-sm" id="tmsg" name="tmsg" cols="110" rows="4" required="true"><?php echo $row['tmsg']; ?></textarea>
                                   </div>
                                   <div class="btn-div">
                                     <button name="update" type="submit" class="btn btn-updt" id="Update">Actualizar</button>

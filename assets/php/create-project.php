@@ -90,7 +90,7 @@ if(isset($_POST['newProject'])){
     $resumen   = $_POST['desc'];
     $comercial = $_SESSION['id'];
     $pdate     = date('Y-m-d');
-    $fCierre   = $_POST['fCierre'];  
+    $fCierre   = $_POST['fCierre'];
 
     $query = "INSERT INTO proyectos (nombre, cliente, ciudad, estado_id, 
                 costo_software, costo_hardware, resumen, 
@@ -108,11 +108,12 @@ if(isset($_POST['newProject'])){
                 foreach ($_POST['actividades']['nombre'] as $key => $name) {
                     $fecha = $_POST['actividades']['fecha'][$key];
                     $desc = $_POST['actividades']['descripcion'][$key];
+                    $area = $_POST['actividades']['area'][$key];
             
-                    $query = 'INSERT INTO actividades (nombre, fecha, proyecto_id, descripcion)
-                    VALUES (?, ?, ?, ?)';
+                    $query = 'INSERT INTO actividades (nombre, fecha, proyecto_id, descripcion, area)
+                            VALUES (?, ?, ?, ?, ?)';
                     $act_stmt = mysqli_prepare($con, $query);
-                    mysqli_stmt_bind_param($act_stmt, "ssis", $name, $fecha, $pId, $desc); 
+                    mysqli_stmt_bind_param($act_stmt, "ssiss", $name, $fecha, $pId, $desc, $area);
                     mysqli_stmt_execute($act_stmt);
                     mysqli_stmt_close($act_stmt);
                 }       
@@ -249,11 +250,12 @@ else if(isset($_POST['updtProject'])) {
         foreach ($_POST['actividades']['nombre'] as $key => $name) {
             $fecha = $_POST['actividades']['fecha'][$key];
             $desc = $_POST['actividades']['descripcion'][$key];
-
-            $query = 'INSERT INTO actividades (nombre, fecha, proyecto_id, descripcion)
-            VALUES (?, ?, ?, ?)';
+            $area = $_POST['actividades']['area'][$key];
+            
+            $query = 'INSERT INTO actividades (nombre, fecha, proyecto_id, descripcion, area)
+                    VALUES (?, ?, ?, ?, ?)';
             $act_stmt = mysqli_prepare($con, $query);
-            mysqli_stmt_bind_param($act_stmt, "ssis", $name, $fecha, $pId, $desc); 
+            mysqli_stmt_bind_param($act_stmt, "ssiss", $name, $fecha, $pId, $desc, $area);
             mysqli_stmt_execute($act_stmt);
             mysqli_stmt_close($act_stmt);
         }

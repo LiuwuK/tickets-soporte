@@ -222,9 +222,22 @@ check_login();
                 <label for="nombreActividad" class="form-label">Nombre de la Actividad</label>
                 <input type="text" class="form-control form-control-sm" id="nombreActividad" name="nombreActividad" required>
             </div>
-            <div class="mb-3">
-                <label for="fechaActividad" class="form-label">Fecha</label>
-                <input type="date" class="form-control form-control-sm" id="fechaActividad" name="fechaActividad" required>
+            <div class="form-row-modal mb-3 d-flex">
+                <div class="form-group">
+                    <label for="fechaActividad" class="form-label">Fecha</label>
+                    <input type="date" class="form-control form-control-sm" id="fechaActividad" name="fechaActividad" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Área Asignada</label>
+                    <div>
+                        <select name="areaAct" id="areaAct" class="form-select form-select-sm" required>
+                            <option value="">Seleccionar</option>
+                            <option value="Tecnología">Tecnología</option>
+                            <option value="Comercial">Comercial</option>
+                            <option value="Administracion y Finanzas">Administracion y Finanzas</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="mb-3">
                 <label for="descripcionActividad" class="form-label">Descripción</label>
@@ -239,7 +252,7 @@ check_login();
         </div>
     </div>
 </div>
-
+</div>
 
 <!-- Modal contactos -->
 <div class="modal fade" id="contactoModal" tabindex="-1" aria-labelledby="contactoModalLabel" aria-hidden="true">
@@ -277,9 +290,6 @@ check_login();
         </div>
     </div>
 </div>
-
-  </div>
-
                     
 <script>
     //contactos

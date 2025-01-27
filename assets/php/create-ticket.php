@@ -17,6 +17,7 @@
         $tt = $_POST['tasktype'];
         if($_SESSION['role'] == 'admin'){
             $priority = $_POST['priority'];
+            $tecnicoAsg = $_POST['tecnico'];
         } else {
             $priority = null;
         }
@@ -55,17 +56,17 @@
             } 
         //-----------------------------------------------------------------------------------------------------------------------
 
-        $query = "INSERT INTO ticket (email_id, subject, task_type, prioprity, ticket, status, posting_date, user_id, ticket_img) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO ticket (email_id, subject, task_type, prioprity, ticket, status, posting_date, user_id, ticket_img, tecnico_asignado) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         if ($stmt = mysqli_prepare($con, $query)) {
             
-            mysqli_stmt_bind_param($stmt, "sssisisis",  $email, $subject, $tt, $priority, $ticket, $st, $pdate, $userId, $filePath);            
+            mysqli_stmt_bind_param($stmt, "sssisisisi",  $email, $subject, $tt, $priority, $ticket, $st, $pdate, $userId, $filePath, $tecnicoAsg);            
             // Ejecutar la consulta
             if (mysqli_stmt_execute($stmt)) {
                 
                 $ticketId = mysqli_insert_id($con);
-                
+                $user = $_SESSION['name'];
                 //Envio de notificacion a tiempo real 
                 //ticketNoti($ticketId,$userId );
                 //Envio de correo

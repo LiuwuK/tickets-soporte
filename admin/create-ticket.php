@@ -77,11 +77,11 @@ check_login();
                         </div>
                         
                         <div class="form-group">
-                            <label for="tecnico" class="form-label">Técnico asociado</label>
+                            <label for="tecnico" class="form-label">Técnico asignado</label>
                             <select id="tecnico" name="tecnico" class="form-select form-select-sm">
+                                <option value=''>Seleccionar</option>
                             <?php
                             while ($row = mysqli_fetch_assoc($tecnicos)) {
-                                echo "<option value=''>Seleccionar</option>";
                                 echo "<option value=". $row['id'] .">". $row['name'] ."</option>";
                             };
                             ?>

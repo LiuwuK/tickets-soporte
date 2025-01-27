@@ -1,100 +1,43 @@
 <?php 
-    include("dbconnection.php");
     include("admin/phpmail.php");
     include("admin/notificaciones.php");
 
 //Obtener el email del usuario para enviar notificaciones 
 $queryCliente = "SELECT email_id FROM ticket WHERE id = ?";
 $stmtCliente = $con->prepare($queryCliente);
-//---------------------------------------------------------------------------------------------------------
-//Agregar tareas a un ticket--------------------------------------------------------------------------------
-if (isset($_POST["addtsk"])) {
-  $tId = $_POST['tk_id'];
-  $userId = $_POST['user_id'];
-  $titles = $_POST['title'];
-  $ticketStatus = "En revisión";
-//actualizar el estado del ticket cuando se le asignen tareas
-  $queryUpdt = "UPDATE ticket 
-                SET status= 10 
-                WHERE id='$tId'";
-  mysqli_query($con, $queryUpdt);
-
-  if (!empty($titles)) {    
-      $values = [];
-      foreach ($titles as $title) {
-          $title = trim($title);
-          if (!empty($title)) {
-              $title = mysqli_real_escape_string($con, $title);
-              $values[] = "('$tId', '$title')";
-          }
-      }
-      if (!empty($values)) {
-          //consulta para insertar múltiples tareas de una vez
-          $query = "INSERT INTO tasks (ticket_id, titulo) VALUES " . implode(", ", $values);
-          if (mysqli_query($con, $query)) {
-           echo '<script>alert("Tareas asignadas correctamente "); location.replace(document.referrer);</script>';
-            //Enviar notificacion
-            $stmtCliente->bind_param("i", $tId);
-            $stmtCliente->execute();
-            $stmtCliente->bind_result($clienteEmail);
-            $stmtCliente->fetch();
-
-            if ($clienteEmail) {
-                //  Enviar la notificación por correo
-                Notificaciones::enviarCorreo($clienteEmail, $tId,$titles, null,$ticketStatus, null);
-            }
-          } else {
-              echo "Error al insertar tareas: " . mysqli_error($con);
-          }
-      }
-  }
-
-  $stmtCliente->close();
-  updateNoti($tId, $userId);
-}
-//Eliminar tareas-------------------------------------------------------------------------------------------
-elseif (isset($_POST["deltsk"])) {
-  $tId = $_POST['tk_id'];
-  $query = "DELETE FROM `tasks` WHERE id = ?";
-  $stmt = $con->prepare($query);
-  $stmt->bind_param("i",$tId); 
-  $stmt->execute();
-}
 //----------------------------------------------------------------------------------------------------------
-
-//Actualizar estado del ticket------------------------------------------------------------------------------
-//adminremark = mensaje del administrador
+//Actualizar estado del ticket -----------------------------------------------------------------------------
 //fid = id del ticket
 
 if (isset($_POST['update'])) {
-  $adminremark = $_POST['aremark'];
+  $mtecnico = $_POST['tmsg'];
   $fid = $_POST['frm_id'];
   $userId = $_POST['userId'];
-  $filePath = $_POST['filePath'];
   $ticketStatus = "En revisión";
+  
 
   //Subida de imagen-------------------------------------------------------------------------------------------------------
     // Configuración del directorio de carga
     if ($_SESSION['role'] == 'admin'){
-      $uploadDir = '../assets/uploads/';
+      $uploadDir = '../assets/uploads/tecnicos/';
     }else{
-        $uploadDir = 'assets/uploads/';
+        $uploadDir = 'assets/uploads/tecnicos/';
     }
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
 
     // Procesar la imagen
-    if(isset($_FILES['ticketImage']) && $_FILES['ticketImage']['error'] === UPLOAD_ERR_OK){
-      $uploadedFile = $_FILES['ticketImage'];
+    if(isset($_FILES['tecnicoImg']) && $_FILES['tecnicoImg']['error'] === UPLOAD_ERR_OK){
+      $uploadedFile = $_FILES['tecnicoImg'];
       $filePath = '';
 
-      $fileName = uniqid('ticket_', true) .'.'. pathinfo($_FILES['ticketImage']['name'], PATHINFO_EXTENSION);
+      $fileName = uniqid('tecnico_', true) .'.'. pathinfo($_FILES['tecnicoImg']['name'], PATHINFO_EXTENSION);
       $targetPath = $uploadDir . $fileName;
 
       // Mover archivo a la carpeta de destino
       if (move_uploaded_file($uploadedFile['tmp_name'], $targetPath)) {
-          $dir = 'assets/uploads/';
+          $dir = 'assets/uploads/tecnicos/';
           $filePath = $dir . $fileName;
       } else {
           echo "Error al subir la imagen.";
@@ -104,7 +47,11 @@ if (isset($_POST['update'])) {
   //-----------------------------------------------------------------------------------------------------------------------
   
   //actualizar el estado del ticket
-  $queryUpdt = "UPDATE ticket SET admin_remark='$adminremark', status = 10, ticket_img = '$filePath' WHERE id='$fid'";
+  $queryUpdt = "UPDATE ticket 
+                SET status = 10, 
+                    tecnicoImg = '$filePath',
+                    tmsg = '$mtecnico'
+                WHERE id = '$fid'";
   mysqli_query($con, $queryUpdt);
 
 
@@ -124,34 +71,34 @@ if (isset($_POST['update'])) {
 }
 //Cerrar ticket -------------------------------------------------------------------------------------------------------------
 else if (isset($_POST['end'])) {
+  $mtecnico = $_POST['tmsg'];
   $adminremark = $_POST['aremark'];
   $fid = $_POST['frm_id'];
   $ticketStatus = "Pendiente de Cierre";
   $userId = $_POST['userId'];
-  $filePath = $_POST['filePath'];
 
   //Subida de imagen-------------------------------------------------------------------------------------------------------
     // Configuración del directorio de carga
     if ($_SESSION['role'] == 'admin'){
-      $uploadDir = '../assets/uploads/';
+      $uploadDir = '../assets/uploads/tecnicos/';
     }else{
-        $uploadDir = 'assets/uploads/';
+        $uploadDir = 'assets/uploads/tecnicos/';
     }
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
 
     // Procesar la imagen
-    if(isset($_FILES['ticketImage']) && $_FILES['ticketImage']['error'] === UPLOAD_ERR_OK){
-      $uploadedFile = $_FILES['ticketImage'];
+    if(isset($_FILES['tecnicoImg']) && $_FILES['tecnicoImg']['error'] === UPLOAD_ERR_OK){
+      $uploadedFile = $_FILES['tecnicoImg'];
       $filePath = '';
 
-      $fileName = uniqid('ticket_', true) .'.'. pathinfo($_FILES['ticketImage']['name'], PATHINFO_EXTENSION);
+      $fileName = uniqid('tecnico_', true) .'.'. pathinfo($_FILES['tecnicoImg']['name'], PATHINFO_EXTENSION);
       $targetPath = $uploadDir . $fileName;
 
       // Mover archivo a la carpeta de destino
       if (move_uploaded_file($uploadedFile['tmp_name'], $targetPath)) {
-          $dir = 'assets/uploads/';
+          $dir = 'assets/uploads/tecnicos/';
           $filePath = $dir . $fileName;
       } else {
           echo "Error al subir la imagen.";
@@ -160,9 +107,9 @@ else if (isset($_POST['end'])) {
     } 
   //-----------------------------------------------------------------------------------------------------------------------
   $queryUpdt = "UPDATE ticket 
-                  SET admin_remark='$adminremark', 
+                  SET tmsg ='$mtecnico', 
                       status= 22,
-                      ticket_img = '$filePath'
+                      tecnicoImg = '$filePath'
                 WHERE id='$fid'";
   mysqli_query($con, $queryUpdt);
 

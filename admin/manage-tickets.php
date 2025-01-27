@@ -150,18 +150,17 @@ check_login();
                               <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="../assets/img/user.png" data-src="../assets/img/user.png" src="../assets/img/user.png" alt=""> </div>
                             </div>
                             <div class="info-wrapper">
-                              <div class="info"><?php echo $row['ticket']; ?> </div>
+                              <div class="info"><?php echo $row['ticket'];?> </div>
                               <?php
                                 if (isset($row['ticket_img'])) { ?>
                                   <div class="img">
                                       <img src="../<?php echo $row['ticket_img'];?>" alt="">
                                   </div>
                               <?php                                            
-                              }
+                                }
                               ?>
-                              <div class="clearfix"></div>
                             </div>
-                            <div class="clearfix"></div>
+                            
                           </div>
                           <br>
                           <div class="form-actions">
@@ -173,7 +172,7 @@ check_login();
                                   <div class="loading-spinner"></div>
                                   <p>Procesando...</p>
                                 </div>
-                                  <br>    
+
                                   <!-- listar tareas -->
                                   <div>
                                     <?php
@@ -232,7 +231,32 @@ check_login();
                                         echo "Error en la consulta: ".$con->error;
                                       }
                                     ?>
+                                    <hr>
                                   </div>
+                                  <?php 
+                                    if($row['tmsg'] or $row['tecnicoImg']){
+                                  ?>
+                                    <div class="tinfo">
+                                      <h4>Respuesta Técnico</h4>
+                                      <hr>
+                                      <div class="user-profile-pic-wrapper mt-2">
+                                        <div class="user-profile-pic-normal"> <img width="50" height="50" data-src-retina="../assets/img/admin.jpg" data-src="../assets/img/admin.jpg" src="../assets/img/admin.jpg" alt=""> </div>
+                                      </div>
+                                      <div class="info-wrapper mb-3">
+                                        <div class="info"><?php echo $row['tmsg'];?> </div>
+                                        <?php
+                                          if (isset($row['tecnicoImg'])) { ?>
+                                            <div class="img timg">
+                                                <img class="mx-auto"  src="../<?php echo $row['tecnicoImg'];?>" alt="">
+                                            </div>
+                                        <?php                                            
+                                          }
+                                        ?>
+                                      </div>
+                                    </div>
+                                  <?php
+                                    }
+                                  ?>
                                   <!-- Final listar tareas -->
                                   <hr>
                                   <div class="comm">

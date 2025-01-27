@@ -64,6 +64,7 @@ document.getElementById('formActividad').addEventListener('submit', function (e)
   const nombre = document.getElementById('nombreActividad').value.trim();
   const fecha = document.getElementById('fechaActividad').value.trim();
   const descripcion = document.getElementById('descripcionActividad').value.trim();
+  const area = document.getElementById('areaAct').value.trim();
   const fechaF = formatearFecha(fecha);
 
   const nuevaActividad = document.createElement('li');
@@ -74,6 +75,7 @@ document.getElementById('formActividad').addEventListener('submit', function (e)
     <input type="hidden" name="actividades[nombre][]" value="${nombre}">
     <input type="hidden" name="actividades[fecha][]" value="${fecha}">
     <input type="hidden" name="actividades[descripcion][]" value="${descripcion}">
+    <input type="hidden" name="actividades[area][]" value="${area}">
   `;
   document.getElementById('listadoActividades').appendChild(nuevaActividad);
   document.getElementById('formActividad').reset();
@@ -91,6 +93,7 @@ function formatearFecha(fecha) {
   
   return fechaFormateada.replace(/de (\d{4})$/, 'del $1');
 }
+
 //BOM
 // Calculo de materiales ya cargados
 document.querySelectorAll('#materialContainer .material-item').forEach((item) => {
