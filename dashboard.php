@@ -42,6 +42,7 @@ check_login();
           <!-- Primera fila -->
           <div class="row">
             <div class="first-row col-md-12 col-xl-5" id="calendar">
+            <button id="authenticate">Iniciar Sesión con Google</button>
             </div> 
             <!-- Dependiendo del usuario cambia el dashboard -->
             <?php
@@ -413,9 +414,11 @@ check_login();
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <!-- Bootstrap Bundle (con Popper.js) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Google Api (para el calendario ) -->
+
 <!-- Calendario -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar/main.min.js"></script>
 <!-- Scripts propios -->
 <script src="assets/js/sidebar.js"></script>
 <script src="assets/js/calendar.js"></script>
