@@ -320,11 +320,11 @@ check_login();
                                                             
                                                             if($num > 0){
                                                                 while ($row_ac = $result->fetch_assoc()) {
-                                                                    $fecha_original = $row_ac['fecha']; 
+                                                                    $fecha_original = $row_ac['fecha_inicio']; 
                                                                     setlocale(LC_TIME, 'es_ES.UTF-8', 'spanish');
                                                                     // Formatear la fecha
                                                                     $timestamp = strtotime($fecha_original);
-                                                                    $fecha = strftime('%e de %B %Y', $timestamp);
+                                                                    $fecha = strftime('%e de %B %Y, %H:%M', $timestamp);
                                                                 ?>
                                                                     <li><?php echo $row_ac['nombre'];?> -- <?php echo $fecha;?></li>    
                                                                 <?php }

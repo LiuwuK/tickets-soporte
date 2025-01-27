@@ -226,29 +226,41 @@ check_login();
                                                         $contacto = $con->prepare($query);
                                                         $contacto->execute();
                                                         $result = $contacto->get_result();
-                                                        $row_ct = $result->fetch_assoc();
-                                                        $contacto->close();
+                                                        $contactos = [];
+                                                        while ($row_ct = $result->fetch_assoc()) {
+                                                            $contactos[] = $row_ct; 
+                                                        }
                                                     ?>
-                                                    <div class="pr-row">
-                                                        <div class="group d-flex cnt">
-                                                            <strong class="form-label">Nombre</strong>
-                                                            <p>: <?php echo $row_ct['nombre'];?></p>
-                                                        </div>
+                                                    <div class="pr-row d-flex">
+                                                        <?php 
+                                                            foreach ($contactos as $contacto) {
+                                                        ?>
+                                                        <div class="group d-flex cnt card p-2">
+                                                            <div class="cnt-div d-flex">
+                                                                <strong class="form-label">Nombre </strong>
+                                                                <p>: <?php echo $contacto['nombre'];?></p>
+                                                            </div>
 
-                                                        <div class="group d-flex cnt">
-                                                            <strong class="form-label">Correo</strong>
-                                                            <p>: <?php echo $row_ct['correo'];?></p>
-                                                        </div>
-                                                        <div class="group d-flex cnt">
-                                                            <strong class="form-label">Cargo</strong>
-                                                            <p>: <?php echo $row_ct['cargo'];?></p>
-                                                        </div>
+                                                            <div class="cnt-div d-flex">
+                                                                <strong class="form-label">Correo </strong>
+                                                                <p>: <?php echo $contacto['correo'];?></p>
+                                                            </div >
 
-                                                        <div class="group d-flex cnt">
-                                                            <strong class="form-label">Numero Contacto</strong>
-                                                            <p>: <?php echo $row_ct['numero'];?></p>
+                                                            <div class="cnt-div d-flex">
+                                                                <strong class="form-label">Cargo </strong>
+                                                                <p>: <?php echo $contacto['cargo'];?></p>
+                                                            </div>
+
+                                                            <div class="cnt-div d-flex">
+                                                                <strong class="form-label">Contacto </strong>
+                                                                <p>: <?php echo $contacto['numero'];?></p>
+                                                            </div>
                                                         </div>
-                                                    </div>    
+                                                        <?php       
+                                                            }
+                                                        ?>
+                                                        
+                                                    </div>     
                                                 <?php 
                                                     }
                                                     echo '</div>';
@@ -272,11 +284,11 @@ check_login();
                                                             
                                                             if($num > 0){
                                                                 while ($row_ac = $result->fetch_assoc()) {
-                                                                    $fecha_original = $row_ac['fecha']; 
+                                                                    $fecha_original = $row_ac['fecha_inicio']; 
                                                                     setlocale(LC_TIME, 'es_ES.UTF-8', 'spanish');
                                                                     // Formatear la fecha
                                                                     $timestamp = strtotime($fecha_original);
-                                                                    $fecha = strftime('%e de %B %Y', $timestamp);
+                                                                    $fecha = strftime('%e de %B %Y, %H:%M', $timestamp);
                                                                 ?>
                                                                     <li><?php echo $row_ac['nombre'];?> -- <?php echo $fecha;?></li>    
                                                                 <?php }
