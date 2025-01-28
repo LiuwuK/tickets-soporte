@@ -77,6 +77,13 @@
         <i class="bi bi-ticket-perforated"></i>
       </a>
     </li>
+        
+    <li class="nav-item">
+      <a href="work-log.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Bitácora de Trabajo">
+        <i class="bi bi-journal-text"></i> 
+      </a>
+    </li>
+
     <li class="nav-item">
       <a href="profile.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Mi Perfil">
         <i class="bi bi-person-gear"></i> 

@@ -47,7 +47,14 @@
             $client->fetchAccessTokenWithRefreshToken($_SESSION['refresh_token']);
             $token = $client->getAccessToken(); 
             $_SESSION['access_token'] = $token['access_token'];
-            
+
+            $query = "UPDATE user
+                        SET access_token = ?
+                        WHERE id = ?";
+            $stmt = $con->prepare($query);
+            $stmt->bind_param("si", $token['access_token'], $userId);
+            $stmt->execute();
+
             $client->setAccessToken($_SESSION['access_token']);
                         
         } else {

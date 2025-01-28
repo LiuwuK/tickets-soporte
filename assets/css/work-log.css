@@ -1,0 +1,57 @@
+.add-log{
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 50px;
+    color: #33435e;
+    max-height: 700px;
+}
+.add-log .group{
+    width: 90%;
+    margin: 0px auto;
+}
+.new-logs{
+    max-height: 600px;
+}
+
+.btn-updt{
+    margin-top: 20px;
+
+    width: 100%;
+}
+.see-logs{
+    overflow-y: scroll;
+    max-height: 600px;
+}
+.card-log{
+    margin-top: 2%;
+    padding: 5px 10px;
+}
+.time{
+    color: #979797;
+    font-size: small;
+    margin-bottom: 0px;
+}
+.card-desc{
+    font-weight: 600;
+}
+
+/*scroll*/
+
+.see-logs::-webkit-scrollbar {
+    width: 8px; /
+}
+
+.see-logs::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;  
+}
+
+.see-logs::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.see-logs::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}

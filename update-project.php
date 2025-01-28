@@ -282,8 +282,6 @@ check_login();
                         </div>
                     </div>
 
-                    
-                    
                     <?php
                         if($projectData['clasificacion'] == 1){?>
                             <div class="form-row" id="classInfo">
