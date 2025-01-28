@@ -71,16 +71,15 @@
             exit;
         }
 
-        $result = [];
         foreach ($events->getItems() as $event) {
-            $result[] = [
+            $eventos[] = [
                 'title' => $event->getSummary(),
                 'start' => $event->getStart()->getDateTime() ?: $event->getStart()->getDate(),
                 'end' => $event->getEnd()->getDateTime() ?: $event->getEnd()->getDate(),
             ];
         }
 
-        echo json_encode($result);
+        echo json_encode($eventos);
 
     } catch (Exception $e) {
         echo json_encode(['error' => 'Error al obtener eventos: ' . $e->getMessage()]);
