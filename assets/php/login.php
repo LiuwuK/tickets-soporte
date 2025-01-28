@@ -30,6 +30,8 @@ if (isset($_POST['login'])) {
             $_SESSION['admin_id'] = $num['id'];
             $_SESSION['role'] = $num['rol']; 
             $_SESSION['cargo'] = $num['cargo'];
+            $_SESSION['refresh_token'] = $num['refresh_token'] ;
+            $_SESSION['access_token'] = $num['access_token'];
             echo "<script>window.location.href='admin/home.php'</script>";
             exit(); 
         } else {
@@ -47,6 +49,8 @@ if (isset($_POST['login'])) {
                 $_SESSION['id'] = $num['id'];
                 $_SESSION['role'] = $num['rol']; 
                 $_SESSION['cargo'] = $num['cargo']; 
+                $_SESSION['refresh_token'] = $num['refresh_token'] ;
+                $_SESSION['access_token'] = $num['access_token'];
                 echo "<script>window.location.href='dashboard.php'</script>";
                 exit();
             } else {

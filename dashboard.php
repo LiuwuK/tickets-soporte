@@ -42,7 +42,13 @@ check_login();
           <!-- Primera fila -->
           <div class="row">
             <div class="first-row col-md-12 col-xl-5" id="calendar">
-            <button id="authenticate">Iniciar Sesión con Google</button>
+              <?php
+                if(!$_SESSION['refresh_token']){
+              ?>
+                <button class="btn btn-updt mt-3" onclick="window.location.href='assets/php/gauth/oauth-init.php';">Vincular calendario de google</button>
+              <?php  
+                } 
+              ?>
             </div> 
             <!-- Dependiendo del usuario cambia el dashboard -->
             <?php
@@ -122,6 +128,7 @@ check_login();
               }
               // User comercial 
               else if($_SESSION['cargo'] == 2 ){
+                
               ?>
                 <div class="first-row">
                   <div class="t-head">
@@ -283,6 +290,7 @@ check_login();
           <div class="row">
             <?php
               if($_SESSION['cargo'] == 4){
+                
             ?>
               <div class="gerencia  col-md-12 col-xl-5">
                 <div class="t-head">

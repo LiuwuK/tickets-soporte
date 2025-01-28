@@ -1,6 +1,8 @@
 <?php
     header('Content-Type: application/json');
+    require_once '../../vendor/autoload.php';
     session_start();
+    
     include("../../dbconnection.php");
     
     //obtener actividades
@@ -19,7 +21,7 @@
         ];
     };
     
-    //obtener proyectos con fecha de cierre
+    //obtener fecha de cierre de proyectos
     $userId = $_SESSION['id'];
     $query = "SELECT id, nombre, fecha_cierre
                 FROM proyectos";
@@ -36,5 +38,53 @@
         ];
     };
 
-    echo json_encode($eventos);
+    //obtener eventos de google
+    $client = new Google_Client();
+    $client->setAccessToken($_SESSION['access_token']);
+
+    if (isset($_SESSION['access_token']) && $client->isAccessTokenExpired()) {
+        if (isset($_SESSION['refresh_token'])) {
+            $client->fetchAccessTokenWithRefreshToken($_SESSION['refresh_token']);
+            $_SESSION['access_token'] = $client->getAccessToken(); 
+        } else {
+            header('Location: oauth-init.php');
+            exit;
+        }
+    }
+
+    
+    try {
+        $service = new Google_Service_Calendar($client);
+
+
+        $calendarId = 'primary';
+        $events = $service->events->listEvents($calendarId, [
+            'timeMin' => date('c'), 
+            'maxResults' => 200,  
+            'singleEvents' => true,
+            'orderBy' => 'startTime',
+        ]);
+
+        // Depuración: Verificar si se obtienen eventos
+        if (empty($events->getItems())) {
+            echo json_encode(['error' => 'No se encontraron eventos.']);
+            exit;
+        }
+
+        $result = [];
+        foreach ($events->getItems() as $event) {
+            $result[] = [
+                'title' => $event->getSummary(),
+                'start' => $event->getStart()->getDateTime() ?: $event->getStart()->getDate(),
+                'end' => $event->getEnd()->getDateTime() ?: $event->getEnd()->getDate(),
+            ];
+        }
+
+        echo json_encode($result);
+
+    } catch (Exception $e) {
+        echo json_encode(['error' => 'Error al obtener eventos: ' . $e->getMessage()]);
+    }
+
+    //echo json_encode($eventos);
 ?>
