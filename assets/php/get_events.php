@@ -23,7 +23,7 @@
     
     //obtener fecha de cierre de proyectos
     $userId = $_SESSION['id'];
-    $query = "SELECT id, nombre, fecha_cierre
+    $query = "SELECT id, nombre, fecha_cierre_documental
                 FROM proyectos";
     if($area != 4){
         $query .= " WHERE comercial_responsable = '".$userId."'";
@@ -34,18 +34,22 @@
         $eventos[] = [
             'id' => $row['id'],
             'title' => 'Cierre del proyecto #'.$row['id'].' '.$row['nombre'],
-            'start' => $row['fecha_cierre'] 
+            'start' => $row['fecha_cierre_documental'] 
         ];
     };
 
     //obtener eventos de google
     $client = new Google_Client();
     $client->setAccessToken($_SESSION['access_token']);
-
+    $client->setAuthConfig('../js/json/credentials.json');
     if (isset($_SESSION['access_token']) && $client->isAccessTokenExpired()) {
         if (isset($_SESSION['refresh_token'])) {
             $client->fetchAccessTokenWithRefreshToken($_SESSION['refresh_token']);
-            $_SESSION['access_token'] = $client->getAccessToken(); 
+            $token = $client->getAccessToken(); 
+            $_SESSION['access_token'] = $token['access_token'];
+            
+            $client->setAccessToken($_SESSION['access_token']);
+                        
         } else {
             header('Location: oauth-init.php');
             exit;

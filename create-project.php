@@ -147,12 +147,20 @@ check_login();
                                 <input name="montoP" type="number" class="form-control form-control-sm" placeholder="1,000,000" aria-label="Monto" aria-describedby="montoP">
                             </div>
                         </div>
-
+                    </div>
+                    <div class="form-row">
                         <div class="form-group">
-                            <label for="">Fecha de Cierre</label>
+                            <label for="">Fecha de Cierre Documental</label>
                             <div class="input-group">
-                                <span class="input-group-text" id="fCierre"><i class="bi bi-exclamation-lg"></i></span>
-                                <input name="fCierre" type="date" class="form-control form-control-sm"  aria-label="Date" aria-describedby="fCierre">
+                                <span class="input-group-text" id="cierreDoc"><i class="bi bi-exclamation-lg"></i></span>
+                                <input name="cierreDoc" type="date" class="form-control form-control-sm"  aria-label="Date" aria-describedby="cierreDoc">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Fecha de Adjudicación</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="fAdj"><i class="bi bi-exclamation-lg"></i></span>
+                                <input name="fAdj" type="date" class="form-control form-control-sm"  aria-label="Date" aria-describedby="fAdj">
                             </div>
                         </div>
                     </div>

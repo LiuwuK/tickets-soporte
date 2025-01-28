@@ -94,16 +94,17 @@ if(isset($_POST['newProject'])){
     $resumen   = $_POST['desc'];
     $comercial = $_SESSION['id'];
     $pdate     = date('Y-m-d');
-    $fCierre   = $_POST['fCierre'];
+    $cierre    = isset($_POST['cierreDoc']) && $_POST['cierreDoc'] != '' ? $_POST['cierreDoc'] : NULL;
+    $fAdj      = isset($_POST['fAdj']) && $_POST['fAdj'] != '' ? $_POST['fAdj'] : NULL;
 
     $query = "INSERT INTO proyectos (nombre, cliente, ciudad, estado_id, 
                 costo_software, costo_hardware, resumen, 
-                fecha_creacion, comercial_responsable, monto, tipo, clasificacion, vertical, fecha_cierre) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                fecha_creacion, comercial_responsable, monto, tipo, clasificacion, vertical, fecha_cierre_documental, fecha_adjudicacion) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
     if ($stmt = mysqli_prepare($con, $query)) {
-        mysqli_stmt_bind_param($stmt, "ssiiiissiiiiis", $nameP, $client, $city, $status, $software,
-                                 $hardware, $resumen, $pdate, $comercial, $monto, $pType, $pClass, $vertical, $fCierre); 
+        mysqli_stmt_bind_param($stmt, "ssiiiissiiiiiss", $nameP, $client, $city, $status, $software,
+                                 $hardware, $resumen, $pdate, $comercial, $monto, $pType, $pClass, $vertical, $cierre, $fAdj); 
         if (mysqli_stmt_execute($stmt)) {
             $pId = mysqli_insert_id($con);
 
@@ -162,34 +163,38 @@ else if(isset($_POST['updtProject'])) {
     $pId = $_GET['projectId'];
     $pClass = $projectData['clasificacion'];
     $bom    = 0; 
-    $distribuidor = isset($_POST['dist']) && !empty($_POST['dist']) ? $_POST['dist'] : null;
-    $ingeniero = isset($_POST['ingeniero']) && !empty($_POST['ingeniero']) ? $_POST['ingeniero'] : null;
     if(isset($_POST['material'])){
         $bom = 1; 
     }
+    $distribuidor = isset($_POST['dist']) && !empty($_POST['dist']) ? $_POST['dist'] : null;
+    $ingeniero = isset($_POST['ingeniero']) && !empty($_POST['ingeniero']) ? $_POST['ingeniero'] : null;
     $software  = ($pClass == 1 && isset($_POST['software-input'])) ? $_POST['software-input'] : 0;
-    $hardware  = ($pClass == 1 && isset($_POST['hardware-input'])) ? $_POST['hardware-input'] : 0; 
+    $hardware  = ($pClass == 1 && isset($_POST['hardware-input'])) ? $_POST['hardware-input'] : 0;
+    //fechas 
+    $cierre    = isset($_POST['cierreDoc']) && $_POST['cierreDoc'] != '' ? $_POST['cierreDoc'] : NULL;
+    $fAdj      = isset($_POST['fAdj']) && $_POST['fAdj'] != '' ? $_POST['fAdj'] : NULL;
     //datos del formulario
     $newData = [
-        'id'                    => $_GET['projectId'],
-        'nombre'                => $_POST['name'],
-        'cliente'               => $_POST['client'],
-        'ciudad'                => $_POST['city'],
-        'estado_id'             => $_POST['status'],
-        'ingeniero_responsable' => $ingeniero,
-        'bom'                   => $bom,
-        'costo_software'        => $software,
-        'costo_hardware'        => $hardware,
-        'resumen'               => $_POST['desc'],
-        'fecha_creacion'        => $projectData['fecha_creacion'],
-        'comercial_responsable' => $projectData['comercial_responsable'],
-        'monto'                 => $_POST['montoP'],
-        'tipo'                  => $projectData['tipo'],
-        'clasificacion'         => $pClass,
-        'costo_real'            => $projectData['costo_real'],//$_POST['costoR']
-        'distribuidor'          => $distribuidor,
-        'vertical'              => $_POST['vertical'],
-        'fecha_cierre'          => $_POST['fCierre']
+        'id'                        => $_GET['projectId'],
+        'nombre'                    => $_POST['name'],
+        'cliente'                   => $_POST['client'],
+        'ciudad'                    => $_POST['city'],
+        'estado_id'                 => $_POST['status'],
+        'ingeniero_responsable'     => $ingeniero,
+        'bom'                       => $bom,
+        'costo_software'            => $software,
+        'costo_hardware'            => $hardware,
+        'resumen'                   => $_POST['desc'],
+        'fecha_creacion'            => $projectData['fecha_creacion'],
+        'comercial_responsable'     => $projectData['comercial_responsable'],
+        'monto'                     => $_POST['montoP'],
+        'tipo'                      => $projectData['tipo'],
+        'clasificacion'             => $pClass,
+        'costo_real'                => $projectData['costo_real'],//$_POST['costoR']
+        'distribuidor'              => $distribuidor,
+        'vertical'                  => $_POST['vertical'],
+        'fecha_cierre_documental'   => $cierre,
+        'fecha_adjudicacion'        => $fAdj
     ];
 
     //Datos de la db
@@ -318,13 +323,14 @@ else if(isset($_POST['updtProject'])) {
                         costo_hardware = ?,
                         costo_real = ?,
                         resumen = ?, bom = ?,
-                        fecha_cierre = ?
+                        fecha_cierre_documental = ?,
+                        fecha_adjudicacion = ?
                     WHERE id = ?";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("ssiiiiiiiiisisi",   
+        $stmt->bind_param("ssiiiiiiiiisissi",   
         $newData['nombre'], $newData['cliente'], $newData['ciudad'], $newData['estado_id'], $newData['ingeniero_responsable'],
         $newData['distribuidor'], $newData['vertical'], $newData['monto'], $newData['costo_software'], $newData['costo_hardware'], 
-        $newData['costo_real'], $newData['resumen'], $newData['bom'], $newData['fecha_cierre'], $newData['id'] );
+        $newData['costo_real'], $newData['resumen'], $newData['bom'], $newData['fecha_cierre_documental'], $newData['fecha_adjudicacion'], $newData['id'] );
 
         if ($stmt->execute()) {
             echo "<script>alert('Su proyecto ha sido actualizado correctamente');location.replace(document.referrer)</script>";

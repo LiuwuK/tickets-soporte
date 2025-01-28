@@ -52,7 +52,8 @@ check_login();
             <form name="form" id="updtProject" method="post">
             <?php
              $row_p = $projectData;
-             $fecha_cierre = $row_p['fecha_cierre'];
+             $fecha_cierre = $row_p['fecha_cierre_documental'];
+             $fecha_adjudicacion = $row_p['fecha_adjudicacion'];
             ?>
             <div id="loading" style="display:none ;">
                 <div class="loading-spinner"></div>
@@ -252,11 +253,21 @@ check_login();
                                 <input name="montoP" type="number" class="form-control form-control-sm" value="<?php echo $row_p['monto'];?>" aria-label="Monto" aria-describedby="montoP">
                             </div>
                         </div>
+                    </div>
+
+                    <div class="form-row">
                         <div class="form-group">
-                            <label for="">Fecha de Cierre</label>
+                            <label for="">Fecha de Cierre Documental</label>
                             <div class="input-group">
-                                <span class="input-group-text" id="fCierre"><i class="bi bi-exclamation-lg"></i></span>
-                                <input name="fCierre" type="date" class="form-control form-control-sm" value="<?php echo $fecha_cierre;?>" aria-label="Date" aria-describedby="fCierre">
+                                <span class="input-group-text" id="cierreDoc"><i class="bi bi-exclamation-lg"></i></span>
+                                <input name="cierreDoc" type="date" class="form-control form-control-sm" value="<?php echo $fecha_cierre;?>"  aria-label="Date" aria-describedby="cierreDoc">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Fecha de Adjudicación</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="fAdj"><i class="bi bi-exclamation-lg"></i></span>
+                                <input name="fAdj" type="date" class="form-control form-control-sm" value="<?php echo $fecha_adjudicacion;?>"   aria-label="Date" aria-describedby="fAdj">
                             </div>
                         </div>
                     </div>
