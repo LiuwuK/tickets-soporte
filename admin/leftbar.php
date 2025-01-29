@@ -36,6 +36,11 @@
       </a>
     </li>
     <li class="nav-item">
+      <a href="work-log.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Bitácora de Trabajo">
+        <i class="bi bi-journal-text"></i> 
+      </a>
+    </li>
+    <li class="nav-item">
       <a href="manage-users.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Gestionar Usuarios">
         <i class="bi bi-person-gear"></i> 
       </a>
