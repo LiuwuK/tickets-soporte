@@ -141,7 +141,7 @@ check_login();
               else if($_SESSION['cargo'] == 2 ){
                 
               ?>
-                <div class="first-row">
+                <div class="first-row col-md-12 col-xl-6">
                   <div class="t-head">
                     <h3>Top 5 Proyectos</h3>
                   </div>
@@ -221,7 +221,7 @@ check_login();
               // user contabilidad y finanzas
               else if($_SESSION['cargo'] == 3){
                 ?>
-                  <div class="first-row">
+                  <div class="first-row col-md-12 col-xl-5">
                     <div class="t-head">
                       <h3>Proyectos por facturar</h3>
                     </div>
