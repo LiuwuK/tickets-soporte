@@ -29,10 +29,12 @@ check_login();
 
 <body class="test" >
     <!-- Sidebar -->
-  <div class="page-container ">
+    <div class="sidebar-overlay"></div> 
+    <div class="page-container ">
 
     <div class="sidebar">
     <?php include("header-test.php"); ?>
+    <?php include("assets/php/phone-sidebar.php"); ?>
     </div>
     <div class="page-content">
     <?php include("leftbar-test.php"); ?>
@@ -50,7 +52,7 @@ check_login();
             <div>        
                 <form method="GET" action="" id="filtersForm" class="mt-3" >
                     <div class="fil-main form-group">
-                        <div class="search-div d-flex">
+                        <div class="search-div">
                             <label class="form-label" >Buscar</labe>
                             <input type="text" class="form-control form-control-sm" id="textSearch" name="textSearch" placeholder="Nombre/ID del ticket">
                         </div>

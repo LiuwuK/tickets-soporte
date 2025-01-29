@@ -34,7 +34,7 @@ include("assets/php/login.php");
           <h2 class=""><strong>Iniciar Sesión</strong></h2>
         </div>
 
-        <div class="col-md-10"> <br>
+        <div class="col-md-10 col-sm-10 col-xl-10"> <br>
           <p style="color:#F00"><?php echo $_SESSION['action1']; ?><?php echo $_SESSION['action1'] = ""; ?></p>
           <form id="login-form" class="login-form" action="" method="post">
             <div class="form-group">
@@ -58,7 +58,6 @@ include("assets/php/login.php");
     </div>
 
     <div class="loginImg col-md-7" id="login-img-container">
-        
     </div>
 
     <div class="notactive-form container loginCtn col-md-5" id="register-form-container">

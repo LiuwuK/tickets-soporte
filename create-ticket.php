@@ -31,10 +31,12 @@ check_login();
 
 <body class="test" >
     <!-- Sidebar -->
+<div class="sidebar-overlay"></div> 
   <div class="page-container ">
 
     <div class="sidebar">
     <?php include("header-test.php"); ?>
+    <?php include("assets/php/phone-sidebar.php"); ?>
       
     </div>
     <div class="page-content">
@@ -50,7 +52,7 @@ check_login();
                     <div class="loading-spinner"></div>
                     <p>Procesando...</p>
                 </div>  
-                <div class="ticket-main">
+                <div class="ticket-main  col-xl-8 col-sm-12">
                     <br>
                     <?php if (isset($_SESSION['msg1'])) : ?>
                         <p align="center" style="color:#FF0000"><?= $_SESSION['msg1']; ?><?= $_SESSION['msg1'] = ""; ?></p>

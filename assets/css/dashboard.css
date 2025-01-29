@@ -3,7 +3,6 @@
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     padding: 20px;
-    width: 48%;
     margin-top: 50px;
     color: #33435e;
 }
@@ -17,13 +16,24 @@
 .t-head h3{
   font-weight: 600;
 }
+/* card tickets */ 
 .card p{
-    margin: 1rem;
+  margin: 1rem;
 }
-
+.ptickets-head{
+  display: flex;
+}
+.pticket-body{
+  text-align: center;
+}
+.pticket-title{
+  display: none;
+}
 .btn-updt{
     width: 100% !important;
 }
+
+
 .label {
     padding: 3px 9px;
     font-size: 11px;
@@ -111,4 +121,20 @@
 
 .fc-toolbar-title{
   text-transform: capitalize;
+}
+
+/*responsive*/
+@media (max-width: 767px) {
+  .card p {
+    margin: 0; 
+  }
+  .ptickets-head{
+    display: none;
+  }
+  .pticket-title{
+    display: flex;
+  }
+  .pticket-body{
+    text-align: justify;
+  }
 }

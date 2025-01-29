@@ -32,10 +32,12 @@ check_login();
 
 <body class="test" >
     <!-- Sidebar -->
+    <div class="sidebar-overlay"></div> 
   <div class="page-container ">
 
     <div class="sidebar">
     <?php include("header-test.php"); ?>
+    <?php include("assets/php/phone-sidebar.php"); ?>
     </div>
     <div class="page-content">
     <?php include("leftbar-test.php"); ?>

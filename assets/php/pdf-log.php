@@ -18,7 +18,8 @@ $query = "SELECT wl.titulo, wl.descripcion, ta.nombre_actividad AS tAct,
                  DATE_FORMAT(wl.fecha, '%h:%i %p') AS hora
           FROM work_log wl
           JOIN tipo_actividades ta ON (wl.tipo_actividad = ta.id)
-          WHERE DATE(fecha) = ? AND wl.user_id = ?";
+          WHERE DATE(fecha) = ? AND wl.user_id = ?
+          ORDER BY wl.fecha ASC";
 $stmt = $con->prepare($query);
 $stmt->bind_param('si', $hoy, $user);
 $stmt->execute();

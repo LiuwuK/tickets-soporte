@@ -5,13 +5,12 @@
   flex-direction: column;
   background-color: #fff;
   border-radius: 10px;
-  width: 80%;
   margin: 0 auto;
   margin-top: 40px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
 }
-.ticket-main{
-  width: 65%;
+.project-main{
+  width: 80%;
 }
 
 .form-row {

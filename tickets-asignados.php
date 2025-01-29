@@ -33,9 +33,11 @@ check_login();
 
 <body class="test" >
     <!-- Sidebar -->
+    <div class="sidebar-overlay"></div> 
   <div class="page-container ">
     <div class="sidebar">
       <?php include("header-test.php"); ?>
+      <?php include("assets/php/phone-sidebar.php"); ?>
     </div>
     <div class="page-content">
       <?php include("leftbar-test.php"); ?>
@@ -47,7 +49,7 @@ check_login();
                 </h2>
             </div>
 
-            <!-- filtros  -->
+            <!-- filtros 
             <div class="d-flex justify-content-end">
                 <button class="btn btn-sm" id="toggleFiltersBtn">
                     <i class="bi bi-arrow-down-short"></i> Filtros
@@ -93,7 +95,9 @@ check_login();
                 </form>
                 <br>
             </div>
+             -->
             <!-- Listado de tickets -->
+             <br><br>
             <?php 
             if ($num > 0) {
               while ($row = mysqli_fetch_array($rt)) {

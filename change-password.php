@@ -30,11 +30,12 @@ check_login();
 
 <body class="test" >
     <!-- Sidebar -->
-  <div class="page-container ">
+<div class="sidebar-overlay"></div>   
+<div class="page-container ">
 
     <div class="sidebar">
     <?php include("header-test.php"); ?>
-      
+    <?php include("assets/php/phone-sidebar.php"); ?>
     </div>
     <div class="page-content">
     <?php include("leftbar-test.php"); ?>
@@ -42,7 +43,7 @@ check_login();
             <div class="page-title">
                 <h2>Cambiar Contraseña</h2>
             </div>
-            <div class="form-content">
+            <div class="form-content col-md-12 col-sm-12 col-xl-8">
                 <form class="form-horizontal" name="form1" method="post" action="" onSubmit="return valid();">
                     <div class="panel panel-default">
                         <div class="panel-body">

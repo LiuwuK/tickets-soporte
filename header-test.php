@@ -3,10 +3,9 @@
   <div class="navbar-inner">
 
     <div class="header-quick-nav">
-      <div class="ml-2 pull-left" style="padding-top: 0.5em;padding-left: 1em">
-        <h4>
-          <a href="dashboard.php" class="text-reset"><strong>SafeTeck - Acceso Cliente</strong></a>
-        </h4>
+      <div class="nav-title d-flex ml-2 pull-left" style="padding-top: 0.5em;padding-left: 1em">
+        <button class="btn nav-icon sidebar-toggle">☰</button>
+        <strong>SafeTeck - Acceso Cliente</strong>
         <ul class="nav quick-section">
 
         </ul>

@@ -10,3 +10,14 @@ document.querySelectorAll("form[name='form']").forEach(form => {
         document.getElementById("loading").style.display = "flex";
     });
 });
+//boton para ocultar/ver sidebar
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    
+    sidebar.classList.toggle('expanded');
+    overlay.classList.toggle('visible');
+}
+
+document.querySelector('.sidebar-overlay').addEventListener('click', toggleSidebar);
+document.querySelector('.sidebar-toggle').addEventListener('click', toggleSidebar);

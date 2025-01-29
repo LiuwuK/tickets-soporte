@@ -24,11 +24,12 @@ document.addEventListener('DOMContentLoaded', function () {
         events: 'assets/php/get_events.php',
         eventMouseEnter: function (info) {
           const eventStart = info.event.start;
+          const eventEnd   = info.event.end;
           let displayDate;
           if (eventStart.getHours() === 0 && eventStart.getMinutes() === 0 && eventStart.getSeconds() === 0) {
-              displayDate = '';  
+              displayDate = '';
           } else {
-              displayDate = `${eventStart.toLocaleDateString()} ${eventStart.toLocaleTimeString()}`;
+              displayDate = `${eventStart.toLocaleTimeString()} - ${eventEnd.toLocaleTimeString()}`;
           }
             const tooltip = new bootstrap.Tooltip(info.el, {
               title: `<strong>${info.event.title}</strong><br>${displayDate}`,

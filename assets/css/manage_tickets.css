@@ -376,7 +376,7 @@ input, .form-control, .form-select{
 
 .fil-main{
   display: flex;
-  justify-content: start;
+  justify-content: center;
 }
 .fil-div {
   width: 20%;
@@ -474,4 +474,17 @@ label, .group li{
   max-width: 500px;
   display: flex;
   margin: 0 auto;
+}
+
+
+@media (max-width: 1390px) {
+  .search-div input{
+    width: 100%;
+  }
+  .fil-btn button {
+    width: 100%;
+  }
+  .fil-main{
+    justify-content: start;
+  }
 }

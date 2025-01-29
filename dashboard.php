@@ -32,24 +32,32 @@ check_login();
 
 <body class="test" >
     <!-- Sidebar -->
+  <div class="sidebar-overlay"></div> 
   <div class="page-container ">
     <div class="sidebar">
-    <?php include("header-test.php"); ?>
+      <?php include("header-test.php"); ?>
+      <?php include("assets/php/phone-sidebar.php"); ?>
     </div>
     <div class="page-content">
     <?php include("leftbar-test.php"); ?>
         <div class="content">
           <!-- Primera fila -->
           <div class="row">
-            <div class="first-row col-md-12 col-xl-5" id="calendar">
-              <?php
-                if(!$_SESSION['refresh_token']){
-              ?>
-                <button class="btn btn-updt mt-3" onclick="window.location.href='assets/php/gauth/oauth-init.php';">Vincular calendario de google</button>
-              <?php  
-                } 
-              ?>
-            </div> 
+            <?php
+              if($_SESSION['cargo'] != 5){
+            ?>    
+                <div class="first-row col-sm-12 col-md-12 col-xl-5" id="calendar">
+                  <?php
+                    if(!$_SESSION['refresh_token']){
+                  ?>
+                    <button class="btn btn-updt mt-3" onclick="window.location.href='assets/php/gauth/oauth-init.php';">Vincular calendario de google</button>
+                  <?php  
+                    } 
+                  ?>
+                </div> 
+            <?php
+              }            
+            ?>
             <!-- Dependiendo del usuario cambia el dashboard -->
             <?php
               //  contador
@@ -57,7 +65,7 @@ check_login();
               // User Tecnico
               if($_SESSION['cargo'] == 5){
             ?>
-              <div class="first-row">
+              <div class="first-row col-sm-12 col-md-12 col-xl-12">
                 <div class="t-head">
                   <h3>Tickets pendientes</h3>
                 </div>
@@ -65,17 +73,17 @@ check_login();
                   if($num_t > 0){
                 ?>
                   <div class="t-body">
-                    <div class="d-flex flex-row align-items-center pl-3 mb-3 ">
-                      <div class="flex-grow-1 text-center">
+                    <div class="ptickets-head flex-row align-items-center pl-3 mb-3 ">
+                      <div class="flex-grow-1 text-center col-12 col-md-3 mb-2 mb-md-0" >
                         <strong>Asunto</strong>
                       </div>
-                      <div class="text-center" style="width: 50%;">
+                      <div class="text-center col-12 col-md-4 mb-2 mb-md-0">
                         <strong>Resumen</strong>
                       </div>
-                      <div class="text-center" style="width: 25%;">
+                      <div class="text-center col-12 col-md-2 mb-2 mb-md-0">
                         <strong>Fecha de subida</strong>
                       </div>
-                      <div class="text-end" style="width: 10%;">
+                      <div class="text-end col-12 col-md-3 mb-2 mb-md-0">
                         <p></p>
                       </div>
                     </div>
@@ -93,20 +101,23 @@ check_login();
                         } else if($days_passed <= 0){
                           $time_passed = "Hoy";
                         } else {
-                            $time_passed = "Hace". $days_passed . " Días";
+                            $time_passed = "Hace ". $days_passed . " Días";
                         }
                     ?>
-                      <div class="card d-flex flex-row align-items-center p-3 mb-2">
-                        <div class="flex-grow-1 text-center">
-                          <strong><?php echo $row['subject']; ?></strong>
+                      <div class="card d-flex flex-column flex-md-row align-items-center p-3 mb-2">
+                        <div class="flex-grow-1 pticket-body col-12 col-md-3 mb-2 mb-md-0">
+                          <strong class="pticket-title">Asunto:</strong>
+                          <p><?php echo $row['subject']; ?></p>
                         </div>
-                        <div class="text-center" style="width: 50%; overflow:hidden;">
+                        <div class="pticket-body col-12 col-md-4 mb-2 mb-md-0" style="overflow:hidden;">
+                          <strong class="pticket-title">Resumen:</strong>
                           <p><?php echo $row['ticket']; ?></p>
                         </div>
-                        <div class="text-center" style="width: 20%;">
+                        <div class="pticket-body col-12 col-md-2 mb-2 mb-md-0">
+                          <strong class="pticket-title">Fecha de subida:</strong>
                           <p><?php echo $time_passed ?></p>
                         </div>
-                        <div class="text-end" style="width: 100px;">
+                        <div class="col-12 col-md-3 mb-2 mb-md-0" >
                           <p><button class="btn btn-updt" onclick="window.location.href='tickets-asignados.php?textSearch=<?php echo $row['id']; ?>&priority=<?php echo $row['prioprity']; ?>';">Ver</button></p>
                         </div>
                       </div>
