@@ -23,8 +23,15 @@ document.addEventListener('DOMContentLoaded', function () {
         allDaySlot: true,    
         events: 'assets/php/get_events.php',
         eventMouseEnter: function (info) {
+          const eventStart = info.event.start;
+          let displayDate;
+          if (eventStart.getHours() === 0 && eventStart.getMinutes() === 0 && eventStart.getSeconds() === 0) {
+              displayDate = '';  
+          } else {
+              displayDate = `${eventStart.toLocaleDateString()} ${eventStart.toLocaleTimeString()}`;
+          }
             const tooltip = new bootstrap.Tooltip(info.el, {
-              title: `<strong>${info.event.title}</strong><br>${info.event.start.toLocaleString()}`,
+              title: `<strong>${info.event.title}</strong><br>${displayDate}`,
               html: true, 
               placement: 'top', 
               container: 'body',

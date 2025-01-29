@@ -133,6 +133,7 @@ if($_SESSION['cargo'] == 3){
   $query .= ' WHERE ' . implode(' AND ', $conditions);
   }
 
+  $query .= ' ORDER BY pr.id DESC ';
   $stmt = $con->prepare($query);
   if (!empty($params)) {
   $stmt->bind_param($types, ...$params);

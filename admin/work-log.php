@@ -133,6 +133,7 @@ check_login();
 <!-- Complementos/Plugins-->    
 <!-- Scripts propios -->
 <script src="../assets/js/sidebar.js"></script>
+<script src="../assets/js/work-log.js"></script>
 </body>
 
 </html>

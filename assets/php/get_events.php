@@ -71,7 +71,7 @@
 
             $calendarId = 'primary';
             $events = $service->events->listEvents($calendarId, [
-                'timeMin' => date('c'), 
+                //'timeMin' => date('c'), 
                 'maxResults' => 200,  
                 'singleEvents' => true,
                 'orderBy' => 'startTime',
