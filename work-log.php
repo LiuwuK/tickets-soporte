@@ -82,7 +82,7 @@ check_login();
                 <div class="add-log col-lg-12 col-xl-6 h-100">
                     <div class="title mb-3 d-flex justify-content-between">
                         <h5 id="day"></h5>
-                        <button class='btn btn-default'>Generar registro</button>
+                        <button class='btn btn-default' onclick="window.location.href='assets/php/pdf-log.php?userId=<?php echo $_SESSION['id'];?>';">Generar registro</button>
                     </div>
                     <div class="logs see-logs">
                        <?php

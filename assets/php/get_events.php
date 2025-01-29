@@ -39,62 +39,62 @@
     };
 
     //obtener eventos de google
-    $client = new Google_Client();
-    $client->setAccessToken($_SESSION['access_token']);
-    $client->setAuthConfig('../js/json/credentials.json');
-    if (isset($_SESSION['access_token']) && $client->isAccessTokenExpired()) {
-        if (isset($_SESSION['refresh_token'])) {
-            $client->fetchAccessTokenWithRefreshToken($_SESSION['refresh_token']);
-            $token = $client->getAccessToken(); 
-            $_SESSION['access_token'] = $token['access_token'];
+    if(isset($_SESSION['refresh_token'])){
+        $client = new Google_Client();
+        $client->setAccessToken($_SESSION['access_token']);
+        $client->setAuthConfig('../js/json/credentials.json');
+        if (isset($_SESSION['access_token']) && $client->isAccessTokenExpired()) {
+            if (isset($_SESSION['refresh_token'])) {
+                $client->fetchAccessTokenWithRefreshToken($_SESSION['refresh_token']);
+                $token = $client->getAccessToken(); 
+                $_SESSION['access_token'] = $token['access_token'];
 
-            $query = "UPDATE user
-                        SET access_token = ?
-                        WHERE id = ?";
-            $stmt = $con->prepare($query);
-            $stmt->bind_param("si", $token['access_token'], $userId);
-            $stmt->execute();
+                $query = "UPDATE user
+                            SET access_token = ?
+                            WHERE id = ?";
+                $stmt = $con->prepare($query);
+                $stmt->bind_param("si", $token['access_token'], $userId);
+                $stmt->execute();
 
-            $client->setAccessToken($_SESSION['access_token']);
-                        
-        } else {
-            header('Location: oauth-init.php');
-            exit;
+                $client->setAccessToken($_SESSION['access_token']);
+                            
+            } else {
+                header('Location: oauth-init.php');
+                exit;
+            }
+        }
+
+        
+        try {
+            $service = new Google_Service_Calendar($client);
+
+
+            $calendarId = 'primary';
+            $events = $service->events->listEvents($calendarId, [
+                'timeMin' => date('c'), 
+                'maxResults' => 200,  
+                'singleEvents' => true,
+                'orderBy' => 'startTime',
+            ]);
+
+            // Depuración: Verificar si se obtienen eventos
+            if (empty($events->getItems())) {
+                echo json_encode($eventos);
+                exit;
+            }
+
+            foreach ($events->getItems() as $event) {
+                $eventos[] = [
+                    'title' => $event->getSummary(),
+                    'start' => $event->getStart()->getDateTime() ?: $event->getStart()->getDate(),
+                    'end' => $event->getEnd()->getDateTime() ?: $event->getEnd()->getDate(),
+                ];
+            }
+
+        
+        } catch (Exception $e) {
+            echo json_encode(['error' => 'Error al obtener eventos: ' . $e->getMessage()]);
         }
     }
-
-    
-    try {
-        $service = new Google_Service_Calendar($client);
-
-
-        $calendarId = 'primary';
-        $events = $service->events->listEvents($calendarId, [
-            'timeMin' => date('c'), 
-            'maxResults' => 200,  
-            'singleEvents' => true,
-            'orderBy' => 'startTime',
-        ]);
-
-        // Depuración: Verificar si se obtienen eventos
-        if (empty($events->getItems())) {
-            echo json_encode(['error' => 'No se encontraron eventos.']);
-            exit;
-        }
-
-        foreach ($events->getItems() as $event) {
-            $eventos[] = [
-                'title' => $event->getSummary(),
-                'start' => $event->getStart()->getDateTime() ?: $event->getStart()->getDate(),
-                'end' => $event->getEnd()->getDateTime() ?: $event->getEnd()->getDate(),
-            ];
-        }
-
-        echo json_encode($eventos);
-
-    } catch (Exception $e) {
-        echo json_encode(['error' => 'Error al obtener eventos: ' . $e->getMessage()]);
-    }
-
-    //echo json_encode($eventos);
+    echo json_encode($eventos);
 ?>

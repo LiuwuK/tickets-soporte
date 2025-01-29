@@ -8,6 +8,7 @@
         "cboden/ratchet": "^0.4.4",
         "phpmailer/phpmailer": "^6.9",
         "textalk/websocket": "^1.5",
-        "google/apiclient": "^2.18"
+        "google/apiclient": "^2.18",
+        "fpdf/fpdf": "^1.86"
     }
 }
