@@ -36,6 +36,9 @@ $distribuidor = mysqli_query($con, $query);
 $query = "SELECT * FROM cargos";
 $cargos = mysqli_query($con, $query);
 
+//obtener portales 
+$query = "SELECT * FROM portales";
+$portal = mysqli_query($con, $query);
 
 // cargar proyecto que va a ser actualizado
 if(isset($_GET['projectId']) ){
@@ -96,15 +99,17 @@ if(isset($_POST['newProject'])){
     $pdate     = date('Y-m-d');
     $cierre    = isset($_POST['cierreDoc']) && $_POST['cierreDoc'] != '' ? $_POST['cierreDoc'] : NULL;
     $fAdj      = isset($_POST['fAdj']) && $_POST['fAdj'] != '' ? $_POST['fAdj'] : NULL;
+    $finCt     = isset($_POST['finContrato']) && $_POST['finContrato'] != '' ? $_POST['finContrato'] : NULL;
 
     $query = "INSERT INTO proyectos (nombre, cliente, ciudad, estado_id, 
                 costo_software, costo_hardware, resumen, 
-                fecha_creacion, comercial_responsable, monto, tipo, clasificacion, vertical, fecha_cierre_documental, fecha_adjudicacion) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                fecha_creacion, comercial_responsable, monto, tipo, clasificacion, 
+                vertical, fecha_cierre_documental, fecha_adjudicacion, fecha_fin_contrato) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
         
     if ($stmt = mysqli_prepare($con, $query)) {
-        mysqli_stmt_bind_param($stmt, "ssiiiissiiiiiss", $nameP, $client, $city, $status, $software,
-                                 $hardware, $resumen, $pdate, $comercial, $monto, $pType, $pClass, $vertical, $cierre, $fAdj); 
+        mysqli_stmt_bind_param($stmt, "ssiiiissiiiiisss", $nameP, $client, $city, $status, $software,
+                                 $hardware, $resumen, $pdate, $comercial, $monto, $pType, $pClass, $vertical, $cierre, $fAdj, $finCt); 
         if (mysqli_stmt_execute($stmt)) {
             $pId = mysqli_insert_id($con);
 
@@ -130,7 +135,7 @@ if(isset($_POST['newProject'])){
                 $licID = $_POST['licID'];
                 $query = 'INSERT INTO licitacion_proyecto (licitacion_id, proyecto_id, portal) VALUES(?, ?, ?)'; 
                 $lc_stmt = mysqli_prepare($con, $query);
-                mysqli_stmt_bind_param($lc_stmt, "sis", $licID, $pId, $portal); 
+                mysqli_stmt_bind_param($lc_stmt, "sii", $licID, $pId, $portal); 
                 mysqli_stmt_execute($lc_stmt);
                 mysqli_stmt_close($lc_stmt);
 
@@ -173,6 +178,7 @@ else if(isset($_POST['updtProject'])) {
     //fechas 
     $cierre    = isset($_POST['cierreDoc']) && $_POST['cierreDoc'] != '' ? $_POST['cierreDoc'] : NULL;
     $fAdj      = isset($_POST['fAdj']) && $_POST['fAdj'] != '' ? $_POST['fAdj'] : NULL;
+    $finCt     = isset($_POST['finContrato']) && $_POST['finContrato'] != '' ? $_POST['finContrato'] : NULL;
     //datos del formulario
     $newData = [
         'id'                        => $_GET['projectId'],
@@ -194,7 +200,8 @@ else if(isset($_POST['updtProject'])) {
         'distribuidor'              => $distribuidor,
         'vertical'                  => $_POST['vertical'],
         'fecha_cierre_documental'   => $cierre,
-        'fecha_adjudicacion'        => $fAdj
+        'fecha_adjudicacion'        => $fAdj,
+        'fecha_fin_contrato'        => $finCt
     ];
 
     //Datos de la db
@@ -223,7 +230,7 @@ else if(isset($_POST['updtProject'])) {
                         portal = ?                    
                     WHERE id = ?";
             $stmt = $con->prepare($query);
-            $stmt->bind_param("iisi", $newLic['licitacion_id'], $newLic['proyecto_id'], $newLic['portal'], $newLic['id'] );
+            $stmt->bind_param("iiii", $newLic['licitacion_id'], $newLic['proyecto_id'], $newLic['portal'], $newLic['id'] );
             $stmt->execute();
             $stmt->close();
         }
@@ -288,6 +295,7 @@ else if(isset($_POST['updtProject'])) {
     }
 
     /*si cambia el costo 
+
     if($_POST['costoR'] != $projectData['costo_real']){
 
         $distID = $newData['distribuidor'];
@@ -310,7 +318,9 @@ else if(isset($_POST['updtProject'])) {
             $stmt->execute();
         }
     }*/
+    
     //se comparan los datos de la db con los del formulario, si son distintos se actualiza el proyecto
+
     if($newJson !== $currentJson){
         $query =  " UPDATE proyectos 
                     SET
@@ -324,13 +334,14 @@ else if(isset($_POST['updtProject'])) {
                         costo_real = ?,
                         resumen = ?, bom = ?,
                         fecha_cierre_documental = ?,
-                        fecha_adjudicacion = ?
+                        fecha_adjudicacion = ?,
+                        fecha_fin_contrato = ?
                     WHERE id = ?";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("ssiiiiiiiiisissi",   
+        $stmt->bind_param("ssiiiiiiiiisisssi",   
         $newData['nombre'], $newData['cliente'], $newData['ciudad'], $newData['estado_id'], $newData['ingeniero_responsable'],
         $newData['distribuidor'], $newData['vertical'], $newData['monto'], $newData['costo_software'], $newData['costo_hardware'], 
-        $newData['costo_real'], $newData['resumen'], $newData['bom'], $newData['fecha_cierre_documental'], $newData['fecha_adjudicacion'], $newData['id'] );
+        $newData['costo_real'], $newData['resumen'], $newData['bom'], $newData['fecha_cierre_documental'], $newData['fecha_adjudicacion'], $newData['fecha_fin_contrato'], $newData['id'] );
 
         if ($stmt->execute()) {
             echo "<script>alert('Su proyecto ha sido actualizado correctamente');location.replace(document.referrer)</script>";

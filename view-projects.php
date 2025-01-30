@@ -80,6 +80,30 @@ check_login();
                                 ?>
                             </select>
                         </div>
+                        <div class="fil-div">
+                            <label class="form-label" for="st">Portal</label>
+                            <select name="portalF" class="form-select form-select-sm" id="st">
+                                <option value="">Ver todo</option>    
+                                <?php
+                                foreach($portal AS $pt) {
+                                    $select = isset($_GET['portalF']) && $_GET['portalF'] == $pt['id'] ? 'selected' : '';
+                                    echo "<option value='" . $pt['id'] . "' $select>" . $pt['nombre_portal'] . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="fil-div">
+                            <label class="form-label" for="st">Tipo de Proyecto</label>
+                            <select name="tipoprjF" class="form-select form-select-sm" id="tipoprjF">
+                                <option value="">Ver todo</option>    
+                                <?php
+                                foreach($tipoProyecto AS $tprj) {
+                                    $select = isset($_GET['tipoprjF']) && $_GET['tipoprjF'] == $tprj['id'] ? 'selected' : '';
+                                    echo "<option value='" . $tprj['id'] . "' $select>" . $tprj['nombre'] . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
 
                         <div class="fil-btn">
                             <button type="submit" class="btn">Filtrar</button>
@@ -137,7 +161,7 @@ check_login();
                                                 <div class="pr-row">
                                                     <div class="group">
                                                         <strong>Descripción</strong>
-                                                        <p><?php echo $row['resumen']; ?></p>
+                                                        <p><?php echo !empty($row['resumen']) ? $row['resumen'] : 'Sin descripción'; ?></p>
                                                     </div>
                                                 </div>
                                                 <!-- Datos cliente/ingeniero/tipo/distribuidor -->
@@ -194,13 +218,14 @@ check_login();
                                                 <!-- Datos de tipo proyecto (contacto/licitacion)  -->
                                                  
                                                 <?php
-                                                if($row['tipo'] != 3){
+                                                if($row['tipo'] == 1 or $row['tipo'] == 2){
                                                     echo '<div class="pr-row"><strong>Datos de '.$row['tipoP'].'</strong>';
                                                     //Licitacion
                                                     if($row['tipo'] == '1' ){
                                                         $id =  $row['projectId'];
-                                                        $query = "SELECT * 
-                                                                    FROM licitacion_proyecto
+                                                        $query = "SELECT lic.*, pt.nombre_portal AS portalN
+                                                                    FROM licitacion_proyecto lic
+                                                                    LEFT JOIN portales pt ON(lic.portal = pt.id)
                                                                     WHERE proyecto_id = $id";    
                                                         $licitacion = $con->prepare($query);
                                                         $licitacion->execute();
@@ -210,11 +235,11 @@ check_login();
                                                         ?>
                                                     <div class="group lic d-flex">
                                                         <strong class="form-label">ID Licitación</strong>
-                                                        <p>: <?php echo $row_lt['licitacion_id'];?></p>
+                                                        <p>: <?php echo !empty($row_lt['licitacion_id']) ? $row_lt['licitacion_id'] : 'Sin asignar';?></p>
                                                     </div>      
                                                     <div class="group lic d-flex">                                                        
                                                         <strong>Portal </strong>
-                                                        <p>: <?php echo$row_lt['portal'];?></p>
+                                                        <p>: <?php echo !empty($row_lt['portalN']) ? $row_lt['portalN'] : 'Sin asignar';?></p>
                                                     </div>                                                    
                                                 <?php
                                                     //Contacto 
@@ -348,19 +373,19 @@ check_login();
                                                     ?>
                                                     <div class="group">
                                                         <strong>Total BOM</strong>
-                                                        <p><?php
-                                                                if($num > 0){
-                                                                    while ($row_bom = $result->fetch_assoc()) {
-                                                                        $total = $total +  $row_bom['total'];
-                                                                    }
+                                                        <?php
+                                                            if($num > 0){
+                                                                while ($row_bom = $result->fetch_assoc()) {
+                                                                    $total = $total +  $row_bom['total'];
                                                                 }
-                                                                if($total > 0){
-                                                                    echo '$'.number_format($total, 0, '.', ','); 
-                                                                }else{
-                                                                    echo "<p> No se le han asignado materiales</p>";
-                                                                } 
-                                                                ?>
-                                                            </p>
+                                                            }
+                                                            if($total > 0){
+                                                                
+                                                                echo '<p>$'.number_format($total, 0, '.', ',').'</p>'; 
+                                                            }else{
+                                                                echo "<p> No se le han asignado materiales</p>";
+                                                            } 
+                                                        ?>    
                                                     </div>
                                                 </div>
                                                 <!-- 

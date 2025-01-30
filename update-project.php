@@ -54,6 +54,7 @@ check_login();
              $row_p = $projectData;
              $fecha_cierre = $row_p['fecha_cierre_documental'];
              $fecha_adjudicacion = $row_p['fecha_adjudicacion'];
+             $fecha_finCt = $row_p['fecha_fin_contrato'];
             ?>
             <div id="loading" style="display:none ;">
                 <div class="loading-spinner"></div>
@@ -76,30 +77,29 @@ check_login();
                             <div>
                             <select name="pType" id="pType" class="form-select form-select-sm" disabled>
                             <?php
-                                if (isset($lic)) {
-                                    echo "<option value='1'>Licitación</option>";
-                                } else if (isset($ct)) {
-                                    echo "<option value='2'>Contacto</option>";
-                                }else{
-                                    echo "<option value='3'>Facility</option>";
+                                echo $row_p['tipo'];
+                                while ($row = mysqli_fetch_assoc($types)) {
+                                    if ($row['id'] == $row_p['tipo']) {
+                                        echo "<option value=".$row['id']." selected>".$row['nombre']."</option>";
+                                    }
                                 };
                             ?>
                             </select>
                             </div>
                         </div> 
                         <div class ="form-group">
-                        <label class="form-label">Clasificación</label>
-                        <div>
-                            <select name="pClass" id="pClass" class="form-select form-select-sm" disabled>
-                            <?php
-                                if ($projectData['clasificacion'] == 1) {
-                                    echo "<option value='1'>Tecnologia</option>";
-                                } else {
-                                    echo "<option value='2'>Guardias</option>";
-                                };
-                            ?>
-                            </select>
-                        </div>
+                            <label class="form-label">Clasificación</label>
+                            <div>
+                                <select name="pClass" id="pClass" class="form-select form-select-sm" disabled>
+                                <?php
+                                    if ($projectData['clasificacion'] == 1) {
+                                        echo "<option value='1'>Tecnologia</option>";
+                                    } else {
+                                        echo "<option value='2'>Guardias</option>";
+                                    };
+                                ?>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <?php
@@ -107,15 +107,29 @@ check_login();
                         <div class="form-row" id="licitacionT">
                             <strong>Datos Licitación</strong>
                         </div>
-                        <div class="form-row"  id="licitacion">
+                        
+                        <div class="form-row mt-3"  id="licitacion">
                             <div class="form-group">
                                 <label for="licID" class="form-label">ID licitación</label>
                                 <input type="text" class="form-control form-control-sm" id="licID" name="licID" value="<?php echo $licData['licitacion_id'];?>" >
                             </div>
 
-                            <div class="form-group">
-                                <label for="portal" class="form-label">Portal</label>
-                                <input type="text" class="form-control form-control-sm" id="portal" name="portal" value="<?php echo $licData['portal'];?>">
+                            <div class ="form-group">
+                                <label class="form-label">Portal</label>
+                                <div >
+                                <select name="portal" class="form-select form-select-sm" >
+                                    <?php
+                                        echo "<option value='' >Sin asignar</option>";
+                                        while ($row = mysqli_fetch_assoc(result: $portal)) {
+                                            if ($row['id'] == $licData['portal']) {
+                                                echo "<option value=".$row['id']." selected>".$row['nombre_portal']."</option>";
+                                            }else {
+                                                echo "<option value=".$row['id'].">".$row['nombre_portal']."</option>";
+                                            }
+                                        };
+                                    ?>
+                                </select>
+                                </div>
                             </div>
                         </div>      
                     <?php 
@@ -253,21 +267,28 @@ check_login();
                                 <input name="montoP" type="number" class="form-control form-control-sm" value="<?php echo $row_p['monto'];?>" aria-label="Monto" aria-describedby="montoP">
                             </div>
                         </div>
-                    </div>
-
-                    <div class="form-row">
                         <div class="form-group">
                             <label for="">Fecha de Cierre Documental</label>
                             <div class="input-group">
                                 <span class="input-group-text" id="cierreDoc"><i class="bi bi-exclamation-lg"></i></span>
-                                <input name="cierreDoc" type="date" class="form-control form-control-sm" value="<?php echo $fecha_cierre;?>"  aria-label="Date" aria-describedby="cierreDoc">
+                                <input name="cierreDoc" type="date" class="form-control form-control-sm" value="<?php echo $fecha_cierre;?>" aria-label="Date" aria-describedby="cierreDoc">
                             </div>
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="">Fecha de Adjudicación</label>
                             <div class="input-group">
                                 <span class="input-group-text" id="fAdj"><i class="bi bi-exclamation-lg"></i></span>
-                                <input name="fAdj" type="date" class="form-control form-control-sm" value="<?php echo $fecha_adjudicacion;?>"   aria-label="Date" aria-describedby="fAdj">
+                                <input name="fAdj" type="date" class="form-control form-control-sm" value="<?php echo $fecha_adjudicacion;?>" aria-label="Date" aria-describedby="fAdj">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">Fecha fin de Contrato</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="finContrato"><i class="bi bi-exclamation-lg"></i></span>
+                                <input name="finContrato" type="date" class="form-control form-control-sm" value="<?php echo $fecha_finCt;?>" aria-label="Date" aria-describedby="finContrato">
                             </div>
                         </div>
                     </div>

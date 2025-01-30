@@ -9,7 +9,7 @@ while ($row = mysqli_fetch_assoc($inge)) {
     $ingenieros[] = $row;
 }
 
-//carga las verticales y distribuidores para filtrar--------------------------------------------------------------
+//carga las verticales/distribuidores/portales/tipos de proyecto y estados para filtrar--------------------------------------------------------------
 $query = "SELECT * FROM verticales ";
 $verticalData = mysqli_query($con, $query);
 while ($row = mysqli_fetch_assoc($verticalData)) {
@@ -22,13 +22,28 @@ while ($row = mysqli_fetch_assoc($distribuidorData)) {
   $distData[] = $row; 
 }
 
+$query = "SELECT * FROM tipo_proyecto ";
+$tipoProyectoData = mysqli_query($con, $query);
+while ($row = mysqli_fetch_assoc($tipoProyectoData)) {
+  $tipoProyecto[] = $row; 
+}
+
+$query = "SELECT * FROM portales";
+$portalData = mysqli_query($con, $query);
+while ($row = mysqli_fetch_assoc($portalData)) {
+  $portal[] = $row; 
+}
+
 $query_st = "SELECT * FROM estados WHERE type = 'project'";
 $statusF = mysqli_query($con, $query_st);
 //----------------------------------------------------------------------------------------------------------------
 //La query cambia dependiendo si se filtra por prioridad y/o estado (FILTROS)
+$tipoPrj = isset($_GET['tipoprjF']) ? intval($_GET['tipoprjF']) : '';
+$portalF = isset($_GET['portalF']) ? intval($_GET['portalF']) : '';
 $vertical_id = isset($_GET['verticalF']) ? intval($_GET['verticalF']) : '';
 $status_id = isset($_GET['statusF']) ? intval($_GET['statusF']) : '';
 $searchText = isset($_GET['textSearch']) ? trim($_GET['textSearch']) : '';
+
 //----------------------------------------------------------------------------------------------------------
 $userId = $_SESSION["user_id"];
 if($_SESSION['cargo'] == 3){
@@ -55,7 +70,7 @@ if($_SESSION['cargo'] == 3){
     $types .= 'i';
   }
 
-  // Filtrar por prioridad
+  // Filtrar por vertical
   if (!empty($vertical_id)) {
   $conditions[] = "pr.vertical = ?";
   $params[] = $vertical_id;
@@ -90,12 +105,13 @@ if($_SESSION['cargo'] == 3){
 }else if($_SESSION['cargo'] == 4){
   //Se obtienen todos los proyectos 
   $query = "SELECT pr.id AS projectId, pr.*, es.nombre AS estado, ci.nombre_ciudad AS ciudadN, us.name AS ingeniero, 
-                  us_com.name AS comercial, tp.nombre AS tipoP, dt.nombre AS distribuidorN
+                  us_com.name AS comercial, tp.nombre AS tipoP, dt.nombre AS distribuidorN, lic.portal AS portal
               FROM proyectos pr 
               JOIN estados es ON(pr.estado_id = es.id)
               JOIN ciudades ci ON(pr.ciudad = ci.id)
               LEFT JOIN user us ON(pr.ingeniero_responsable = us.id)
               LEFT JOIN distribuidores dt ON(pr.distribuidor = dt.id)
+              LEFT JOIN licitacion_proyecto lic ON(pr.id = lic.proyecto_id)
               JOIN user us_com ON (pr.comercial_responsable = us_com.id)
               JOIN tipo_proyecto tp ON(pr.tipo = tp.id)
               ";
@@ -111,12 +127,27 @@ if($_SESSION['cargo'] == 3){
     $types .= 'i';
   }
 
-  // Filtrar por prioridad
+  // Filtrar por vertical
   if (!empty($vertical_id)) {
   $conditions[] = "pr.vertical = ?";
   $params[] = $vertical_id;
   $types .= 'i';
   }
+  
+  // Filtrar por portal
+  if (!empty($portalF)) {
+    $conditions[] = "lic.portal = ?";
+    $params[] = $portalF;
+    $types .= 'i';
+  }
+  
+  // Filtrar por tipo de proyecto
+  if (!empty($tipoPrj)) {
+    $conditions[] = "pr.tipo = ?";
+    $params[] = $tipoPrj;
+    $types .= 'i';
+  }
+
 
   // Filtrar por texto (nombre del proyecto o ID)
   if (!empty($searchText)) {
@@ -149,12 +180,13 @@ if($_SESSION['cargo'] == 3){
 }else{
   //Se obtienen los proyectos asociados al usuario
   $query = "SELECT pr.id AS projectId, pr.*, es.nombre AS estado, ci.nombre_ciudad AS ciudadN, us.name AS ingeniero, 
-                  us_com.name AS comercial, tp.nombre AS tipoP, dt.nombre AS distribuidorN
+                  us_com.name AS comercial, tp.nombre AS tipoP, dt.nombre AS distribuidorN, lic.portal AS portal
               FROM proyectos pr 
               JOIN estados es ON(pr.estado_id = es.id)
               JOIN ciudades ci ON(pr.ciudad = ci.id)
               LEFT JOIN user us ON(pr.ingeniero_responsable = us.id)
               LEFT JOIN distribuidores dt ON(pr.distribuidor = dt.id)
+              LEFT JOIN licitacion_proyecto lic ON(pr.id = lic.proyecto_id)
               JOIN user us_com ON (pr.comercial_responsable = us_com.id)
               JOIN tipo_proyecto tp ON(pr.tipo = tp.id)
               WHERE pr.comercial_responsable = $userId";
@@ -172,18 +204,32 @@ if($_SESSION['cargo'] == 3){
 
   // Filtrar por prioridad
   if (!empty($vertical_id)) {
-  $conditions[] = "pr.vertical = ?";
-  $params[] = $vertical_id;
-  $types .= 'i';
+    $conditions[] = "pr.vertical = ?";
+    $params[] = $vertical_id;
+    $types .= 'i';
+  }
+
+  // Filtrar por portal
+  if (!empty($portalF)) {
+    $conditions[] = "lic.portal = ?";
+    $params[] = $portalF;
+    $types .= 'i';
+  }
+  
+  // Filtrar por tipo de proyecto
+  if (!empty($tipoPrj)) {
+    $conditions[] = "pr.tipo = ?";
+    $params[] = $tipoPrj;
+    $types .= 'i';
   }
 
   // Filtrar por texto (nombre del proyecto o ID)
   if (!empty($searchText)) {
-  $conditions[] = "(pr.id LIKE ? OR pr.nombre LIKE ?)";
-  $searchWildcard = '%' . $searchText . '%';
-  $params[] = $searchWildcard;
-  $params[] = $searchWildcard;
-  $types .= 'ss';
+    $conditions[] = "(pr.id LIKE ? OR pr.nombre LIKE ?)";
+    $searchWildcard = '%' . $searchText . '%';
+    $params[] = $searchWildcard;
+    $params[] = $searchWildcard;
+    $types .= 'ss';
   }
 
 

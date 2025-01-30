@@ -100,9 +100,22 @@ check_login();
                             <input type="text" class="form-control form-control-sm" id="licID" name="licID" >
                         </div>
 
-                        <div class="form-group">
-                            <label for="portal" class="form-label">Portal</label>
-                            <input type="text" class="form-control form-control-sm" id="portal" name="portal" >
+                        <div class ="form-group">
+                            <label class="form-label">Portal</label>
+                            <div >
+                            <select name="portal" class="form-select form-select-sm" >
+                                <?php
+                                    echo "<option value='' >Sin asignar</option>";
+                                    while ($row = mysqli_fetch_assoc(result: $portal)) {
+                                        if ($row['id'] == $licData['portal']) {
+                                            echo "<option value=".$row['id']." selected>".$row['nombre_portal']."</option>";
+                                        }else {
+                                            echo "<option value=".$row['id'].">".$row['nombre_portal']."</option>";
+                                        }
+                                    };
+                                ?>
+                            </select>
+                            </div>
                         </div>
                     </div>            
                     <div class="form-row justify-content-start" id="contactoT" style="display: none;">
@@ -151,21 +164,28 @@ check_login();
                                 <input name="montoP" type="number" class="form-control form-control-sm" placeholder="1,000,000" aria-label="Monto" aria-describedby="montoP">
                             </div>
                         </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
+                    <div class="form-group">
                             <label for="">Fecha de Cierre Documental</label>
                             <div class="input-group">
                                 <span class="input-group-text" id="cierreDoc"><i class="bi bi-exclamation-lg"></i></span>
                                 <input name="cierreDoc" type="date" class="form-control form-control-sm"  aria-label="Date" aria-describedby="cierreDoc">
                             </div>
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="">Fecha de Adjudicación</label>
                             <div class="input-group">
                                 <span class="input-group-text" id="fAdj"><i class="bi bi-exclamation-lg"></i></span>
-                                <input name="fAdj" type="date" class="form-control form-control-sm" aria-label="Date" aria-describedby="fAdj">
+                                <input name="fAdj" type="date" class="form-control form-control-sm"  aria-label="Date" aria-describedby="fAdj">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">Fecha fin de Contrato</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="finContrato"><i class="bi bi-exclamation-lg"></i></span>
+                                <input name="finContrato" type="date" class="form-control form-control-sm"  aria-label="Date" aria-describedby="finContrato">
                             </div>
                         </div>
                     </div>

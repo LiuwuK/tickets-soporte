@@ -96,6 +96,30 @@ check_login();
                                 ?>
                             </select>
                         </div>
+                        <div class="fil-div">
+                            <label class="form-label" for="st">Portal</label>
+                            <select name="portalF" class="form-select form-select-sm" id="st">
+                                <option value="">Ver todo</option>    
+                                <?php
+                                foreach($portal AS $pt) {
+                                    $select = isset($_GET['portalF']) && $_GET['portalF'] == $pt['id'] ? 'selected' : '';
+                                    echo "<option value='" . $pt['id'] . "' $select>" . $pt['nombre_portal'] . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="fil-div">
+                            <label class="form-label" for="st">Tipo de Proyecto</label>
+                            <select name="tipoprjF" class="form-select form-select-sm" id="tipoprjF">
+                                <option value="">Ver todo</option>    
+                                <?php
+                                foreach($tipoProyecto AS $tprj) {
+                                    $select = isset($_GET['tipoprjF']) && $_GET['tipoprjF'] == $tprj['id'] ? 'selected' : '';
+                                    echo "<option value='" . $tprj['id'] . "' $select>" . $tprj['nombre'] . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
                         <div class="fil-btn">
                             <button type="submit" class="btn">Filtrar</button>
                         </div>
@@ -235,8 +259,9 @@ check_login();
                                                     //Licitacion
                                                     if($row['tipo'] == '1' ){
                                                         $id =  $row['projectId'];
-                                                        $query = "SELECT * 
-                                                                    FROM licitacion_proyecto
+                                                        $query = "SELECT lic.*, pt.nombre_portal AS portalN
+                                                                    FROM licitacion_proyecto lic
+                                                                    LEFT JOIN portales pt ON(lic.portal = pt.id)
                                                                     WHERE proyecto_id = $id";    
                                                         $licitacion = $con->prepare($query);
                                                         $licitacion->execute();
@@ -246,11 +271,11 @@ check_login();
                                                         ?>
                                                     <div class="group lic d-flex">
                                                         <strong class="form-label">ID Licitación</strong>
-                                                        <p>: <?php echo $row_lt['licitacion_id'];?></p>
+                                                        <p>: <?php echo !empty($row_lt['licitacion_id']) ? $row_lt['licitacion_id'] : 'Sin asignar';?></p>
                                                     </div>      
                                                     <div class="group lic d-flex">                                                        
                                                         <strong>Portal </strong>
-                                                        <p>: <?php echo$row_lt['portal'];?></p>
+                                                        <p>: <?php echo !empty($row_lt['portalN']) ? $row_lt['portalN'] : 'Sin asignar';?></p>
                                                     </div>                                                    
                                                 <?php
                                                     //Contacto 

@@ -1,34 +1,51 @@
 <?php
-
+require_once __DIR__ . '/../../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+
 include('../../dbconnection.php');
-//credenciales (cambiar) USER = CORREO / PASS = CLAVE DE APLICACION GOOGLE 
+//credenciales  USER = CORREO / PASS = CLAVE DE APLICACION GOOGLE 
 $user = 'stsafeteck@gmail.com'; // correo
 $pass = 'molc xtfj nfev kruf'; // Contraseña de aplicación
 $tId  = '$tId'; 
 
+//= DATE_ADD(?, INTERVAL 3 DAY)
 $hoy = date('Y-m-d');
 
 $query = "SELECT ac.*
-            FROM actividades
+            FROM actividades ac
             WHERE DATE(ac.fecha_inicio) = ? OR 
-            DATE(ac.fecha_inicio) = DATE_ADD(?, INTERVAL 3 DAY)";
+            DATE(ac.fecha_inicio)";
 $stmt = $con->prepare($query);
-$stmt->bind_param('ss', $hoy, $hoy);
-
+$stmt->bind_param('s', $hoy);
+$stmt->execute();
 $actividades = $stmt->get_result();
 $actividadesPorFecha = [];
 
 foreach ($actividades as $actividad) {
     $fechaActividad = date('Y-m-d', strtotime($actividad['fecha_inicio']));
-    $actividadesPorFecha[$fechaActividad][] = $actividad;
-}
+    $area = $actividad['area'];
 
-// Enviar correos para cada grupo de actividades por fecha
-foreach ($actividadesPorFecha as $fecha => $actividadesGrupo) {
+    $actividadesXfecha[$fechaActividad][$area][] = $actividad;
+}
+foreach ($actividadesXfecha as $fecha => $areas) {
+    foreach ($areas as $areaId => $actividades) {
+        $query = "SELECT email FROM user WHERE cargo = ?";
+        $stmt = $con->prepare($query);
+        $stmt->bind_param('s', $areaId);
+        $stmt->execute();
+        $emails = $stmt->get_result();
+
+        $emailsxarea = [];
+        while ($email = $emails->fetch_assoc()) {
+            $emailsxarea[] = $email['email'];
+        }
+    }
+
+}
+/*
+foreach ($actividadesXfecha as $fecha => $actividadesGrupo) {
     $mail = new PHPMailer(true);
 
     try {
@@ -65,4 +82,9 @@ foreach ($actividadesPorFecha as $fecha => $actividadesGrupo) {
         echo "No se pudo enviar el correo. Error: {$mail->ErrorInfo}<br>";
     }
 }
-?>
+*/
+// Enviar correos para cada grupo de actividades por fecha
+echo "<pre>";
+print_r( $actividadesXfecha);
+echo "</pre>";
+?>  
