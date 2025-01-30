@@ -230,7 +230,7 @@ else if(isset($_POST['updtProject'])) {
                         portal = ?                    
                     WHERE id = ?";
             $stmt = $con->prepare($query);
-            $stmt->bind_param("iiii", $newLic['licitacion_id'], $newLic['proyecto_id'], $newLic['portal'], $newLic['id'] );
+            $stmt->bind_param("siii", $newLic['licitacion_id'], $newLic['proyecto_id'], $newLic['portal'], $newLic['id'] );
             $stmt->execute();
             $stmt->close();
         }

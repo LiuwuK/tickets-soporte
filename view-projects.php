@@ -251,37 +251,42 @@ check_login();
                                                         $contacto = $con->prepare($query);
                                                         $contacto->execute();
                                                         $result = $contacto->get_result();
+                                                        $numCt = $result->num_rows;
                                                         $contactos = [];
                                                         while ($row_ct = $result->fetch_assoc()) {
                                                             $contactos[] = $row_ct; 
                                                         }
                                                     ?>
                                                     <div class="pr-row d-flex">
-                                                        <?php 
-                                                            foreach ($contactos as $contacto) {
-                                                        ?>
-                                                        <div class="group d-flex cnt card p-2">
-                                                            <div class="cnt-div d-flex">
-                                                                <strong class="form-label">Nombre </strong>
-                                                                <p>: <?php echo $contacto['nombre'];?></p>
-                                                            </div>
+                                                        <?php
+                                                            if ($numCt > 0 ){ 
+                                                                foreach ($contactos as $contacto) {
+                                                            ?>
+                                                            <div class="group d-flex cnt card p-2">
+                                                                <div class="cnt-div d-flex">
+                                                                    <strong class="form-label">Nombre </strong>
+                                                                    <p>: <?php echo $contacto['nombre'];?></p>
+                                                                </div>
 
-                                                            <div class="cnt-div d-flex">
-                                                                <strong class="form-label">Correo </strong>
-                                                                <p>: <?php echo $contacto['correo'];?></p>
-                                                            </div >
+                                                                <div class="cnt-div d-flex">
+                                                                    <strong class="form-label">Correo </strong>
+                                                                    <p>: <?php echo $contacto['correo'];?></p>
+                                                                </div >
 
-                                                            <div class="cnt-div d-flex">
-                                                                <strong class="form-label">Cargo </strong>
-                                                                <p>: <?php echo $contacto['cargo'];?></p>
-                                                            </div>
+                                                                <div class="cnt-div d-flex">
+                                                                    <strong class="form-label">Cargo </strong>
+                                                                    <p>: <?php echo $contacto['cargo'];?></p>
+                                                                </div>
 
-                                                            <div class="cnt-div d-flex">
-                                                                <strong class="form-label">Contacto </strong>
-                                                                <p>: <?php echo $contacto['numero'];?></p>
+                                                                <div class="cnt-div d-flex">
+                                                                    <strong class="form-label">Contacto </strong>
+                                                                    <p>: <?php echo $contacto['numero'];?></p>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <?php       
+                                                            <?php       
+                                                                }
+                                                            }else{
+                                                                echo "<p>No hay contactos registrados</p>";
                                                             }
                                                         ?>
                                                         
