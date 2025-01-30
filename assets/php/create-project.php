@@ -77,7 +77,12 @@ if(isset($_GET['projectId']) ){
                     WHERE proyecto_id = $pID";
         $bom = mysqli_query($con, $query);
         $materiales = mysqli_fetch_all($bom, MYSQLI_ASSOC);
-    } 
+    }
+    //obtener etapa del proyecto si es que este esta en evaluacion
+    if($projectData['estado'] = 19){
+        $query =  "SELECT * FROM etapas_proyecto";
+        $etData = mysqli_query($con, $query);
+    }
 
 }
   
@@ -186,6 +191,7 @@ else if(isset($_POST['updtProject'])) {
         'cliente'                   => $_POST['client'],
         'ciudad'                    => $_POST['city'],
         'estado_id'                 => $_POST['status'],
+        'estado_etapa'              => $_POST['etapaEst'],
         'ingeniero_responsable'     => $ingeniero,
         'bom'                       => $bom,
         'costo_software'            => $software,
@@ -326,6 +332,7 @@ else if(isset($_POST['updtProject'])) {
                     SET
                         nombre = ?, cliente = ?,
                         ciudad = ?, estado_id = ?,
+                        estado_etapa = ?,
                         ingeniero_responsable = ?,
                         distribuidor = ?, vertical = ?,
                         monto = ?,
@@ -338,8 +345,8 @@ else if(isset($_POST['updtProject'])) {
                         fecha_fin_contrato = ?
                     WHERE id = ?";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("ssiiiiiiiiisisssi",   
-        $newData['nombre'], $newData['cliente'], $newData['ciudad'], $newData['estado_id'], $newData['ingeniero_responsable'],
+        $stmt->bind_param("ssiiiiiiiiiisisssi",   
+        $newData['nombre'], $newData['cliente'], $newData['ciudad'], $newData['estado_id'], $newData['estado_etapa'], $newData['ingeniero_responsable'],
         $newData['distribuidor'], $newData['vertical'], $newData['monto'], $newData['costo_software'], $newData['costo_hardware'], 
         $newData['costo_real'], $newData['resumen'], $newData['bom'], $newData['fecha_cierre_documental'], $newData['fecha_adjudicacion'], $newData['fecha_fin_contrato'], $newData['id'] );
 

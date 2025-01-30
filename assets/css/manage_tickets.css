@@ -408,7 +408,7 @@ input, .form-control, .form-select{
   margin-top: 5px;
 }
 .search-div input{
-  width: 400px;
+  width:  100%;
 }
 
 /* proyectos */

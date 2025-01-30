@@ -162,46 +162,41 @@ check_login();
                     ?>
                     
                     <div class="form-row">
-                    <div class ="form-group">
-                        <label class="form-label">Ciudad</label>
-                        <div >
-                        <select name="city" class="form-select form-select-sm" required>
-                            <?php
-                            while ($row = mysqli_fetch_assoc($cities)) {
-                                if ($row['id'] == $row_p['ciudad']) {
-                                    echo "<option value=".$row['id']." selected>".$row['nombre_ciudad']."</option>";
-                                } else {
-                                    echo "<option value=".$row['id'].">".$row['nombre_ciudad']."</option>";
-                                }
-                            };
-                            ?>
-                        </select>
+                        <div class ="form-group">
+                            <label class="form-label">Ciudad</label>
+                            <div >
+                            <select name="city" class="form-select form-select-sm" required>
+                                <?php
+                                while ($row = mysqli_fetch_assoc($cities)) {
+                                    if ($row['id'] == $row_p['ciudad']) {
+                                        echo "<option value=".$row['id']." selected>".$row['nombre_ciudad']."</option>";
+                                    } else {
+                                        echo "<option value=".$row['id'].">".$row['nombre_ciudad']."</option>";
+                                    }
+                                };
+                                ?>
+                            </select>
+                            </div>
+                        </div> 
+                        <div class="form-group">
+                            <label class="form-label">Vertical</label>
+                                <div>
+                                    <select name="vertical" class="form-select form-select-sm" disabled>
+                                        <?php
+                                            echo "<option value='' >Sin asignar</option>";
+                                            while ($row = mysqli_fetch_assoc(result: $vertical)) {
+                                                if ($row['id'] == $row_p['vertical']) {
+                                                    echo "<option value=".$row['id']." selected>".$row['nombre']."</option>";
+                                                }else {
+                                                    echo "<option value=".$row['id'].">".$row['nombre']."</option>";
+                                                }
+                                            };
+                                        ?>
+                                    </select>
+                                </div>
                         </div>
-                    </div> 
-                    
-                    <div class ="form-group">
-                    <label class="form-label">Estado</label>
-                    <div >
-                        <select name="status" class="form-select form-select-sm" >
-                            <?php
-                            while ($row = mysqli_fetch_assoc($status)) {
-                                if ($row['id'] == $row_p['estado_id']) {
-                                    echo "<option value=".$row['id']." selected>".$row['nombre']."</option>";
-                                } else {
-                                    echo "<option value=".$row['id'].">".$row['nombre']."</option>";
-                                }
-                            };
-                            ?>
-                        </select>
-                    </div>
-                    </div>
                     </div>
                     <div class="form-row">
-                        <div class ="form-group">
-                            <label class="form-label" for="comercial">Comercial responsable</label>
-                            <input class="form-control form-control-sm" type="text" name="comercial" id="comercial" value="<?php echo $_SESSION['name']; ?>" disabled>
-                        </div> 
-
                         <div class ="form-group">
                             <label class="form-label">Ingeniero responsable</label>
                             <div >
@@ -219,9 +214,7 @@ check_login();
                             </select>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Distribuidor</label>
                                 <div>
@@ -230,24 +223,6 @@ check_login();
                                             echo "<option value='' >Sin asignar</option>";
                                             while ($row = mysqli_fetch_assoc(result: $distribuidor)) {
                                                 if ($row['id'] == $row_p['distribuidor']) {
-                                                    echo "<option value=".$row['id']." selected>".$row['nombre']."</option>";
-                                                }else {
-                                                    echo "<option value=".$row['id'].">".$row['nombre']."</option>";
-                                                }
-                                            };
-                                        ?>
-                                    </select>
-                                </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Vertical</label>
-                                <div>
-                                    <select name="vertical" class="form-select form-select-sm" disabled>
-                                        <?php
-                                            echo "<option value='' >Sin asignar</option>";
-                                            while ($row = mysqli_fetch_assoc(result: $vertical)) {
-                                                if ($row['id'] == $row_p['vertical']) {
                                                     echo "<option value=".$row['id']." selected>".$row['nombre']."</option>";
                                                 }else {
                                                     echo "<option value=".$row['id'].">".$row['nombre']."</option>";
@@ -291,6 +266,47 @@ check_login();
                                 <input name="finContrato" type="date" class="form-control form-control-sm" value="<?php echo $fecha_finCt;?>" aria-label="Date" aria-describedby="finContrato">
                             </div>
                         </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class ="form-group">
+                            <label class="form-label">Estado</label>
+                            <div >
+                                <select name="status" class="form-select form-select-sm" >
+                                    <?php
+                                    while ($row = mysqli_fetch_assoc($status)) {
+                                        if ($row['id'] == $row_p['estado_id']) {
+                                            echo "<option value=".$row['id']." selected>".$row['nombre']."</option>";
+                                        } else {
+                                            echo "<option value=".$row['id'].">".$row['nombre']."</option>";
+                                        }
+                                    };
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <?php
+                            if($row_p['estado_id'] == '19'){
+                        ?>
+                            <div class ="form-group">
+                                <label class="form-label">Etapa</label>
+                                <div >
+                                    <select name="etapaEst" class="form-select form-select-sm" >
+                                        <?php
+                                        while ($et = mysqli_fetch_assoc($etData)) {
+                                            if ($et['id'] == $row_p['estado_etapa']) {
+                                                echo "<option value=".$et['id']." selected>".$et['nombre_etapa']."</option>";
+                                            } else {
+                                                echo "<option value=".$et['id'].">".$et['nombre_etapa']."</option>";
+                                            }
+                                        };
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                        <?php       
+                            }
+                        ?>
                     </div>
                     <!--
                     <div class="form-row">

@@ -120,6 +120,18 @@ check_login();
                                 ?>
                             </select>
                         </div>
+                        <div class="fil-div">
+                            <label class="form-label" for="st">Clasificación</label>
+                            <select name="clasif" class="form-select form-select-sm" id="clasif">
+                                <option value="">Ver todo</option>    
+                                <?php
+                                foreach($clasif AS $cl) {
+                                    $select = isset($_GET['clasif']) && $_GET['clasif'] == $cl['id'] ? 'selected' : '';
+                                    echo "<option value='" . $cl['id'] . "' $select>" . $cl['nombre'] . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
                         <div class="fil-btn">
                             <button type="submit" class="btn">Filtrar</button>
                         </div>

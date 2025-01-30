@@ -34,6 +34,12 @@ while ($row = mysqli_fetch_assoc($portalData)) {
   $portal[] = $row; 
 }
 
+$query = "SELECT * FROM clasificacion_proyecto";
+$clasData = mysqli_query($con, $query);
+while ($row = mysqli_fetch_assoc($clasData)) {
+  $clasif[] = $row; 
+}
+
 $query_st = "SELECT * FROM estados WHERE type = 'project'";
 $statusF = mysqli_query($con, $query_st);
 //----------------------------------------------------------------------------------------------------------
@@ -44,6 +50,8 @@ $status_id = isset($_GET['statusF']) ? intval($_GET['statusF']) : '';
 $searchText = isset($_GET['textSearch']) ? trim($_GET['textSearch']) : '';
 $tipoPrj = isset($_GET['tipoprjF']) ? intval($_GET['tipoprjF']) : '';
 $portalF = isset($_GET['portalF']) ? intval($_GET['portalF']) : '';
+$clasificacion =  isset($_GET['clasif']) ? intval($_GET['clasif']) : '';
+
 //----------------------------------------------------------------------------------------------------------
 
 //Se obtienen todos los proyectos
@@ -96,6 +104,15 @@ if (!empty($tipoPrj)) {
     $params[] = $tipoPrj;
     $types .= 'i';
 }
+
+// Filtrar por clasificacion
+if (!empty($clasificacion)) {
+    $conditions[] = "pr.clasificacion = ?";
+    $params[] = $clasificacion;
+    $types .= 'i';
+}
+
+
 
 // Filtrar por texto (nombre del proyecto o ID)
 if (!empty($searchText)) {
