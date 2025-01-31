@@ -1,6 +1,9 @@
 <?php
 session_start();
+include("checklogin.php");
 include("assets/php/login.php");
+check_login();
+
 ?>
 <!DOCTYPE html>
 <html>

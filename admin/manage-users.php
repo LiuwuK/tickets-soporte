@@ -1,7 +1,7 @@
 <?php
 session_start();
 include("dbconnection.php");
-include("checklogin.php");
+include("../checklogin.php");
 include("assets/php/manage-users.php");
 check_login();
 ?>

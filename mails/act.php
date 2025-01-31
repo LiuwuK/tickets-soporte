@@ -2,44 +2,51 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-setlocale(LC_TIME, 'es_ES.UTF-8', 'spanish');
+
 
 include('../dbconnection.php');
 //credenciales  USER = CORREO / PASS = CLAVE DE APLICACION GOOGLE 
 $user = 'stsafeteck@gmail.com'; // correo
 $pass = 'molc xtfj nfev kruf'; // Contraseña de aplicación
-$tId  = '$tId'; 
 
-//obtener proyectos con fecha_fin_contrato en los siguientes 3/2/1 mes/es 
-$actual  = date('Y-m-d');
-$tresM =  date('Y-m-d', strtotime('+3 months'));
+//OR DATE(ac.fecha_inicio) = DATE_ADD(?, INTERVAL 3 DAY)
+$hoy = date('Y-m-d');
 
-$query = "SELECT pr.id, pr.nombre, pr.fecha_fin_contrato AS fechaFin, us.email, pr.resumen
-            FROM proyectos pr
-            JOIN user us ON(pr.comercial_responsable = us.id)
-            WHERE pr.fecha_fin_contrato BETWEEN ? AND ?
-            ORDER BY pr.fecha_fin_contrato ASC ";
-
+$query = "SELECT ac.*
+            FROM actividades ac
+            WHERE DATE(ac.fecha_inicio) = ? 
+            ORDER BY ac.fecha_inicio ASC";
 $stmt = $con->prepare($query);
-$stmt->bind_param('ss', $actual, $tresM);
+$stmt->bind_param('s', $hoy);
 $stmt->execute();
-$proyectos = $stmt->get_result();
-$proyectosxfecha = [];
+$actividades = $stmt->get_result();
+$actividadesXfecha = [];
 
-foreach ($proyectos as $proyecto) {
-    $fechaProyecto = date('Y-m', strtotime($proyecto['fechaFin']));
-    $email = $proyecto['email'];
+foreach ($actividades as $actividad) {
+    $fechaActividad = date('Y-m-d', strtotime($actividad['fecha_inicio']));
+    $area = $actividad['area'];
 
-    $proyectosxfecha[$fechaProyecto][$email][] = $proyecto;
+    $actividadesXfecha[$fechaActividad][$area][] = $actividad;
 }
 
-foreach ($proyectosxfecha as $fecha => $proyectoGrupo) {
-    foreach ($proyectoGrupo as $email => $proyectos) { 
-        $destinatario = $email; 
+// Obtener todos los supervisores
+$query = "SELECT email, cargo FROM user WHERE rol = 'supervisor'";
+$stmt = $con->prepare($query);
+$stmt->execute();
+$supervisoresData = $stmt->get_result();
+
+$supervisores = [];
+while ($row = $supervisoresData->fetch_assoc()) {
+    $supervisores[$row['cargo']] = $row['email'];
+}
+
+foreach ($actividadesXfecha as $fecha => $fechaGrupo) {
+    foreach ($fechaGrupo as $area => $act) { 
+        $supervisor = isset($supervisores[$area]) ? $supervisores[$area] : 'Area sin supervisor';
     }
-
+    echo $supervisor;
+    
     $mail = new PHPMailer(true);
-
     try {
         // Configuración de correo
         $mail->isSMTP();
@@ -53,13 +60,10 @@ foreach ($proyectosxfecha as $fecha => $proyectoGrupo) {
 
         $mail->clearAddresses();
         $mail->setFrom('stsafeteck@gmail.com', 'IMPORTANTE!!');
-        $mail->addAddress($destinatario, 'Usuario');  
-
-        $fechaFin = strtotime($proyectos[0]['fechaFin']); 
-        $mes = strftime('%B', $fechaFin);
+        $mail->addAddress($supervisor, 'Usuario');  
 
         $mail->isHTML(true);
-        $mail->Subject = 'Recordatorio de finalización de contrato para el mes de '.$mes;
+        $mail->Subject = 'Actividades para el día de hoy';
 
         $contenido = '
             <!DOCTYPE html>
@@ -109,14 +113,14 @@ foreach ($proyectosxfecha as $fecha => $proyectoGrupo) {
                 </style>
             </head>
             <body>
-            <h2>Recordatorio Fin de Contrato de los Siguientes Proyectos</h2>';
+            <h2>Recordatorio de actividades para el día</h2>';
 
-        foreach ($proyectos as $proyecto) {
+        foreach ($act as $actividad) {
             $contenido .= '
             <div class="proyecto">
-                <p><strong>Nombre del proyecto:</strong> ' . $proyecto['nombre'] . '</p>
-                <p><strong>Descripción:</strong> ' . $proyecto['resumen'] . '</p>
-                <p><strong>Fecha fin Contrato:</strong> ' . date('d-m-Y', strtotime($proyecto['fechaFin'])) . '</p>
+                <p><strong>Nombre del proyecto:</strong> '.$actividad['nombre'] . '</p>
+                <p><strong>Descripción:</strong> ' . $actividad['descripcion'] . '</p>
+                <p><strong>Fecha :</strong> ' . date('d-m-Y', strtotime($actividad['fecha_inicio'])) . '</p>
             </div>';
         }
 
@@ -134,9 +138,10 @@ foreach ($proyectosxfecha as $fecha => $proyectoGrupo) {
     } catch (Exception $e) {
         echo "No se pudo enviar el correo. Error: {$mail->ErrorInfo}<br>";
     }
+
 }
 
 echo "<pre>";
-print_r($proyectosxfecha);
+print_r( $actividadesXfecha);
 echo "</pre>";
 ?>  

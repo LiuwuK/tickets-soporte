@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("checklogin.php");
+include("../checklogin.php");
 include("dbconnection.php");
 include("assets/php/view-projects.php");
 header('Content-Type: text/html; charset=utf-8');

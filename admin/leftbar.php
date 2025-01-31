@@ -51,7 +51,7 @@
       </a>
     </li>
     <li class="nav-item logout-item">
-      <a href="logout.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Cerrar Sesión">
+      <a href="../logout.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Cerrar Sesión">
         <i class="bi bi-box-arrow-right"></i> 
       </a>
       <img src="../assets/img/admin.jpg" alt="" >

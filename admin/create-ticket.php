@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("checklogin.php");
+include("../checklogin.php");
 include("dbconnection.php");
 include("phpmail.php");
 include("../assets/php/create-ticket.php");
@@ -53,7 +53,7 @@ check_login();
                     <div class="loading-spinner"></div>
                     <p>Procesando...</p>
                 </div>  
-                <div class="ticket-main">
+                <div class="ticket-main col-md-12 col-xl-8">
                     <br>
                     <?php if (isset($_SESSION['msg1'])) : ?>
                         <p align="center" style="color:#FF0000"><?= $_SESSION['msg1']; ?><?= $_SESSION['msg1'] = ""; ?></p>

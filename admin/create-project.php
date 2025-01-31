@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("checklogin.php");
+include("../checklogin.php");
 include("dbconnection.php");
 include("phpmail.php");
 include("../assets/php/create-project.php");

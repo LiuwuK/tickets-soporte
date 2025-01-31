@@ -32,6 +32,7 @@ if (isset($_POST['login'])) {
             $_SESSION['cargo'] = $num['cargo'];
             $_SESSION['refresh_token'] = $num['refresh_token'] ;
             $_SESSION['access_token'] = $num['access_token'];
+            $_SESSION['login'] = $username;
             echo "<script>window.location.href='admin/home.php'</script>";
             exit(); 
         } else {

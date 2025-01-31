@@ -97,6 +97,7 @@ check_login();
                             <?php
                             }else{?>
                             <span class="label label-warning"><?php echo $row['statusN']; ?></span>
+                            
                             <?php
                             };  
                         ?>

@@ -1,9 +1,7 @@
 <?php
 session_start();
-//echo $_SESSION['id'];
-//$_SESSION['msg'];
 include("dbconnection.php");
-include("checklogin.php");
+include("../checklogin.php");
 include("assets/php/manage-tickets.php");
 header('Content-Type: text/html; charset=utf-8');
 check_login();
@@ -236,7 +234,7 @@ check_login();
                                   <?php 
                                     if($row['tmsg'] or $row['tecnicoImg']){
                                   ?>
-                                    <div class="tinfo">
+                                    <div class="tinfo mb-3 mt-3">
                                       <h4>Respuesta Técnico</h4>
                                       <hr>
                                       <div class="user-profile-pic-wrapper mt-2">
@@ -254,6 +252,8 @@ check_login();
                                         ?>
                                       </div>
                                     </div>
+                                    <br><br>
+                                    
                                   <?php
                                     }
                                   ?>

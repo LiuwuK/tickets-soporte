@@ -147,7 +147,10 @@ check_login();
                                         <?php
                                         }else{?>
                                             <span class="label label-warning"><?php echo $row['estado']; ?></span>
-                                            <?php
+                                        <?php if($row['estado_etapa']){ ?>
+                                            <span class="label label-et"><?php echo $row['etapaN']; ?></span>
+                                        <?php
+                                            }
                                         };
                                         
                                     ?>

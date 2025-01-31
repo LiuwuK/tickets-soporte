@@ -261,8 +261,11 @@ input, .form-control, .form-select{
 .label-success{
   background-color: #0aa699;
 }
+.label-et{
+  background-color: #5f9ea0;
+}
 
-.label-important, .label-success, .label-warning{
+.label-important, .label-success, .label-warning, .label-et{
   color: #ffffff;
   border-radius: 4px;
 }

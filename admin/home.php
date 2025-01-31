@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("checklogin.php");
+include("../checklogin.php");
 include("assets/php/home.php");
 check_login();
 
