@@ -63,7 +63,7 @@
     <?php 
       };
     
-      if($_SESSION['cargo'] == '3'){ ?>
+    if($_SESSION['cargo'] == '3'){ ?>
         <li class="nav-item">
           <a href="bill-projects.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Facturar Proyectos">
             <i class="bi bi-clipboard2"></i>
@@ -72,9 +72,16 @@
     <?php 
       };
     ?>
+
     <li class="nav-item">
       <a href="view-tickets.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Mis Tickets">
         <i class="bi bi-ticket-perforated"></i>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a href="clients.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Historico Clientes">
+        <i class="bi bi-people"></i>
       </a>
     </li>
         

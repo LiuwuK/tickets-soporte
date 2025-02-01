@@ -119,7 +119,7 @@ if($_SESSION['cargo'] == 3){
               LEFT JOIN user us ON(pr.ingeniero_responsable = us.id)
               LEFT JOIN distribuidores dt ON(pr.distribuidor = dt.id)
               LEFT JOIN licitacion_proyecto lic ON(pr.id = lic.proyecto_id)
-              LEFT JOIN etapas_proyecto ep ON (pr.estado_etapa = ep.id)
+              LEFT JOIN etapas_proyecto ep ON (pr.estado_etapa = ep.id) 
               JOIN user us_com ON (pr.comercial_responsable = us_com.id)
               JOIN tipo_proyecto tp ON(pr.tipo = tp.id)
               ";
@@ -194,13 +194,14 @@ if($_SESSION['cargo'] == 3){
 }else{
   //Se obtienen los proyectos asociados al usuario
   $query = "SELECT pr.id AS projectId, pr.*, es.nombre AS estado, ci.nombre_ciudad AS ciudadN, us.name AS ingeniero, 
-                  us_com.name AS comercial, tp.nombre AS tipoP, dt.nombre AS distribuidorN, lic.portal AS portal
+                  us_com.name AS comercial, tp.nombre AS tipoP, dt.nombre AS distribuidorN, lic.portal AS portal, ep.nombre_etapa AS etapaN
               FROM proyectos pr 
               JOIN estados es ON(pr.estado_id = es.id)
               JOIN ciudades ci ON(pr.ciudad = ci.id)
               LEFT JOIN user us ON(pr.ingeniero_responsable = us.id)
               LEFT JOIN distribuidores dt ON(pr.distribuidor = dt.id)
               LEFT JOIN licitacion_proyecto lic ON(pr.id = lic.proyecto_id)
+              LEFT JOIN etapas_proyecto ep ON (pr.estado_etapa = ep.id)
               JOIN user us_com ON (pr.comercial_responsable = us_com.id)
               JOIN tipo_proyecto tp ON(pr.tipo = tp.id)
               WHERE pr.comercial_responsable = $userId";
