@@ -89,6 +89,12 @@
       };
     ?>  
     <li class="nav-item">
+      <a href="traslados.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Traslado y Desvinculacion">
+        <i class="bi bi-truck"></i>
+      </a>
+    </li>
+
+    <li class="nav-item">
       <a href="work-log.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Bitácora de Trabajo">
         <i class="bi bi-journal-text"></i> 
       </a>

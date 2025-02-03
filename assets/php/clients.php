@@ -36,9 +36,10 @@ if(isset($_GET['clientID'])){
     $competidores = $compData->get_result();
     $num_com = $competidores->num_rows;
     //obtener licitaciones ganadas por los competidores
-    $query = "SELECT pr.*, co.nombre_competidor AS competidorN 
+    $query = "SELECT pr.*, co.nombre_competidor AS competidorN , cl.nombre AS clasiN
                 FROM proyectos pr
                 LEFT JOIN competidores co ON(pr.competidor = co.id)
+                LEFT JOIN clasificacion_proyecto cl ON(cl.id = pr.clasificacion)
                 WHERE cliente = $id AND tipo = '1'";
     $licData = $con->prepare($query);
     $licData->execute();
@@ -49,12 +50,25 @@ if(isset($_GET['clientID'])){
         $competidor = $_POST['nombreCompetidor'];
         $rut = $_POST['rut'];
         $especialidad = $_POST['especialidad'];
-        $query =  "INSERT INTO competidores(nombre_competidor, rut, especialidad)
-                    VALUES(?, ?, ?)";
-        $stmt = $con->prepare($query);
-        $stmt->bind_param("sss",$competidor, $rut, $especialidad); 
-        $stmt->execute();
-        echo "<script>alert('Competidor Registrado Correctamente'); location.replace(document.referrer)</script>";
+
+        $checkQuery = "SELECT id 
+                        FROM competidores 
+                        WHERE rut = ?";
+        $stmtCheck = $con->prepare($checkQuery);
+        $stmtCheck->bind_param("s", $rut);
+        $stmtCheck->execute();
+        $stmtCheck->store_result();
+
+        if($stmtCheck->num_rows > 0){
+            echo "<script>alert('El competidor ya esta registrado'); location.replace(document.referrer)</script>";
+        }else{
+            $query =  "INSERT INTO competidores(nombre_competidor, rut, especialidad)
+                        VALUES(?, ?, ?)";
+            $stmt = $con->prepare($query);
+            $stmt->bind_param("sss",$competidor, $rut, $especialidad); 
+            $stmt->execute();
+            echo "<script>alert('Competidor Registrado Correctamente'); location.replace(document.referrer)</script>";
+        }
     }
 
 }
@@ -63,11 +77,22 @@ if(isset($_GET['clientID'])){
 if(isset($_POST['addClient'])){
     $cliente = $_POST['nombreCliente'];
     $vertical = $_POST['vertical'];
-    $query =  "INSERT INTO clientes(nombre, vertical)
+    // Verificar si el cliente ya existe
+    $checkQuery = "SELECT id FROM clientes WHERE nombre = ?";
+    $stmtCheck = $con->prepare($checkQuery);
+    $stmtCheck->bind_param("s", $cliente);
+    $stmtCheck->execute();
+    $stmtCheck->store_result();
+
+    if ($stmtCheck->num_rows > 0) {
+        echo "<script>alert('El cliente ya está registrado.');</script>";
+    }else{
+        $query =  "INSERT INTO clientes(nombre, vertical)
                 VALUES(?, ?)";
-    $stmt = $con->prepare($query);
-    $stmt->bind_param("si", $cliente, $vertical); 
-    $stmt->execute();
-    echo "<script>alert('Cliente Registrado Correctamente'); location.replace(document.referrer)</script>";
+        $stmt = $con->prepare($query);
+        $stmt->bind_param("si", $cliente, $vertical); 
+        $stmt->execute();
+        echo "<script>alert('Cliente Registrado Correctamente'); location.replace(document.referrer)</script>";
+    }
 }
 ?>

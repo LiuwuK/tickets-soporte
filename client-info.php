@@ -73,7 +73,7 @@ $row = $clientes->fetch_assoc()
                     <img src="assets/img/admin.jpg" alt="">
                   </div>
                   <div class="info-comp">
-                    <strong><?php echo $row['nombre_competidor']; ?></strong>
+                    <strong><?php echo $row['nombre_competidor']; ?> </strong>
                     <p><?php echo $row['rut']; ?></p>
                     <p><?php echo $row['especialidad']; ?></p>
                   </div>
@@ -97,8 +97,8 @@ $row = $clientes->fetch_assoc()
                 <div class="lici-left">
                   <strong ><?php echo $row['nombre']; ?></strong>
                   <span class="label label-success"><?php echo '$'.number_format($row['monto'], 0, '.', ',');?></span>
-                  <p class="mt-3">Clasificacion: <?php echo $row['clasificacion']; ?></p>
-                  <p>Competidor: <?php echo $row['competidorN']; ?></p>
+                  <p class="mt-3">Clasificacion: <?php echo $row['clasiN']; ?></p>
+                  <p>Competidor: <?php echo !empty($row['competidorN']) ? $row['competidorN'] : 'Sin asignar';?></p>
                   <p>Fecha Adjudicacion: <?php echo $row['fecha_adjudicacion']; ?></p>
                   <p>Fecha Renovacion: <?php echo $row['fecha_fin_contrato']; ?></p>
                 </div>
