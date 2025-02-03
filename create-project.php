@@ -52,17 +52,26 @@ check_login();
                 <div class="project-main" >  <br><br>      
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="name" class="form-label">Nombre Proyecto</label>
+                            <label for="name" class="form-label">Nombre Proyecto <span>*</span></label>
                             <input type="text" class="form-control form-control-sm" id="name" name="name" required="required">
                         </div>
-                        <div class="form-group">
-                            <label for="client" class="form-label">Cliente</label>
-                            <input type="text" class="form-control form-control-sm" id="client" name="client" required="required">          
-                        </div>
+                        <div class ="form-group">
+                            <label class="form-label">Cliente <span>*</span></label>
+                            <div>
+                            <select name="client" id="client" class="form-select form-select-sm" required>
+                                <option value="">Seleccionar</option> 
+                                <?php
+                                while ($row = mysqli_fetch_assoc($clients)) {
+                                    echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
+                                };
+                                ?>
+                            </select>
+                            </div>
+                        </div> 
                     </div>
                     <div class="form-row">
                         <div class ="form-group">
-                            <label class="form-label">Tipo de proyecto</label>
+                            <label class="form-label">Tipo de proyecto <span>*</span></label>
                             <div>
                             <select name="pType" id="pType" class="form-select form-select-sm" required>
                                 <option value="">Seleccionar</option> 
@@ -75,7 +84,7 @@ check_login();
                             </div>
                         </div> 
                         <div class ="form-group">
-                        <label class="form-label">Clasificación</label>
+                        <label class="form-label">Clasificación <span>*</span></label>
                         <div>
                             <select name="pClass" id="pClass" class="form-select form-select-sm" required>
                             <option value="">Seleccionar</option>
@@ -125,7 +134,7 @@ check_login();
                     </div>
                     <div class="form-row">
                         <div class ="form-group">
-                            <label class="form-label">Ciudad</label>
+                            <label class="form-label">Ciudad <span>*</span></label>
                             <div >
                             <select name="city" class="form-select form-select-sm" required>
                                 <option value="">Seleccionar</option>
@@ -138,7 +147,7 @@ check_login();
                             </div>
                         </div> 
                         <div class="form-group">
-                            <label class="form-label">Vertical</label>
+                            <label class="form-label">Vertical <span>*</span></label>
                             <div>
                             <select name="vertical" class="form-select form-select-sm" required>
                                 <option value="">Seleccionar</option>
@@ -229,7 +238,7 @@ check_login();
                     </div>
                 </div>
             </form>
-        
+
         </div>   
         
 

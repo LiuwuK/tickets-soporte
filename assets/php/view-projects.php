@@ -8,7 +8,12 @@ $ingenieros = [];
 while ($row = mysqli_fetch_assoc($inge)) {
     $ingenieros[] = $row;
 }
-
+//obtener clientes
+$query = "SELECT * FROM clientes ";
+$clientsData = mysqli_query($con, $query);
+while ($row = mysqli_fetch_assoc($clientsData)) {
+  $clients[] = $row; 
+}
 //carga las verticales/distribuidores/portales/tipos de proyecto y estados para filtrar--------------------------------------------------------------
 $query = "SELECT * FROM verticales ";
 $verticalData = mysqli_query($con, $query);
@@ -112,7 +117,8 @@ if($_SESSION['cargo'] == 3){
 }else if($_SESSION['cargo'] == 4){
   //Se obtienen todos los proyectos 
   $query = "SELECT pr.id AS projectId, pr.*, es.nombre AS estado, ci.nombre_ciudad AS ciudadN, us.name AS ingeniero, 
-                  us_com.name AS comercial, tp.nombre AS tipoP, dt.nombre AS distribuidorN, lic.portal AS portal, ep.nombre_etapa AS etapaN
+                  us_com.name AS comercial, tp.nombre AS tipoP, dt.nombre AS distribuidorN, lic.portal AS portal, 
+                  ep.nombre_etapa AS etapaN, cl.nombre AS clienteN
               FROM proyectos pr 
               JOIN estados es ON(pr.estado_id = es.id)
               JOIN ciudades ci ON(pr.ciudad = ci.id)
@@ -120,6 +126,7 @@ if($_SESSION['cargo'] == 3){
               LEFT JOIN distribuidores dt ON(pr.distribuidor = dt.id)
               LEFT JOIN licitacion_proyecto lic ON(pr.id = lic.proyecto_id)
               LEFT JOIN etapas_proyecto ep ON (pr.estado_etapa = ep.id) 
+              LEFT JOIN clientes cl ON (pr.cliente = cl.id)
               JOIN user us_com ON (pr.comercial_responsable = us_com.id)
               JOIN tipo_proyecto tp ON(pr.tipo = tp.id)
               ";

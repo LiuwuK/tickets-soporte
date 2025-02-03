@@ -26,6 +26,23 @@
     cursor: pointer;
     transform: scale(1.02);
 }
+.btn-add-client{
+
+    border-radius: 50%;
+    margin-left: 1%;
+    background-color: #33435e;
+    color: #fff;
+    width: 40px;
+    height: 40px;
+}
+.btn-add-client:hover{
+    background-color: #33435e;
+    color: #fff;
+}
+.btn-add-client i{
+    display: flex;
+    font-size: x-large;
+}
 
 /*cliente detalle*/
 .client-card, .compe-card{
@@ -40,6 +57,7 @@
     border-radius: 50%;
     border: 1px solid #33435e;
     width: 8%;
+    height: 8%;
 }
 .info-body{
     display: flex;
@@ -52,6 +70,15 @@
 .info-body p{
     opacity: 0.6;
     font-size: medium;
+}
+.info-comp p{
+    opacity: 0.6;
+    font-size: smaller; 
+    margin: 0px;
+
+}
+.info-comp strong{
+    font-size: 15px;
 }
 .end{
     margin-left: 3%;  
@@ -72,13 +99,14 @@
 }
 .list img{
     padding: 5%;
-    width: 90%;
+    width: 100px;
 }
 .info-comp{
     display: flex;
     align-items: start;
     flex-direction: column;
     justify-content: center;
+    padding: 1px;
 }
 
 .licitacion{
@@ -111,4 +139,22 @@
 
 .lici-desc, .lici-left{
     width: 50%;
+}
+.lici-desc{
+    display: flex;
+    align-items: center;
+}
+.title button{
+   width: 30px;
+   height: 30px;
+   font-size: medium;
+   margin-left: 10px;
+}
+.title i{
+    display: flex;
+    justify-content: center;
+}
+.form-group span{
+    opacity: 0.6;
+    font-size: small;
 }

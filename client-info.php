@@ -39,125 +39,138 @@ $row = $clientes->fetch_assoc()
     </div>
     <div class="page-content">
     <?php include("leftbar-test.php"); ?>
-        <div class="page-title">
+        <div class="page-title d-flex justify-content-between">
           <h2>Historico cliente</h2>
+          <button class="btn btn-back" onclick="window.location.href='clients.php';"> 
+            <i class="bi bi-arrow-left" ></i>
+          </button>
         </div> 
         <div class="col-md-10 client-card mx-auto d-flex">
           <img src="assets/img/admin.jpg" alt="">
           <div class="info-body">
             <h4><?php echo $row['nombre'];?></h4>
             <p>Vertical: <?php echo $row['verticalN'];?></p>
-            <h5>Monto total Proyectos: <?php echo '$'.number_format($row['monto_proyectos'], 0, '.', ',');?></h5>
+            <h5>Monto total Proyectos: <?php echo '$'.number_format($monto['monto_total'], 0, '.', ',');?></h5>
           </div>
         </div>   
 
         <div class="col-md-10 compe-card mx-auto">
-          <h4>Lista de competidores</h4>
+          <div class="title d-flex">
+            <h4>Lista de competidores</h4>
+            <button type="button" class="btn btn-sm btn-updt"  data-bs-toggle="modal" data-bs-target="#compModal">
+                <i class="bi bi-plus"></i> 
+            </button>
+          </div>
           <div class="competidores">
             <!-- while competidores -->
-            <div class="list d-flex">
-              <div class="img">
-                <img src="assets/img/admin.jpg" alt="">
-              </div>
-              <div class="info-comp">
-                <p>Competidor 1</p>
-                <p>Sector: Tecnologia</p>
-              </div>
-            </div>
-
-            <div class="list d-flex">
-              <div class="img">
-                <img src="assets/img/admin.jpg" alt="">
-              </div>
-              <div class="info-comp">
-                <p>Competidor 2</p>
-                <p>Sector: Tecnologia</p>
-              </div>
-            </div>
-            
-            <div class="list d-flex">
-              <div class="img">
-                <img src="assets/img/admin.jpg" alt="">
-              </div>
-              <div class="info-comp">
-                <p>Competidor 3</p>
-                <p>Sector: Tecnologia</p>
-              </div>
-            </div>
-
-            <div class="list d-flex">
-              <div class="img">
-                <img src="assets/img/admin.jpg" alt="">
-              </div>
-              <div class="info-comp">
-                <p>Competidor 4</p>
-                <p>Sector: Tecnologia</p>
-              </div>
-            </div>
+            <?php
+            if($num_com > 0){
+              while($row = $competidores->fetch_assoc()){
+                
+              ?>
+                <div class="list d-flex">
+                  <div class="img">
+                    <img src="assets/img/admin.jpg" alt="">
+                  </div>
+                  <div class="info-comp">
+                    <strong><?php echo $row['nombre_competidor']; ?></strong>
+                    <p><?php echo $row['rut']; ?></p>
+                    <p><?php echo $row['especialidad']; ?></p>
+                  </div>
+                </div>  
+              <?php
+              }
+            }else {
+              echo "<h5 class='text-center'>No hay competidores registrados</h5>";
+            }
+            ?>
           </div>
         </div>
         <div class="col-md-10 compe-card mx-auto">
           <h4>Licitaciones </h4>
           <div class="licitacion">
-            <div class="lici-info d-flex">
-              <div class="lici-left">
-                <strong >Licitacion 1 </strong>
-                <span class="label label-success">$24,000,000</span>
-                <p class="mt-3">Clasificacion: Tecnologia</p>
-                <p>Competidor Ganador: Competidor 1</p>
-                <p>Fecha Adjudicacion: 03/02/2025</p>
-                <p>Fecha Renovacion: 12/02/2026</p>
+          <?php
+          if($num_lic > 0){
+            while($row = $licitaciones->fetch_assoc()){
+            ?>
+              <div class="lici-info d-flex">
+                <div class="lici-left">
+                  <strong ><?php echo $row['nombre']; ?></strong>
+                  <span class="label label-success"><?php echo '$'.number_format($row['monto'], 0, '.', ',');?></span>
+                  <p class="mt-3">Clasificacion: <?php echo $row['clasificacion']; ?></p>
+                  <p>Competidor: <?php echo $row['competidorN']; ?></p>
+                  <p>Fecha Adjudicacion: <?php echo $row['fecha_adjudicacion']; ?></p>
+                  <p>Fecha Renovacion: <?php echo $row['fecha_fin_contrato']; ?></p>
+                </div>
+                <div class="lici-desc">
+                    <p><?php echo $row['resumen']; ?></p>
+                </div>
               </div>
-              <div class="lici-desc">
-                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda minima repellendus consectetur distinctio, autem repellat iure accusantium quos qui, veritatis illum unde tenetur officiis dolorem soluta, placeat reprehenderit ducimus esse?</p>
-              </div>
-            </div>
-
-            <div class="lici-info d-flex">
-              <div class="lici-left">
-                <strong>Licitacion 2 </strong>
-                <span class="label label-success">$24,000,000</span>
-                <p class="mt-3">Clasificacion: Guardias</p>
-                <p>Fecha Adjudicacion: 03/02/2025</p>
-                <p>Fecha Renovacion: 12/02/2026</p>
-              </div>
-
-              <div class="lici-desc">
-                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda minima repellendus consectetur distinctio, autem repellat iure accusantium quos qui, veritatis illum unde tenetur officiis dolorem soluta, placeat reprehenderit ducimus esse?</p>
-              </div>
-            </div>
-
-            <div class="lici-info d-flex">
-              <div class="lici-left">
-                <strong>Licitacion 3 </strong>
-                <span class="label label-success">$24,000,000</span>
-                <p class="mt-3">Clasificacion: Guardias</p>
-                <p>Fecha Adjudicacion: 03/02/2025</p>
-                <p>Fecha Renovacion: 12/02/2026</p>
-              </div>
-
-              <div class="lici-desc">
-                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda minima repellendus consectetur distinctio, autem repellat iure accusantium quos qui, veritatis illum unde tenetur officiis dolorem soluta, placeat reprehenderit ducimus esse?</p>
-              </div>
-            </div>
-
-            <div class="lici-info d-flex">
-              <div class="lici-left">
-                <strong>Licitacion 4 </strong>
-                <span class="label label-success">$24,000,000</span>
-                <p class="mt-3">Clasificacion: Guardias</p>
-                <p>Fecha Adjudicacion: 03/02/2025</p>
-                <p>Fecha Renovacion: 12/02/2026</p>
-              </div>
-
-              <div class="lici-desc">
-                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda minima repellendus consectetur distinctio, autem repellat iure accusantium quos qui, veritatis illum unde tenetur officiis dolorem soluta, placeat reprehenderit ducimus esse?</p>
-              </div>
-            </div>
+            <?php
+            }
+          }else {
+            echo "<h5 class='text-center'>No hay licitaciónes asociadas a este cliente</h5>";
+          }
+          ?>
           </div>
         </div>
     </div>
   </div>
+
+<!-- Modal Competidores -->
+<div class="modal fade" id="compModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="compModalLabel" aria-hidden="true">>
+  <div class="modal-dialog">
+      <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="compModalLabel">Nuevo Competidor</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <form id="form" method="post">
+            <div class="form-row-modal mb-3">
+              <div class="form-group">
+                  <label for="nombreCompetidor" class="form-label">Nombre</label>
+                  <input type="text" class="form-control form-control-sm" id="nombreCompetidor" name="nombreCompetidor" required>
+              </div>
+            </div>
+
+            <div class="form-row-modal mb-3">
+              <div class="form-group">
+                <label for="rut" class="form-label">Rut <span>(Sin puntos ni guion)</span></label>
+                <input type="text" class="form-control form-control-sm" id="rut" name="rut" maxlength="12" required>
+              </div>
+            </div>
+            <div class="form-row-modal mb-3">
+              <div class="form-group">
+                  <label for="especialidad" class="form-label">Especialidad</span></label>
+                  <input type="text" class="form-control form-control-sm" id="especialidad" name="especialidad" required>
+              </div>
+            </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" form="form" name="addComp" class="btn pull-right btn-updt">Agregar</button>
+      </div>
+      </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('rut').addEventListener('input', function () {
+      let rut = this.value.toUpperCase().replace(/[^0-9K]/g, '');
+      
+      if (rut.length > 9) rut = rut.slice(0, 9);
+      let cuerpo = rut.slice(0, -1);
+      let dv = rut.slice(-1); 
+
+      if (cuerpo.length > 0) {
+          cuerpo = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+          rut = cuerpo + (dv ? "-" + dv : "");
+      }
+      this.value = rut; 
+  });
+</script>
 
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

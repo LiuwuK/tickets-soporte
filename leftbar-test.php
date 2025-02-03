@@ -78,13 +78,16 @@
         <i class="bi bi-ticket-perforated"></i>
       </a>
     </li>
-
+    <?php     
+    if($_SESSION['cargo'] == '2'){ ?>
     <li class="nav-item">
       <a href="clients.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Historico Clientes">
         <i class="bi bi-people"></i>
       </a>
     </li>
-        
+    <?php 
+      };
+    ?>  
     <li class="nav-item">
       <a href="work-log.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Bitácora de Trabajo">
         <i class="bi bi-journal-text"></i> 

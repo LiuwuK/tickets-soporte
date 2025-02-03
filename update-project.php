@@ -66,10 +66,22 @@ check_login();
                             <label for="name" class="form-label">Nombre Proyecto</label>
                             <input type="text" class="form-control form-control-sm" id="name" name="name" value="<?php echo $row_p['nombre'];?>" required="required">
                         </div>
-                        <div class="form-group">
-                            <label for="client" class="form-label">Cliente</label>
-                            <input type="text" class="form-control form-control-sm" id="client" name="client" value="<?php echo $row_p['cliente'];?>" required="required">          
-                        </div>
+                        <div class ="form-group">
+                            <label class="form-label">Cliente</label>
+                            <div>
+                            <select name="client" id="client" class="form-select form-select-sm" required>
+                                <?php
+                                while ($row = mysqli_fetch_assoc($clients)) {
+                                    if ($row['id'] == $row_p['cliente']) {
+                                        echo "<option value=".$row['id']." isSelected>".$row['nombre'] ."</option>";
+                                    } else{
+                                        echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
+                                    }
+                                };
+                                ?>
+                            </select>
+                            </div>
+                        </div> 
                     </div>
                     <div class="form-row">
                         <div class ="form-group">
@@ -91,11 +103,14 @@ check_login();
                             <label class="form-label">Clasificación</label>
                             <div>
                                 <select name="pClass" id="pClass" class="form-select form-select-sm" disabled>
+                                <option value="">Seleccionar</option>
                                 <?php
-                                    if ($projectData['clasificacion'] == 1) {
-                                        echo "<option value='1'>Tecnologia</option>";
-                                    } else {
-                                        echo "<option value='2'>Guardias</option>";
+                                    while ($row = mysqli_fetch_assoc($class)) {
+                                        if ($row['id'] == $row_p['clasificacion']) {
+                                            echo "<option value=".$row['id']." selected>".$row['nombre'] ."</option>";
+                                        }else{
+                                            echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
+                                        }
                                     };
                                 ?>
                                 </select>
@@ -165,17 +180,17 @@ check_login();
                         <div class ="form-group">
                             <label class="form-label">Ciudad</label>
                             <div >
-                            <select name="city" class="form-select form-select-sm" required>
-                                <?php
-                                while ($row = mysqli_fetch_assoc($cities)) {
-                                    if ($row['id'] == $row_p['ciudad']) {
-                                        echo "<option value=".$row['id']." selected>".$row['nombre_ciudad']."</option>";
-                                    } else {
-                                        echo "<option value=".$row['id'].">".$row['nombre_ciudad']."</option>";
-                                    }
-                                };
-                                ?>
-                            </select>
+                                <select name="city" class="form-select form-select-sm" required>
+                                    <?php
+                                    while ($row = mysqli_fetch_assoc($cities)) {
+                                        if ($row['id'] == $row_p['ciudad']) {
+                                            echo "<option value=".$row['id']." selected>".$row['nombre_ciudad']."</option>";
+                                        } else {
+                                            echo "<option value=".$row['id'].">".$row['nombre_ciudad']."</option>";
+                                        }
+                                    };
+                                    ?>
+                                </select>
                             </div>
                         </div> 
                         <div class="form-group">
@@ -233,7 +248,31 @@ check_login();
                                 </div>
                         </div>
                     </div>
-
+                    <?php
+                    if($row_p['estado_id'] == 21){
+                    ?>
+                    <div class="form-row">
+                        <div class="form-group">
+                        <label class="form-label">Competidor</label>
+                            <div >
+                                <select name="competidor" class="form-select form-select-sm">
+                                    <option value="">Seleccionar</option>
+                                    <?php
+                                    while ($row = mysqli_fetch_assoc($competidores)) {
+                                        if ($row['id'] == $row_p['competidor']) {
+                                            echo "<option value=".$row['id']." selected>".$row['nombre_competidor']."</option>";
+                                        } else {
+                                            echo "<option value=".$row['id'].">".$row['nombre_competidor']."</option>";
+                                        }
+                                    };
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                    }  
+                    ?>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="">Monto Proyecto</label>
@@ -397,55 +436,55 @@ check_login();
 
     <!-- Modal actividades -->
     <div class="modal fade" id="actividadModal" tabindex="-1" aria-labelledby="actividadModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="actividadModalLabel">Agregar Actividad</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <form id="formActividad">
-            <div class="mb-3">
-                <label for="nombreActividad" class="form-label">Nombre de la Actividad</label>
-                <input type="text" class="form-control form-control-sm" id="nombreActividad" name="nombreActividad" required>
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="actividadModalLabel">Agregar Actividad</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="form-row-modal mb-3 d-flex">
-                <div class="form-group">
-                    <label for="fechaInicio" class="form-label">Fecha inicio</label>
-                    <input type="datetime-local" class="form-control form-control-sm" id="fechaInicio" name="fechaInicio" required>
+            <div class="modal-body">
+                <form id="formActividad">
+                <div class="mb-3">
+                    <label for="nombreActividad" class="form-label">Nombre de la Actividad</label>
+                    <input type="text" class="form-control form-control-sm" id="nombreActividad" name="nombreActividad" required>
                 </div>
-                <div class="form-group">
-                    <label for="fechaTermino" class="form-label">Fecha termino</label>
-                    <input type="datetime-local" class="form-control form-control-sm" id="fechaTermino" name="fechaTermino" required>
-                </div>
-            </div>
-            <div class="form-row-modal mb-3 d-flex">
-                <div class="form-group">
-                    <label class="form-label">Tipo Actividad</label>
-                    <div>
-                        <select name="areaAct" id="areaAct" class="form-select form-select-sm" required>
-                            <option value="">Seleccionar</option>
-                            <?php
-                            while ($row = mysqli_fetch_assoc($cargos)) {
-                                echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
-                            };
-                            ?>  
-                        </select>
+                <div class="form-row-modal mb-3 d-flex">
+                    <div class="form-group">
+                        <label for="fechaInicio" class="form-label">Fecha inicio</label>
+                        <input type="datetime-local" class="form-control form-control-sm" id="fechaInicio" name="fechaInicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fechaTermino" class="form-label">Fecha termino</label>
+                        <input type="datetime-local" class="form-control form-control-sm" id="fechaTermino" name="fechaTermino" required>
                     </div>
                 </div>
+                <div class="form-row-modal mb-3 d-flex">
+                    <div class="form-group">
+                        <label class="form-label">Tipo Actividad</label>
+                        <div>
+                            <select name="areaAct" id="areaAct" class="form-select form-select-sm" required>
+                                <option value="">Seleccionar</option>
+                                <?php
+                                while ($row = mysqli_fetch_assoc($cargos)) {
+                                    echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
+                                };
+                                ?>  
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="descripcionActividad" class="form-label">Descripción</label>
+                    <textarea class="form-control form-control-sm" id="descripcionActividad" name="descripcionActividad" rows="3"></textarea>
+                </div>
+                </form>
             </div>
-            <div class="mb-3">
-                <label for="descripcionActividad" class="form-label">Descripción</label>
-                <textarea class="form-control form-control-sm" id="descripcionActividad" name="descripcionActividad" rows="3"></textarea>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-reset" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" form="formActividad" class="btn pull-right">Agregar</button>
             </div>
-            </form>
+            </div>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-reset" data-bs-dismiss="modal">Cerrar</button>
-            <button type="submit" form="formActividad" class="btn pull-right">Agregar</button>
-        </div>
-        </div>
-    </div>
     </div>
 
     <br><br>

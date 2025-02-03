@@ -8,6 +8,12 @@ $ingenieros = [];
 while ($row = mysqli_fetch_assoc($inge)) {
     $ingenieros[] = $row;
 }
+//obtener clientes
+$query = "SELECT * FROM clientes ";
+$clientsData = mysqli_query($con, $query);
+while ($row = mysqli_fetch_assoc($clientsData)) {
+  $clients[] = $row; 
+}
 
 //carga las verticales, estados y distribuidores para filtrar--------------------------------------------------------------
 $query = "SELECT * FROM verticales ";
@@ -56,13 +62,14 @@ $clasificacion =  isset($_GET['clasif']) ? intval($_GET['clasif']) : '';
 
 //Se obtienen todos los proyectos
 $query = "SELECT pr.id AS projectId, pr.*, es.nombre AS estado, ci.nombre_ciudad AS ciudadN, us.name AS ingeniero, 
-            us_com.name AS comercial, tp.nombre AS tipoP,lic.portal AS portal
+            us_com.name AS comercial, tp.nombre AS tipoP,lic.portal AS portal, cl.nombre AS clienteN
             FROM proyectos pr 
             JOIN estados es ON(pr.estado_id = es.id)
             JOIN ciudades ci ON(pr.ciudad = ci.id)
             LEFT JOIN user us ON(pr.ingeniero_responsable = us.id)
             JOIN user us_com ON (pr.comercial_responsable = us_com.id)
             LEFT JOIN licitacion_proyecto lic ON(pr.id = lic.proyecto_id)
+            LEFT JOIN clientes cl ON (pr.cliente = cl.id)
             JOIN tipo_proyecto tp ON(pr.tipo = tp.id)
             ";
 

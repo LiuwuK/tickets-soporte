@@ -174,6 +174,7 @@ check_login();
                                     <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> 
                                 </div>
                                 <p>Ciudad: <span><?php echo $row['ciudadN']; ?></span></p>
+                                <p>Cliente: <span><?php echo $row['clienteN']; ?></span></p>
                                 <form  name="asignarIng" id="asignarIng" method="post">
                                     <div class="ing-main d-flex justify-content-start">
                                         <p><span>Ingeniero responsable</span></p>
@@ -217,7 +218,17 @@ check_login();
                                                 <div class="pr-row ">
                                                     <div class="group">
                                                         <strong>Cliente</strong>
-                                                        <p><?php echo $row['cliente'];?></p>
+                                                        <?php
+                                                            if(isset($row['cliente'])){
+                                                                foreach ($clients as $row_client) {
+                                                                  if ($row_client['id'] == $row['cliente']) {
+                                                                      echo "<p>".$row_client['nombre']."</p>";
+                                                                  } 
+                                                                }
+                                                            }else{
+                                                                echo "<p> Sin asignar </p>";
+                                                            }
+                                                        ?>
                                                     </div>
                                                 </div>
                                                 <div class="pr-row"> 

@@ -38,8 +38,11 @@ check_login();
     </div>
     <div class="page-content">
     <?php include("leftbar-test.php"); ?>
-        <div class="page-title">
+        <div class="page-title d-flex">
           <h2>Clientes</h2>
+          <button type="button" class="btn btn-sm btn-add-client"  data-bs-toggle="modal" data-bs-target="#clientsModal">
+              <i class="bi bi-plus"></i> 
+          </button>
         </div> <br><br>
         <div class="content">
         <?php
@@ -60,9 +63,53 @@ check_login();
               </div>
         <?php
             }
+          }else{
+            echo "<h4 class='text-center'>No se han encontrado clientes registrados</h4>";
           }
         ?>
         </div>   
+    </div>
+  </div>
+
+  <!-- Modal Clientes -->
+  <div class="modal fade" id="clientsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="clientsModalLabel" aria-hidden="true">>
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="clientsModalLabel">Nuevo Cliente</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="form" method="post">
+              <div class="form-row-modal mb-3">
+                  <div class="form-group">
+                      <label for="nombreCliente" class="form-label">Nombre Cliente</label>
+                      <input type="text" class="form-control form-control-sm" id="nombreCliente" name="nombreCliente" required>
+                  </div>
+              </div>
+
+              <div class="form-row-modal mb-3">
+                  <div class="form-group">
+                      <label class="form-label">Vertical</label>
+                      <div>
+                          <select name="vertical" id="vertical" class="form-select form-select-sm" required>
+                              <option value="">Seleccionar</option>
+                              <?php
+                              while ($row = mysqli_fetch_assoc($result)) {
+                                  echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
+                              };
+                              ?>  
+                          </select>
+                      </div>
+                  </div>
+              </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" form="form" name="addClient" class="btn pull-right btn-updt">Agregar</button>
+        </div>
+        </div>
     </div>
   </div>
 

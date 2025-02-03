@@ -39,6 +39,12 @@ $cargos = mysqli_query($con, $query);
 //obtener portales 
 $query = "SELECT * FROM portales";
 $portal = mysqli_query($con, $query);
+//obtener clientes
+$query = "SELECT * FROM clientes";
+$clients = mysqli_query($con,$query);
+//obtener competidores
+$query = "SELECT * FROM competidores";
+$competidores = mysqli_query($con,$query);
 
 // cargar proyecto que va a ser actualizado
 if(isset($_GET['projectId']) ){
@@ -207,7 +213,8 @@ else if(isset($_POST['updtProject'])) {
         'vertical'                  => $_POST['vertical'],
         'fecha_cierre_documental'   => $cierre,
         'fecha_adjudicacion'        => $fAdj,
-        'fecha_fin_contrato'        => $finCt
+        'fecha_fin_contrato'        => $finCt,
+        'competidor'                => $_POST['competidor']
     ];
 
     //Datos de la db
@@ -342,13 +349,15 @@ else if(isset($_POST['updtProject'])) {
                         resumen = ?, bom = ?,
                         fecha_cierre_documental = ?,
                         fecha_adjudicacion = ?,
-                        fecha_fin_contrato = ?
+                        fecha_fin_contrato = ?,
+                        competidor = ?
                     WHERE id = ?";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("ssiiiiiiiiiisisssi",   
+        $stmt->bind_param("ssiiiiiiiiiisisssii",   
         $newData['nombre'], $newData['cliente'], $newData['ciudad'], $newData['estado_id'], $newData['estado_etapa'], $newData['ingeniero_responsable'],
         $newData['distribuidor'], $newData['vertical'], $newData['monto'], $newData['costo_software'], $newData['costo_hardware'], 
-        $newData['costo_real'], $newData['resumen'], $newData['bom'], $newData['fecha_cierre_documental'], $newData['fecha_adjudicacion'], $newData['fecha_fin_contrato'], $newData['id'] );
+        $newData['costo_real'], $newData['resumen'], $newData['bom'], $newData['fecha_cierre_documental'], $newData['fecha_adjudicacion'], 
+        $newData['fecha_fin_contrato'], $newData['competidor'], $newData['id'] );
 
         if ($stmt->execute()) {
             echo "<script>alert('Su proyecto ha sido actualizado correctamente');location.replace(document.referrer)</script>";

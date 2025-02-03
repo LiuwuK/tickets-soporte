@@ -91,11 +91,14 @@ check_login();
                             <label class="form-label">Clasificación</label>
                             <div>
                                 <select name="pClass" id="pClass" class="form-select form-select-sm" disabled>
+                                <option value="">Seleccionar</option>
                                 <?php
-                                    if ($projectData['clasificacion'] == 1) {
-                                        echo "<option value='1'>Tecnologia</option>";
-                                    } else {
-                                        echo "<option value='2'>Guardias</option>";
+                                    while ($row = mysqli_fetch_assoc($class)) {
+                                        if ($row['id'] == $row_p['clasificacion']) {
+                                            echo "<option value=".$row['id']." selected>".$row['nombre'] ."</option>";
+                                        }else{
+                                            echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
+                                        }
                                     };
                                 ?>
                                 </select>
@@ -233,7 +236,31 @@ check_login();
                                 </div>
                         </div>
                     </div>
-
+                    <?php
+                    if($row_p['estado_id'] == 21){
+                    ?>
+                    <div class="form-row">
+                        <div class="form-group">
+                        <label class="form-label">Competidor</label>
+                            <div >
+                                <select name="competidor" class="form-select form-select-sm">
+                                    <option value="">Seleccionar</option>
+                                    <?php
+                                    while ($row = mysqli_fetch_assoc($competidores)) {
+                                        if ($row['id'] == $row_p['competidor']) {
+                                            echo "<option value=".$row['id']." selected>".$row['nombre_competidor']."</option>";
+                                        } else {
+                                            echo "<option value=".$row['id'].">".$row['nombre_competidor']."</option>";
+                                        }
+                                    };
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                    }  
+                    ?>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="">Monto Proyecto</label>
