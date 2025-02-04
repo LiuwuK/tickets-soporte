@@ -10,3 +10,9 @@
 .table{
     text-align: justify;
 }
+.input-group-text{
+    font-size: small;
+}
+td {
+    vertical-align: middle;
+}

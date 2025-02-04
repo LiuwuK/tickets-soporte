@@ -80,9 +80,9 @@ check_login();
                                   <input type="email" class="form-control form-control-sm" id="email" name="email" value="<?php echo $row['email'];?>">
                                 </td>
                                 <td>
-                                  <div class="input-group mb-3">
-                                      <span class="input-group-text" id="numeroC">+56</span>
-                                      <input name="numeroC" type="number" class="form-control form-control-sm" value="<?php echo $row['numero_contacto'];?>" aria-label="NumeroContacto" aria-describedby="numeroC">
+                                  <div class="input-group">
+                                    <span class="input-group-text" id="numeroC">+56</span>
+                                    <input name="numeroC" type="number" class="form-control form-control-sm" value="<?php echo $row['numero_contacto'];?>" aria-label="NumeroContacto" aria-describedby="numeroC">
                                   </div>                              
                                 </td>
                                 <td>
