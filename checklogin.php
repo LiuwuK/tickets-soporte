@@ -1,4 +1,6 @@
 <?php
+define('BASE_URL', '/tickets-soporte/');
+define('BASE_PATH', __DIR__ . '/');
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }

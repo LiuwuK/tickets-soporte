@@ -1,0 +1,12 @@
+.main-crud{
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    padding: 40px;
+    margin: 0 auto;
+    margin-top: 50px;
+    color: #33435e;
+}
+.table{
+    text-align: justify;
+}

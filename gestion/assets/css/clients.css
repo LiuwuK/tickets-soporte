@@ -1,0 +1,163 @@
+.content{
+    display: grid;
+    grid-template-columns: repeat(6,1fr);
+    grid-gap: 20px;
+}
+.profile-img img{
+    display: flex;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    border: 1px solid #33435e;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+.card strong{
+    color: #33435e;
+}
+.card-body p {
+    margin-top: 10px;
+    opacity: 0.8;
+    font-size: smaller;
+}
+.card{
+    transition: transform 0.2s ease-in-out;
+}
+.card:hover{
+    cursor: pointer;
+    transform: scale(1.02);
+}
+.btn-add-client{
+    border-radius: 50%;
+    margin-left: 10%;
+    background-color: #33435e;
+    color: #fff;
+    width: 35px;
+    height: 35px;
+}
+.btn-add-client:hover{
+    background-color: #33435e;
+    color: #fff;
+}
+.btn-add-client i{
+    display: flex;
+    justify-content: center;
+    font-size: x-large;
+}
+
+/*cliente detalle*/
+.client-card, .compe-card{
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin-top: 50px;
+    color: #33435e;
+}
+.client-card img{
+    border-radius: 50%;
+    border: 1px solid #33435e;
+    width: 120px;
+    height: 120px;
+}
+.info-body{
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+.info-body h4{
+    font-weight: 600;
+}
+.info-body p{
+    opacity: 0.6;
+    font-size: medium;
+}
+.info-comp p{
+    opacity: 0.6;
+    font-size: smaller; 
+    margin: 0px;
+
+}
+.info-comp strong{
+    font-size: 15px;
+}
+.end{
+    margin-left: 3%;  
+    width: 50%;
+}
+
+.competidores{
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-gap: 20px;
+}
+.list{
+    background-color: #f4f4f4;
+    min-height: 100px;
+}
+.img{
+    width: 40%;
+    
+}
+.list img{
+    padding: 5%;
+    width: 100px;
+    
+}
+.info-comp{
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1px;
+}
+
+.licitacion{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-gap: 20px;
+}
+
+.lici-info{
+    padding: 2%;
+    background-color: #f4f4f4;
+}
+.lici-info p{
+    margin: 0px;
+    opacity: 0.65;
+    font-size: smaller;
+}
+.label{
+    margin-left: 2%;
+    padding: 2px 9px;
+    font-size: 13px;
+    text-shadow: none;
+    color: #fff;
+    border-radius: 4px;
+  
+  }
+.label-success{
+    background-color: #0aa699;
+}
+
+.lici-desc, .lici-left{
+    width: 50%;
+}
+.lici-desc{
+    display: flex;
+    align-items: center;
+}
+.title button{
+   width: 30px;
+   height: 30px;
+   font-size: medium;
+   margin-left: 10px;
+}
+.title i{
+    display: flex;
+    justify-content: center;
+}
+.form-group span{
+    opacity: 0.6;
+    font-size: small;
+}

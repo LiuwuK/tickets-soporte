@@ -1,5 +1,4 @@
 <?php
-include("dbconnection.php");
 //Informacion para dashboard 
 //user tecnico
 if ($_SESSION['cargo'] == 5){

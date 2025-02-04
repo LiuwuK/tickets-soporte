@@ -13,11 +13,10 @@
   6 Compras  
 -->
 
-
 <div class="sidebar" id="sidebar">
   <div class="text-center">
     <br> 
-    <a href="create-ticket.php" > 
+    <a href="<?php echo BASE_URL;?>tickets/create-ticket.php" > 
       <button class="add-ticket btn" data-bs-toggle="tooltip" data-bs-placement="right" title="Crear ticket">
         <i class="bi bi-plus"></i>
       </button>
@@ -26,101 +25,58 @@
   </div>
     
   <ul class="nav flex-column sidebar-nav">
+    <!-- Dashboard -->
     <li class="nav-item">
-      <a href="dashboard.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Inicio">
+      <a href="<?php echo BASE_URL;?>dashboard.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Inicio">
         <i class="bi bi-house-door"></i>
       </a>
     </li>
-    <?php 
-      if($_SESSION['cargo'] == '6'){
-        ?>
-            <li class="nav-item">
-              <a href="manage-dist.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Distribuidores">
-                <i class="bi bi-truck"></i>
-              </a>
-            </li>
-        <?php };
-
-      if($_SESSION['cargo'] == '1' or $_SESSION['cargo'] == '2' or $_SESSION['cargo'] == '4'  ){ ?>
-        <li class="nav-item active">
-          <a href="create-project.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Crear Proyecto">
-            <i class="bi bi-clipboard2-plus"></i> 
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="view-projects.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Proyectos">
-            <i class="bi bi-clipboard2"></i>
-          </a>
-        </li>
-    <?php  
-      }
-      if($_SESSION['cargo'] == '5'){ ?>
-        <li class="nav-item">
-          <a href="tickets-asignados.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Tickets Asignados">
-            <i class="bi bi-pin-angle"></i>
-          </a>
-        </li>
-    <?php 
-      };
-    
-    if($_SESSION['cargo'] == '3'){ ?>
-        <li class="nav-item">
-          <a href="bill-projects.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Facturar Proyectos">
-            <i class="bi bi-clipboard2"></i>
-          </a>
-        </li>
-    <?php 
-      };
-    ?>
-
+    <!-- Modulo TICKETS -->
     <li class="nav-item">
-      <a href="view-tickets.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Mis Tickets">
+      <a href="<?php echo BASE_URL; ?>tickets/tickets-main.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Tickets">
         <i class="bi bi-ticket-perforated"></i>
       </a>
     </li>
-    <?php     
-    if($_SESSION['cargo'] == '2'){ ?>
+    <?php
+    if($_SESSION['cargo'] == '1' or $_SESSION['cargo'] == '2' or $_SESSION['cargo'] == '4'  ){ 
+    ?>
+    <!-- Modulo PROYECTOS -->
     <li class="nav-item">
-      <a href="clients.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Historico Clientes">
-        <i class="bi bi-people"></i>
+      <a href="<?php echo BASE_URL;?>projects/projects-main.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Proyectos">
+        <i class="bi bi-clipboard2"></i>
       </a>
     </li>
-    <?php 
-      };
-    ?>  
+    <?php  
+      }
+    ?>
+    <!-- Modulo Gestion?? -->
     <li class="nav-item">
-      <a href="traslados.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Traslado y Desvinculacion">
-        <i class="bi bi-truck"></i>
+      <a href="<?php echo BASE_URL;?>gestion/main.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Gestión">
+        <i class="bi bi-folder"></i>
       </a>
     </li>
-
+    <!-- Modulo CONFIGURACION -->
     <li class="nav-item">
-      <a href="work-log.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Bitácora de Trabajo">
-        <i class="bi bi-journal-text"></i> 
+      <a href="<?php echo BASE_URL;?>configs/config.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Configuraciónes">
+        <i class="bi bi-gear"></i> 
       </a>
     </li>
-
-    <li class="nav-item">
-      <a href="profile.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Mi Perfil">
-        <i class="bi bi-person-gear"></i> 
-      </a>
-    </li>
-    <li class="nav-item" >
-      <a href="change-password.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Cambiar Contraseña">
-        <i class="bi bi-lock"></i>
-      </a>
-    </li>
-
-    
+    <!-- Logout -->
     <li class="nav-item logout-item">
-      <a href="logout.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Cerrar Sesión">
+      <a href="<?php echo BASE_URL;?>logout.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Cerrar Sesión">
         <i class="bi bi-box-arrow-right"></i> 
       </a>
-      <img class="mt-2" src="assets/img/admin.jpg" alt="" >
     </li>
+    <!--  WorkLog -->
+    <li class="nav-item">
+      <a href="<?php echo BASE_URL;?>work-log.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Bitácora de Trabajo">
+        <i class="bi bi-journal-text"></i> 
+      </a>
+      <img class="mt-2" src="<?php echo BASE_URL; ?>assets/img/admin.jpg" alt="" >
+    </li>
+    
   </ul>
 </div>
-
 
 
     

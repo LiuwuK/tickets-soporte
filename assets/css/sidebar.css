@@ -94,7 +94,7 @@ input, .form-control, .form-select{
     margin-top: auto;
 }
   
-.logout-item img{
+.nav-item img{
     display: flex;
     border-radius: 50%;
     width: 60%;
@@ -208,7 +208,7 @@ input, .form-control, .form-select{
 }
 
 .btn-del:active{
-    transform: scale(0.98);
+    transform: scale(1.0);
     background-color: #ef1e1ed1;;;
     color: #fff;
 }
@@ -219,13 +219,15 @@ input, .form-control, .form-select{
     border-radius: 50%;
     font-size: 25px;
     transition: transform 0.2s ease-in-out;
+    border:none;
 }
 .btn-back:hover{
-    transform: scale(1.1);
+    transform: scale(1.03);
 }
 
 .btn-back:active{
-    border:none
+    border:none;
+    transform: scale(1.03);
 }
 
 /* Animacion de carga */
