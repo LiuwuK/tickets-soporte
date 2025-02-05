@@ -1,64 +1,61 @@
 <?php
-//obtener info de los supervisores
+//obtener info 
 $query = "SELECT * FROM jornadas";
 $supervisorData = $con->prepare($query);
 $supervisorData->execute();
 $result = $supervisorData->get_result();
 
 
-//nuevo supervisor
+//nueva jornada
 if(isset($_POST['newSup'])){ 
-    $nombre = $_POST['nombreSupervisor'];
-    $email = $_POST['email'];
-    $rut = $_POST['rut'];
-    $num = $_POST['numC'];
-    $query  = "INSERT INTO supervisores(nombre_supervisor, email, rut, numero_contacto)
-                VALUES (?,?,?,?)";
+    $tipo = $_POST['tipoJornada'];
+    $entrada = $_POST['entrada'];
+    $salida = $_POST['salida'];
+
+    $query  = "INSERT INTO jornadas(tipo_jornada, hora_entrada, hora_salida)
+                VALUES (?,?,?)";
     $stmt = $con->prepare($query);
-    $stmt->bind_param("sssi",$nombre, $email, $rut, $num);
-    $stmt->execute();
+    $stmt->bind_param("sss",$tipo, $entrada, $salida);
     if ($stmt->execute()) {
-        echo "<script>alert('Supervisor registrado correctamente'); location.href='supervisor.php';</script>";
+        echo "<script>alert('Jornada registrada correctamente'); location.href='jornadas.php';</script>";
     } else {
         echo "<script>alert('Error en la consulta: ".$stmt->error."');</script>";
     }
 }
-//actualizar supervisor
+//actualizar jornada
 if(isset($_POST['btnUpdt'])){
     $ids = $_POST['id'];
-    $nombres = $_POST['name'];
-    $correos = $_POST['email'];
-    $ruts = $_POST['rut'];
-    $nums = $_POST['numeroC'];
+    $tipos = $_POST['name'];
+    $entradas = $_POST['entrada'];
+    $salidas = $_POST['salida'];
+    
 
     foreach ($ids as $index => $id) {
-        $nombre = $nombres[$index];
-        $correo = $correos[$index];
-        $rut = $ruts[$index];
-        $num = $nums[$index];
+        $tipo = $tipos[$index];
+        $entrada = $entradas[$index];
+        $salida = $salidas[$index];
 
-        $query = "UPDATE supervisores 
-                    SET nombre_supervisor = ?, 
-                        email = ?,
-                        rut = ?,
-                        numero_contacto = ? 
+        $query = "UPDATE jornadas 
+                    SET tipo_jornada = ?, 
+                        hora_entrada = ?,
+                        hora_salida = ? 
                     WHERE id = ? 
-                    AND (nombre_supervisor <> ? OR email <> ? OR rut <> ? OR numero_contacto <> ?)";
+                    AND (tipo_jornada <> ? OR hora_entrada <> ? OR hora_salida <> ?)";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("sssiisssi",$nombre, $correo, $rut, $num, $id, $nombre, $correo, $rut, $num,);
+        $stmt->bind_param("sssisss", $tipo, $entrada, $salida, $id, $tipo, $entrada, $salida);
         $stmt->execute();
     }
-    echo "<script>alert('Supervisores actualizados correctamente.'); location.href='supervisor.php';</script>";
+    echo "<script>alert('Jornadas actualizadas correctamente.'); location.href='jornadas.php';</script>";
 
 }
-//eliminar supervisor
+//eliminar jornada
 if(isset($_POST['delSup'])){
     $id = $_POST['idSup'];
-    $query = "DELETE FROM supervisores WHERE id = ?";
+    $query = "DELETE FROM jornadas WHERE id = ?";
     $stmt = $con->prepare($query);
     $stmt->bind_param("i", $id);
     if ($stmt->execute()) {
-        echo "<script>alert('Supervisor eliminado correctamente.'); location.href='supervisor.php';</script>";
+        echo "<script>alert('Jornada eliminado correctamente.'); location.href='jornadas.php';</script>";
     } else {
         echo "<script>alert('Error al eliminar el supervisor.');</script>";
     }

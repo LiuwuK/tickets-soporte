@@ -16,7 +16,6 @@ if(isset($_POST['newSup'])){
                 VALUES (?,?,?,?)";
     $stmt = $con->prepare($query);
     $stmt->bind_param("sssi",$nombre, $email, $rut, $num);
-    $stmt->execute();
     if ($stmt->execute()) {
         echo "<script>alert('Supervisor registrado correctamente'); location.href='supervisor.php';</script>";
     } else {

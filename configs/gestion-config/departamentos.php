@@ -2,7 +2,7 @@
 session_start();
 include("../../checklogin.php");
 include("../../dbconnection.php");
-include("assets/php/jornadas.php");
+include("assets/php/departamentos.php");
 check_login();
 ?>
 <!DOCTYPE html>
@@ -11,7 +11,7 @@ check_login();
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <meta charset="utf-8" />
-  <title>Jornadas</title>
+  <title>Departamentos</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta content="" name="description" />
   <meta content="" name="author" />
@@ -38,45 +38,41 @@ check_login();
     <?php include("../../leftbar-test.php"); ?>
         <div class="content">
             <div class="page-title d-flex justify-content-between">
-                <h2>Jornadas</h2>
+                <h2>Departamentos</h2>
                 <button class=" btn-back" onclick="window.location.href='gestion-main.php';"> 
                     <i class="bi bi-arrow-left" ></i>
                 </button>
             </div>
             <div class="main-crud col-md-11 col-sm-12">
               <div class="head-crud d-flex justify-content-between mb-3">
-                <h4>Administrar Jornadas</h4>
+                <h4>Administrar Departamentos</h4>
                 <div class="btns">
-                  <button class="btn btn-updt"  data-bs-toggle="modal" data-bs-target="#newSuper">Nueva Jornada</button>
-                  <button type="submit" form="editJornada" class="btn btn-default" id="btnUpdt" name="btnUpdt" disabled>Actualizar</button>
+                  <button class="btn btn-updt"  data-bs-toggle="modal" data-bs-target="#newSuper" style="width:180px;">Nuevo Departamento</button>
+                  <button type="submit" form="editDepa" class="btn btn-default" id="btnUpdt" name="btnUpdt" disabled>Actualizar</button>
                 </div>
               </div>
               <hr>
               <div class="body-crud">
                 <table class="table table-striped">
                     <thead>
-                        <th>Tipo de jornada</th>
-                        <th>Hora de Entrada</th>
-                        <th>Hora de Salida</th>
+                        <th>ID</th>
+                        <th>Nombre</th>
                         <th>Opciones</th>
                     </thead>
                     <tbody>
-                      <form name="form" id="editJornada" method="post">
+                      <form name="form" id="editDepa" method="post">
                         <div id="loading" style="display:none ;">
                             <div class="loading-spinner"></div>
                             <p>Procesando...</p>
                         </div>  
                         <?php while ($row = mysqli_fetch_assoc($result)) { ?>    
                             <tr>
-                                <td>
-                                  <input type="text" class="form-control form-control-sm" id="name" name="name[]" value="<?php echo $row['tipo_jornada'];?>" onchange="enableUpdateButton()" required>
-                                  <input type="hidden" name="id[]" value="<?php echo $row['id']; ?>">
+                                <td >
+                                    <strong style="margin:0px">#<?php echo $row['id']; ?></strong>
+                                    <input type="hidden" name="id[]" value="<?php echo $row['id']; ?>">
                                 </td>
                                 <td>
-                                  <input type="time" class="form-control form-control-sm" id="entrada" name="entrada[]" value="<?php echo $row['hora_entrada'];?>" onchange="enableUpdateButton()" required>
-                                </td>
-                                <td>
-                                  <input type="time" class="form-control form-control-sm" id="salida" name="salida[]" value="<?php echo $row['hora_salida'];?>" onchange="enableUpdateButton()" required>
+                                  <input type="text" class="form-control form-control-sm" id="name" name="name[]" value="<?php echo $row['nombre_departamento'];?>" onchange="enableUpdateButton()" required>
                                 </td>
                                 <td>
                                   <button type="button" class="btn btn-del del-btn" data-bs-toggle="modal" data-bs-target="#delSuper" data-sup-id="<?php echo $row['id'];?>">Eliminar</button>
@@ -93,31 +89,20 @@ check_login();
     </div>
   </div>
 
-<!-- Modal jornada nueva -->
+<!-- Modal new -->
 <div class="modal fade" id="newSuper" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="newSuperLabel" aria-hidden="true">>
   <div class="modal-dialog">
       <div class="modal-content">
       <div class="modal-header">
-          <h5 class="modal-title" id="newSuperLabel">Nueva Jornada</h5>
+          <h5 class="modal-title" id="newSuperLabel">Nuevo Departamento</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form id="newForm"  method="post" enctype="multipart/form-data">
         <div class="modal-body">
           <div class="form-row-modal mb-3 mx-auto">
             <div class="form-group">
-                <label for="tipoJornada" class="form-label">Tipo Jornada<span>*</span></label>
-                <input type="text" class="form-control form-control-sm" id="tipoJornada" name="tipoJornada" required>
-            </div>
-          </div>
-
-          <div class="form-row-modal mb-3">
-            <div class="form-group">
-                <label for="entrada" class="form-label">Hora de Entrada</label>
-                <input type="time" class="form-control form-control-sm" id="entrada" name="entrada" required>
-            </div>
-            <div class="form-group">
-                <label for="salida" class="form-label">Hora de Salida <span>*</span></label>
-                <input type="time" class="form-control form-control-sm" id="salida" name="salida" required>
+                <label for="nombre" class="form-label">Nombre<span>*</span></label>
+                <input type="text" class="form-control form-control-sm" id="nombre" name="nombre" required>
             </div>
           </div>
         </div>
@@ -129,16 +114,16 @@ check_login();
       </div>
   </div>
 </div>
-<!-- modal eliminar jornada -->
+<!-- modal eliminar  -->
 <div class="modal fade" id="delSuper" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delSuperLabel" aria-hidden="true">
   <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="delSuperLabel">Eliminar Jornada</h5>
+            <h5 class="modal-title" id="delSuperLabel">Eliminar Departamento</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p>¿Estás seguro de que quieres eliminar esta Jornada?</p>
+          <p>¿Estás seguro de que quieres eliminar este Departamento?</p>
           <form id="delForm" method="POST">
             <input type="hidden" name="idSup" id="idSup">
             <div class="modal-footer">
