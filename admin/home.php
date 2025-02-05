@@ -1,6 +1,7 @@
 <?php
 session_start();
 include("../checklogin.php");
+include("dbconnection.php");
 include("assets/php/home.php");
 check_login();
 

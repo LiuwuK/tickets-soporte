@@ -170,7 +170,7 @@ input, .form-control, .form-select{
     transform: scale(1.02);
 }
 .btn-default:active{
-    transform: scale(0.98);
+    transform: scale(1);
     background-color: #e5e5e5;
 }
 .btn-updt{
@@ -188,7 +188,7 @@ input, .form-control, .form-select{
   }
   
 .btn-updt:active{
-    transform: scale(0.98);
+    transform: scale(1);
     background-color: #34435E;;
     color: #fff;
 }

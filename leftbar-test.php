@@ -38,7 +38,7 @@
       </a>
     </li>
     <?php
-    if($_SESSION['cargo'] == '1' or $_SESSION['cargo'] == '2' or $_SESSION['cargo'] == '4'  ){ 
+    if($_SESSION['cargo'] == '3' or $_SESSION['cargo'] == '2' or $_SESSION['cargo'] == '4'  ){ 
     ?>
     <!-- Modulo PROYECTOS -->
     <li class="nav-item">
@@ -49,12 +49,18 @@
     <?php  
       }
     ?>
+    <?php
+    if($_SESSION['cargo'] == '6' or $_SESSION['cargo'] == '2' or $_SESSION['cargo'] == '4'  ){ 
+    ?>
     <!-- Modulo Gestion?? -->
     <li class="nav-item">
       <a href="<?php echo BASE_URL;?>gestion/main.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Gestión">
         <i class="bi bi-folder"></i>
       </a>
     </li>
+    <?php
+    }
+    ?>
     <!-- Modulo CONFIGURACION -->
     <li class="nav-item">
       <a href="<?php echo BASE_URL;?>configs/config.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Configuraciónes">

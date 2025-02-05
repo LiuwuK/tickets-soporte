@@ -1,6 +1,4 @@
 <?php
-    include("dbconnection.php");
-
     //Informacion para grafico y demas
     //General
       $query = "SELECT * FROM ticket";

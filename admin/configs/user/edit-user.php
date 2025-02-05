@@ -1,6 +1,7 @@
 <?php
 session_start();
-include("../checklogin.php");
+include("../../../checklogin.php");
+include("../../dbconnection.php");
 check_login();
 include("assets/php/edit-user.php");
 ?>
@@ -19,8 +20,8 @@ include("assets/php/edit-user.php");
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <!-- CSS personalizados -->
-<link href="../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
-<link href="../assets/css/profile.css" rel="stylesheet" type="text/css" />
+<link href="../../../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
+<link href="../../../configs/user/assets/css/profile.css" rel="stylesheet" type="text/css" />
 
 <!-- Toast notificaciones -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
@@ -31,11 +32,11 @@ include("assets/php/edit-user.php");
   <div class="page-container ">
 
     <div class="sidebar">
-    <?php include("header.php"); ?>
+    <?php include("../../header.php"); ?>
       
     </div>
     <div class="page-content">
-    <?php include("leftbar.php"); ?>
+    <?php include("../../leftbar.php"); ?>
         <div class="content">
             <div class="page-title d-flex justify-content-between">
                 <h2>
@@ -133,6 +134,6 @@ include("assets/php/edit-user.php");
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Complementos/Plugins-->    
   <!-- Scripts propios -->
-  <script src="../assets/js/sidebar.js"></script>
+  <script src="../../../assets/js/sidebar.js"></script>
 </body>
             

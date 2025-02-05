@@ -48,11 +48,16 @@ check_login();
                     <i class="bi bi-person-fill-gear"></i>
                     <h4>Usuario</h4>
                 </div>
+                <?php 
+                if($_SESSION['cargo'] == 2 or $_SESSION['cargo'] == 4 ){
+                ?>
                 <div class="crd mx-auto" onclick="window.location.href='gestion-config/gestion-main.php';">
                     <i class="bi bi-folder-fill"></i>
                     <h4>Gestión</h4>
                 </div>
-
+                <?php
+                }
+                ?>
             </div>
         </div>   
     </div>

@@ -16,3 +16,18 @@
 td {
     vertical-align: middle;
 }
+.form-row-modal{
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; 
+}
+.form-group{
+    width: 100%;
+}
+.modal-content {
+    color: #33435e;
+}
+.modal-body p{
+    font-size: large;
+    text-align: center;
+}

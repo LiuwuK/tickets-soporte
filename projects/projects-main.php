@@ -45,18 +45,27 @@ include("../dbconnection.php");
             </div><br><br>
 
             <div class="content-body mx-auto col-xl-10">
+            <?php
+            if($_SESSION['cargo'] != 3){
+            ?>
                 <div class="crd mx-auto" onclick="window.location.href='create-project.php';">
                     <i class="bi bi-clipboard2-plus-fill"></i> 
                     <h4>Crear Proyecto</h4>
                 </div>
                 <div class="crd mx-auto" onclick="window.location.href='view-projects.php';">
                     <i class="bi bi-clipboard2-data-fill"></i>
-                    <h4>Mis Proyectos</h4>
+                    <h4>Ver Proyectos</h4>
                 </div>
+                <?php
+            }else{
+            ?>
                 <div class="crd mx-auto" onclick="window.location.href='bill-projects.php';">
                     <i class="bi bi-receipt"></i>
                     <h4>Facturar Proyectos</h4>
                 </div>
+            <?php 
+            }
+            ?>
             </div>
         </div>   
     </div>

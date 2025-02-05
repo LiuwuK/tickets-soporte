@@ -1,5 +1,4 @@
 <?php
-    include("dbconnection.php");
     $id = $_GET['id'];
     $query = "SELECT * 
               FROM user 

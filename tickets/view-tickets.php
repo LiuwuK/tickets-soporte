@@ -86,123 +86,121 @@ check_login();
             ?>
                 <div class="row">
                     <div class="col-md-12">
-                    <div class="grid simple no-border">
-                        <div class="grid-title no-border descriptive clickable">
-                        <h4 class="semi-bold"><?php echo $row['subject']; ?></h4>
-                        <p><span class="text-success bold">Ticket #<?php echo $row['ticketId']; ?></span> - Fecha de Creación <?php echo $row['posting_date']; ?> 
-                            <?php
-                            if ($row['statusN'] == 'Abierto') {
-                            ?>
-                            <span class="label label-success"><?php echo $row['statusN']; ?></span>
-                            <?php
-                            }else if ($row['statusN'] == 'Cerrado'){
-                            ?>
-                            <span class="label label-important"><?php echo $row['statusN']; ?></span>
-                            <?php
-                            }else{?>
-                            <span class="label label-warning"><?php echo $row['statusN']; ?></span>
-                            
-                            <?php
-                            };  
-                        ?>
-                        </p>
-                        <div class="actions"> <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> </div>
-                        </div>
-                        <div class="grid-body  no-border" style="display:none">
-                        <div class="post">
-                            <div class="user-profile-pic-wrapper">
-                                <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="../assets/img/user.png" data-src="../assets/img/user.png" src="../assets/img/user.png" alt=""> </div>
-                            </div>
-                            <div class="info-wrapper">
-                                <div class="info">
-                                        <?php echo $row['ticket'];?> 
-                                </div>
+                        <div class="grid simple no-border">
+                            <div class="grid-title no-border descriptive clickable">
+                            <h4 class="semi-bold"><?php echo $row['subject']; ?></h4>
+                            <p><span class="text-success bold">Ticket #<?php echo $row['ticketId']; ?></span> - Fecha de Creación <?php echo $row['posting_date']; ?> 
                                 <?php
-                                if (isset($row['ticket_img'])) { ?>
-                                    <div class="img">
-                                        <img src="<?php echo $row['ticket_img'];?>" alt="">
-                                    </div>
-                                <?php                                            
-                                }
+                                if ($row['statusN'] == 'Abierto') {
                                 ?>
+                                <span class="label label-success"><?php echo $row['statusN']; ?></span>
+                                <?php
+                                }else if ($row['statusN'] == 'Cerrado'){
+                                ?>
+                                <span class="label label-important"><?php echo $row['statusN']; ?></span>
+                                <?php
+                                }else{?>
+                                <span class="label label-warning"><?php echo $row['statusN']; ?></span>
+                                
+                                <?php
+                                };  
+                            ?>
+                            </p>
+                            <div class="actions"> <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> </div>
                             </div>
-                        </div>
-                        <br>
-
-                        <?php if ($row['admin_remark'] != '') : ?>
-                            <div class="form-actions">
-                            <div class="post col-md-12">
+                            <div class="grid-body  no-border" style="display:none">
+                            <div class="post">
                                 <div class="user-profile-pic-wrapper">
-                                <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="../assets/img/admin.jpg" data-src="../assets/img/admin.jpg" src="../assets/img/admin.jpg" alt="Admin"> </div>
+                                    <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="../assets/img/user.png" data-src="../assets/img/user.png" src="../assets/img/user.png" alt=""> </div>
                                 </div>
                                 <div class="info-wrapper">
-                                <br>
-                                    <div class="comm">
-                                        <h5>Procedimiento a seguir</h5>
-                                        <div>
-                                        <ul>
-                                            <?php
-                                            //Obtener las task asociadas al ticket
-                                            $tkid = $row['ticketId'];
-                                            $query = "SELECT ta.id AS tskId, ta.titulo, es.nombre
-                                                        FROM tasks ta
-                                                        JOIN estados es ON(ta.estado_id = es.id)
-                                                        WHERE ta.ticket_id = ?";
+                                    <div class="info">
+                                            <?php echo $row['ticket'];?> 
+                                    </div>
+                                    <?php
+                                    if (isset($row['ticket_img'])) { ?>
+                                        <div class="img">
+                                            <img src="<?php echo $row['ticket_img'];?>" alt="">
+                                        </div>
+                                    <?php                                            
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                            <br>
 
-                                            $stmt = $con->prepare($query);
-                                            
-                                            if($stmt){
-                                                $stmt->bind_param("i", $tkid); 
-                                                $stmt->execute();
-                                                $tasks = $stmt->get_result();
-                                                if($tasks->num_rows > 0) {
-                                                while($tsk = $tasks->fetch_assoc()) {
-                                                    ?>
-                                                        <li><?php echo $tsk["titulo"]?> </li>
-                                                        <p style="margin-left:15px"> Estado: <?php echo $tsk["nombre"]?></p>
-                                                    <?php
+                            <?php if ($row['admin_remark'] != '') : ?>
+                                <div class="form-actions">
+                                    <div class="post col-md-12">
+                                        <div class="user-profile-pic-wrapper">
+                                            <div class="user-profile-pic-normal"> 
+                                                <img width="35" height="35" data-src-retina="../assets/img/admin.jpg" data-src="../assets/img/admin.jpg" src="../assets/img/admin.jpg" alt="Admin"> 
+                                            </div>
+                                        </div>
+                                        <div class="info-wrapper">
+                                            <br>
+                                                <div class="comm">
+                                                    <h5>Procedimiento a seguir</h5>
+                                                    <div>
+                                                    <ul>
+                                                        <?php
+                                                        //Obtener las task asociadas al ticket
+                                                        $tkid = $row['ticketId'];
+                                                        $query = "SELECT ta.id AS tskId, ta.titulo, es.nombre
+                                                                    FROM tasks ta
+                                                                    JOIN estados es ON(ta.estado_id = es.id)
+                                                                    WHERE ta.ticket_id = ?";
 
-                                                }
+                                                        $stmt = $con->prepare($query);
+                                                        
+                                                        if($stmt){
+                                                            $stmt->bind_param("i", $tkid); 
+                                                            $stmt->execute();
+                                                            $tasks = $stmt->get_result();
+                                                            if($tasks->num_rows > 0) {
+                                                            while($tsk = $tasks->fetch_assoc()) {
+                                                                ?>
+                                                                    <li><?php echo $tsk["titulo"]?> </li>
+                                                                    <p style="margin-left:15px"> Estado: <?php echo $tsk["nombre"]?></p>
+                                                                <?php
 
-                                                }else {
-                                                echo "Actualmente no tiene tareas asignadas";
-                                                }
-                                                $stmt->close(); 
-                                                }  
-                                                else {
-                                                echo "Error en la consulta: ".$con->error;
-                                                }
-                                            ?>
-                                        </ul>
+                                                            }
+
+                                                            }else {
+                                                            echo "Actualmente no tiene tareas asignadas";
+                                                            }
+                                                            $stmt->close(); 
+                                                            }  
+                                                            else {
+                                                            echo "Error en la consulta: ".$con->error;
+                                                            }
+                                                        ?>
+                                                    </ul>
+                                                    </div>
+                                                </div>
+                                            <div class="tasks">
+                                                <h5>Comentario</h5>
+                                                <p><?php echo $row['admin_remark']; ?></p>
+                                            </div>
+                                            <hr>
+                                            <p class="small-text">Publicado en <?php echo $row['admin_remark_date']; ?></p>
                                         </div>
                                     </div>
-                                <div class="tasks">
-                                    <h5>Comentario</h5>
-                                    <p><?php echo $row['admin_remark']; ?></p>
                                 </div>
-                                <hr>
-                                <p class="small-text">Publicado en <?php echo $row['admin_remark_date']; ?></p>
-                                </div>
-                                <div class="clearfix"></div>
-                            </div>
-                            <div class="clearfix"></div>
-                            </div>
-                        <?php endif; ?>
+                            <?php endif; ?>
 
+                            </div>
                         </div>
                     </div>
+                </div>
                     <?php }
                 } else { ?>
-                     <h3 align="center" style="color:red;">Sin proyectos que mostrar</h3>
+                     <h3 align="center" style="color:red;">Sin Ticket que mostrar</h3>
             <?php 
             } ?>
-                    </div>
-                </div>
-        
-
         </div>   
     </div>
-  </div>
+</div>
 
 
 

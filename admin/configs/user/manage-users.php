@@ -1,7 +1,7 @@
 <?php
 session_start();
-include("dbconnection.php");
-include("../checklogin.php");
+include("../../dbconnection.php");
+include("../../../checklogin.php");
 include("assets/php/manage-users.php");
 check_login();
 ?>
@@ -25,8 +25,8 @@ check_login();
     <!-- Calendario CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker@0.6.6/dist/css/litepicker.css"/>
     <!-- CSS personalizados -->
-    <link href="../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
-    <link href="../assets/css/manage-users.css" rel="stylesheet" type="text/css" />
+    <link href="../../../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
+    <link href="../../../assets/css/manage-users.css" rel="stylesheet" type="text/css" />
     <!-- Toast notificaciones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 </head>
@@ -36,16 +36,19 @@ check_login();
     <!-- Sidebar -->
   <div class="page-container ">
     <div class="sidebar">
-    <?php include("header.php"); ?>
+    <?php include("../../header.php"); ?>
     </div>
     <div class="page-content">
-    <?php include("leftbar.php"); ?>
+    <?php include("../../leftbar.php"); ?>
         <div class="content">
-            <div class="page-title">
+            <div class="page-title d-flex justify-content-between">
                 <h2>
                     <i class="bi bi-person-gear"></i> 
                     Gestionar usuarios
                 </h2>
+                <button class=" btn-back" onclick="window.location.href='user-main.php';"> 
+                    <i class="bi bi-arrow-left" ></i>
+                </button>
             </div>
             <br>
             <div class="row main-table">
@@ -123,7 +126,7 @@ check_login();
   <!-- Calendario -->
   <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
   <!-- Scripts propios -->
-  <script src="../assets/js/sidebar.js"></script>
+  <script src="../../../assets/js/sidebar.js"></script>
 
 </body>
 

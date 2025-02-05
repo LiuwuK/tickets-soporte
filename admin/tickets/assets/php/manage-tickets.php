@@ -1,7 +1,5 @@
 <?php 
-    include("dbconnection.php");
-    include("phpmail.php");
-    include("notificaciones.php");
+
 
     //Obtener el email del usuario para enviar notificaciones 
 $queryCliente = "SELECT email_id FROM ticket WHERE id = ?";

@@ -1,9 +1,8 @@
 <?php
 session_start();
-error_reporting(0);
-include("../checklogin.php");
+include("../../../checklogin.php");
 check_login();
-include("dbconnection.php");
+include("../../dbconnection.php");
 include("assets/php/password-change.php");
 ?>
 
@@ -22,8 +21,8 @@ include("assets/php/password-change.php");
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <!-- CSS personalizados -->
-  <link href="../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
-  <link href="../assets/css/change-password.css" rel="stylesheet" type="text/css" />
+  <link href="../../../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
+  <link href="../../../configs/user/assets/css/change-password.css" rel="stylesheet" type="text/css" />
   <!-- Toast notificaciones -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 
@@ -33,20 +32,23 @@ include("assets/php/password-change.php");
     <!-- Sidebar -->
   <div class="page-container ">
     <div class="sidebar">
-    <?php include("header.php"); ?>
+    <?php include("../../header.php"); ?>
     </div>
     <div class="page-content">
-    <?php include("leftbar.php"); ?>
+    <?php include("../../leftbar.php"); ?>
         <div class="content">
-            <div class="page-title">
+            <div class="page-title d-flex justify-content-between">
                 <h2> 
                     <i class="bi bi-lock"></i>
                     Cambiar Contraseña
                 </h2>
+                <button class=" btn-back" onclick="window.location.href='user-main.php';"> 
+                    <i class="bi bi-arrow-left" ></i>
+                </button>
             </div>
-            <div class="form-content">
+            <div class="form-content col-md-10">
                 <form class="form-horizontal" name="form1" method="post" action="" onSubmit="return valid();">
-                    <div class="panel panel-default">
+                    <div class="panel panel-default ">
                         <div class="panel-body">
                             <?php
                                 if (!empty($_SESSION['msg1'])) {
@@ -92,8 +94,8 @@ include("assets/php/password-change.php");
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Complementos/Plugins-->    
   <!-- Scripts propios -->
-  <script src="../assets/js/sidebar.js"></script>
-  <script src="../assets/js/change-password.js"></script>
+  <script src="../../../assets/js/sidebar.js"></script>
+  <script src="../../../configs/user/assets/js/change-password.js"></script>
 </body>
 
 </html>

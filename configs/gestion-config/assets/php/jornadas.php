@@ -1,6 +1,6 @@
 <?php
 //obtener info de los supervisores
-$query = "SELECT * FROM supervisores";
+$query = "SELECT * FROM jornadas";
 $supervisorData = $con->prepare($query);
 $supervisorData->execute();
 $result = $supervisorData->get_result();

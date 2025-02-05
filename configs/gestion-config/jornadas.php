@@ -2,7 +2,7 @@
 session_start();
 include("../../checklogin.php");
 include("../../dbconnection.php");
-include("assets/php/supervisor.php");
+include("assets/php/jornadas.php");
 check_login();
 ?>
 <!DOCTYPE html>
@@ -11,7 +11,7 @@ check_login();
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <meta charset="utf-8" />
-  <title>Supervisores</title>
+  <title>Jornadas</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta content="" name="description" />
   <meta content="" name="author" />
@@ -38,31 +38,31 @@ check_login();
     <?php include("../../leftbar-test.php"); ?>
         <div class="content">
             <div class="page-title d-flex justify-content-between">
-                <h2>Supervisores</h2>
+                <h2>Jornadas</h2>
                 <button class=" btn-back" onclick="window.location.href='gestion-main.php';"> 
                     <i class="bi bi-arrow-left" ></i>
                 </button>
             </div>
             <div class="main-crud col-md-11 col-sm-12">
               <div class="head-crud d-flex justify-content-between mb-3">
-                <h4>Administrar Supervisores</h4>
+                <h4>Administrar Jornadas</h4>
                 <div class="btns">
-                  <button class="btn btn-updt"  data-bs-toggle="modal" data-bs-target="#newSuper">Nuevo Supervisor</button>
-                  <button type="submit" form="editSupervisor" class="btn btn-default" id="btnUpdt" name="btnUpdt" disabled>Actualizar</button>
+                  <button class="btn btn-updt"  data-bs-toggle="modal" data-bs-target="#newSuper">Nueva Jornada</button>
+                  <button type="submit" form="editJornada" class="btn btn-default" id="btnUpdt" name="btnUpdt" disabled>Actualizar</button>
                 </div>
               </div>
               <hr>
               <div class="body-crud">
                 <table class="table table-striped">
                     <thead>
-                        <th>Nombre</th>
+                        <th>Tipo de jornada</th>
                         <th>Rut</th>
                         <th>Correo</th>
                         <th>Numero de Contacto</th>
                         <th>Opciones</th>
                     </thead>
                     <tbody>
-                      <form name="form" id="editSupervisor" method="post">
+                      <form name="form" id="editJornada" method="post">
                         <div id="loading" style="display:none ;">
                             <div class="loading-spinner"></div>
                             <p>Procesando...</p>
@@ -100,12 +100,12 @@ check_login();
     </div>
   </div>
 
-<!-- Modal supervisor nuevo -->
+<!-- Modal jornada nueva -->
 <div class="modal fade" id="newSuper" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="newSuperLabel" aria-hidden="true">>
   <div class="modal-dialog">
       <div class="modal-content">
       <div class="modal-header">
-          <h5 class="modal-title" id="newSuperLabel">Nuevo Supervisor</h5>
+          <h5 class="modal-title" id="newSuperLabel">Nueva Jornada</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form id="newForm"  method="post" enctype="multipart/form-data">
@@ -140,7 +140,7 @@ check_login();
       </div>
   </div>
 </div>
-<!-- modal eliminar supervisor -->
+<!-- modal eliminar jornada -->
 <div class="modal fade" id="delSuper" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delSuperLabel" aria-hidden="true">
   <div class="modal-dialog">
       <div class="modal-content">
@@ -161,7 +161,6 @@ check_login();
       </div>
   </div>
 </div>
-
 
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

@@ -1,7 +1,9 @@
 <?php
 session_start();
-include("dbconnection.php");
-include("../checklogin.php");
+include("../dbconnection.php");
+include("../../checklogin.php");
+include("../phpmail.php");
+include("../notificaciones.php");
 include("assets/php/manage-tickets.php");
 header('Content-Type: text/html; charset=utf-8');
 check_login();
@@ -22,8 +24,8 @@ check_login();
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <!-- CSS personalizados -->
-  <link href="../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
-  <link href="../assets/css/manage_tickets.css" rel="stylesheet" type="text/css"/>
+  <link href="../../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
+  <link href="../../tickets/assets/css/manage_tickets.css" rel="stylesheet" type="text/css"/>
   <!-- Toast notificaciones -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 </head>
@@ -32,16 +34,19 @@ check_login();
     <!-- Sidebar -->
   <div class="page-container ">
     <div class="sidebar">
-      <?php include("header.php"); ?>
+      <?php include("../header.php"); ?>
     </div>
     <div class="page-content">
-      <?php include("leftbar.php"); ?>
+      <?php include("../leftbar.php"); ?>
         <div class="content">
-            <div class="page-title">
+            <div class="page-title d-flex justify-content-between">
                 <h2>
                   <i class="bi bi-ticket-perforated"></i>  
                   Tickets
                 </h2>
+                <button class=" btn-back" onclick="window.location.href='tickets-main.php';"> 
+                    <i class="bi bi-arrow-left" ></i>
+                </button>
             </div>
 
             <!-- filtros  -->
@@ -145,7 +150,7 @@ check_login();
                         <div class="grid-body  no-border" style="display:none">
                           <div class="post">
                             <div class="user-profile-pic-wrapper">
-                              <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="../assets/img/user.png" data-src="../assets/img/user.png" src="../assets/img/user.png" alt=""> </div>
+                              <div class="user-profile-pic-normal"> <img width="35" height="35" data-src-retina="../../assets/img/user.png" data-src="../../assets/img/user.png" src="../../assets/img/user.png" alt=""> </div>
                             </div>
                             <div class="info-wrapper">
                               <div class="info"><?php echo $row['ticket'];?> </div>
@@ -238,7 +243,7 @@ check_login();
                                       <h4>Respuesta Técnico</h4>
                                       <hr>
                                       <div class="user-profile-pic-wrapper mt-2">
-                                        <div class="user-profile-pic-normal"> <img width="50" height="50" data-src-retina="../assets/img/admin.jpg" data-src="../assets/img/admin.jpg" src="../assets/img/admin.jpg" alt=""> </div>
+                                        <div class="user-profile-pic-normal"> <img width="50" height="50" data-src-retina="../../assets/img/admin.jpg" data-src="../../assets/img/admin.jpg" src="../../assets/img/admin.jpg" alt=""> </div>
                                       </div>
                                       <div class="info-wrapper mb-3">
                                         <div class="info"><?php echo $row['tmsg'];?> </div>
@@ -371,13 +376,13 @@ check_login();
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Complementos/Plugins-->
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-  <script src="../assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js" type="text/javascript"></script>
+  <script src="../../assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js" type="text/javascript"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js" type="text/javascript"></script>
   <!-- Scripts propios -->
-  <script src="../assets/js/support_ticket.js" type="text/javascript"></script>  
-  <script src="../assets/js/general.js" type="text/javascript"></script>
-  <script src="../assets/js/tasks.js" type="text/javascript"></script>
-  <script src="../assets/js/sidebar.js"></script>
+  <script src="../../assets/js/support_ticket.js" type="text/javascript"></script>  
+  <script src="../../assets/js/general.js" type="text/javascript"></script>
+  <script src="../../tickets/assets/js/tasks.js" type="text/javascript"></script>
+  <script src="../../assets/js/sidebar.js"></script>
 </body>
 
 </html>
