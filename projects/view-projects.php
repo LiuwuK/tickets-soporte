@@ -162,10 +162,15 @@ check_login();
                                 <div class="actions"> 
                                     <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> 
                                 </div>
-                                <p>Ciudad: <span><?php echo $row['ciudadN']; ?></span></p>
-                                <p>Cliente: <span><?php echo !empty($row['clienteN']) ? $row['clienteN'] : 'Sin Asignar'; ?></span></p>
-                                <p><span>Ingeniero responsable</span>: <?php echo $row['ingeniero_responsable'] ? $row['ingeniero'] : "Sin asignar" ;?></p>
-
+                                <p>
+                                    <strong>Fecha de Cierre Documental</strong>:<span><?php echo !empty($row['fecha_cierre_documental']) ? $row['fecha_cierre_documental'] : 'Sin Asignar';?></span> 
+                                    <strong style="margin-left:5px">Fecha Adjudicacion</strong>:<span><?php echo !empty($row['fecha_adjudicacion']) ? $row['fecha_adjudicacion'] : 'Sin Asignar';?></span> 
+                                </p>
+                                <p>
+                                    <strong>Ciudad</strong>:<span><?php echo $row['ciudadN'];?></span> 
+                                    <strong style="margin-left:5px">Cliente</strong>:<span><?php echo !empty($row['clienteN']) ? $row['clienteN'] : 'Sin Asignar'; ?></span>
+                                    <strong style="margin-left:5px">Ingeniero Responsable</strong>:<?php echo $row['ingeniero_responsable'] ? $row['ingeniero'] : "Sin asignar" ;?></span>
+                                </p>
                             </div>
 
                             <!-- Vista completa -->

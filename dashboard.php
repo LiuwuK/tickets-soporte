@@ -303,7 +303,7 @@ check_login();
               if($_SESSION['cargo'] == 4){
                 
             ?>
-              <div class="gerencia  col-md-12 col-xl-5">
+              <div class="gerencia col-sm-12 col-md-12 col-xl-6">
                 <div class="t-head">
                   <h3>Top 5 Proyectos</h3>
                 </div>
@@ -379,7 +379,7 @@ check_login();
                 ?>
               </div>
 
-              <div class="col-sm-12 col-md-12 col-lg-8 col-xl-6 graficos">
+              <div class="col-sm-12 col-md-12 col-lg-8 col-xl-5 graficos">
                 <div class="d-flex justify-content-between mb-3">
                   <h3>Proyectos registrados</h3>
                   <div class="btn-group" role="group" aria-label="Filtro por Trimestre">

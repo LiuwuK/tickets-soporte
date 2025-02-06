@@ -176,7 +176,7 @@ check_login();
                             <label for="">Fecha de Cierre Documental</label>
                             <div class="input-group">
                                 <span class="input-group-text" id="cierreDoc"><i class="bi bi-exclamation-lg"></i></span>
-                                <input name="cierreDoc" type="date" class="form-control form-control-sm"  aria-label="Date" aria-describedby="cierreDoc">
+                                <input name="cierreDoc" type="date" class="form-control form-control-sm"  aria-label="Date" aria-describedby="cierreDoc" required>
                             </div>
                         </div>
                     </div>
@@ -185,7 +185,7 @@ check_login();
                             <label for="">Fecha de Adjudicación</label>
                             <div class="input-group">
                                 <span class="input-group-text" id="fAdj"><i class="bi bi-exclamation-lg"></i></span>
-                                <input name="fAdj" type="date" class="form-control form-control-sm"  aria-label="Date" aria-describedby="fAdj">
+                                <input name="fAdj" type="date" class="form-control form-control-sm"  aria-label="Date" aria-describedby="fAdj" required>
                             </div>
                         </div>
 
@@ -193,7 +193,7 @@ check_login();
                             <label for="">Fecha fin de Contrato</label>
                             <div class="input-group">
                                 <span class="input-group-text" id="finContrato"><i class="bi bi-exclamation-lg"></i></span>
-                                <input name="finContrato" type="date" class="form-control form-control-sm"  aria-label="Date" aria-describedby="finContrato">
+                                <input name="finContrato" type="date" class="form-control form-control-sm"  aria-label="Date" aria-describedby="finContrato" required>
                             </div>
                         </div>
                     </div>
