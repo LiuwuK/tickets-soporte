@@ -210,8 +210,7 @@ $query = "SELECT ti.id AS ticketId,
           FROM ticket ti 
           LEFT JOIN prioridades pr ON ti.prioprity = pr.id
           LEFT JOIN user us ON(us.id = ti.user_id)
-          JOIN estados st ON ti.status = st.id
-          WHERE ti.task_type = $cargo or ti.task_type = 5";
+          JOIN estados st ON ti.status = st.id";
 
 // Filtros dinámicos
 $conditions = [];
@@ -268,8 +267,7 @@ while ($estado = $status->fetch_assoc()) {
 }
 //obtener usuarios tecninos e ingenieros
 $query_user = "SELECT * 
-                FROM user
-                WHERE cargo = $cargo or cargo = 5";
+                FROM user";
 $userData = mysqli_query($con, $query_user);
 while ($row = mysqli_fetch_assoc($userData)) {
   $usuarios[] = $row; 
