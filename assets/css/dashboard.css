@@ -67,7 +67,7 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   padding: 20px;
   margin-top: 50px;
-  width: 48%;
+  min-width: 48%;
   color: #33435e;
   min-height: 20rem;
 }
