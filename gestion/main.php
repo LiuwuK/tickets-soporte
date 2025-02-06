@@ -45,12 +45,12 @@ check_login();
 
             <div class="content-body mx-auto col-xl-10">
                 <?php
-                if($_SESSION['cargo'] == 6){
+                if($_SESSION['cargo'] == 10){
                 ?>
-                <div class="crd mx-auto" onclick="window.location.href='manage-dist.php';">
-                    <i class="bi bi-truck"></i>
-                    <h4>Distribuidores</h4>
-                </div>
+                    <div class="crd mx-auto" onclick="window.location.href='manage-dist.php';">
+                        <i class="bi bi-truck"></i>
+                        <h4>Distribuidores</h4>
+                    </div>
                 <?php
                 }
                 ?>

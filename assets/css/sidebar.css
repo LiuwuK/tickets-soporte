@@ -97,7 +97,6 @@ input, .form-control, .form-select{
 .nav-item img{
     display: flex;
     border-radius: 50%;
-    width: 60%;
     margin: 0 auto;
 }
 

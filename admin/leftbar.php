@@ -43,7 +43,7 @@
       <a href="<?php echo BASE_URL;?>admin/work-log.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Bitácora de Trabajo">
         <i class="bi bi-journal-text"></i> 
       </a>
-      <img src="<?php echo BASE_URL;?>assets/img/admin.jpg" alt="" >
+      <img class="mt-2" style="width: 35px;" src="<?php echo BASE_URL;?>assets/img/admin.jpg" alt="" >
     </li>
 
     </li>
