@@ -118,7 +118,7 @@ check_login();
                           <p><?php echo $time_passed ?></p>
                         </div>
                         <div class="col-12 col-md-3 mb-2 mb-md-0" >
-                          <p><button class="btn btn-updt" onclick="window.location.href='tickets-asignados.php?textSearch=<?php echo $row['id']; ?>&priority=<?php echo $row['prioprity']; ?>';">Ver</button></p>
+                          <p><button class="btn btn-updt" onclick="window.location.href='tickets/tickets-asignados.php?textSearch=<?php echo $row['id']; ?>&priority=<?php echo $row['prioprity']; ?>';">Ver</button></p>
                         </div>
                       </div>
                     <?php
@@ -194,7 +194,7 @@ check_login();
                             };?>
                           </div>
                           <div class="text-end" style="width: 15%;">
-                            <p><button class="btn btn-updt" onclick="window.location.href='view-projects.php?textSearch=<?php echo $row['id'];?>&statusF=<?php echo $row['estado_id'];?>';">Ver</button></p>
+                            <p><button class="btn btn-updt" onclick="window.location.href='projects/view-projects.php?textSearch=<?php echo $row['id'];?>&statusF=<?php echo $row['estado_id'];?>';">Ver</button></p>
                           </div>
                         </div>
                       <?php
@@ -276,7 +276,7 @@ check_login();
                               <p><?php echo $time_passed ;?></p>
                             </div>
                             <div class="text-end" style="width: 10%;">
-                              <p><button class="btn btn-updt" onclick="window.location.href='bill-projects.php?textSearch=<?php echo $row['id'];?>&statusF=<?php echo $row['estado_id'];?>';">Ver</button></p>
+                              <p><button class="btn btn-updt" onclick="window.location.href='projects/bill-projects.php?textSearch=<?php echo $row['id'];?>&statusF=<?php echo $row['estado_id'];?>';">Ver</button></p>
                             </div>
                           </div>
                         <?php
@@ -356,7 +356,7 @@ check_login();
                           };?>
                         </div>
                         <div class="text-end" style="width: 15%;">
-                          <p><button class="btn btn-updt" onclick="window.location.href='view-projects.php?textSearch=<?php echo $row['id'];?>&statusF=<?php echo $row['estado_id'];?>';">Ver</button></p>
+                          <p><button class="btn btn-updt" onclick="window.location.href='projects/view-projects.php?textSearch=<?php echo $row['id'];?>&statusF=<?php echo $row['estado_id'];?>';">Ver</button></p>
                         </div>
                       </div>
                     <?php

@@ -1,7 +1,7 @@
 <?php
 
     $prioridad = mysqli_query($con, "select * from prioridades ");
-
+    $cargos = mysqli_query($con, "select * from cargos ");
     //obtener tecnicos
     $query = "SELECT * 
                 FROM  user
@@ -54,7 +54,7 @@
             } 
         //-----------------------------------------------------------------------------------------------------------------------
 
-        $query = "INSERT INTO ticket (email_id, subject, task_type, prioprity, ticket, status, posting_date, user_id, ticket_img, tecnico_asignado) 
+        $query = "INSERT INTO ticket (email_id, subject, task_type, prioprity, ticket, status, posting_date, user_id, ticket_img, usuario_asignado) 
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         if ($stmt = mysqli_prepare($con, $query)) {

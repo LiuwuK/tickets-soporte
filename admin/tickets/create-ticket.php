@@ -72,10 +72,14 @@ check_login();
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="tasktype" class="form-label">Tipo de Tarea</label>
+                            <label for="tasktype" class="form-label">Departamento Asociado</label>
                                 <select id="tasktype" name="tasktype" class="form-select form-select-sm" required>
                                     <option value="">Seleccionar</option>
-                                    <option>Ingeniería</option>
+                                    <?php
+                                    while ($row = mysqli_fetch_assoc($cargos)) {
+                                        echo "<option value=". $row['id'] .">". $row['nombre'] ."</option>";
+                                    };
+                                    ?>
                                 </select>
                         </div>
                         

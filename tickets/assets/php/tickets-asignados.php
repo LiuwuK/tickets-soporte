@@ -12,7 +12,6 @@ if (isset($_POST['update'])) {
   $userId = $_POST['userId'];
   $ticketStatus = "En revisión";
   
-
   //Subida de imagen-------------------------------------------------------------------------------------------------------
     // Configuración del directorio de carga
     if ($_SESSION['role'] == 'admin'){
@@ -154,7 +153,7 @@ $query = "SELECT ti.id AS ticketId,
           FROM ticket ti 
           LEFT JOIN prioridades pr ON ti.prioprity = pr.id
           JOIN estados st ON ti.status = st.id
-          WHERE tecnico_asignado  = ".$_SESSION['user_id']."";
+          WHERE usuario_asignado  = ".$_SESSION['user_id']."";
 //FILTROS
   // Filtros dinámicos
   $conditions = [];

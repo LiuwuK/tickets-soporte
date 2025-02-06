@@ -111,7 +111,7 @@ check_login();
                         <div class ="form-group">
                             <label class="form-label">Portal</label>
                             <div >
-                            <select name="portal" class="form-select form-select-sm" >
+                            <select name="portal" class="form-select form-select-sm">
                                 <?php
                                     echo "<option value='' >Sin asignar</option>";
                                     while ($row = mysqli_fetch_assoc(result: $portal)) {

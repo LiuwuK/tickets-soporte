@@ -64,7 +64,7 @@ $bodyNewProject = "
                         </tr>
                         <tr>
                             <td class='btn-div' >
-                                <button class='button'>Ver Ticket</button>
+                                <button class='button'>Ver Proyecto</button>
                             </td>
                         </tr>
                         <tr>

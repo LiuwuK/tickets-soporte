@@ -56,6 +56,19 @@ check_login();
                     <h4>Tickets Asignados</h4>
                 </div>
                 <?php
+                }else{
+                    if($_SESSION['role'] == 'supervisor'){
+                        $text = "<h4>Gestionar Tickets</h4>";
+                    }
+                    else{
+                        $text = "<h4>Tickets Asignados</h4>";
+                    }
+                ?>    
+                <div class="crd mx-auto" onclick="window.location.href='manage-tickets.php';">
+                    <i class="bi bi-pin-angle-fill"></i>
+                    <?php echo $text;?>
+                </div>
+                <?php    
                 }
                 ?>
                 <div class="crd mx-auto" onclick="window.location.href='view-tickets.php';">

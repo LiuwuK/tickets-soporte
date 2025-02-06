@@ -82,7 +82,7 @@ check_login();
               </div>
             </div>
           </div>
-          
+          <!-- Formulario de Traslado -->
           <div class="col-md-10 form-data mx-auto" id="trasladoForm" style="display: none;">
             <h3>Formulario de Traslado</h3>
             <div class="form-row mx-auto">
@@ -92,9 +92,14 @@ check_login();
                     <p>(Supervisor a cargo de Instalación de origen)</p>
                   </div>
                   <div >
-                      <select name="supervisor" class="form-select form-select-sm" required>
-                        <option value="">Seleccionar</option>
-                      </select>
+                    <select name="supervisor" id="supervisor" class="form-select form-select-sm">
+                      <option value="">Sin Asignar</option>
+                      <?php
+                      foreach ($sup AS $row) {
+                        echo "<option value=".$row['id'].">".$row['nombre_supervisor'] ."</option>";
+                      };
+                      ?>
+                    </select>
                   </div>
               </div>
             </div>
@@ -116,17 +121,27 @@ check_login();
               <div class ="form-group">
                   <label class="form-label">Instalacion de Origen <span>*</span></label>
                   <div >
-                      <select name="instalacion" class="form-select form-select-sm" required>
-                        <option value="">Seleccionar</option>
-                      </select>
+                    <select name="instalacion" id="instalacion" class="form-select form-select-sm">
+                      <option value="">Seleccionar</option>
+                      <?php
+                      foreach ($inst AS $row) {
+                        echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
+                      };
+                      ?>
+                    </select>
                   </div>
               </div>
               <div class ="form-group">
                   <label class="form-label">Jornada de Origen <span>*</span></label>
                   <div >
-                      <select name="jornada" class="form-select form-select-sm" required>
-                        <option value="">Seleccionar</option>
-                      </select>
+                    <select name="jornada" id="jornada" class="form-select form-select-sm">
+                      <option value="">Seleccionar</option>
+                      <?php
+                      foreach ($jornada AS $row) {
+                        echo "<option value=".$row['id'].">".$row['tipo_jornada'] ."</option>";
+                      };
+                      ?>
+                    </select>
                   </div>
               </div>
 
@@ -190,7 +205,8 @@ check_login();
               <button class="btn btn-updt">Enviar</button>
             </div>
           </div>
-
+          <!-- Fin Formulario traslado -->
+          <!-- formulario desvinculacion -->
           <div class="col-md-10 form-data mx-auto" id="desvinculacionForm" style="display: none;">
             <h3>Formulario de Desvinculacion</h3>
             <div class="form-row mx-auto">
@@ -246,7 +262,7 @@ check_login();
                 <textarea class="form-control form-control-sm" id="observacion" name="observacion" rows="6"></textarea>
               </div>
             </div>
-
+          <!-- Fin formulario desvinculacion -->
             <div class="footer">
               <button class="btn btn-updt">Enviar</button>
             </div>

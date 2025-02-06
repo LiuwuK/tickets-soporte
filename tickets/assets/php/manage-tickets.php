@@ -1,7 +1,7 @@
 <?php 
 
 $cargo = $_SESSION['cargo'];
-    //Obtener el email del usuario para enviar notificaciones 
+//Obtener el email del usuario para enviar notificaciones 
 $queryCliente = "SELECT email_id FROM ticket WHERE id = ?";
 $stmtCliente = $con->prepare($queryCliente);
 //---------------------------------------------------------------------------------------------------------
@@ -187,6 +187,14 @@ $prioData = mysqli_query($con, $query_prio);
 while ($row = mysqli_fetch_assoc($prioData)) {
   $prioridades[] = $row; 
 }
+//obtener usuarios
+$query_user = "SELECT * 
+                FROM user
+                WHERE cargo = $cargo";
+$userData = mysqli_query($con, $query_user);
+while ($row = mysqli_fetch_assoc($userData)) {
+  $usuarios[] = $row; 
+}
 
 $query_st = "SELECT * FROM estados WHERE type = 'ticket'";
 $statusF = mysqli_query($con, $query_st);
@@ -202,17 +210,19 @@ $searchText = isset($_GET['textSearch']) ? trim($_GET['textSearch']) : '';
 $uid = $_SESSION['id'];
 
 $query = "SELECT ti.id AS ticketId, 
-                pr.id AS prioridadId,
-                st.nombre AS statusN,
-                ti.*, pr.*,
-                pr.nombre AS prioN,
-                us.name AS userN
+                 pr.id AS prioridadId,
+                 st.nombre AS statusN,
+                 ti.*, pr.*, pr.nombre AS prioN,
+                 us.name AS userN
           FROM ticket ti 
           LEFT JOIN prioridades pr ON ti.prioprity = pr.id
           LEFT JOIN user us ON(us.id = ti.user_id)
           JOIN estados st ON ti.status = st.id
-          WHERE ti.task_type = $cargo or ti.task_type = 5";
+          WHERE ti.task_type = $cargo";
 
+if($_SESSION['role'] != "supervisor"){
+    $query .= " AND usuario_asignado = $uid ";
+}
 // Filtros dinámicos
 $conditions = [];
 $params = [];
@@ -243,7 +253,7 @@ if (!empty($searchText)) {
 
 // Combinar las condiciones
 if (!empty($conditions)) {
-  $query .= ' WHERE ' . implode(' AND ', $conditions);
+  $query .= ' AND ' . implode(' AND ', $conditions);
 }
 
 $stmt = $con->prepare($query);
@@ -266,16 +276,8 @@ $estados = [];
 while ($estado = $status->fetch_assoc()) {
     $estados[] = $estado;
 }
-//obtener usuarios tecninos e ingenieros
-$query_user = "SELECT * 
-                FROM user
-                WHERE cargo = $cargo or cargo = 5";
-$userData = mysqli_query($con, $query_user);
-while ($row = mysqli_fetch_assoc($userData)) {
-  $usuarios[] = $row; 
-}
 //----------------------------------------------------------------------------------------------------------
-
+//asignar prioridad
 if (isset($_POST["asignarPrio"])) {
   $prioId =  $_POST['prioridad'];
   $tID    =  $_POST['tId'];
