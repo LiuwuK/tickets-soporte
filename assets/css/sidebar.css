@@ -99,6 +99,11 @@ input, .form-control, .form-select{
     border-radius: 50%;
     margin: 0 auto;
 }
+.img-sidebar{
+    display: flex;
+    border-radius: 50%;
+    margin: 0 auto;
+}
 
 .sidebar a {
     color: white;
