@@ -4,7 +4,7 @@
 if ($_SESSION['cargo'] == 5){
   $query = "SELECT * 
             FROM ticket
-            WHERE tecnico_asignado = '".$_SESSION['user_id']."'
+            WHERE usuario_asignado = '".$_SESSION['user_id']."'
             ORDER BY posting_date ASC";
   $ticketsData = $con->prepare($query);
   $ticketsData->execute();
