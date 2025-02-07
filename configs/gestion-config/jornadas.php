@@ -112,7 +112,7 @@ check_login();
 
           <div class="form-row-modal mb-3">
             <div class="form-group">
-                <label for="entrada" class="form-label">Hora de Entrada</label>
+                <label for="entrada" class="form-label">Hora de Entrada<span>*</span></label>
                 <input type="time" class="form-control form-control-sm" id="entrada" name="entrada" required>
             </div>
             <div class="form-group">

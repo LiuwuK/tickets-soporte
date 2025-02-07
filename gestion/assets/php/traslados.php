@@ -113,4 +113,72 @@ if(isset($_POST['desvForm'])){
         echo "<script>alert('Desvinculacion Registrada Correctamente'); location.replace(document.referrer)</script>";
     }
 }
+
+//datos traslados y desvinculaciones del dia(16:00 dia anterior - 16:00 hoy)
+//traslados
+$query = "SELECT tr.*, 
+                us.name AS soliN, -- Nombre del solicitante
+                su_origen.nombre AS suOrigen, -- Sucursal de origen
+                jo_origen.tipo_jornada AS joOrigen, -- Jornada de origen
+                su_destino.nombre AS suDestino, -- Sucursal de destino
+                jo_destino.tipo_jornada AS joDestino, -- Jornada de destino
+                sup_origen.nombre_supervisor AS supOrigen, -- Supervisor de origen
+                sup_destino.nombre_supervisor AS supDestino -- Supervisor destino
+            FROM traslados tr
+            JOIN user us ON tr.solicitante = us.id
+            JOIN sucursales su_origen ON tr.instalacion_origen = su_origen.id
+            JOIN sucursales su_destino ON tr.instalacion_destino = su_destino.id
+            JOIN jornadas jo_origen ON tr.jornada_origen = jo_origen.id
+            JOIN jornadas jo_destino ON tr.jornada_destino = jo_destino.id
+            JOIN supervisores sup_origen ON tr.supervisor_origen = sup_origen.id
+            JOIN supervisores sup_destino ON tr.supervisor_destino = sup_destino.id
+            WHERE tr.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR AND CURDATE() + INTERVAL 16 HOUR
+            ORDER BY tr.fecha_registro ASC";
+$trasladosData = $con->prepare($query);
+$trasladosData->execute();
+$traslados = $trasladosData->get_result();
+$num = $traslados->num_rows;
+
+$query = "SELECT de.*, 
+                su.nombre AS instalacion,
+                us.name AS soliN,
+                sup.nombre_supervisor AS supervisor,
+                mo.motivo AS motivoEgreso
+            FROM desvinculaciones de
+            JOIN user us ON(de.solicitante = us.id)
+            JOIN sucursales su ON(de.instalacion = su.id)
+            JOIN supervisores sup ON(de.supervisor_origen = sup.id)
+            JOIN motivos_gestion mo ON(de.motivo = mo.id)
+            WHERE de.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR AND CURDATE() + INTERVAL 16 HOUR
+            ORDER BY de.fecha_registro ASC";
+$desvData = $con->prepare($query);
+$desvData->execute();
+$desvinculaciones = $desvData->get_result();
+$num_des = $desvinculaciones->num_rows;
+
+if(isset($_POST['delTr'])){
+    $id = $_POST['idTr'];
+    $query = "DELETE FROM traslados WHERE id = ?";
+    $stmt = $con->prepare($query);
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        echo "<script>alert('Traslado eliminado correctamente.');location.replace(document.referrer)</script>";
+    } else {
+        echo "<script>alert('Error al eliminar el supervisor.');</script>";
+    }
+    $stmt->close();
+}
+
+if(isset($_POST['delDesv'])){
+    $id = $_POST['idDesv'];
+    $query = "DELETE FROM desvinculaciones WHERE id = ?";
+    $stmt = $con->prepare($query);
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        echo "<script>alert('Desvinculacion eliminado correctamente.');location.replace(document.referrer)</script>";
+    } else {
+        echo "<script>alert('Error al eliminar el supervisor.');</script>";
+    }
+    $stmt->close();
+}
 ?>

@@ -239,7 +239,7 @@ check_login();
                 <p>Procesando...</p>
             </div>
             <div class="col-md-10 form-data mx-auto" id="desvinculacionForm" style="display: none;">
-              <h3>Formulario de Desvinculacion</h3>
+              <h3>Formulario de Desvinculación</h3>
               <div class="form-row mx-auto">
                 <div class ="form-group">  
                     <div class="d-flex msg">
@@ -252,7 +252,7 @@ check_login();
                           <?php
                           foreach ($sup AS $row) {
                             echo "<option value=".$row['id'].">".$row['nombre_supervisor'] ."</option>";
-                          };
+                          }
                           ?>
                         </select>
                     </div>
@@ -314,9 +314,120 @@ check_login();
               </div>
             </div>
           </form> 
+          <!-- Traslados -->
+          <div class="form-data col-md-10 mx-auto">
+            <h3>Traslados</h3>
+            <?php 
+            if($num > 0) {
+              while($row = $traslados->fetch_assoc()){
+                $date = date("Y-m-d H:i", strtotime($row['fecha_registro']));
+            ?>
+              <div class="mt-3 card col-md-11 mx-auto p-3 card-t">
+                <div class="colab-data">
+                  <strong>Colaborador: <?php echo $row['nombre_colaborador'];?></strong>
+                  <p>Solicitante: <?php echo $row['soliN']?></p>
+                  <p>Fecha: <?php echo $date?></p>
+                </div>
+                <div class="origen-data">
+                  <strong>Instalacion de Origen: <?php echo $row['suOrigen'] ?></strong>
+                  <p>Supervisor: <?php echo $row['supOrigen'];?></p>
+                  <p>Jornada Origen: <?php echo $row['joOrigen'];?></p>
+                </div>
+                <div class="destino-data">
+                  <strong>Instalacion de Destino: <?php echo $row['suDestino'] ?></strong>
+                  <p>Supervisor: <?php echo $row['supDestino'];?></p>
+                  <p>Jornada Destino: <?php echo $row['joDestino'];?></p>
+                </div>
+                <div class="delete-btns">
+                  <button class="btn btn-del del-btn" name="delTraslado" data-bs-toggle="modal" data-bs-target="#delTraslado" data-sup-id="<?php echo $row['id'];?>" >Eliminar</button>
+                </div>
+              </div>  
+            <?php   
+              }
+            } else{
+                echo "<p>No hay traslados registrados el dia de hoy</p>";
+              }
+            ?>
+          </div>
+          <!-- Desvinculaciones -->
+          <div class="form-data col-md-10 mx-auto">
+            <h3>Desvinculaciones</h3>
+            <?php 
+            if($num_des > 0) {
+              while($row = $desvinculaciones->fetch_assoc()){
+                $date = date("Y-m-d H:i", strtotime($row['fecha_registro']));
+            ?>
+              <div class="mt-3 card col-md-11 mx-auto p-3 card-t">
+                <div class="colab-data">
+                  <strong>Colaborador: <?php echo $row['colaborador'];?></strong>
+                  <p>Solicitante: <?php echo $row['soliN']?></p>
+                  <p>Fecha: <?php echo $date?></p>
+                </div>
+                <div class="origen-data">
+                  <strong>Instalacion de Origen: <?php echo $row['instalacion'] ?></strong>
+                  <p>Supervisor: <?php echo $row['supervisor'];?></p>
+                </div>
+                <div class="destino-data">
+                  <strong>Motivo de Egreso: <?php echo $row['motivoEgreso'] ?></strong>
+                  <p>Observación:  <?php echo $row['observacion'];?></p>
+                </div>
+                <div class="delete-btns">
+                  <button class="btn btn-del del-btn" name="delDesv" data-bs-toggle="modal" data-bs-target="#delDesv" data-sup-id="<?php echo $row['id'];?>" >Eliminar</button>
+                </div>
+              </div>  
+            <?php   
+              }
+            } else{
+                echo "<p>No hay desvinculaciones registradas el dia de hoy</p>";
+              }
+            ?>
+          </div>
         </div>   
     </div>
   </div>
+
+<!-- modal eliminar jornada -->
+<div class="modal fade" id="delTraslado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delTrasladoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="delTrasladoLabel">Traslado de </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <p>¿Estás seguro de que quieres eliminar este Traslado?</p>
+          <form id="delTr" method="POST">
+            <input type="hidden" name="idTr" id="idTr">
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" name="delTr" class="btn pull-right btn-del">Eliminar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+  </div>
+</div>
+<!-- modal eliminar desvinculacion -->
+<div class="modal fade" id="delDesv" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delDesvLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="delDesvLabel">Desvinculación de </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <p>¿Estás seguro de que quieres eliminar esta Desvinculación?</p>
+          <form id="delTr" method="POST">
+            <input type="hidden" name="idDesv" id="idDesv">
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" name="delDesv" class="btn pull-right btn-del">Eliminar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+  </div>
+</div>
 
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

@@ -31,3 +31,16 @@ span{
     opacity: 0.6;
     font-size: smaller;
 }
+.card-t p{
+    font-size: smaller;
+    opacity: 0.8;
+    margin: 0px;
+}
+.card-t{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-gap: 10px;
+}
+.del-btn{
+    width: 100px;
+}

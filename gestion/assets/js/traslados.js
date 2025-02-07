@@ -1,13 +1,20 @@
 function mostrarFormulario(id) {
-    // Oculta ambos formularios
-    document.getElementById('trasladoForm').style.display = 'none';
-    document.getElementById('desvinculacionForm').style.display = 'none';
+    const traslado = document.getElementById('traslado');
+    const desvinculacion = document.getElementById('desvinculacion');
+    const trasladoForm = document.getElementById('trasladoForm');
+    const desvinculacionForm = document.getElementById('desvinculacionForm');
 
-    // Muestra solo el seleccionado
-    document.getElementById(id).style.display = 'block';
+    if (document.getElementById(id).style.display === 'block') {
+        traslado.checked = false;
+        desvinculacion.checked = false;
+        trasladoForm.style.display = 'none';
+        desvinculacionForm.style.display = 'none';
+    } else {
+        trasladoForm.style.display = 'none';
+        desvinculacionForm.style.display = 'none';
+        document.getElementById(id).style.display = 'block';
+    }
 }
-
-
 document.addEventListener("input", function(e){
     if (e.target.matches("input[id='rut']")) {
         let input = e.target; 
@@ -24,4 +31,12 @@ document.addEventListener("input", function(e){
         }
         input.value = rut; 
     }
+});
+
+document.querySelectorAll('.del-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        var ID = btn.getAttribute('data-sup-id');
+        document.getElementById('idTr').value = ID;
+        document.getElementById('idDesv').value = ID;
+    });
 });
