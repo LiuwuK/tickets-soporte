@@ -51,12 +51,7 @@ check_login();
                   <label class="form-label">Solicitante</label>
                   <div >
                       <select name="solicitante" class="form-select form-select-sm" >
-                        <option value="">Seleccionar</option>
-                        <?php
-                        while ($row = mysqli_fetch_assoc($result)) {
-                          echo "<option value=".$row['id'].">".$row['name']."</option>";
-                        };
-                        ?>
+                        <?php echo "<option value=".$_SESSION['id'].">".$_SESSION['name']."</option>";?>
                       </select>
                   </div>
               </div>
@@ -83,190 +78,242 @@ check_login();
             </div>
           </div>
           <!-- Formulario de Traslado -->
-          <div class="col-md-10 form-data mx-auto" id="trasladoForm" style="display: none;">
-            <h3>Formulario de Traslado</h3>
-            <div class="form-row mx-auto">
-              <div class ="form-group">  
-                  <div class="d-flex msg">
-                    <label class="form-label">Supervisor Origen <span>*</span></label>
-                    <p>(Supervisor a cargo de Instalación de origen)</p>
-                  </div>
-                  <div >
-                    <select name="supervisor" id="supervisor" class="form-select form-select-sm">
-                      <option value="">Sin Asignar</option>
-                      <?php
-                      foreach ($sup AS $row) {
-                        echo "<option value=".$row['id'].">".$row['nombre_supervisor'] ."</option>";
-                      };
-                      ?>
-                    </select>
-                  </div>
-              </div>
+          <form name="form" method="POST" enctype="multipart/form-data">
+            <div id="loading" style="display:none ;">
+                <div class="loading-spinner"></div>
+                <p>Procesando...</p>
             </div>
-            <div class="form-row mx-auto">
-              <div class="form-group">
-                <label for="colaborador" class="form-label">Nombre Colaborador <span>*</span></label>
-                <input type="text" class="form-control form-control-sm" id="colaborador" name="colaborador" required>
-              </div>
-              <div class="form-group ">
-                <div class="d-flex msg">
-                  <label for="rut" class="form-label">Rut <span>*</span></label>
-                  <p>(Sin puntos ni guion)</p>
+            <div class="col-md-10 form-data mx-auto" id="trasladoForm" style="display: none;">
+              <h3>Formulario de Traslado</h3>
+              <div class="form-row mx-auto">
+                <div class ="form-group">  
+                    <div class="d-flex msg">
+                      <label class="form-label">Supervisor Origen <span>*</span></label>
+                      <p>(Supervisor a cargo de Instalación de origen)</p>
+                    </div>
+                    <div >
+                      <select name="supervisor" id="supervisor" class="form-select form-select-sm">
+                        <option value="">Seleccionar</option>
+                        <?php
+                        foreach ($sup AS $row) {
+                          echo "<option value=".$row['id'].">".$row['nombre_supervisor'] ."</option>";
+                        };
+                        ?>
+                      </select>
+                    </div>
                 </div>
-                <input type="text" class="form-control form-control-sm" id="rut" name="rut" maxlength="12" required>
-                
               </div>
-            </div>
-            <div class="form-row mx-auto">
-              <div class ="form-group">
-                  <label class="form-label">Instalacion de Origen <span>*</span></label>
-                  <div >
-                    <select name="instalacion" id="instalacion" class="form-select form-select-sm">
-                      <option value="">Seleccionar</option>
-                      <?php
-                      foreach ($inst AS $row) {
-                        echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
-                      };
-                      ?>
-                    </select>
+              <div class="form-row mx-auto">
+                <div class="form-group">
+                  <label for="colaborador" class="form-label">Nombre Colaborador <span>*</span></label>
+                  <input type="text" class="form-control form-control-sm" id="colaborador" name="colaborador" required>
+                </div>
+                <div class="form-group ">
+                  <div class="d-flex msg">
+                    <label for="rut" class="form-label">Rut <span>*</span></label>
+                    <p>(Sin puntos ni guion)</p>
                   </div>
+                  <input type="text" class="form-control form-control-sm" id="rut" name="rut" maxlength="12" required>
+                  
+                </div>
               </div>
-              <div class ="form-group">
-                  <label class="form-label">Jornada de Origen <span>*</span></label>
-                  <div >
-                    <select name="jornada" id="jornada" class="form-select form-select-sm">
-                      <option value="">Seleccionar</option>
-                      <?php
-                      foreach ($jornada AS $row) {
-                        echo "<option value=".$row['id'].">".$row['tipo_jornada'] ."</option>";
-                      };
-                      ?>
-                    </select>
-                  </div>
-              </div>
+              <div class="form-row mx-auto">
+                <div class ="form-group">
+                    <label class="form-label">Instalacion de Origen <span>*</span></label>
+                    <div >
+                      <select name="instalacion" id="instalacion" class="form-select form-select-sm">
+                        <option value="">Seleccionar</option>
+                        <?php
+                        foreach ($inst AS $row) {
+                          echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
+                        };
+                        ?>
+                      </select>
+                    </div>
+                </div>
+                <div class ="form-group">
+                    <label class="form-label">Jornada de Origen <span>*</span></label>
+                    <div >
+                      <select name="jornada" id="jornada" class="form-select form-select-sm">
+                        <option value="">Seleccionar</option>
+                        <?php
+                        foreach ($jornada AS $row) {
+                          echo "<option value=".$row['id'].">".$row['tipo_jornada'] ."</option>";
+                        };
+                        ?>
+                      </select>
+                    </div>
+                </div>
 
-            </div>
-            <div class="form-row mx-auto">
-              <div class ="form-group">
-                  <label class="form-label">Motivo de traslado</label>
+              </div>
+              <div class="form-row mx-auto">
+                <div class ="form-group">
+                    <label class="form-label">Motivo de traslado</label>
+                    <div >
+                        <select name="motivo" class="form-select form-select-sm" >
+                          <option value="">Seleccionar</option>
+                          <?php
+                          foreach ($motivoT AS $row) {
+                            echo "<option value=".$row['id'].">".$row['motivo'] ."</option>";
+                          };
+                          ?>
+                        </select>
+                    </div>
+                </div>
+              </div>
+              <div class="form-row mx-auto">
+                <div class ="form-group">
+                  <label class="form-label">Instalacion de Destino <span>*</span></label>
                   <div >
-                      <select name="motivo" class="form-select form-select-sm" >
+                      <select name="inDestino" class="form-select form-select-sm" required>
                         <option value="">Seleccionar</option>
+                        <?php
+                        foreach ($inst AS $row) {
+                          echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
+                        };
+                        ?>
                       </select>
                   </div>
-              </div>
-            </div>
-            <div class="form-row mx-auto">
-              <div class ="form-group">
-                <label class="form-label">Instalacion de Destino <span>*</span></label>
-                <div >
-                    <select name="inDestino" class="form-select form-select-sm" required>
-                      <option value="">Seleccionar</option>
-                    </select>
                 </div>
-              </div>
-              <div class ="form-group">
-                <label class="form-label">Jornada de Destino <span>*</span></label>
-                <div >
-                    <select name="joDestino" class="form-select form-select-sm" required>
-                      <option value="">Seleccionar</option>
-                    </select>
-                </div>
-              </div>
-            </div>
-            <div class="form-row mx-auto">
-              <div class ="form-group">
-                <label class="form-label">Rol <span>*</span></label>
-                <div >
-                    <select name="rol" class="form-select form-select-sm" required>
-                      <option value="">Seleccionar</option>
-                    </select>
-                </div>
-              </div>
-              <div class ="form-group">
-                <label for="fechaInicio" class="form-label">Fecha de Inicio de Turno <span>*</span></label>
-                <input type="date" class="form-control form-control-sm" id="fechaInicio" name="fechaInicio" required>
-              </div>
-            </div>
-            <div class="form-row mx-auto">
-              <div class ="form-group">  
-                  <div class="d-flex msg">
-                    <label class="form-label">Supervisor Destino <span>*</span></label>
-                    <p>(Supervisor a cargo de instalación de destino)</p>
-                  </div>
+                <div class ="form-group">
+                  <label class="form-label">Jornada de Destino <span>*</span></label>
                   <div >
-                      <select name="supervisorDestino" class="form-select form-select-sm" required>
+                      <select name="joDestino" class="form-select form-select-sm" required>
                         <option value="">Seleccionar</option>
+                        <?php
+                        foreach ($jornada AS $row) {
+                          echo "<option value=".$row['id'].">".$row['tipo_jornada'] ."</option>";
+                        };
+                        ?>
                       </select>
                   </div>
+                </div>
+              </div>
+              <div class="form-row mx-auto">
+                <div class ="form-group">
+                  <label class="form-label">Rol <span>*</span></label>
+                  <div >
+                      <select name="rol" class="form-select form-select-sm" required>
+                        <option value="">Seleccionar</option>
+                        <?php
+                        foreach ($rol AS $row) {
+                          echo "<option value=".$row['id'].">".$row['nombre_rol'] ."</option>";
+                        };
+                        ?>
+                      </select>
+                  </div>
+                </div>
+                <div class ="form-group">
+                  <label for="fechaInicio" class="form-label">Fecha de Inicio de Turno <span>*</span></label>
+                  <input type="date" class="form-control form-control-sm" id="fechaInicio" name="fechaInicio" required>
+                </div>
+              </div>
+              <div class="form-row mx-auto">
+                <div class ="form-group">  
+                    <div class="d-flex msg">
+                      <label class="form-label">Supervisor Destino <span>*</span></label>
+                      <p>(Supervisor a cargo de instalación de destino)</p>
+                    </div>
+                    <div >
+                        <select name="supervisorDestino" class="form-select form-select-sm" required>
+                          <option value="">Seleccionar</option>
+                          <?php
+                          foreach ($sup AS $row) {
+                            echo "<option value=".$row['id'].">".$row['nombre_supervisor'] ."</option>";
+                          };
+                          ?>
+                        </select>
+                    </div>
+                </div>
+              </div>
+              <div class="footer">
+                <button tyoe="submit" name="trasladoForm" class="btn btn-updt">Enviar</button>
               </div>
             </div>
-            <div class="footer">
-              <button class="btn btn-updt">Enviar</button>
-            </div>
-          </div>
+          </form>
           <!-- Fin Formulario traslado -->
           <!-- formulario desvinculacion -->
-          <div class="col-md-10 form-data mx-auto" id="desvinculacionForm" style="display: none;">
-            <h3>Formulario de Desvinculacion</h3>
-            <div class="form-row mx-auto">
-              <div class ="form-group">  
-                  <div class="d-flex msg">
-                    <label class="form-label">Supervisor Encargado <span>*</span></label>
-                    <p>(Supervisor a cargo de Instalación)</p>
-                  </div>
-                  <div >
-                      <select name="supervisorEncargado" class="form-select form-select-sm" required>
-                        <option value="">Seleccionar</option>
-                      </select>
-                  </div>
-                  
-              </div>
+          <form name="form" method="POST" enctype="multipart/form-data">
+            <div id="loading" style="display:none ;">
+                <div class="loading-spinner"></div>
+                <p>Procesando...</p>
             </div>
-            <div class="form-row mx-auto">
-              <div class="form-group">
-                <label for="colaborador" class="form-label">Nombre Colaborador <span>*</span></label>
-                <input type="text" class="form-control form-control-sm" id="colaborador" name="colaborador" required>
-              </div>
-              <div class="form-group ">
-                <div class="d-flex msg">
-                  <label for="rutDesvinculacion" class="form-label">Rut <span>*</span></label>
-                  <p>(Sin puntos ni guion)</p>
+            <div class="col-md-10 form-data mx-auto" id="desvinculacionForm" style="display: none;">
+              <h3>Formulario de Desvinculacion</h3>
+              <div class="form-row mx-auto">
+                <div class ="form-group">  
+                    <div class="d-flex msg">
+                      <label class="form-label">Supervisor Encargado <span>*</span></label>
+                      <p>(Supervisor a cargo de Instalación)</p>
+                    </div>
+                    <div >
+                        <select name="supervisorEncargado" class="form-select form-select-sm" required>
+                          <option value="">Seleccionar</option>
+                          <?php
+                          foreach ($sup AS $row) {
+                            echo "<option value=".$row['id'].">".$row['nombre_supervisor'] ."</option>";
+                          };
+                          ?>
+                        </select>
+                    </div>
+                    
                 </div>
-                <input type="text" class="form-control form-control-sm" id="rut" name="rut" maxlength="12" required>
-                
               </div>
-            </div>
-            <div class="form-row mx-auto">
-              <div class ="form-group">
-                  <label class="form-label">Instalacion de Origen <span>*</span></label>
-                  <div >
-                      <select name="instalacion" class="form-select form-select-sm" required>
-                        <option value="">Seleccionar</option>
-                      </select>
+              <div class="form-row mx-auto">
+                <div class="form-group">
+                  <label for="colaborador" class="form-label">Nombre Colaborador <span>*</span></label>
+                  <input type="text" class="form-control form-control-sm" id="colaborador" name="colaborador" required>
+                </div>
+                <div class="form-group ">
+                  <div class="d-flex msg">
+                    <label for="rutDesvinculacion" class="form-label">Rut <span>*</span></label>
+                    <p>(Sin puntos ni guion)</p>
                   </div>
+                  <input type="text" class="form-control form-control-sm" id="rut" name="rut" maxlength="12" required>
+                  
+                </div>
               </div>
-              <div class ="form-group">
-                  <label class="form-label">Motivo de Egreso <span>*</span></label>
-                  <div >
-                      <select name="motivo" class="form-select form-select-sm" required>
-                        <option value="">Seleccionar</option>
-                      </select>
-                  </div>
-              </div>
+              <div class="form-row mx-auto">
+                <div class ="form-group">
+                    <label class="form-label">Instalacion de Origen <span>*</span></label>
+                    <div >
+                        <select name="instalacion" class="form-select form-select-sm" required>
+                          <option value="">Seleccionar</option>
+                          <?php
+                          foreach ($inst AS $row) {
+                            echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
+                          };
+                          ?>
+                        </select>
+                    </div>
+                </div>
+                <div class ="form-group">
+                    <label class="form-label">Motivo de Egreso <span>*</span></label>
+                    <div >
+                        <select name="motivo" class="form-select form-select-sm" required>
+                          <option value="">Seleccionar</option>
+                          <?php
+                          foreach ($motivoE AS $row) {
+                            echo "<option value=".$row['id'].">".$row['motivo'] ."</option>";
+                          };
+                          ?>
+                        </select>
+                    </div>
+                </div>
 
-            </div>
-            <div class="form-row mx-auto">
-              <div class="form-group">
-                <label for="observacion" class="form-label">Observación <span>*</span></label>
-                <textarea class="form-control form-control-sm" id="observacion" name="observacion" rows="6"></textarea>
+              </div>
+              <div class="form-row mx-auto">
+                <div class="form-group">
+                  <label for="observacion" class="form-label">Observación <span>*</span></label>
+                  <textarea class="form-control form-control-sm" id="observacion" name="observacion" rows="6"></textarea>
+                </div>
+              </div>
+            <!-- Fin formulario desvinculacion -->
+              <div class="footer">
+                <button name="desvForm" class="btn btn-updt">Enviar</button>
               </div>
             </div>
-          <!-- Fin formulario desvinculacion -->
-            <div class="footer">
-              <button class="btn btn-updt">Enviar</button>
-            </div>
-          </div>
+          </form> 
         </div>   
     </div>
   </div>
