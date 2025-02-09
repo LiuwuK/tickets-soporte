@@ -9,6 +9,7 @@
         "phpmailer/phpmailer": "^6.9",
         "textalk/websocket": "^1.5",
         "google/apiclient": "^2.18",
-        "fpdf/fpdf": "^1.86"
+        "fpdf/fpdf": "^1.86",
+        "firebase/php-jwt": "^6.11"
     }
 }
