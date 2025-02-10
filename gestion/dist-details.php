@@ -68,7 +68,7 @@ check_login();
                       <p><?php echo $fecha; ?></p>
                     </div>
                     <div class="text-end" style="width: 150px;">
-                      <p><?php echo '$' . number_format($row['costo_real'], 0, '.', ','); ?></p>
+                      <p><?php echo '$' . number_format($row['monto'], 0, '.', ','); ?></p>
                     </div>
                   </div>
                   <div class="additional-info">

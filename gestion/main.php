@@ -52,7 +52,7 @@ check_login();
                         <h4>Distribuidores</h4>
                     </div>
                 <?php
-                }else if{
+                }else{
                 ?>
                     <div class="crd mx-auto" onclick="window.location.href='clients.php';">
                         <i class="bi bi-people-fill"></i>
