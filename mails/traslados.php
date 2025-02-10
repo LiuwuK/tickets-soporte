@@ -8,7 +8,6 @@ include('../dbconnection.php');
 $user = 'stsafeteck@gmail.com'; // correo
 $pass = 'molc xtfj nfev kruf'; // Contraseña de aplicación
 
-
 $query = "SELECT tr.nombre_colaborador,
                 tr.rut,
                 tr.fecha_inicio_turno,

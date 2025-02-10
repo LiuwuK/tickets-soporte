@@ -12,6 +12,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $user = 'stsafeteck@gmail.com'; // correo
 $pass = 'molc xtfj nfev kruf'; // Contraseña de aplicación
 $tId  = '$tId'; 
+$uid  = '$uid';
+$projectUrl = 'http://186.67.95.90:8083/tickets-soporte/admin/projects/view-projects.php?textSearch=$tId';
 
 //Body para la funcion CreateTicketMail (Nuevo ticket)
 $bodyNewTicket = "<body>
@@ -23,9 +25,8 @@ $bodyNewTicket = "<body>
                         </tr>
                         <tr>
                             <td class='email-body'>
-                                <p>Estimado Usuario,</p>
                                 <p>
-                                    Se ha creado un nuevo ticket en el sistema con el ID <strong>#$tId</strong>.
+                                    El usuario $uid ha creado un nuevo ticket en el sistema con el ID <strong>#$tId</strong>.
                                     Puedes revisarlo y realizar las acciones necesarias.
                                 </p>
                             </td>
@@ -55,20 +56,22 @@ $bodyNewProject = "
                         </tr>
                         <tr>
                             <td class='email-body'>
-                                <p>Estimado Usuario,</p>
                                 <p>
-                                    Se ha creado un nuevo proyecto en el sistema con el ID <strong>#$tId</strong>.
+                                    El usuario $uid ha creado un nuevo proyecto en el sistema con el ID <strong>#$tId</strong>.
                                     Puedes revisarlo y realizar las acciones necesarias.
                                 </p>
                             </td>
                         </tr>
                         <tr>
                             <td class='btn-div' >
-                                <button class='button'>Ver Proyecto</button>
+                                <a href='$projectUrl'>
+                                    <button class='button' >Ver Proyecto</button>
+                                </a>   
                             </td>
                         </tr>
                         <tr>
                             <td class='footer'>
+                            
                                 <p>Este es un correo automatizado, por favor no respondas.</p>
                             </td>
                         </tr>
@@ -205,15 +208,17 @@ class Notificaciones {
         }
     }
     //Envio de correo cuando se crea un ticket/proyecto
-    public static function crearTicketMail($tId,$type) {
+    public static function crearTicketMail($tId,$type,$uid) {
         global $user, $pass, $bodyNewProject, $bodyNewTicket;
         $mail = new PHPMailer(true);
         if($type == 'ticket'){
             $asunto = "Nuevo Ticket Creado #$tId";
             $bodyNewTicket = str_replace('$tId', $tId, $bodyNewTicket);
+            $bodyNewTicket = str_replace('$uid', $uid, $bodyNewTicket);
         } else if ($type == 'project'){
             $asunto = "Nuevo proyecto Creado #$tId";
-            $bodyNewTicket = str_replace('$tId', $tId, $bodyNewProject);
+            $bodyNewProject = str_replace('$tId', $tId, $bodyNewProject);
+            $bodyNewProject = str_replace('$uid', $uid, $bodyNewProject);
         }
         try {
             // Consulta para obtener los correos de todos los administradores
@@ -233,6 +238,7 @@ class Notificaciones {
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587;
                 $mail->CharSet = 'UTF-8';
+                
 
                 while ($row = $result->fetch_assoc()) {
                     $destinatario = $row['email'];
@@ -297,7 +303,7 @@ class Notificaciones {
                         if($type == 'ticket'){
                             $mail->Body .= "$bodyNewTicket";
                         } else if ($type == 'project'){
-                            $mail->Body .= "$bodyNewTicket";
+                            $mail->Body .= "$bodyNewProject";
                         }
                     // Envía el correo
                     $mail->send();

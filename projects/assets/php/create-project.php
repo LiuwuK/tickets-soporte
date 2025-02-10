@@ -142,7 +142,7 @@ if(isset($_POST['newProject'])){
             }
             //Si el tipo es licitacion (ID 1) o contacto (ID 2)
             if($pType == 1){
-                $portal = $_POST['portal'];
+                $portal = !empty($_POST['portal']) ? $_POST['portal'] : NULL;
                 $licID = $_POST['licID'];
                 $query = 'INSERT INTO licitacion_proyecto (licitacion_id, proyecto_id, portal) VALUES(?, ?, ?)'; 
                 $lc_stmt = mysqli_prepare($con, $query);
@@ -163,8 +163,14 @@ if(isset($_POST['newProject'])){
                     mysqli_stmt_close($ct_stmt);
                 }                   
             } 
-            Notificaciones::crearTicketMail($pId,'project');
+            $user = $_SESSION['name'];
+            if(Notificaciones::crearTicketMail($pId, 'ticket', $user)){
+                //echo "<script>alert('correo enviado Correctamente'); location.replace(document.referrer)</script>";
+            } else {
+                //echo "<script>alert('Hubo un error al enviar el correo'); location.replace(document.referrer)</script>";
+            }
             echo "<script>alert('Proyecto Registrado Correctamente'); location.replace(document.referrer)</script>";
+            
         } else {
             echo "<script>alert('Error al registrar el proyecto');</script>";
         }
