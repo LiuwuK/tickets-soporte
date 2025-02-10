@@ -10,7 +10,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 //credenciales (cambiar) USER = CORREO / PASS = CLAVE DE APLICACION GOOGLE 
 $user = 'stsafeteck@gmail.com'; // correo
-$pass = 'molc xtfj nfev kruf'; // Contraseña de aplicación
+$pass = 'lwpo pieb xcaq ytbj'; // Contraseña de aplicación
 $tId  = '$tId'; 
 $uid  = '$uid';
 $projectUrl = 'http://186.67.95.90:8083/tickets-soporte/admin/projects/view-projects.php?textSearch=$tId';
