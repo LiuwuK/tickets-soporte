@@ -4,7 +4,7 @@
     <div class="header-quick-nav">
       <div class="ml-2 pull-left" style="padding-top: 0.5em;padding-left: 1em">
         <h4>
-          <a href="home.php" class="text-reset"><strong>SafeTeck - Acceso Admin</strong></a>
+          <a class="text-reset"><strong>SafeTeck - Acceso Admin</strong></a>
         </h4>
         <ul class="nav quick-section">
         </ul>
