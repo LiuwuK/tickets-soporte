@@ -13,7 +13,7 @@ $user = 'stsafeteck@gmail.com'; // correo
 $pass = 'lwpo pieb xcaq ytbj'; // Contraseña de aplicación
 $tId  = '$tId'; 
 $uid  = '$uid';
-$projectUrl = 'http://186.67.95.90:8083/tickets-soporte/admin/projects/view-projects.php?textSearch=$tId';
+$projectUrl = 'http://186.67.95.90:8083/tickets-soporte/admin/projects/view-projects.php?textSearch=$tId';    
 $ticketUrl  = 'http://186.67.95.90:8083/tickets-soporte/admin/tickets/manage-tickets.php?textSearch=$tId&priority=&statusF=10';
 //Body para la funcion CreateTicketMail (Nuevo ticket)
 $bodyNewTicket = "<body>

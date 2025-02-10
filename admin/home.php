@@ -33,7 +33,7 @@ check_login();
 
 
 <body class="test" >
-    <!-- Sidebar -->
+    <!-- Sidebar --> 
   <div class="page-container ">
     <div class="sidebar">
     <?php include("header.php"); ?>

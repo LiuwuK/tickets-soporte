@@ -45,23 +45,26 @@ check_login();
 
             <div class="content-body mx-auto col-xl-10">
                 <?php
-                if($_SESSION['cargo'] == 10){
+                if($_SESSION['cargo'] == 6 ){
                 ?>
                     <div class="crd mx-auto" onclick="window.location.href='manage-dist.php';">
                         <i class="bi bi-truck"></i>
                         <h4>Distribuidores</h4>
                     </div>
                 <?php
+                }else if{
+                ?>
+                    <div class="crd mx-auto" onclick="window.location.href='clients.php';">
+                        <i class="bi bi-people-fill"></i>
+                        <h4>Historico Clientes</h4>
+                    </div>
+                    <div class="crd mx-auto" onclick="window.location.href='traslados.php';">
+                        <i class="bi bi-truck-front-fill"></i>
+                        <h4>Traslado y Desvinculacion</h4>
+                    </div>
+                <?php
                 }
                 ?>
-                <div class="crd mx-auto" onclick="window.location.href='clients.php';">
-                    <i class="bi bi-people-fill"></i>
-                    <h4>Historico Clientes</h4>
-                </div>
-                <div class="crd mx-auto" onclick="window.location.href='traslados.php';">
-                    <i class="bi bi-truck-front-fill"></i>
-                    <h4>Traslado y Desvinculacion</h4>
-                </div>
             </div>
         </div>   
     </div>
