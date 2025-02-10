@@ -14,7 +14,7 @@ $pass = 'molc xtfj nfev kruf'; // Contraseña de aplicación
 $tId  = '$tId'; 
 $uid  = '$uid';
 $projectUrl = 'http://186.67.95.90:8083/tickets-soporte/admin/projects/view-projects.php?textSearch=$tId';
-
+$ticketUrl  = 'http://186.67.95.90:8083/tickets-soporte/admin/tickets/manage-tickets.php?textSearch=$tId&priority=&statusF=10';
 //Body para la funcion CreateTicketMail (Nuevo ticket)
 $bodyNewTicket = "<body>
                     <table class='email-container' width='100%' cellspacing='0' cellpadding='0' role='presentation'>
@@ -33,7 +33,9 @@ $bodyNewTicket = "<body>
                         </tr>
                         <tr>
                             <td class='btn-div' >
+                                <a href='$ticketUrl'>
                                 <button class='button'>Ver Ticket</button>
+                                </a>
                             </td>
                         </tr>
                         <tr>

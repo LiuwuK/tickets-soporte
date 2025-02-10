@@ -1,6 +1,11 @@
 <?php 
 
 $cargo = $_SESSION['cargo'];
+$depto = $_SESSION['deptos'];
+if (!empty($depto)) {
+  $deptoList = implode(',', array_map('intval', $depto)); 
+}
+
 //Obtener el email del usuario para enviar notificaciones 
 $queryCliente = "SELECT email_id FROM ticket WHERE id = ?";
 $stmtCliente = $con->prepare($queryCliente);
@@ -188,12 +193,18 @@ while ($row = mysqli_fetch_assoc($prioData)) {
   $prioridades[] = $row; 
 }
 //obtener usuarios
-$query_user = "SELECT * 
-                FROM user
-                WHERE cargo = $cargo";
-$userData = mysqli_query($con, $query_user);
-while ($row = mysqli_fetch_assoc($userData)) {
-  $usuarios[] = $row; 
+if (!empty($depto)) {
+  $query_user = "SELECT DISTINCT u.*
+                    FROM user u
+                    INNER JOIN usuario_departamento du ON u.id = du.usuario_id
+                    WHERE du.departamento_id IN ($deptoList)";
+  $userData = mysqli_query($con, $query_user);
+  while ($row = mysqli_fetch_assoc($userData)) {
+    $usuarios[] = $row; 
+  }
+} else {
+  // Si el usuario no tiene departamentos, la consulta no devuelve resultados
+  $query_user = "SELECT * FROM user WHERE 0"; 
 }
 
 $query_st = "SELECT * FROM estados WHERE type = 'ticket'";
@@ -208,64 +219,70 @@ $status_id = isset($_GET['statusF']) ? intval($_GET['statusF']) : '';
 $searchText = isset($_GET['textSearch']) ? trim($_GET['textSearch']) : '';
 //----------------------------------------------------------------------------------------------------------
 $uid = $_SESSION['id'];
+if (!empty($depto)) {
+  $query = "SELECT ti.id AS ticketId, 
+                  pr.id AS prioridadId,
+                  st.nombre AS statusN,
+                  ti.*, pr.*, pr.nombre AS prioN,
+                  us.name AS userN
+            FROM ticket ti 
+            LEFT JOIN prioridades pr ON ti.prioprity = pr.id
+            LEFT JOIN user us ON(us.id = ti.user_id)
+            JOIN estados st ON ti.status = st.id
+            WHERE ti.task_type IN ($deptoList)";
 
-$query = "SELECT ti.id AS ticketId, 
-                 pr.id AS prioridadId,
-                 st.nombre AS statusN,
-                 ti.*, pr.*, pr.nombre AS prioN,
-                 us.name AS userN
-          FROM ticket ti 
-          LEFT JOIN prioridades pr ON ti.prioprity = pr.id
-          LEFT JOIN user us ON(us.id = ti.user_id)
-          JOIN estados st ON ti.status = st.id
-          WHERE ti.task_type = $cargo";
+  if($_SESSION['role'] != "supervisor"){
+      $query .= " AND usuario_asignado = $uid ";
+  }
+  // Filtros dinámicos
+  $conditions = [];
+  $params = [];
+  $types = '';
 
-if($_SESSION['role'] != "supervisor"){
-    $query .= " AND usuario_asignado = $uid ";
-}
-// Filtros dinámicos
-$conditions = [];
-$params = [];
-$types = '';
+  // Filtrar por prioridad
+  if (!empty($priority_id)) {
+      $conditions[] = "ti.prioprity = ?";
+      $params[] = $priority_id;
+      $types .= 'i';
+  }
 
-// Filtrar por prioridad
-if (!empty($priority_id)) {
-    $conditions[] = "ti.prioprity = ?";
-    $params[] = $priority_id;
-    $types .= 'i';
-}
+  // Filtrar por estado
+  if (!empty($status_id)) {
+      $conditions[] = "ti.status = ?";
+      $params[] = $status_id;
+      $types .= 'i';
+  }
 
-// Filtrar por estado
-if (!empty($status_id)) {
-    $conditions[] = "ti.status = ?";
-    $params[] = $status_id;
-    $types .= 'i';
-}
+  // Filtrar por texto (nombre del ticket o ID)
+  if (!empty($searchText)) {
+      $conditions[] = "(ti.id LIKE ? OR ti.subject LIKE ?)";
+      $searchWildcard = '%' . $searchText . '%';
+      $params[] = $searchWildcard;
+      $params[] = $searchWildcard;
+      $types .= 'ss';
+  }
 
-// Filtrar por texto (nombre del ticket o ID)
-if (!empty($searchText)) {
-    $conditions[] = "(ti.id LIKE ? OR ti.subject LIKE ?)";
-    $searchWildcard = '%' . $searchText . '%';
-    $params[] = $searchWildcard;
-    $params[] = $searchWildcard;
-    $types .= 'ss';
-}
+  // Combinar las condiciones
+  if (!empty($conditions)) {
+    $query .= ' AND ' . implode(' AND ', $conditions);
+  }
 
-// Combinar las condiciones
-if (!empty($conditions)) {
-  $query .= ' AND ' . implode(' AND ', $conditions);
+  $stmt = $con->prepare($query);
+  if (!empty($params)) {
+      $stmt->bind_param($types, ...$params);
+  }
+  $stmt->execute();
+  $rt = $stmt->get_result(); 
+  if (!$rt) {
+      die("Error en la consulta: " . mysqli_error($con));
+  }
+  $num = $rt->num_rows; 
+}else{
+  $query = "SELECT * FROM ticket WHERE 0";
+  $stmt = $con->prepare($query);
+  $stmt->execute();
+  $rt = $stmt->get_result(); 
 }
-
-$stmt = $con->prepare($query);
-if (!empty($params)) {
-    $stmt->bind_param($types, ...$params);
-}
-$stmt->execute();
-$rt = $stmt->get_result(); 
-if (!$rt) {
-    die("Error en la consulta: " . mysqli_error($con));
-}
-$num = $rt->num_rows; 
 //----------------------------------------------------------------------------------------------------------
 //Obtener todos los estados de las task --------------------------------------------------------------------
 

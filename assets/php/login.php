@@ -18,6 +18,8 @@ if (isset($_POST['login'])) {
     $stmt->execute();
     $result = $stmt->get_result();
     $num = $result->fetch_array();
+
+    
     
     $role = $num['rol'];
 
@@ -44,12 +46,29 @@ if (isset($_POST['login'])) {
         // Validación para usuarios normales
         if ($num['status']){        
             if ($num && password_verify($password, $num['password'])) {
+                // Obtener los departamentos del usuario
+                $query = "SELECT d.id, d.nombre 
+                FROM usuario_departamento ud
+                JOIN departamentos_usuarios d ON ud.departamento_id = d.id
+                WHERE ud.usuario_id = ?";
+
+                $stmt = $con->prepare($query);
+                $stmt->bind_param("i", $num['id']);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                $departamentos = [];
+                while ($row = $result->fetch_assoc()) {
+                $departamentos[] = $row['id'];
+                }
+
                 $_SESSION['login'] = $username;
                 $_SESSION['user_id'] = $num['id'];
                 $_SESSION['name'] = $num['name'];
                 $_SESSION['id'] = $num['id'];
                 $_SESSION['role'] = $num['rol']; 
-                $_SESSION['cargo'] = $num['cargo']; 
+                $_SESSION['cargo'] = $num['cargo'];
+                $_SESSION['deptos'] = $departamentos; 
                 $_SESSION['refresh_token'] = $num['refresh_token'] ;
                 $_SESSION['access_token'] = $num['access_token'];
                 echo "<script>window.location.href='dashboard.php'</script>";

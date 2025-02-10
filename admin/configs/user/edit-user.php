@@ -90,6 +90,32 @@ include("assets/php/edit-user.php");
                           </select>
                         </div>  
                       </div>
+                      <div class="form-row">
+                        <div class="form-group">
+                        <label>Departamentos Asociados:</label><br>
+                          <div class="deptos">
+                            <?php while ($row = mysqli_fetch_assoc($deptos)) : ?>
+                                
+                                  <div class="checks">
+                                    <input type="checkbox" name="departamentos[]" value="<?= $row['id'] ?>"
+                                    <?= in_array($row['id'], $user_departamentos) ? 'checked' : '' ?>>
+                                    <?= $row['nombre'] ?>
+                                  </div>
+                            <?php endwhile; ?>
+                          </div>
+                        </div>
+                      </div>
+                      <style>
+                        .deptos{
+                          display: grid;
+                          grid-template-columns: repeat(4,1fr);
+                          row-gap: 20px;
+                        }
+                        .checks{
+                          font-size: 14px;
+                          color: #33435e;
+                        }
+                      </style>
 
                       <div class="form-row">
                         <div class="form-check">

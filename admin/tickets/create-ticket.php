@@ -76,7 +76,7 @@ check_login();
                                 <select id="tasktype" name="tasktype" class="form-select form-select-sm" required>
                                     <option value="">Seleccionar</option>
                                     <?php
-                                    while ($row = mysqli_fetch_assoc($cargos)) {
+                                    while ($row = mysqli_fetch_assoc($deptos)) {
                                         echo "<option value=". $row['id'] .">". $row['nombre'] ."</option>";
                                     };
                                     ?>

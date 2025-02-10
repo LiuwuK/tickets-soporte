@@ -1,7 +1,7 @@
 <?php
 
     $prioridad = mysqli_query($con, "select * from prioridades ");
-    $cargos = mysqli_query($con, "select * from cargos ");
+    $deptos = mysqli_query($con, "select * from departamentos_usuarios");
     //obtener tecnicos
     $query = "SELECT * 
                 FROM  user
