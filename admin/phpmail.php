@@ -17,7 +17,7 @@ $tId  = '$tId';
 $uid  = '$uid';
 //http://186.67.95.90:8083
 $projectUrl = 'http://192.168.100.177/tickets-soporte/admin/projects/view-projects.php?textSearch=$tId';    
-$ticketUrl  = 'http://192.168.100.177/tickets-soporte/admin/tickets/manage-tickets.php?textSearch=$tId&priority=&statusF=10';
+$ticketUrl  = 'http://192.168.100.177/tickets-soporte/admin/tickets/manage-tickets.php?textSearch=$tId';
 //Body para la funcion CreateTicketMail (Nuevo ticket)
 $bodyNewTicket = "<body>
                     <table class='email-container' width='100%' cellspacing='0' cellpadding='0' role='presentation'>

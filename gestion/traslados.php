@@ -121,7 +121,7 @@ check_login();
                 <div class ="form-group">
                     <label class="form-label">Instalacion de Origen <span>*</span></label>
                     <div >
-                      <select name="instalacion" id="instalacion" class="form-select form-select-sm">
+                      <select name="instalacion" id="instalacion" class="form-select form-select-sm" required>
                         <option value="">Seleccionar</option>
                         <?php
                         foreach ($inst AS $row) {
@@ -150,7 +150,7 @@ check_login();
                 <div class ="form-group">
                     <label class="form-label">Motivo de traslado</label>
                     <div >
-                        <select name="motivo" class="form-select form-select-sm" >
+                        <select name="motivo" class="form-select form-select-sm" required>
                           <option value="">Seleccionar</option>
                           <?php
                           foreach ($motivoT AS $row) {
@@ -319,6 +319,7 @@ check_login();
             <h3>Traslados</h3>
             <?php 
             if($num > 0) {
+              echo '<button class="btn btn-updt" onclick="window.location.href=\'assets/php/excel-traslados.php\';">Descargar</button>';
               while($row = $traslados->fetch_assoc()){
                 $date = date("Y-m-d H:i", strtotime($row['fecha_registro']));
             ?>
@@ -354,6 +355,7 @@ check_login();
             <h3>Desvinculaciones</h3>
             <?php 
             if($num_des > 0) {
+              echo '<button class="btn btn-updt" onclick="window.location.href=\'assets/php/excel-desvinculaciones.php\';">Descargar</button>';
               while($row = $desvinculaciones->fetch_assoc()){
                 $date = date("Y-m-d H:i", strtotime($row['fecha_registro']));
             ?>
