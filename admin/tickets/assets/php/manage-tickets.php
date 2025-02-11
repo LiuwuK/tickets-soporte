@@ -206,8 +206,10 @@ $query = "SELECT ti.id AS ticketId,
                 st.nombre AS statusN,
                 ti.*, pr.*,
                 pr.nombre AS prioN,
-                us.name AS userN
-          FROM ticket ti 
+                us.name AS userN,
+                du.nombre AS areaN
+          FROM ticket ti
+          JOIN departamentos_usuarios du ON(ti.task_type = du.id) 
           LEFT JOIN prioridades pr ON ti.prioprity = pr.id
           LEFT JOIN user us ON(us.id = ti.user_id)
           JOIN estados st ON ti.status = st.id";

@@ -119,10 +119,10 @@ check_login();
                                 <span class="label label-warning"><?php echo $row['statusN']; ?></span>
                                 <?php
                               };
-                            
                             ?>
                         
                           <p>Creado por: <?php echo $row['userN'];?></p>
+                          <p>Departamento Asociado: <?php echo $row['areaN']?></p>
                           <div class="actions"> <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> </div>
                           <div class="d-flex">
                             <form  name="asignarPrio" id="asignarPrio" method="post" style="margin-right:5px">
