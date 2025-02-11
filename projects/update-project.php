@@ -102,7 +102,7 @@ check_login();
                         <div class ="form-group">
                             <label class="form-label">Clasificación</label>
                             <div>
-                                <select name="pClass" id="pClass" class="form-select form-select-sm" disabled>
+                                <select name="pClass" id="pClass" class="form-select form-select-sm">
                                 <option value="">Seleccionar</option>
                                 <?php
                                     while ($row = mysqli_fetch_assoc($class)) {
@@ -196,7 +196,7 @@ check_login();
                         <div class="form-group">
                             <label class="form-label">Vertical</label>
                                 <div>
-                                    <select name="vertical" class="form-select form-select-sm" disabled>
+                                    <select name="vertical" class="form-select form-select-sm">
                                         <?php
                                             echo "<option value='' >Sin asignar</option>";
                                             while ($row = mysqli_fetch_assoc(result: $vertical)) {

@@ -4,6 +4,7 @@ ini_set('display_startup_errors', 1);
 ini_set('log_errors', 'On'); 
 ini_set('error_log', 'C:/xampp/php/logs/php_error_log'); 
 
+
 error_reporting(E_ALL);
 include('../dbconnection.php');
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -215,10 +216,12 @@ class Notificaciones {
     //Envio de correo cuando se crea un ticket/proyecto
     public static function crearTicketMail($tId,$type,$uid) {
         global $userMail, $pass, $bodyNewProject, $bodyNewTicket;
+        $uid = utf8_decode($uid);
+
         $mail = new PHPMailer(true);
         $mail->SMTPDebug = 2;
         $mail->Debugoutput = 'error_log';  
-      
+        
         if($type == 'ticket'){
             $asunto = "Nuevo Ticket Creado #$tId";
             $bodyNewTicket = str_replace('$tId', $tId, $bodyNewTicket);

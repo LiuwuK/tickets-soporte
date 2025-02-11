@@ -183,7 +183,7 @@ if(isset($_POST['newProject'])){
 else if(isset($_POST['updtProject'])) {
     //ACTUALIZAR DATOS DEL PROTECTO
     $pId = $_GET['projectId'];
-    $pClass = $projectData['clasificacion'];
+    $pClass = $_POST['pClass'];
     $bom    = 0; 
     if(isset($_POST['material'])){
         $bom = 1; 
@@ -196,6 +196,7 @@ else if(isset($_POST['updtProject'])) {
     $cierre    = isset($_POST['cierreDoc']) && $_POST['cierreDoc'] != '' ? $_POST['cierreDoc'] : NULL;
     $fAdj      = isset($_POST['fAdj']) && $_POST['fAdj'] != '' ? $_POST['fAdj'] : NULL;
     $finCt     = isset($_POST['finContrato']) && $_POST['finContrato'] != '' ? $_POST['finContrato'] : NULL;
+    $etapa     = isset($_POST['etapaEst']) && $_POST['etapaEst'] != '' ? $_POST['etapaEst'] : NULL;
     //datos del formulario
     $newData = [
         'id'                        => $_GET['projectId'],
@@ -203,7 +204,7 @@ else if(isset($_POST['updtProject'])) {
         'cliente'                   => $_POST['client'],
         'ciudad'                    => $_POST['city'],
         'estado_id'                 => $_POST['status'],
-        'estado_etapa'              => $_POST['etapaEst'],
+        'estado_etapa'              => $etapa,
         'ingeniero_responsable'     => $ingeniero,
         'bom'                       => $bom,
         'costo_software'            => $software,
@@ -341,6 +342,7 @@ else if(isset($_POST['updtProject'])) {
     //se comparan los datos de la db con los del formulario, si son distintos se actualiza el proyecto
 
     if($newJson !== $currentJson){
+
         $query =  " UPDATE proyectos 
                     SET
                         nombre = ?, cliente = ?,
@@ -356,20 +358,50 @@ else if(isset($_POST['updtProject'])) {
                         fecha_cierre_documental = ?,
                         fecha_adjudicacion = ?,
                         fecha_fin_contrato = ?,
-                        competidor = ?
+                        competidor = ?,
+                        clasificacion = ?
                     WHERE id = ?";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("ssiiiiiiiiiisisssii",   
+        $stmt->bind_param("ssiiiiiiiiiisisssiii",   
         $newData['nombre'], $newData['cliente'], $newData['ciudad'], $newData['estado_id'], $newData['estado_etapa'], $newData['ingeniero_responsable'],
         $newData['distribuidor'], $newData['vertical'], $newData['monto'], $newData['costo_software'], $newData['costo_hardware'], 
         $newData['costo_real'], $newData['resumen'], $newData['bom'], $newData['fecha_cierre_documental'], $newData['fecha_adjudicacion'], 
-        $newData['fecha_fin_contrato'], $newData['competidor'], $newData['id'] );
+        $newData['fecha_fin_contrato'], $newData['competidor'], $newData['clasificacion'], $newData['id'] );
+        //tabla historial actualizacion proyecto
+            // 1. Comparar ambos arrays y construir un array con las diferencias.
+            $diferencias = [];
+            foreach ($newData as $campo => $nuevoValor) {
+                // Si el valor actual es distinto al nuevo (considerando que pueden ser null o cadena vacía)
+                if (!isset($projectData[$campo]) || $projectData[$campo] != $nuevoValor) {
+                    $diferencias[$campo] = [
+                        'antes'   => isset($projectData[$campo]) ? $projectData[$campo] : null,
+                        'despues' => $nuevoValor
+                    ];
+                }
+            }
 
+            // 2. Si hay diferencias, guardar el historial.
+            if (!empty($diferencias)) {
+                // Convertir el array de diferencias a JSON.
+                $jsonCambios = json_encode($diferencias);
+
+                $accion = 'update';
+                $stmtHist = $con->prepare("INSERT INTO historico_proyectos (proyecto_id, cambios, actualizado_por, accion) VALUES (?, ?, ?, ?)");
+                if ($stmtHist) {
+                    // Es recomendable forzar la conversión del ID a entero.
+                    $stmtHist->bind_param("isis", $newData['id'], $jsonCambios, $usuario_actual, $accion);
+                    $stmtHist->execute();
+                    $stmtHist->close();
+                } else {
+                    error_log("Error preparando la inserción del histórico: " . $con->error);
+                }
+            }
+        //---------------------------------------------------------------------------------------------------------------------------------------
         if ($stmt->execute()) {
             echo "<script>alert('Su proyecto ha sido actualizado correctamente');location.replace(document.referrer)</script>";
         } else {
             echo "<script>alert('Error al actualizar');location.replace(document.referrer)</script>";
-        }
+        }   
 
         $stmt->close();
     }else if (isset($newLic) && $licJson !== $currentLic){

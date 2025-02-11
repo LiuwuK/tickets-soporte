@@ -70,9 +70,9 @@
                 //Envio de correo
                 
                 if(Notificaciones::crearTicketMail($ticketId, 'ticket', $user)){
-                    echo "<script>alert('correo enviado Correctamente'); location.replace(document.referrer)</script>";
+                    //echo "<script>alert('correo enviado Correctamente'); location.replace(document.referrer)</script>";
                 } else {
-                    echo "<script>alert('Hubo un error al enviar el correo'); location.replace(document.referrer)</script>";
+                    //echo "<script>alert('Hubo un error al enviar el correo'); location.replace(document.referrer)</script>";
                 }
                 echo "<script>alert('Ticket Registrado Correctamente'); location.replace(document.referrer)</script>";
             } else {
