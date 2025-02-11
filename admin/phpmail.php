@@ -1,20 +1,23 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 ini_set('log_errors', 'On'); 
 ini_set('error_log', 'C:/xampp/php/logs/php_error_log'); 
 
-
+error_reporting(E_ALL);
+include('../dbconnection.php');
+require_once __DIR__ . '/../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 //credenciales (cambiar) USER = CORREO / PASS = CLAVE DE APLICACION GOOGLE 
-$user = 'stsafeteck@gmail.com'; // correo
-$pass = 'lwpo pieb xcaq ytbj'; // Contraseña de aplicación
+$userMail = 'stsafeteck@gmail.com'; // correo
+$pass = 'molc xtfj nfev kruf'; // Contraseña de aplicación
 $tId  = '$tId'; 
 $uid  = '$uid';
-$projectUrl = 'http://186.67.95.90:8083/tickets-soporte/admin/projects/view-projects.php?textSearch=$tId';    
-$ticketUrl  = 'http://186.67.95.90:8083/tickets-soporte/admin/tickets/manage-tickets.php?textSearch=$tId&priority=&statusF=10';
+//http://186.67.95.90:8083
+$projectUrl = 'http://192.168.100.177/tickets-soporte/admin/projects/view-projects.php?textSearch=$tId';    
+$ticketUrl  = 'http://192.168.100.177/tickets-soporte/admin/tickets/manage-tickets.php?textSearch=$tId&priority=&statusF=10';
 //Body para la funcion CreateTicketMail (Nuevo ticket)
 $bodyNewTicket = "<body>
                     <table class='email-container' width='100%' cellspacing='0' cellpadding='0' role='presentation'>
@@ -87,14 +90,14 @@ class Notificaciones {
     public static function enviarCorreo($destinatario, $tId, $tareas = null, $comentario = null, $estadoTicket = null, $tasksStatus = null) {
         $mail = new PHPMailer(true);
         $asunto = "Actualización de su Ticket ";
-        global $user, $pass;
+        global $userMail, $pass;
         
         try {
             // Configuración SMTP
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = $user; 
+            $mail->Username = $userMail; 
             $mail->Password = $pass; 
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
@@ -211,8 +214,11 @@ class Notificaciones {
     }
     //Envio de correo cuando se crea un ticket/proyecto
     public static function crearTicketMail($tId,$type,$uid) {
-        global $user, $pass, $bodyNewProject, $bodyNewTicket;
+        global $userMail, $pass, $bodyNewProject, $bodyNewTicket;
         $mail = new PHPMailer(true);
+        $mail->SMTPDebug = 2;
+        $mail->Debugoutput = 'error_log';  
+      
         if($type == 'ticket'){
             $asunto = "Nuevo Ticket Creado #$tId";
             $bodyNewTicket = str_replace('$tId', $tId, $bodyNewTicket);
@@ -229,18 +235,22 @@ class Notificaciones {
                         FROM user 
                         WHERE rol = 'admin'";
             $result = $con->query($query);
-
-            if ($result->num_rows > 0) {
+            if ($result->num_rows > 0) { 
                 // Configuración SMTP
                 $mail->isSMTP();
                 $mail->Host = 'smtp.gmail.com';
                 $mail->SMTPAuth = true;
-                $mail->Username = $user;
-                $mail->Password = $pass;
+                $mail->Username = $userMail; 
+                $mail->Password = $pass; 
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587;
-                $mail->CharSet = 'UTF-8';
-                
+                $mail->SMTPOptions = array(
+                    'ssl' => array(
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                        'allow_self_signed' => true
+                    )
+                );
 
                 while ($row = $result->fetch_assoc()) {
                     $destinatario = $row['email'];
