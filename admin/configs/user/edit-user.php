@@ -95,10 +95,9 @@ include("assets/php/edit-user.php");
                         <label>Departamentos Asociados:</label><br>
                           <div class="deptos">
                             <?php while ($row = mysqli_fetch_assoc($deptos)) : ?>
-                                
                                   <div class="checks">
                                     <input type="checkbox" name="departamentos[]" value="<?= $row['id'] ?>"
-                                    <?= in_array($row['id'], $user_departamentos) ? 'checked' : '' ?>>
+                                    <?= in_array($row['id'], haystack: $user_departamentos) ? 'checked' : '' ?>>
                                     <?= $row['nombre'] ?>
                                   </div>
                             <?php endwhile; ?>
@@ -128,9 +127,22 @@ include("assets/php/edit-user.php");
                           <?php   
                             }
                           ?>
-
                           <label class="form-check-label" for="status">Activar Cuenta?</label>
                         </div>
+                      </div>
+                      <div class="form-row">
+                        <div class="form-check">
+                          <?php 
+                              if($rw['rol'] == 'supervisor'){?>
+                                <input class="form-check-input" name="rol" type="checkbox" value="supervisor" id="rol" checked>
+                            <?php  
+                              }else{ ?>
+                                <input class="form-check-input" name="rol" type="checkbox" value="supervisor" id="rol">
+                            <?php   
+                              }
+                            ?>
+                            <label class="form-check-label" for="rol">Supervisor?</label>
+                          </div>
                       </div>
                       <div class="form-row">
                         <div class="form-group">

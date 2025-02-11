@@ -26,10 +26,14 @@
     $userid = $_GET['id'];
     $cargo = $_POST['cargo'];
     $status = '0';
+    $rol = 'user';
     if (isset($_POST['status'])) {
       $status = 1;
     }
-    $ret = mysqli_query($con, "update user set name='$name', alt_email='$altemail',mobile='$contact',address='$address',status='$status',cargo='$cargo' where id='$userid'");
+    if (isset($_POST['rol'])){
+      $rol = 'supervisor';
+    }
+    $ret = mysqli_query($con, "update user set name='$name', alt_email='$altemail',mobile='$contact',address='$address',status='$status',cargo='$cargo',rol='$rol' where id='$userid'");
     if ($ret) {
       $departamentos = isset($_POST['departamentos']) ? $_POST['departamentos'] : [];
 
