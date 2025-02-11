@@ -45,7 +45,9 @@ $sheet->getStyle('A1:L1')->applyFromArray($headerStyle);
 $sheet->getRowDimension(1)->setRowHeight(30);
 
 // Escribir los datos a partir de la fila 2
-$query = "SELECT tr.*, 
+$query = "SELECT tr.nombre_colaborador AS colaborador,
+                tr.rut AS rutC,
+                tr.fecha_inicio_turno AS fecha_turno,
                 us.name AS soliN, -- Nombre del solicitante
                 su_origen.nombre AS suOrigen, -- Sucursal de origen
                 jo_origen.tipo_jornada AS joOrigen, -- Jornada de origen
@@ -53,7 +55,7 @@ $query = "SELECT tr.*,
                 jo_destino.tipo_jornada AS joDestino, -- Jornada de destino
                 sup_origen.nombre_supervisor AS supOrigen, -- Supervisor de origen
                 sup_destino.nombre_supervisor AS supDestino, -- Supervisor destino
-                mg.motivo AS motivo, -- Motivo traslado
+                mg.motivo AS motivoN, -- Motivo traslado
                 ro.nombre_rol AS rolN -- ROL
             FROM traslados tr
             JOIN user us ON tr.solicitante = us.id
@@ -72,16 +74,16 @@ $result = mysqli_query($con, $query);
 $rowNumber = 2;
 while ($row = mysqli_fetch_assoc($result)) {
     $sheet->setCellValue('A' . $rowNumber, $row['colaborador']);
-    $sheet->setCellValue('B' . $rowNumber, $row['rut']);
+    $sheet->setCellValue('B' . $rowNumber, $row['rutC']);
     $sheet->setCellValue('C' . $rowNumber, $row['suOrigen']);
     $sheet->setCellValue('D' . $rowNumber, $row['supOrigen']);
     $sheet->setCellValue('E' . $rowNumber, $row['joOrigen']);
     $sheet->setCellValue('F' . $rowNumber, $row['suDestino']);
     $sheet->setCellValue('G' . $rowNumber, $row['supDestino']);
     $sheet->setCellValue('H' . $rowNumber, $row['joDestino']);
-    $sheet->setCellValue('I' . $rowNumber, $row['motivo']);
+    $sheet->setCellValue('I' . $rowNumber, $row['motivoN']);
     $sheet->setCellValue('J' . $rowNumber, $row['rolN']);
-    $sheet->setCellValue('K' . $rowNumber, $row['fecha_inicio_turno']);
+    $sheet->setCellValue('K' . $rowNumber, $row['fecha_turno']);
     $sheet->setCellValue('L' . $rowNumber, $row['soliN']);
     $rowNumber++;
 }
