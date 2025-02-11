@@ -209,7 +209,7 @@ $query = "SELECT ti.id AS ticketId,
                 us.name AS userN,
                 du.nombre AS areaN
           FROM ticket ti
-          JOIN departamentos_usuarios du ON(ti.task_type = du.id) 
+          LEFT JOIN departamentos_usuarios du ON(ti.task_type = du.id) 
           LEFT JOIN prioridades pr ON ti.prioprity = pr.id
           LEFT JOIN user us ON(us.id = ti.user_id)
           JOIN estados st ON ti.status = st.id";
