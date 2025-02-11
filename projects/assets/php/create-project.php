@@ -164,7 +164,7 @@ if(isset($_POST['newProject'])){
                 }                   
             } 
             $user = $_SESSION['name'];
-            if(Notificaciones::crearTicketMail($pId, 'ticket', $user)){
+            if(Notificaciones::crearTicketMail($pId, 'project', $user)){
                 //echo "<script>alert('correo enviado Correctamente'); location.replace(document.referrer)</script>";
             } else {
                 //echo "<script>alert('Hubo un error al enviar el correo'); location.replace(document.referrer)</script>";
