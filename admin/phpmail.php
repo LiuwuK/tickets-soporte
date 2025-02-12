@@ -344,7 +344,7 @@ class Notificaciones {
         try {
             // Consulta para obtener los correos de todos los administradores
             global $con; 
-            $query = "SELECT email 
+            $query = "SELECT email, rol
                         FROM user 
                         WHERE id = $uid";
             $result = $con->query($query);
@@ -367,11 +367,15 @@ class Notificaciones {
 
                 while ($row = $result->fetch_assoc()) {
                     $destinatario = $row['email'];
-                    if($row['rol'] == 'admin'){
+                    $type = $row['rol'];
+                    
+                    if( $type == 'admin'){
                         $url = 'http://192.168.100.177/tickets-soporte/admin/tickets/manage-tickets.php?textSearch='.$tid;
                     }else{
                         $url = 'http://192.168.100.177/tickets-soporte/tickets/manage-tickets.php?textSearch='.$tid;
                     }
+                    echo $url;
+                    die();
                     $mail->clearAddresses();
                     $mail->setFrom('stsafeteck@gmail.com', 'Soporte');
                     $mail->addAddress($destinatario);
