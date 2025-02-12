@@ -181,7 +181,7 @@ check_login();
                               <?php
                                 if (isset($row['ticket_img'])) { ?>
                                   <div class="img">
-                                      <img src="../<?php echo $row['ticket_img'];?>" alt="">
+                                      <img src="../../tickets/?php echo $row['ticket_img'];?>" alt="">
                                   </div>
                               <?php                                            
                                 }

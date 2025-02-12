@@ -26,7 +26,7 @@
         //Subida de imagen-------------------------------------------------------------------------------------------------------
             // Configuración del directorio de carga
             if ($_SESSION['role'] == 'admin'){
-                $uploadDir = '../assets/uploads/';
+                $uploadDir = '../../tickets/assets/uploads/';
             }else{
                 $uploadDir = 'assets/uploads/';
             }
