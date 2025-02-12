@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 // Obtener el token del encabezado
-$headers = apache_request_headers();
+$headers = getallheaders();
 if (!isset($headers['Authorization'])) {
     http_response_code(401);
     echo json_encode(["error" => "No se proporcionó un token"]);
@@ -33,9 +33,8 @@ if (!$userData) {
 $user_id = $userData['id'];
 
 try {
-    // Obtener los tickets del usuario autenticado
-    $stmt = $con->prepare("SELECT * FROM ticket 
-                                    WHERE user_id = ?");
+    // Obtener los tickets asignados al usuario
+    $stmt = $con->prepare("SELECT * FROM ticket WHERE usuario_asignado = ?");
     $stmt->bind_param("i", $user_id); 
     $stmt->execute();
     $result = $stmt->get_result();

@@ -77,7 +77,7 @@ $bodyNewProject = "
                         </tr>
                         <tr>
                             <td class='footer'>
-                            
+
                                 <p>Este es un correo automatizado, por favor no respondas.</p>
                             </td>
                         </tr>
@@ -326,6 +326,146 @@ class Notificaciones {
                 return true;
             } else {
                 error_log("No hay administradores para enviar el correo.");
+                return false;
+            }
+        } catch (Exception $e) {
+            error_log("Error al enviar correo: " . $mail->ErrorInfo);
+            return false;
+        }
+    }
+
+    public static function asignarUsuario($tid, $uid) {
+        global $userMail, $pass, $bodyNewProject, $bodyNewTicket;
+
+        $mail = new PHPMailer(true);
+        $mail->SMTPDebug = 2;
+        $mail->Debugoutput = 'error_log';  
+        
+        try {
+            // Consulta para obtener los correos de todos los administradores
+            global $con; 
+            $query = "SELECT email 
+                        FROM user 
+                        WHERE id = $uid";
+            $result = $con->query($query);
+            if ($result->num_rows > 0) { 
+                // Configuración SMTP
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = $userMail; 
+                $mail->Password = $pass; 
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+                $mail->SMTPOptions = array(
+                    'ssl' => array(
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                        'allow_self_signed' => true
+                    )
+                );
+
+                while ($row = $result->fetch_assoc()) {
+                    $destinatario = $row['email'];
+                    if($row['rol'] == 'admin'){
+                        $url = 'http://192.168.100.177/tickets-soporte/admin/tickets/manage-tickets.php?textSearch=$tid';
+                    }else{
+                        $url = 'http://192.168.100.177/tickets-soporte/tickets/manage-tickets.php?textSearch=$tid'
+                    }
+                    $mail->clearAddresses();
+                    $mail->setFrom('stsafeteck@gmail.com', 'Soporte');
+                    $mail->addAddress($destinatario);
+
+                    // Contenido del correo
+                    $mail->isHTML(true);
+                    $mail->Subject = 'Nuevo ticket asignado';
+                    $mail->Body = "
+                        <html>
+                        <head>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                background-color: #f4f4f9;
+                                margin: 0;
+                                padding: 20px;
+                            }
+                            .email-container {
+                                min-height: 500px;
+                                background-color: #ffffff;
+                                border-radius: 8px;
+                                padding: 20px;
+                                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                                max-width: 600px;
+                                margin: 0 auto;
+                            }
+                            .email-header {
+                                background-color: #33435e;
+                                color: #ffffff;
+                                border-radius: 8px 8px 0 0;
+                                text-align: center;
+                            }
+                            .email-body {
+                                text-align: justify;
+                                margin-top: 20px;
+                                line-height: 1.6;
+                            }
+                            .footer {
+                                margin-top: 30px;
+                                font-size: 12px;
+                                color: #777;
+                                text-align: center;
+                            }
+                            .btn-div {
+                                text-align: center;
+                                margin-top: 20px;
+                            }
+                            .button {
+                                background-color: #33435e;
+                                color: white;
+                                padding: 10px 20px;
+                                text-decoration: none;
+                                border-radius: 5px;
+                                display: inline-block;
+                                margin-top: 20px;
+                            }
+                        </style>
+                        </head>
+                        <body>
+                            <table class='email-container' width='100%' cellspacing='0' cellpadding='0' role='presentation'>
+                                <tr>
+                                    <td class='email-header'>
+                                        <h1>Nuevo Ticket Asignado #$tid</h1>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class='email-body'>
+                                        <p>
+                                            Se le ha asignado el Ticket <strong>#$tid</strong>.
+                                            Puedes revisarlo y realizar las acciones necesarias.
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class='btn-div' >
+                                        <a href='$url'>
+                                            <button class='button' >Ver Ticket</button>
+                                        </a>   
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class='footer'>
+                                        <p>Este es un correo automatizado, por favor no respondas.</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </body>
+                        </html>";
+                    // Envía el correo
+                    $mail->send();
+                }
+                return true;
+            } else {
+                error_log("No hay usuarios para enviar el correo.");
                 return false;
             }
         } catch (Exception $e) {

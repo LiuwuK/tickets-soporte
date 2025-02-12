@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $payload = [
             "id" => $user["id"],
             "email" => $email,
-            "exp" => time() + (60 * 60 * 24)  // Expira en 24 horas
+            "exp" => time() + (60 * 60 * 24) 
         ];
         $token = JWT::encode($payload, JWT_SECRET, JWT_ALG);
 
