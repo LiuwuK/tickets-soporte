@@ -370,7 +370,7 @@ class Notificaciones {
                     if($row['rol'] == 'admin'){
                         $url = 'http://192.168.100.177/tickets-soporte/admin/tickets/manage-tickets.php?textSearch=$tid';
                     }else{
-                        $url = 'http://192.168.100.177/tickets-soporte/tickets/manage-tickets.php?textSearch=$tid'
+                        $url = 'http://192.168.100.177/tickets-soporte/tickets/manage-tickets.php?textSearch=$tid';
                     }
                     $mail->clearAddresses();
                     $mail->setFrom('stsafeteck@gmail.com', 'Soporte');
