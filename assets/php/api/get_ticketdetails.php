@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 // Obtener el token del encabezado
-$headers = getallheaders();
+$headers = apache_request_headers();
 if (!isset($headers['Authorization'])) {
     http_response_code(401);
     echo json_encode(["error" => "No se proporcionó un token"]);
@@ -30,21 +30,20 @@ if (!$userData) {
     exit;
 }
 
-$user_id = $userData['id'];
+$tID = intval($_GET['ticketId']);
 
 try {
-    // Obtener los tickets asignados al usuario
+    // Obtener los tickets del usuario autenticado
     $stmt = $con->prepare("SELECT ti.*, es.nombre AS estadoN
                                     FROM ticket ti
                                     JOIN estados es ON(ti.status = es.id) 
-                                    WHERE usuario_asignado = ?
-                                    ORDER BY ti.id DESC");
-    $stmt->bind_param("i", $user_id); 
+                                    WHERE ti.id = ?");
+    $stmt->bind_param("i", $tID); 
     $stmt->execute();
     $result = $stmt->get_result();
     $tickets = $result->fetch_all(MYSQLI_ASSOC);
 
-    echo json_encode(["tickets" => $tickets]);
+    echo json_encode(["ticket" => $tickets]);
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode(["error" => "Error en la base de datos", "detalle" => $e->getMessage()]);

@@ -34,8 +34,11 @@ $user_id = $userData['id'];
 
 try {
     // Obtener los tickets del usuario autenticado
-    $stmt = $con->prepare("SELECT * FROM ticket 
-                                    WHERE user_id = ?");
+    $stmt = $con->prepare("SELECT ti.*, es.nombre AS estadoN
+                                    FROM ticket ti
+                                    JOIN estados es ON(ti.status = es.id) 
+                                    WHERE ti.user_id = ?
+                                    ORDER BY ti.id DESC");
     $stmt->bind_param("i", $user_id); 
     $stmt->execute();
     $result = $stmt->get_result();

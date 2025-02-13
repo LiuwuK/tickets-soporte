@@ -231,6 +231,10 @@ if (!empty($status_id)) {
     $conditions[] = "ti.status = ?";
     $params[] = $status_id;
     $types .= 'i';
+}else{
+  $conditions[] = "ti.status != ?";
+  $params[] = 12;
+  $types .= 'i';
 }
 
 // Filtrar por texto (nombre del ticket o ID)
