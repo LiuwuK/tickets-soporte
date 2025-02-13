@@ -274,6 +274,14 @@ $userData = mysqli_query($con, $query_user);
 while ($row = mysqli_fetch_assoc($userData)) {
   $usuarios[] = $row; 
 }
+
+//obtener departamentos usuarios
+$query = "SELECT * FROM departamentos_usuarios";
+$result = mysqli_query($con, $query);
+$deptos = [];
+while ($depto = $result->fetch_assoc()) {
+    $deptos[] = $depto;
+}
 //----------------------------------------------------------------------------------------------------------
 
 if (isset($_POST["asignarPrio"])) {
@@ -312,6 +320,25 @@ if (isset($_POST["asignarUser"])) {
     echo "<script>alert('error');location.replace(document.referrer)</script>";
   }
 
+  $stmt->close();
+}
+
+if(isset($_POST["asignarDepto"])){
+  $deptoID =  $_POST['userDepto'];
+  $tID    =  $_POST['tId'];
+
+  $query =  " UPDATE ticket
+              SET task_type = ?
+              WHERE id = ?";
+  $stmt = $con->prepare($query);
+  $stmt->bind_param("ii",$deptoID, $tID);
+
+  if ($stmt->execute()) {
+    echo "<script>alert('departamento asignado correctamente');location.replace(document.referrer)</script>";
+  } else {
+    echo "<script>alert('error');location.replace(document.referrer)</script>";
+  }
+  
   $stmt->close();
 }
 ?>

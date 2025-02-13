@@ -122,7 +122,6 @@ check_login();
                             ?>
                         
                           <p>Creado por: <?php echo $row['userN'];?></p>
-                          <p>Departamento: <?php echo $row['areaN']?></p>
                           <div class="actions"> <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> </div>
                           <div class="d-flex">
                             <form  name="asignarPrio" id="asignarPrio" method="post" style="margin-right:5px">
@@ -167,6 +166,28 @@ check_login();
                                   </select>
                                   <input type="hidden" id="tId" name="tId" value="<?php echo $row['ticketId']; ?>">
                                   <button type="submit" class="btn btn-updt save-button" name="asignarUser" style="display:none">Asignar</button>
+                              </div>
+                            </form>
+                            <form  name="asignarDepto" id="asignarDepto" method="post">
+                              <br>
+                              <div class="ing-main d-flex justify-content-start " >
+                                  <p style="width:100px !important; margin-left:10px ;"><strong>Departamento</strong></p>
+                                  <select id="deptoSelect" name="userDepto" class="prioridad-select form-select form-select-sm" data-initial-value="<?php echo $row['task_type'] ? $row['task_type'] : "Sin asignar" ;?>">
+                                      <?php
+                                      if (empty($row['task_type'])) {
+                                          echo "<option selected>Sin asignar</option>";
+                                      }
+                                      foreach ($deptos as $row_depto) {
+                                          if ($row_depto['id'] == $row['task_type']) {
+                                              echo "<option value=\"".$row_depto['id']."\" selected>".$row_depto['nombre']."</option>";
+                                          } else {
+                                              echo "<option value=\"".$row_depto['id']."\">".$row_depto['nombre']."</option>";
+                                          }
+                                      }
+                                      ?>
+                                  </select>
+                                  <input type="hidden" id="tId" name="tId" value="<?php echo $row['ticketId']; ?>">
+                                  <button type="submit" class="btn btn-updt save-button" name="asignarDepto" style="display:none">Asignar</button>
                               </div>
                             </form>
                           </div>
