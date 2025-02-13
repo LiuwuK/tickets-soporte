@@ -326,6 +326,7 @@ if (isset($_POST["asignarUser"])) {
   $stmt->bind_param("ii",$userID, $tID);
 
   if ($stmt->execute()) {
+      Notificaciones::asignarUsuario($tID,$userID);
       echo "<script>alert('Usuario asignado correctamente');location.replace(document.referrer)</script>";
   } else {
       echo "<script>alert('error');location.replace(document.referrer)</script>";
