@@ -10,7 +10,7 @@ $cargo = mysqli_query($con, $query);
 
 //----------------------------------------------
 if (isset($_POST['login'])) {
-    $username = $_POST['email'];    
+    $username = strtolower($_POST['email']);;    
     $password = $_POST['password'];
 
     $stmt = $con->prepare("SELECT * FROM user WHERE email = ?");
@@ -87,7 +87,7 @@ if (isset($_POST['login'])) {
     }
 } else if (isset($_POST['registro'])) { 
     $name = $_POST['name'];
-    $email = $_POST['email'];
+    $email = strtolower($_POST['email']);
     $password = $_POST['password'];
     $mobile = $_POST['phone'];
     $cargo = $_POST['cargo'];
