@@ -23,6 +23,8 @@ check_login();
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- lightbox -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
   <!-- CSS personalizados -->
   <link href="../../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
   <link href="../../tickets/assets/css/manage_tickets.css" rel="stylesheet" type="text/css"/>
@@ -303,12 +305,52 @@ check_login();
                                       </div>
                                     </div>
                                     <br><br>
-                                    
                                   <?php
                                     }
                                   ?>
                                   <!-- Final listar tareas -->
                                   <hr>
+                                  <!-- Mostrar archivos -->
+                                  <div class="uploads mt-3 mb-3">
+                                    <h3>Archivos adjuntos</h3>
+                                    <?php
+                                      $ticket_id = $row['ticketId'];
+                                      $query = "SELECT archivo FROM ticket_archivos WHERE ticket_id = ?";
+                                      $stmt = $con->prepare($query);
+                                      $stmt->bind_param("i", $ticket_id);
+                                      $stmt->execute();
+                                      $result = $stmt->get_result();
+                                      while ($row_ar = $result->fetch_assoc()) {
+                                          $filePath = $row_ar['archivo'];
+                                          $fileExt = pathinfo($filePath, PATHINFO_EXTENSION);
+
+                                          if (in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif'])) {
+                                              $images[$ticket_id][] = "<a href='$filePath' data-lightbox='gallery'><img src='../../tickets/$filePath' class='gallery-img' alt='Imagen'></a>";
+                                          } else {
+                                              $documents[$ticket_id][] = "<a href='$filePath' target='_blank' class='document-link'>📄 Descargar " . basename($filePath) . "</a>";
+                                          }
+                                      }
+                                      // Mostrar imágenes primero
+                                      if (!empty($images[$ticket_id])) {
+                                          echo '<div class="gallery mb-3">';
+                                          foreach ($images[$ticket_id] as $image) {
+                                              echo $image;
+                                          }
+                                          echo '</div>';
+                                      }
+
+                                      // Mostrar documentos debajo
+                                      if (!empty($documents[$ticket_id])) {
+                                          echo '<div class="documents">';
+                                          echo '<h3>Documentos adjuntos:</h3>';
+                                          foreach ($documents[$ticket_id] as $document) {
+                                              echo "<p>$document</p>";
+                                          }
+                                          echo '</div>';
+                                      }
+                                    ?>
+                                    <input class="form-control form-control-sm"  type="file" name="files[]" multiple>
+                                  </div>
                                   <div class="comm">
                                     <textarea class="form-control form-control-sm" name="aremark" cols="110" rows="4" required="true"><?php echo $row['admin_remark']; ?></textarea>
                                   </div>
@@ -420,6 +462,7 @@ check_login();
   <!-- Bootstrap Bundle (con Popper.js) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Complementos/Plugins-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <script src="../../assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js" type="text/javascript"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js" type="text/javascript"></script>

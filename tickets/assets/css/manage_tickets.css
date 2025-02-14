@@ -476,6 +476,22 @@ label, .group li{
   margin: 0 auto;
 }
 
+.gallery {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.gallery-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.documents img{
+  margin: 5px;
+}
 
 @media (max-width: 1390px) {
   .search-div input{

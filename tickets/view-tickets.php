@@ -20,6 +20,8 @@ check_login();
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- lightbox -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
     <!-- CSS personalizados -->
     <link href="../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
     <link href="assets/css/manage_tickets.css" rel="stylesheet" type="text/css"/>
@@ -139,45 +141,83 @@ check_login();
                                         </div>
                                         <div class="info-wrapper">
                                             <br>
-                                                <div class="comm">
-                                                    <h5>Procedimiento a seguir</h5>
-                                                    <div>
-                                                    <ul>
-                                                        <?php
-                                                        //Obtener las task asociadas al ticket
-                                                        $tkid = $row['ticketId'];
-                                                        $query = "SELECT ta.id AS tskId, ta.titulo, es.nombre
-                                                                    FROM tasks ta
-                                                                    JOIN estados es ON(ta.estado_id = es.id)
-                                                                    WHERE ta.ticket_id = ?";
+                                            <div class="comm">
+                                                <h5>Procedimiento a seguir</h5>
+                                                <div>
+                                                <ul>
+                                                    <?php
+                                                    //Obtener las task asociadas al ticket
+                                                    $tkid = $row['ticketId'];
+                                                    $query = "SELECT ta.id AS tskId, ta.titulo, es.nombre
+                                                                FROM tasks ta
+                                                                JOIN estados es ON(ta.estado_id = es.id)
+                                                                WHERE ta.ticket_id = ?";
 
-                                                        $stmt = $con->prepare($query);
-                                                        
-                                                        if($stmt){
-                                                            $stmt->bind_param("i", $tkid); 
-                                                            $stmt->execute();
-                                                            $tasks = $stmt->get_result();
-                                                            if($tasks->num_rows > 0) {
-                                                            while($tsk = $tasks->fetch_assoc()) {
-                                                                ?>
-                                                                    <li><?php echo $tsk["titulo"]?> </li>
-                                                                    <p style="margin-left:15px"> Estado: <?php echo $tsk["nombre"]?></p>
-                                                                <?php
+                                                    $stmt = $con->prepare($query);
+                                                    
+                                                    if($stmt){
+                                                        $stmt->bind_param("i", $tkid); 
+                                                        $stmt->execute();
+                                                        $tasks = $stmt->get_result();
+                                                        if($tasks->num_rows > 0) {
+                                                        while($tsk = $tasks->fetch_assoc()) {
+                                                            ?>
+                                                                <li><?php echo $tsk["titulo"]?> </li>
+                                                                <p style="margin-left:15px"> Estado: <?php echo $tsk["nombre"]?></p>
+                                                            <?php
 
-                                                            }
+                                                        }
 
-                                                            }else {
-                                                            echo "Actualmente no tiene tareas asignadas";
-                                                            }
-                                                            $stmt->close(); 
-                                                            }  
-                                                            else {
-                                                            echo "Error en la consulta: ".$con->error;
-                                                            }
-                                                        ?>
-                                                    </ul>
-                                                    </div>
+                                                        }else {
+                                                        echo "Actualmente no tiene tareas asignadas";
+                                                        }
+                                                        $stmt->close(); 
+                                                        }  
+                                                        else {
+                                                        echo "Error en la consulta: ".$con->error;
+                                                        }
+                                                    ?>
+                                                </ul>
                                                 </div>
+                                            </div>
+                                            <div class="uploads mt-3 mb-3">
+                                                <?php
+                                                    $ticket_id = $row['ticketId'];
+                                                    $query = "SELECT archivo FROM ticket_archivos WHERE ticket_id = ?";
+                                                    $stmt = $con->prepare($query);
+                                                    $stmt->bind_param("i", $ticket_id);
+                                                    $stmt->execute();
+                                                    $result = $stmt->get_result();
+                                                    while ($row_ar = $result->fetch_assoc()) {
+                                                        $filePath = $row_ar['archivo'];
+                                                        $fileExt = pathinfo($filePath, PATHINFO_EXTENSION);
+              
+                                                        if (in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif'])) {
+                                                            $images[$ticket_id][] = "<a href='$filePath' data-lightbox='gallery'><img src='$filePath' class='gallery-img' alt='Imagen'></a>";
+                                                        } else {
+                                                            $documents[$ticket_id][] = "<a href='$filePath' target='_blank' class='document-link'>📄 Descargar " . basename($filePath) . "</a>";
+                                                        }
+                                                    }
+                                                    // Mostrar imágenes primero
+                                                    if (!empty($images[$ticket_id])) {
+                                                        echo '<div class="gallery mb-3">';
+                                                        foreach ($images[$ticket_id] as $image) {
+                                                            echo $image;
+                                                        }
+                                                        echo '</div>';
+                                                    }
+              
+                                                    // Mostrar documentos debajo
+                                                    if (!empty($documents[$ticket_id])) {
+                                                        echo '<div class="documents">';
+                                                        echo '<h3>Documentos adjuntos:</h3>';
+                                                        foreach ($documents[$ticket_id] as $document) {
+                                                            echo "<p>$document</p>";
+                                                        }
+                                                        echo '</div>';
+                                                    }
+                                                ?>
+                                            </div>
                                             <div class="tasks">
                                                 <h5>Comentario</h5>
                                                 <p><?php echo $row['admin_remark']; ?></p>
@@ -212,6 +252,7 @@ check_login();
 <!-- Bootstrap Bundle (con Popper.js) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Complementos/Plugins-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js" type="text/javascript"></script>
 <!-- Scripts propios -->
 <script src="../assets/js/support_ticket.js" type="text/javascript"></script>

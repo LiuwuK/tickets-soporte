@@ -63,7 +63,30 @@ elseif (isset($_POST["deltsk"])) {
   $stmt->bind_param("i",$tId); 
   $stmt->execute();
 }
-//----------------------------------------------------------------------------------------------------------
+//Si se cierra o actualiza un ticket----------------------------------------------------------------------------------------
+if (isset($_POST["end"]) OR isset($_POST["update"])){
+
+  if (!empty($_FILES['files']['name'][0])) {
+    $ticket_id = intval($_POST['frm_id']); 
+
+    $uploadDir = "assets/uploads/tickets/"; // Carpeta de almacenamiento
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
+    foreach ($_FILES['files']['tmp_name'] as $key => $tmp_name) {
+        $fileName = basename($_FILES['files']['name'][$key]);
+        $filePath = $uploadDir . time() . "_" . $fileName; // Nombre único
+
+        if (move_uploaded_file($tmp_name, $filePath)) {
+            // Guardar en la BD
+            $stmt = $con->prepare("INSERT INTO ticket_archivos (ticket_id, archivo) VALUES (?, ?)");
+            $stmt->bind_param("is", $ticket_id, $filePath);
+            $stmt->execute();
+        }
+    }
+}
+}
 
 //Actualizar estado del ticket------------------------------------------------------------------------------
 //adminremark = mensaje del administrador
@@ -229,10 +252,12 @@ if (!empty($depto)) {
             LEFT JOIN prioridades pr ON ti.prioprity = pr.id
             LEFT JOIN user us ON(us.id = ti.user_id)
             JOIN estados st ON ti.status = st.id
-            WHERE ti.task_type IN ($deptoList)";
+           ";
 
   if($_SESSION['role'] != "supervisor"){
-      $query .= " AND usuario_asignado = $uid ";
+      $query .= " WHERE usuario_asignado = $uid ";
+  }else{
+    $query .= "  WHERE ti.task_type IN ($deptoList) ";
   }
   // Filtros dinámicos
   $conditions = [];
