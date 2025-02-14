@@ -269,7 +269,12 @@ check_login();
                                   </div>
                                   <!-- Final listar tareas -->
                                   <hr>
+                                  <div class="uploads mt-3 mb-3" >
+                                    <h3>Documentos/Imagenes</h3>
+                                    <input class="form-control form-control-sm"  type="file" name="files[]" multiple>
+                                  </div>
                                   <div class="comm">
+                                    <h3>Respuesta</h3>
                                     <textarea class="form-control form-control-sm" name="aremark" cols="110" rows="4" required="true"><?php echo $row['admin_remark']; ?></textarea>
                                   </div>
                                   <div class="btn-div">

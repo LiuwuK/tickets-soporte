@@ -250,6 +250,7 @@ if (!empty($searchText)) {
 if (!empty($conditions)) {
   $query .= ' WHERE ' . implode(' AND ', $conditions);
 }
+$query.= ' ORDER BY ti.id DESC ';
 
 $stmt = $con->prepare($query);
 if (!empty($params)) {
