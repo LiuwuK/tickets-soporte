@@ -217,7 +217,7 @@ check_login();
             <div class="form-group">
               <label class="form-label">Departamento</label>
                 <div>
-                  <select name="departamento" id="departamento" class="form-select form-select-sm">
+                  <select name="departamento" id="departamento" class="form-select form-select-sm" required>
                     <option value="">Sin Asignar</option>
                     <?php
                     foreach ($depto AS $row) {
@@ -230,7 +230,7 @@ check_login();
             <div class="form-group">
               <label class="form-label">Rol</label>
                 <div>
-                  <select name="rol" id="rol" class="form-select form-select-sm">
+                  <select name="rol" id="rol" class="form-select form-select-sm" required>
                     <option value="">Sin Asignar</option>
                     <?php
                     foreach ($rol AS $row) {
@@ -255,11 +255,11 @@ check_login();
   <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="delSuperLabel">Eliminar Departamento</h5>
+            <h5 class="modal-title" id="delSuperLabel">Eliminar Sucursal</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p>¿Estás seguro de que quieres eliminar este Departamento?</p>
+          <p>¿Estás seguro de que quieres eliminar esta Sucursal?</p>
           <form id="delForm" method="POST">
             <input type="hidden" name="idSup" id="idSup">
             <div class="modal-footer">

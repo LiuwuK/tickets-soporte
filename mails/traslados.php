@@ -41,140 +41,143 @@ while ($row = mysqli_fetch_assoc($trasladosData)) {
 }
 
 $mail = new PHPMailer(true);
+if(!empty($traslados)){
+    try {
+        // Configuración de correo
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = $user;
+        $mail->Password = $pass;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+        $mail->CharSet = 'UTF-8';
+        $mail->SMTPOptions = array(
+            'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            )
+        );
 
-try {
-    // Configuración de correo
-    $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com';
-    $mail->SMTPAuth = true;
-    $mail->Username = $user;
-    $mail->Password = $pass;
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port = 587;
-    $mail->CharSet = 'UTF-8';
-    $mail->SMTPOptions = array(
-        'ssl' => array(
-            'verify_peer' => false,
-            'verify_peer_name' => false,
-            'allow_self_signed' => true
-        )
-    );
+        $mail->clearAddresses();
+        $mail->setFrom('stsafeteck@gmail.com', 'Traslados');
+        $mail->addAddress('desarrolladorsafeteck@hotmail.com', 'Usuario');  
 
-    $mail->clearAddresses();
-    $mail->setFrom('stsafeteck@gmail.com', 'Traslados');
-    $mail->addAddress('kevinantecao1206@hotmail.com', 'Usuario');  
+        $mail->isHTML(true);
+        $mail->Subject = 'Traslados del día de hoy';
 
-    $mail->isHTML(true);
-    $mail->Subject = 'Traslados del día de hoy';
+        $contenido = '
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Traslados</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f4f4f9;
+                        color: #333;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    h2 {
+                        color: #fff;
+                        text-align: center;
+                        background-color: #33435e;
+                        padding: 20px 0;
+                        margin-bottom: 30px;
+                    }
+                    .traslado {
+                        background-color: #ffffff;
+                        border: 1px solid #ddd;
+                        border-radius: 5px;
+                        padding: 15px;
+                        margin-bottom: 20px;
+                        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                    }
+                    .traslado p {
+                        font-size: 16px;
+                        line-height: 1.6;
+                        margin: 2px 0;
+                    }
+                    .traslado h3{
+                        margin: 0px;
+                        color: #33435e
+                    }
+                    .traslado strong {
+                        color: #2980b9;
+                    }
+                    .footer {
+                        text-align: center;
+                        font-size: 12px;
+                        color: #777;
+                        margin-top: 30px;
+                    }
+                    .soli-data{
+                        display: flex;
+                        justify-content: start;
+                    }
+                    .body{
+                        display: flex;
+                        justify-content: space-between;
+                    }
 
-    $contenido = '
-        <!DOCTYPE html>
-        <html lang="es">
-        <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Traslados</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    background-color: #f4f4f9;
-                    color: #333;
-                    margin: 0;
-                    padding: 0;
-                }
-                h2 {
-                    color: #fff;
-                    text-align: center;
-                    background-color: #33435e;
-                    padding: 20px 0;
-                    margin-bottom: 30px;
-                }
-                .traslado {
-                    background-color: #ffffff;
-                    border: 1px solid #ddd;
-                    border-radius: 5px;
-                    padding: 15px;
-                    margin-bottom: 20px;
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-                }
-                .traslado p {
-                    font-size: 16px;
-                    line-height: 1.6;
-                    margin: 2px 0;
-                }
-                .traslado h3{
-                    margin: 0px;
-                    color: #33435e
-                }
-                .traslado strong {
-                    color: #2980b9;
-                }
-                .footer {
-                    text-align: center;
-                    font-size: 12px;
-                    color: #777;
-                    margin-top: 30px;
-                }
-                .soli-data{
-                    display: flex;
-                    justify-content: start;
-                }
-                .body{
-                    display: flex;
-                    justify-content: space-between;
-                }
+                </style>
+            </head>
+            <body>
+            <h2>Traslados del día</h2>';
 
-            </style>
-        </head>
-        <body>
-        <h2>Traslados del día</h2>';
+        foreach ($traslados as $tr) {
+            echo "<pre>";
+            print_r($tr);
+            echo "</pre>"; 
+            
+            $contenido .= '
+            <div class="traslado">
+                <div class="soli-data" style="margin-bottom:25px;">
+                    <p><strong>Solicitado por</strong>: '.$tr['soliN'].'</p>
+                    <p style="margin-left:5px"><strong>Fecha</strong>: '.$tr['fecha_registro'].'</p>
+                </div>
+                <div class="colaborador">
+                    <h3>Datos del colaborador</h3>
+                    <p><strong>Nombre:</strong> '.$tr['nombre_colaborador'].'</p>
+                    <p><strong>Rut:</strong> '.$tr['rut'].'</p>
+                </div>
+                <div class="body " style="margin-top:10px;">
+                    <div class="origen">
+                        <h3>Datos Instalacion Origen</h3>
+                        <p><strong>Nombre Sucursal:</strong> '.$tr['suOrigen'].'</p>
+                        <p><strong>Supervisor:</strong> '.$tr['supOrigen'].'</p>
+                        <p><strong>Jornada:</strong> '.$tr['joOrigen'].'</p>
+                    </div>
+                    <div class="destino">
+                        <h3>Datos Instalacion Destino</h3>
+                        <p><strong>Nombre Sucursal:</strong> '.$tr['suDestino'].'</p>
+                        <p><strong>Supervisor:</strong> '.$tr['supDestino'].'</p>
+                        <p><strong>Jornada:</strong> '.$tr['joDestino'].'</p>
+                    </div>
+                </div>
+            </div>';
+        }
 
-    foreach ($traslados as $tr) {
-        echo "<pre>";
-        print_r($tr);
-        echo "</pre>"; 
-        
         $contenido .= '
-        <div class="traslado">
-            <div class="soli-data" style="margin-bottom:25px;">
-                <p><strong>Solicitado por</strong>: '.$tr['soliN'].'</p>
-                <p style="margin-left:5px"><strong>Fecha</strong>: '.$tr['fecha_registro'].'</p>
-            </div>
-            <div class="colaborador">
-                <h3>Datos del colaborador</h3>
-                <p><strong>Nombre:</strong> '.$tr['nombre_colaborador'].'</p>
-                <p><strong>Rut:</strong> '.$tr['rut'].'</p>
-            </div>
-            <div class="body " style="margin-top:10px;">
-                <div class="origen">
-                    <h3>Datos Instalacion Origen</h3>
-                    <p><strong>Nombre Sucursal:</strong> '.$tr['suOrigen'].'</p>
-                    <p><strong>Supervisor:</strong> '.$tr['supOrigen'].'</p>
-                    <p><strong>Jornada:</strong> '.$tr['joOrigen'].'</p>
-                </div>
-                <div class="destino">
-                    <h3>Datos Instalacion Destino</h3>
-                    <p><strong>Nombre Sucursal:</strong> '.$tr['suDestino'].'</p>
-                    <p><strong>Supervisor:</strong> '.$tr['supDestino'].'</p>
-                    <p><strong>Jornada:</strong> '.$tr['joDestino'].'</p>
-                </div>
-            </div>
-        </div>';
+        <div class="footer">
+            <p>Este es un recordatorio automático, no responda a este correo.</p>
+        </div>
+        </body>
+        </html>';
+
+        $mail->Body = $contenido;
+        $mail->send();
+
+    } catch (Exception $e) {
+        echo "No se pudo enviar el correo. Error: {$mail->ErrorInfo}<br>";
     }
-
-    $contenido .= '
-    <div class="footer">
-        <p>Este es un recordatorio automático, no responda a este correo.</p>
-    </div>
-    </body>
-    </html>';
-
-    $mail->Body = $contenido;
-    $mail->send();
-
-} catch (Exception $e) {
-    echo "No se pudo enviar el correo. Error: {$mail->ErrorInfo}<br>";
+}else{
+    echo "No hay traslados el dia de hoy";
 }
 
 ?>
