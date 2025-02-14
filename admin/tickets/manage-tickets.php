@@ -321,7 +321,7 @@ check_login();
                                       $stmt->execute();
                                       $result = $stmt->get_result();
                                       while ($row_ar = $result->fetch_assoc()) {
-                                          $filePath = $row_ar['archivo'];
+                                          $filePath = "../../".$row_ar['archivo'];
                                           $fileExt = pathinfo($filePath, PATHINFO_EXTENSION);
 
                                           if (in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif'])) {
@@ -351,6 +351,7 @@ check_login();
                                     ?>
                                   </div>
                                   <div class="comm">
+                                    <h3>Respuesta</h3>
                                     <textarea class="form-control form-control-sm" name="aremark" cols="110" rows="4" required="true"><?php echo $row['admin_remark']; ?></textarea>
                                   </div>
                                   <div class="btn-div">
