@@ -60,30 +60,28 @@ elseif (isset($_POST["deltsk"])) {
 }
 //----------------------------------------------------------------------------------------------------------
 //Si se cierra o actualiza un ticket----------------------------------------------------------------------------------------
-if (isset($_POST["end"]) OR isset($_POST["update"])){
-  
+if (isset($_POST["end"]) OR isset($_POST["update"])) {
   if (!empty($_FILES['files']['name'][0])) {
     $ticket_id = intval($_POST['frm_id']); 
-    $uploadDir = "../../../tickets/assets/uploads/tickets/"; // Carpeta de almacenamiento
+
+    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "../../../../tickets/assets/uploads/tickets/";
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
-        die();
     }
     foreach ($_FILES['files']['tmp_name'] as $key => $tmp_name) {
         $fileName = basename($_FILES['files']['name'][$key]);
-        $namedir = "tickets/assets/uploads/tickets/";
-        $filePath = $namedir . time() . "_" . $fileName; // Nombre único
+        $filePath = $uploadDir . time() . "_" . $fileName; // Nombre único
 
         if (move_uploaded_file($tmp_name, $filePath)) {
             // Guardar en la BD
             $stmt = $con->prepare("INSERT INTO ticket_archivos (ticket_id, archivo) VALUES (?, ?)");
             $stmt->bind_param("is", $ticket_id, $filePath);
             $stmt->execute();
-            
         }
     }
   }
 }
+
 
 //Actualizar estado del ticket------------------------------------------------------------------------------
 //adminremark = mensaje del administrador

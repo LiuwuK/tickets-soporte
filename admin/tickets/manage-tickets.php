@@ -325,7 +325,7 @@ check_login();
                                           $fileExt = pathinfo($filePath, PATHINFO_EXTENSION);
 
                                           if (in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif'])) {
-                                              $images[$ticket_id][] = "<a href='$filePath' data-lightbox='gallery'><img src='../../tickets/$filePath' class='gallery-img' alt='Imagen'></a>";
+                                              $images[$ticket_id][] = "<a href='$filePath' data-lightbox='gallery'><img src='$filePath' class='gallery-img' alt='Imagen'></a>";
                                           } else {
                                               $documents[$ticket_id][] = "<a href='$filePath' target='_blank' class='document-link'>📄 Descargar " . basename($filePath) . "</a>";
                                           }
@@ -349,7 +349,6 @@ check_login();
                                           echo '</div>';
                                       }
                                     ?>
-                                    <input class="form-control form-control-sm"  type="file" name="files[]" multiple>
                                   </div>
                                   <div class="comm">
                                     <textarea class="form-control form-control-sm" name="aremark" cols="110" rows="4" required="true"><?php echo $row['admin_remark']; ?></textarea>

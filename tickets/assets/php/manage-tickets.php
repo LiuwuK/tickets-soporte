@@ -85,7 +85,7 @@ if (isset($_POST["end"]) OR isset($_POST["update"])){
             $stmt->execute();
         }
     }
-}
+  }
 }
 
 //Actualizar estado del ticket------------------------------------------------------------------------------
