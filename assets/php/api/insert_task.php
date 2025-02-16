@@ -32,31 +32,39 @@ if (!$userData) {
     exit;
 }
 
+$user_id = $userData['id'];
+$email = $userData['email'];
+
 try {
     $data = json_decode(file_get_contents("php://input"), true);
     if (
-        !isset($data['title']) ||
-        !isset($data['id'])
+        !isset($data['subject']) ||
+        !isset($data['department']) ||
+        !isset($data['description'])
     ) {
         http_response_code(400);
         echo json_encode(["error" => "Datos incompletos"]);
         exit;
     }
-    $titulo = $data['title']; 
-    $tid = $data['id'];
-    
-    $query = "INSERT INTO task (titulo, ticket_id) 
-              VALUES (?, ?)";
+
+    // Asignar los valores a variables
+    $subject = $data['subject'];
+    $task_type = $data['department']; 
+    $ticket = $data['description'];
+    $status = "11";
+    // Preparar la consulta SQL
+    $query = "INSERT INTO ticket (email_id,subject, task_type, ticket, status, user_id) 
+              VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $con->prepare($query);
-    $stmt->bind_param("si", $titulo, $tid);
+    $stmt->bind_param("ssisii", $email, $subject, $task_type, $ticket, $status,$user_id);
     $stmt->execute();
 
     if ($stmt->affected_rows > 0) {
         http_response_code(201);
-        echo json_encode(array("message" => "Tarea creada correctamente."));
+        echo json_encode(array("message" => "Ticket creado correctamente."));
     } else {
         http_response_code(500);
-        echo json_encode(array("message" => "Error al crear la tarea."));
+        echo json_encode(array("message" => "Error al crear el ticket."));
     }
 } catch (Exception $e) {
     http_response_code(500);
