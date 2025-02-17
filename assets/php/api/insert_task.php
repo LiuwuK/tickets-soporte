@@ -45,7 +45,7 @@ try {
     $titulo = $data['title']; 
     $tid = $data['id'];
     
-    $query = "INSERT INTO task (titulo, ticket_id) 
+    $query = "INSERT INTO tasks (titulo, ticket_id) 
               VALUES (?, ?)";
     $stmt = $con->prepare($query);
     $stmt->bind_param("si", $titulo, $tid);
