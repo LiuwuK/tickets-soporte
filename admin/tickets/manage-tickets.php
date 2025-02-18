@@ -312,7 +312,6 @@ check_login();
                                   <hr>
                                   <!-- Mostrar archivos -->
                                   <div class="uploads mt-3 mb-3">
-                                    <h3>Archivos adjuntos</h3>
                                     <?php
                                       $ticket_id = $row['ticketId'];
                                       $query = "SELECT archivo FROM ticket_archivos WHERE ticket_id = ?";
@@ -321,7 +320,7 @@ check_login();
                                       $stmt->execute();
                                       $result = $stmt->get_result();
                                       while ($row_ar = $result->fetch_assoc()) {
-                                          $filePath = "../../".$row_ar['archivo'];
+                                          $filePath = "../../tickets".$row_ar['archivo'];
                                           $fileExt = pathinfo($filePath, PATHINFO_EXTENSION);
 
                                           if (in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif'])) {
