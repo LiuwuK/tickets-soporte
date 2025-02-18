@@ -3,6 +3,12 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+// Obtener los headers recibidos
+$headers = apache_request_headers();
+echo json_encode(["headers_recibidos" => $headers]);
+exit;
+
 require_once "../../../dbconnection.php";
 require_once 'auth_middleware.php';
 // Verificar el método de la solicitud
