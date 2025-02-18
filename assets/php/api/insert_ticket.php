@@ -22,16 +22,7 @@ if (!isset($headers['Authorization'])) {
     exit;
 }
 
-$token = str_replace("Bearer ", "", $headers['Authorization']);
-
-// Validar el token y obtener el ID del usuario
-$userData = verifyJWT($token);
-if (!$userData) {
-    http_response_code(401);
-    echo json_encode(["error" => "Token inválido"]);
-    exit;
-}
-
+$userData = verifyJWTFromHeader();
 $user_id = $userData['id'];
 $email = $userData['email'];
 

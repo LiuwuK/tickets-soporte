@@ -12,23 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     exit;
 }
 
-// Obtener el token del encabezado
-$headers = getallheaders();
-if (!isset($headers['Authorization'])) {
-    http_response_code(401);
-    echo json_encode(["error" => "No se proporcionó un token"]);
-    exit;
-}
-
-$token = str_replace("Bearer ", "", $headers['Authorization']);
-
-// Validar el token y obtener el ID del usuario
-$userData = verifyJWT($token);
-if (!$userData) {
-    http_response_code(401);
-    echo json_encode(["error" => "Token inválido"]);
-    exit;
-}
+$userData = verifyJWTFromHeader();
 
 $user_id = $userData['id'];
 

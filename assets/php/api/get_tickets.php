@@ -4,11 +4,6 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-// Obtener los headers recibidos
-$headers = apache_request_headers();
-echo json_encode(["headers_recibidos" => $headers]);
-exit;
-
 require_once "../../../dbconnection.php";
 require_once 'auth_middleware.php';
 // Verificar el método de la solicitud
@@ -18,24 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     exit;
 }
 
-// Obtener el token del encabezado
-$headers = apache_request_headers();
-if (!isset($headers['Authorization'])) {
-    http_response_code(401);
-    echo json_encode(["error" => "No se proporcionó un token"]);
-    exit;
-}
-
-$token = str_replace("Bearer ", "", $headers['Authorization']);
-
-// Validar el token y obtener el ID del usuario
-$userData = verifyJWT($token);
-if (!$userData) {
-    http_response_code(401);
-    echo json_encode(["error" => "Token inválido"]);
-    exit;
-}
-
+$userData = verifyJWTFromHeader();
 $user_id = $userData['id'];
 
 try {
