@@ -320,7 +320,7 @@ check_login();
                                       $stmt->execute();
                                       $result = $stmt->get_result();
                                       while ($row_ar = $result->fetch_assoc()) {
-                                          $filePath = "../../tickets".$row_ar['archivo'];
+                                          $filePath = "../../tickets/".$row_ar['archivo'];
                                           $fileExt = pathinfo($filePath, PATHINFO_EXTENSION);
 
                                           if (in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif'])) {
