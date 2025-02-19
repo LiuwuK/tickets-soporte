@@ -6,6 +6,7 @@ header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 require_once "../../../dbconnection.php";
 require_once 'auth_middleware.php';
+include("../../admin/phpmail.php");
 
 // Verificar el método de la solicitud
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -24,6 +25,7 @@ if (!isset($headers['Authorization'])) {
 
 $userData = verifyJWTFromHeader();
 $user_id = $userData['id'];
+$user = $userData['name'];
 $email = $userData['email'];
 
 try {
@@ -50,7 +52,10 @@ try {
     $stmt->bind_param("ssisii", $email, $subject, $task_type, $ticket, $status,$user_id);
     $stmt->execute();
 
-    if ($stmt->affected_rows > 0) {
+    if ($stmt->affected_rows > 0) 
+    {
+        $ticketId = $stmt->insert_id; 
+        Notificaciones::crearTicketMail($ticketId, 'ticket', $user);
         http_response_code(201);
         echo json_encode(array("message" => "Ticket creado correctamente."));
     } else {

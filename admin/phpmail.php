@@ -18,7 +18,7 @@ $tId  = '$tId';
 $uid  = '$uid';
 //http://186.67.95.90:8083
 $projectUrl = 'http://192.168.100.177/tickets-soporte/admin/projects/view-projects.php?textSearch=$tId';    
-$ticketUrl  = 'http://192.168.100.177/tickets-soporte/admin/tickets/manage-tickets.php?textSearch=$tId';
+$ticketUrl  = '$ticketUrl';
 //Body para la funcion CreateTicketMail (Nuevo ticket)
 $bodyNewTicket = "<body>
                     <table class='email-container' width='100%' cellspacing='0' cellpadding='0' role='presentation'>
@@ -214,31 +214,58 @@ class Notificaciones {
         }
     }
     //Envio de correo cuando se crea un ticket/proyecto
-    public static function crearTicketMail($tId,$type,$uid) {
-        global $userMail, $pass, $bodyNewProject, $bodyNewTicket;
+    public static function crearTicketMail($tId, $type, $uid, $depto = null) {
+        global $userMail, $pass, $bodyNewProject, $bodyNewTicket, $ticketUrl;
+        global $con; 
+    
         $uid = utf8_decode($uid);
-
+        $destinatarios = []; 
+        $roles = [];
         $mail = new PHPMailer(true);
         $mail->SMTPDebug = 2;
         $mail->Debugoutput = 'error_log';  
-        
+    
         if($type == 'ticket'){
-            $asunto = "Nuevo Ticket Creado #$tId";
-            $bodyNewTicket = str_replace('$tId', $tId, $bodyNewTicket);
-            $bodyNewTicket = str_replace('$uid', $uid, $bodyNewTicket);
-        } else if ($type == 'project'){
-            $asunto = "Nuevo proyecto Creado #$tId";
-            $bodyNewProject = str_replace('$tId', $tId, $bodyNewProject);
-            $bodyNewProject = str_replace('$uid', $uid, $bodyNewProject);
+            $asunto = "Nuevo Ticket Creado #$tId";  
         }
+        else if ($type == 'project') {
+            $asunto = "Nuevo Proyecto Creado #$tId";
+            $body = str_replace(['$tId', '$uid'], [$tId, $uid], $bodyNewProject);
+        } else {
+            return false;
+        }
+    
         try {
-            // Consulta para obtener los correos de todos los administradores
-            global $con; 
-            $query = "SELECT email 
+            $query = "SELECT email, rol
                         FROM user 
                         WHERE rol = 'admin'";
             $result = $con->query($query);
-            if ($result->num_rows > 0) { 
+    
+            while ($row = $result->fetch_assoc()) {
+                $destinatarios[] = $row['email'];
+                $roles[$row['email']] = $row['rol'];
+            }
+    
+            // Si es ticket, también obtener supervisores del departamento
+            if ($type == 'ticket' && $depto !== null) {
+                $query = "SELECT us.email, us.rol
+                          FROM user us 
+                          JOIN usuario_departamento ud ON us.id = ud.usuario_id
+                          WHERE us.rol = 'supervisor' AND ud.departamento_id = ?";
+                
+                $stmt = $con->prepare($query);
+                $stmt->bind_param("i", $depto);
+                $stmt->execute();
+                $result = $stmt->get_result();
+            
+                while ($row = $result->fetch_assoc()) {
+                    $destinatarios[] = $row['email'];
+                    $roles[$row['email']] = $row['rol'];
+                }
+            }
+    
+            // Verificar si hay destinatarios
+            if (count($destinatarios) > 0) { 
                 // Configuración SMTP
                 $mail->isSMTP();
                 $mail->Host = 'smtp.gmail.com';
@@ -247,20 +274,30 @@ class Notificaciones {
                 $mail->Password = $pass; 
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587;
-                $mail->SMTPOptions = array(
-                    'ssl' => array(
+                $mail->SMTPOptions = [
+                    'ssl' => [
                         'verify_peer' => false,
                         'verify_peer_name' => false,
                         'allow_self_signed' => true
-                    )
-                );
+                    ]
+                ];
+    
+                // Enviar a cada destinatario
+                foreach ($destinatarios as $destinatario) {
 
-                while ($row = $result->fetch_assoc()) {
-                    $destinatario = $row['email'];
-                    $mail->clearAddresses(); // Limpia los destinatarios anteriores
+                    if($type == 'ticket'){ 
+                        if($roles[$destinatario] == 'supervisor'){
+                            $ticketUrl  = 'http://192.168.100.177/tickets-soporte/tickets/manage-tickets.php?textSearch=$tId';
+                        }else{
+                            $ticketUrl  = 'http://192.168.100.177/tickets-soporte/admin/tickets/manage-tickets.php?textSearch=$tId';
+                        }
+                        $body = str_replace(['$tId', '$uid', '$ticketUrl'], [$tId, $uid, $ticketUrl], $bodyNewTicket);
+                    }
+                    
+                    $mail->clearAddresses(); 
                     $mail->setFrom('stsafeteck@gmail.com', 'Soporte');
                     $mail->addAddress($destinatario);
-
+    
                     // Contenido del correo
                     $mail->isHTML(true);
                     $mail->Subject = $asunto;
@@ -288,6 +325,7 @@ class Notificaciones {
                                 color: #ffffff;
                                 border-radius: 8px 8px 0 0;
                                 text-align: center;
+                                padding: 10px;
                             }
                             .email-body {
                                 text-align: justify;
@@ -314,18 +352,29 @@ class Notificaciones {
                                 margin-top: 20px;
                             }
                         </style>
-                        </head>";
-                        if($type == 'ticket'){
-                            $mail->Body .= "$bodyNewTicket";
-                        } else if ($type == 'project'){
-                            $mail->Body .= "$bodyNewProject";
-                        }
+                        </head>
+                        <body>
+                            <div class='email-container'>
+                                <div class='email-header'>
+                                    <h2>$asunto</h2>
+                                </div>
+                                <div class='email-body'>
+                                    $body
+                                </div>
+                                <div class='footer'>
+                                    Este es un mensaje automático, por favor no responder.
+                                </div>
+                            </div>
+                        </body>
+                        </html>
+                    ";
+    
                     // Envía el correo
                     $mail->send();
                 }
                 return true;
             } else {
-                error_log("No hay administradores para enviar el correo.");
+                error_log("No hay destinatarios para enviar el correo.");
                 return false;
             }
         } catch (Exception $e) {
@@ -333,6 +382,7 @@ class Notificaciones {
             return false;
         }
     }
+    
 
     public static function asignarUsuario($tid, $uid) {
         global $userMail, $pass, $bodyNewProject, $bodyNewTicket;
