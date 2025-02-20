@@ -52,7 +52,7 @@ try {
     $stmt->bind_param("ssisii", $email, $subject, $task_type, $ticket, $status,$user_id);
     $stmt->execute();
     $ticketId = $stmt->insert_id; 
-    //Notificaciones::crearTicketMail($ticketId, 'ticket', $user);
+    Notificaciones::crearTicketMail($ticketId, 'ticket', $user);
     http_response_code(201);
     echo json_encode(array("message" => "Ticket creado correctamente."));
 
