@@ -6,7 +6,7 @@ ini_set('error_log', 'C:/xampp/php/logs/php_error_log');
 
 
 error_reporting(E_ALL);
-include('../dbconnection.php');
+
 require_once __DIR__ . '/../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
