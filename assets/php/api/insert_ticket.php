@@ -25,7 +25,6 @@ if (!isset($headers['Authorization'])) {
 
 $userData = verifyJWTFromHeader();
 $user_id = $userData['id'];
-$user = $userData['name'];
 $email = $userData['email'];
 
 try {
