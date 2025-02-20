@@ -217,8 +217,7 @@ class Notificaciones {
     public static function crearTicketMail($tId, $type, $uid, $depto = null) {
         global $userMail, $pass, $bodyNewProject, $bodyNewTicket, $ticketUrl;
         global $con; 
-    
-        $uid = utf8_decode($uid);
+
         $destinatarios = []; 
         $roles = [];
         $mail = new PHPMailer(true);
@@ -287,9 +286,9 @@ class Notificaciones {
 
                     if($type == 'ticket'){ 
                         if($roles[$destinatario] == 'supervisor'){
-                            $ticketUrl  = 'http://192.168.100.177/tickets-soporte/tickets/manage-tickets.php?textSearch=$tId';
+                            $ticketUrl  = 'http://186.67.95.90:8083/tickets-soporte/tickets/manage-tickets.php?textSearch='.$tId;
                         }else{
-                            $ticketUrl  = 'http://192.168.100.177/tickets-soporte/admin/tickets/manage-tickets.php?textSearch=$tId';
+                            $ticketUrl  = 'http://186.67.95.90:8083/tickets-soporte/admin/tickets/manage-tickets.php?textSearch='.$tId;
                         }
                         $body = str_replace(['$tId', '$uid', '$ticketUrl'], [$tId, $uid, $ticketUrl], $bodyNewTicket);
                     }
