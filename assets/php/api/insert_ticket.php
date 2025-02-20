@@ -15,14 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Obtener el token del encabezado
-$headers = apache_request_headers();
-if (!isset($headers['Authorization'])) {
-    http_response_code(401);
-    echo json_encode(["error" => "No se proporcionó un token"]);
-    exit;
-}
-
 $userData = verifyJWTFromHeader();
 $user_id = $userData['id'];
 $email = $userData['email'];
