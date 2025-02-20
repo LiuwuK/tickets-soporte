@@ -6,8 +6,6 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 require_once "../../../dbconnection.php";
 require_once 'auth_middleware.php';
-include("../../../admin/phpmail.php");
-
 // Verificar el método de la solicitud
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -43,7 +41,6 @@ try {
     $stmt->bind_param("ssisii", $email, $subject, $task_type, $ticket, $status,$user_id);
     $stmt->execute();
     $ticketId = $stmt->insert_id; 
-    Notificaciones::crearTicketMail($ticketId, 'ticket', 'testuser');
     http_response_code(201);
     echo json_encode(array("message" => "Ticket creado correctamente."));
 
