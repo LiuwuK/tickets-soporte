@@ -5,7 +5,7 @@ use PHPMailer\PHPMailer\Exception;
 setlocale(LC_TIME, 'es_ES.UTF-8', 'spanish');
 include('../dbconnection.php');
 //credenciales  USER = CORREO / PASS = CLAVE DE APLICACION GOOGLE 
-$user = 'stsafeteck@gmail.com'; // correo
+$user = 'stsafeteck@gmail.com'; // Correo
 $pass = 'molc xtfj nfev kruf'; // Contraseña de aplicación
 
 $query = "SELECT tr.nombre_colaborador,
@@ -19,6 +19,8 @@ $query = "SELECT tr.nombre_colaborador,
                 jo_destino.tipo_jornada AS joDestino, -- Jornada de destino
                 sup_origen.nombre_supervisor AS supOrigen, -- Supervisor de origen
                 sup_destino.nombre_supervisor AS supDestino, -- Supervisor destino
+                rol_origen.nombre_rol AS rolOrigen, -- rol origen
+                rol_destino.nombre_rol AS rolDestino, -- rol destino
                 mo.motivo AS motivoTraslado
             FROM traslados tr
             JOIN user us ON tr.solicitante = us.id
@@ -28,8 +30,11 @@ $query = "SELECT tr.nombre_colaborador,
             JOIN jornadas jo_destino ON tr.jornada_destino = jo_destino.id
             JOIN supervisores sup_origen ON tr.supervisor_origen = sup_origen.id
             JOIN supervisores sup_destino ON tr.supervisor_destino = sup_destino.id
+            JOIN roles rol_origen ON tr.rol_origen = rol_origen.id
+            JOIN roles rol_destino ON tr.rol_destino = rol_destino.id
             JOIN motivos_gestion mo ON(tr.motivo_traslado = mo.id)
-            WHERE tr.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR AND CURDATE() + INTERVAL 16 HOUR
+            WHERE tr.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
+            AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR
             ORDER BY tr.fecha_registro ASC";
 
 $stmt = $con->prepare($query);
@@ -62,7 +67,7 @@ if(!empty($traslados)){
 
         $mail->clearAddresses();
         $mail->setFrom('stsafeteck@gmail.com', 'Traslados');
-        $mail->addAddress('fnorton@gruposafeteck.com', 'Usuario');  
+        $mail->addAddress('desarrolladorsafeteck@hotmail.com', 'Usuario');  
 
         $mail->isHTML(true);
         $mail->Subject = 'Traslados del día de hoy';
@@ -152,12 +157,14 @@ if(!empty($traslados)){
                         <p><strong>Nombre Sucursal:</strong> '.$tr['suOrigen'].'</p>
                         <p><strong>Supervisor:</strong> '.$tr['supOrigen'].'</p>
                         <p><strong>Jornada:</strong> '.$tr['joOrigen'].'</p>
+                        <p><strong>Rol Origen:</strong>'.$tr['rolOrigen'].'</p>
                     </div>
                     <div class="destino">
                         <h3>Datos Instalacion Destino</h3>
                         <p><strong>Nombre Sucursal:</strong> '.$tr['suDestino'].'</p>
                         <p><strong>Supervisor:</strong> '.$tr['supDestino'].'</p>
                         <p><strong>Jornada:</strong> '.$tr['joDestino'].'</p>
+                         <p><strong>Rol Destino:</strong>'.$tr['rolDestino'].'</p>
                     </div>
                 </div>
             </div>';

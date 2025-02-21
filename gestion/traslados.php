@@ -148,6 +148,19 @@ check_login();
               </div>
               <div class="form-row mx-auto">
                 <div class ="form-group">
+                  <label class="form-label">Rol de Origen <span>*</span></label>
+                  <div >
+                      <select name="rolOrigen" class="form-select form-select-sm" required>
+                        <option value="">Seleccionar</option>
+                        <?php
+                        foreach ($rol AS $row) {
+                          echo "<option value=".$row['id'].">".$row['nombre_rol'] ."</option>";
+                        };
+                        ?>
+                      </select>
+                  </div>
+                </div>
+                <div class ="form-group">
                     <label class="form-label">Motivo de traslado</label>
                     <div >
                         <select name="motivo" class="form-select form-select-sm" required>
@@ -191,9 +204,9 @@ check_login();
               </div>
               <div class="form-row mx-auto">
                 <div class ="form-group">
-                  <label class="form-label">Rol <span>*</span></label>
+                  <label class="form-label">Rol de Destino<span>*</span></label>
                   <div >
-                      <select name="rol" class="form-select form-select-sm" required>
+                      <select name="rolDestino" class="form-select form-select-sm" required>
                         <option value="">Seleccionar</option>
                         <?php
                         foreach ($rol AS $row) {
@@ -333,11 +346,13 @@ check_login();
                   <strong>Instalacion de Origen: <?php echo $row['suOrigen'] ?></strong>
                   <p>Supervisor: <?php echo $row['supOrigen'];?></p>
                   <p>Jornada Origen: <?php echo $row['joOrigen'];?></p>
+                  <p>Rol: <?php echo $row['rolOrigen'];?></p>
                 </div>
                 <div class="destino-data">
                   <strong>Instalacion de Destino: <?php echo $row['suDestino'] ?></strong>
                   <p>Supervisor: <?php echo $row['supDestino'];?></p>
                   <p>Jornada Destino: <?php echo $row['joDestino'];?></p>
+                  <p>Rol: <?php echo $row['rolDestino'];?></p>
                 </div>
                 <div class="delete-btns">
                   <button class="btn btn-del del-btn" name="delTraslado" data-bs-toggle="modal" data-bs-target="#delTraslado" data-sup-id="<?php echo $row['id'];?>" >Eliminar</button>

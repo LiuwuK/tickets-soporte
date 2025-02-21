@@ -76,18 +76,19 @@ if(isset($_POST['trasladoForm'])){
     $motivo = $_POST['motivo'];
     $instDestino = $_POST['inDestino'];
     $jorDestino = $_POST['joDestino'];
-    $rol = $_POST['rol'];
+    $rolOrigen = $_POST['rolOrigen'];
+    $rolDestino = $_POST['rolDestino'];
     $fInicio = $_POST['fechaInicio'];
     $supDestino = $_POST['supervisorDestino'];
 
     $query =  "INSERT INTO 
                     traslados(supervisor_origen, nombre_colaborador, rut, instalacion_origen, 
                             jornada_origen, motivo_traslado, instalacion_destino, jornada_destino, 
-                            rol, fecha_inicio_turno, supervisor_destino, solicitante)
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+                            rol_origen,rol_destino, fecha_inicio_turno, supervisor_destino, solicitante)
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
     $stmt = $con->prepare($query);
-    $stmt->bind_param("issiiiiiisii",$supOrigen, $colaborador, $rut, $instOrigen, $jorOrigen, 
-                    $motivo, $instDestino, $jorDestino, $rol, $fInicio, $supDestino, $solicitante);
+    $stmt->bind_param("issiiiiiiisii",$supOrigen, $colaborador, $rut, $instOrigen, $jorOrigen, 
+                    $motivo, $instDestino, $jorDestino, $rolOrigen,$rolDestino, $fInicio, $supDestino, $solicitante);
     if($stmt->execute()){
         echo "<script>alert('Traslado Registrado Correctamente'); location.replace(document.referrer)</script>";
     }
@@ -123,7 +124,9 @@ $query = "SELECT tr.*,
                 su_destino.nombre AS suDestino, -- Sucursal de destino
                 jo_destino.tipo_jornada AS joDestino, -- Jornada de destino
                 sup_origen.nombre_supervisor AS supOrigen, -- Supervisor de origen
-                sup_destino.nombre_supervisor AS supDestino -- Supervisor destino
+                sup_destino.nombre_supervisor AS supDestino, -- Supervisor destino
+                rol_origen.nombre_rol AS rolOrigen, -- rol origen
+                rol_destino.nombre_rol AS rolDestino -- rol destino
             FROM traslados tr
             JOIN user us ON tr.solicitante = us.id
             JOIN sucursales su_origen ON tr.instalacion_origen = su_origen.id
@@ -132,8 +135,11 @@ $query = "SELECT tr.*,
             JOIN jornadas jo_destino ON tr.jornada_destino = jo_destino.id
             JOIN supervisores sup_origen ON tr.supervisor_origen = sup_origen.id
             JOIN supervisores sup_destino ON tr.supervisor_destino = sup_destino.id
-            WHERE tr.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR AND CURDATE() + INTERVAL 16 HOUR
-            ORDER BY tr.fecha_registro ASC";
+            JOIN roles rol_origen ON tr.rol_origen = rol_origen.id
+            JOIN roles rol_destino ON tr.rol_destino = rol_destino.id
+            WHERE tr.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
+            AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR
+            ORDER BY tr.fecha_registro ASC;";
 $trasladosData = $con->prepare($query);
 $trasladosData->execute();
 $traslados = $trasladosData->get_result();
@@ -149,7 +155,8 @@ $query = "SELECT de.*,
             JOIN sucursales su ON(de.instalacion = su.id)
             JOIN supervisores sup ON(de.supervisor_origen = sup.id)
             JOIN motivos_gestion mo ON(de.motivo = mo.id)
-            WHERE de.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR AND CURDATE() + INTERVAL 16 HOUR
+            WHERE de.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
+            AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR
             ORDER BY de.fecha_registro ASC";
 $desvData = $con->prepare($query);
 $desvData->execute();
