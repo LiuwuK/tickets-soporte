@@ -49,7 +49,7 @@ check_login();
                     <h4>Usuario</h4>
                 </div>
                 <?php 
-                if($_SESSION['cargo'] == 2 or $_SESSION['cargo'] == 4 ){
+                if($_SESSION['cargo'] == 2 or $_SESSION['cargo'] == 4 or isset($_SESSION['deptos']) && in_array(17, $_SESSION['deptos']) ){
                 ?>
                 <div class="crd mx-auto" onclick="window.location.href='gestion-config/gestion-main.php';">
                     <i class="bi bi-folder-fill"></i>

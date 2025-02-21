@@ -71,7 +71,7 @@ check_login();
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="forms" id="desvinculacion" onclick="mostrarFormulario('desvinculacionForm')">
                   <label class="form-check-label" for="desvinculacion">
-                    Formulario de Descvinculacion
+                    Formulario de Desvinculacion
                   </label>
                 </div>
               </div>

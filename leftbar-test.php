@@ -50,7 +50,7 @@
       }
     ?>
     <?php
-    if($_SESSION['cargo'] == '6' or $_SESSION['cargo'] == '2' or $_SESSION['cargo'] == '4' or isset($_SESSION['deptos']) && in_array(17, $_SESSION['deptos'])  ){ 
+    if($_SESSION['cargo'] == '6' or $_SESSION['cargo'] == '2' or $_SESSION['cargo'] == '4' or isset($_SESSION['deptos']) && in_array(17, $_SESSION['deptos'])){ 
     ?>
     <!-- Modulo Gestion?? -->
     <li class="nav-item">
