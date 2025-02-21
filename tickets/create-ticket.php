@@ -112,6 +112,14 @@ check_login();
                     </div>
                 </div>
             </form>
+
+            <form  method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="ticketImage" class="form-label">Subir Imagen supabase</label>
+                    <input class="form-control form-control-sm" type="file" id="ticketImage" name="ticketImage" accept="image/*">
+                </div> 
+                <button name="testimg" type="submit">Subir Archivo</button>
+            </form>
         </div>   
     </div>
 

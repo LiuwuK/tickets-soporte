@@ -190,7 +190,7 @@ check_login();
                               <?php
                                 if (isset($row['ticket_img'])) { ?>
                                   <div class="img">
-                                      <img src="../<?php echo $row['ticket_img'];?>" alt="">
+                                      <img src="<?php echo $row['ticket_img'];?>" alt="">
                                   </div>
                               <?php                                            
                                 }
@@ -309,7 +309,7 @@ check_login();
                                           }
                                           echo '</div>';
                                       }
-?>
+                                    ?>
                                     <input class="form-control form-control-sm"  type="file" name="files[]" multiple>
                                   </div>
                                   <div class="comm">

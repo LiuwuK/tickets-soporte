@@ -65,25 +65,59 @@ elseif (isset($_POST["deltsk"])) {
 }
 //Si se cierra o actualiza un ticket----------------------------------------------------------------------------------------
 if (isset($_POST["end"]) OR isset($_POST["update"])){
-
   if (!empty($_FILES['files']['name'][0])) {
     $ticket_id = intval($_POST['frm_id']); 
 
-    $uploadDir = "assets/uploads/tickets/"; // Carpeta de almacenamiento
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
+    // Configuración de Supabase
+    $supabase_url = 'https://zessdkphohirwcsbqnif.supabase.co';
+    $supabase_key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inplc3Nka3Bob2hpcndjc2JxbmlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAwNjMxOTMsImV4cCI6MjA1NTYzOTE5M30.iTUsOH7OxO49h62FQCmXV05-DZKUwQ1RFLGdC_FEEWE';
+    $bucket_name = "safeteck.uploads";
+
+    if (!isset($_FILES['files']) || count($_FILES['files']['tmp_name']) == 0) {
+        die("No se seleccionaron archivos.");
     }
 
     foreach ($_FILES['files']['tmp_name'] as $key => $tmp_name) {
-        $fileName = basename($_FILES['files']['name'][$key]);
-        $filePath = $uploadDir . time() . "_" . $fileName; // Nombre único
-
-        if (move_uploaded_file($tmp_name, $filePath)) {
-            // Guardar en la BD
-            $stmt = $con->prepare("INSERT INTO ticket_archivos (ticket_id, archivo) VALUES (?, ?)");
-            $stmt->bind_param("is", $ticket_id, $filePath);
-            $stmt->execute();
+        if ($_FILES['files']['error'][$key] !== UPLOAD_ERR_OK) {
+            echo "Error al subir el archivo: " . $_FILES['files']['name'][$key];
+            continue;
         }
+
+        $file_path = $_FILES['files']['tmp_name'][$key];
+        $file_name = str_replace(" ", "_", $_FILES['files']['name'][$key]); 
+        $file_type = $_FILES['files']['type'][$key];
+
+        $url = "$supabase_url/storage/v1/object/$bucket_name/$file_name";
+
+        // Inicializar cURL
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT"); 
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Authorization: Bearer $supabase_key",
+            "Content-Type: application/octet-stream",
+            "x-upsert: true"
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($file_path));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        // Verificar respuesta de Supabase
+        if ($response === false) {
+            echo "Error en cURL al subir {$file_name}: $error<br>";
+            continue;
+        }
+
+        // Guardar la URL pública en la BD
+        $fileUrl = "$supabase_url/storage/v1/object/public/$bucket_name/$file_name";
+        $stmt = $con->prepare("INSERT INTO ticket_archivos (ticket_id, archivo) VALUES (?, ?)");
+        $stmt->bind_param("is", $ticket_id, $fileUrl);
+        $stmt->execute();
+
+        echo "✅ Archivo subido correctamente: <a href='$fileUrl' target='_blank'>$file_name</a><br>";
     }
   }
 }

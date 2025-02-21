@@ -1,5 +1,4 @@
 <?php
-
     $prioridad = mysqli_query($con, "select * from prioridades ");
     $deptos = mysqli_query($con, "select * from departamentos_usuarios");
     //obtener tecnicos
@@ -24,33 +23,48 @@
         $pdate = date('Y-m-d'); 
 
         //Subida de imagen-------------------------------------------------------------------------------------------------------
-            // Configuración del directorio de carga
-            if ($_SESSION['role'] == 'admin'){
-                $uploadDir = '../../tickets/assets/uploads/';
-            }else{
-                $uploadDir = 'assets/uploads/';
-            }
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
-            }
-
             // Procesar la imagen
             if(isset($_FILES['ticketImage']) && $_FILES['ticketImage']['error'] === UPLOAD_ERR_OK){
-                $uploadedFile = $_FILES['ticketImage'];
-                $filePath = '';
+                // Configuración de Supabase
+                $supabase_url = 'https://zessdkphohirwcsbqnif.supabase.co';
+                $supabase_key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inplc3Nka3Bob2hpcndjc2JxbmlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAwNjMxOTMsImV4cCI6MjA1NTYzOTE5M30.iTUsOH7OxO49h62FQCmXV05-DZKUwQ1RFLGdC_FEEWE';
+                $bucket_name = "safeteck.uploads";
 
-                $fileName = uniqid('ticket_', true) .'.'. pathinfo($_FILES['ticketImage']['name'], PATHINFO_EXTENSION);
-                $targetPath = $uploadDir . $fileName;
-
-                // Mover archivo a la carpeta de destino
-                if (move_uploaded_file($uploadedFile['tmp_name'], $targetPath)) {
-                    $dir = 'assets/uploads/';
-                    $filePath = $dir . $fileName;
-                } else {
-                    echo "Error al subir la imagen.";
-                    exit;
+                // Verifica si se subió correctamente el archivo
+                if (!isset($_FILES["ticketImage"]) || $_FILES["ticketImage"]["error"] != UPLOAD_ERR_OK) {
+                    die("Error al subir el archivo.");
                 }
-                
+
+                $file_path = $_FILES["ticketImage"]["tmp_name"];
+                $file_name = str_replace(" ", "_", $_FILES["ticketImage"]["name"]); // Evitar espacios en el nombre
+                $file_type = $_FILES["ticketImage"]["type"];
+
+                // URL correcta para subir archivos a Supabase Storage
+                $url = "$supabase_url/storage/v1/object/$bucket_name/$file_name";
+
+                // Inicializar cURL
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT"); // Supabase usa PUT para subir archivos
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    "Authorization: Bearer $supabase_key",
+                    "Content-Type: $file_type",
+                    "x-upsert: true" // Permite sobreescribir archivos con el mismo nombre
+                ]);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($file_path)); // Cargar el archivo
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                $response = curl_exec($ch);
+                $error = curl_error($ch);
+                curl_close($ch);
+
+                // Manejo de respuesta y errores
+                if ($response === false) {
+                    echo "Error en cURL: $error";
+                } else {
+                    $filePath = $url;
+                    echo "✅ Archivo subido correctamente: ";
+                }    
             } 
         //-----------------------------------------------------------------------------------------------------------------------
 
@@ -68,7 +82,6 @@
                 //Envio de notificacion a tiempo real 
                 //ticketNoti($ticketId,$userId );
                 //Envio de correo
-                
                 if(Notificaciones::crearTicketMail($ticketId, 'ticket', $user, $tt)){
                     //echo "<script>alert('correo enviado Correctamente'); location.replace(document.referrer)</script>";
                 } else {
@@ -78,10 +91,11 @@
             } else {
                 echo "<script>alert('Error al registrar el ticket');</script>";
             }
-            
             mysqli_stmt_close($stmt);
         } else {
             echo "<script>alert('Error al preparar la consulta');</script>";
         }
     }
+
+
 ?>

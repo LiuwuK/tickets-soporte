@@ -5,11 +5,18 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 });
 
 //animacion de carga 
-document.querySelectorAll("form[name='form']").forEach(form => {
-    form.addEventListener("submit", function() {
-        document.getElementById("loading").style.display = "flex";
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("form[name='form']").forEach(form => {
+        form.addEventListener("submit", function () {
+            // Buscar el div #loading dentro del formulario que se está enviando
+            let loader = form.querySelector("#loading");
+            if (loader) {
+                loader.style.display = "flex";
+            }
+        });
     });
 });
+
 //boton para ocultar/ver sidebar
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');

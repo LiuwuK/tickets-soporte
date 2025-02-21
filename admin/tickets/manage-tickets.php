@@ -320,7 +320,7 @@ check_login();
                                       $stmt->execute();
                                       $result = $stmt->get_result();
                                       while ($row_ar = $result->fetch_assoc()) {
-                                          $filePath = "../../tickets/".$row_ar['archivo'];
+                                          $filePath = $row_ar['archivo'];
                                           $fileExt = pathinfo($filePath, PATHINFO_EXTENSION);
 
                                           if (in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif'])) {
@@ -348,6 +348,7 @@ check_login();
                                           echo '</div>';
                                       }
                                     ?>
+                                    <input class="form-control form-control-sm"  type="file" name="files[]" multiple>
                                   </div>
                                   <div class="comm">
                                     <h3>Respuesta</h3>
