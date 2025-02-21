@@ -52,7 +52,7 @@ if(!empty($desvinculaciones)){
 
         $mail->clearAddresses();
         $mail->setFrom('stsafeteck@gmail.com', 'Desvinculaciones');
-        $mail->addAddress('desarrolladorsafeteck@hotmail.com', 'Usuario');  
+        $mail->addAddress('fnorton@gruposafeteck.com', 'Usuario');  
 
         $mail->isHTML(true);
         $mail->Subject = 'Traslados del día de hoy';
