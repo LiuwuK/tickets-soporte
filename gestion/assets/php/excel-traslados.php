@@ -17,13 +17,15 @@ $sheet->setCellValue('B1', 'RUT');
 $sheet->setCellValue('C1', 'Instalación Origen');
 $sheet->setCellValue('D1', 'Supervisor Origen');
 $sheet->setCellValue('E1', 'Jornada Origen');
-$sheet->setCellValue('F1', 'Instalación Destino');
-$sheet->setCellValue('G1', 'Supervisor Destino');
-$sheet->setCellValue('H1', 'Jornada Destino');
-$sheet->setCellValue('I1', 'Motivo Traslado');
-$sheet->setCellValue('J1', 'Rol');
-$sheet->setCellValue('K1', 'Fecha Inicio Turno');
-$sheet->setCellValue('L1', 'Solicitante');
+$sheet->setCellValue('F1', 'Rol Origen');
+$sheet->setCellValue('G1', 'Instalación Destino');
+$sheet->setCellValue('H1', 'Supervisor Destino');
+$sheet->setCellValue('I1', 'Jornada Destino');
+$sheet->setCellValue('J1', 'Rol Destino');
+$sheet->setCellValue('K1', 'Motivo Traslado');
+$sheet->setCellValue('L1', 'Fecha Inicio Turno');
+$sheet->setCellValue('M1', 'Solicitante');
+
 // Aplicar estilo a la cabecera (fila 1)
 $headerStyle = [
     'font' => [
@@ -40,7 +42,7 @@ $headerStyle = [
     ],
 ];
 
-$sheet->getStyle('A1:L1')->applyFromArray($headerStyle);
+$sheet->getStyle('A1:M1')->applyFromArray($headerStyle);
 // Ajustar la altura de la fila de la cabecera para mayor espacio
 $sheet->getRowDimension(1)->setRowHeight(30);
 
@@ -56,7 +58,8 @@ $query = "SELECT tr.nombre_colaborador AS colaborador,
                 sup_origen.nombre_supervisor AS supOrigen, -- Supervisor de origen
                 sup_destino.nombre_supervisor AS supDestino, -- Supervisor destino
                 mg.motivo AS motivoN, -- Motivo traslado
-                ro.nombre_rol AS rolN -- ROL
+                rol_origen.nombre_rol AS rolOrigen, -- rol origen
+                rol_destino.nombre_rol AS rolDestino -- rol destino
             FROM traslados tr
             JOIN user us ON tr.solicitante = us.id
             JOIN sucursales su_origen ON tr.instalacion_origen = su_origen.id
@@ -66,8 +69,10 @@ $query = "SELECT tr.nombre_colaborador AS colaborador,
             JOIN supervisores sup_origen ON tr.supervisor_origen = sup_origen.id
             JOIN supervisores sup_destino ON tr.supervisor_destino = sup_destino.id
             JOIN motivos_gestion mg ON tr.motivo_traslado = mg.id
-            JOIN roles ro ON tr.rol = ro.id 
-            WHERE tr.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR AND CURDATE() + INTERVAL 16 HOUR
+            JOIN roles rol_origen ON tr.rol_origen = rol_origen.id
+            JOIN roles rol_destino ON tr.rol_destino = rol_destino.id
+            WHERE tr.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
+            AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR
             ORDER BY tr.fecha_registro ASC";
 $result = mysqli_query($con, $query);
 
@@ -78,30 +83,28 @@ while ($row = mysqli_fetch_assoc($result)) {
     $sheet->setCellValue('C' . $rowNumber, $row['suOrigen']);
     $sheet->setCellValue('D' . $rowNumber, $row['supOrigen']);
     $sheet->setCellValue('E' . $rowNumber, $row['joOrigen']);
-    $sheet->setCellValue('F' . $rowNumber, $row['suDestino']);
-    $sheet->setCellValue('G' . $rowNumber, $row['supDestino']);
-    $sheet->setCellValue('H' . $rowNumber, $row['joDestino']);
-    $sheet->setCellValue('I' . $rowNumber, $row['motivoN']);
-    $sheet->setCellValue('J' . $rowNumber, $row['rolN']);
-    $sheet->setCellValue('K' . $rowNumber, $row['fecha_turno']);
-    $sheet->setCellValue('L' . $rowNumber, $row['soliN']);
+    $sheet->setCellValue('F' . $rowNumber, $row['rolOrigen']);
+    $sheet->setCellValue('G' . $rowNumber, $row['suDestino']);
+    $sheet->setCellValue('H' . $rowNumber, $row['supDestino']);
+    $sheet->setCellValue('I' . $rowNumber, $row['joDestino']);
+    $sheet->setCellValue('J' . $rowNumber, $row['rolDestino']);
+    $sheet->setCellValue('K' . $rowNumber, $row['motivoN']);
+    $sheet->setCellValue('L' . $rowNumber, $row['fecha_turno']);
+    $sheet->setCellValue('M' . $rowNumber, $row['soliN']);
     $rowNumber++;
 }
 
-// Ajustar automáticamente el ancho de las columnas de A a G
-foreach (range('A','L') as $col) {
+// Ajustar ancho de columnas 
+foreach (range('A','M') as $col) {
     $sheet->getColumnDimension($col)->setAutoSize(true);
 }
 
-// Crear el escritor para Excel (Xlsx)
 $writer = new Xlsx($spreadsheet);
 
-// Configurar las cabeceras para forzar la descarga del archivo Excel
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 header('Content-Disposition: attachment;filename="traslados.xlsx"');
 header('Cache-Control: max-age=0');
 
-// Escribir el archivo en la salida
 $writer->save('php://output');
 exit;
 ?>

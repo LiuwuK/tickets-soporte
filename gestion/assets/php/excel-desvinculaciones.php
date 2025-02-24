@@ -51,7 +51,8 @@ $query = "SELECT de.*,
             JOIN sucursales su ON(de.instalacion = su.id)
             JOIN supervisores sup ON(de.supervisor_origen = sup.id)
             JOIN motivos_gestion mo ON(de.motivo = mo.id)
-            WHERE de.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR AND CURDATE() + INTERVAL 16 HOUR
+            WHERE tr.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
+            AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR
             ORDER BY de.fecha_registro ASC";
 $result = mysqli_query($con, $query);
 
