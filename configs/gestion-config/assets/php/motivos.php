@@ -1,4 +1,5 @@
 <?php
+require __DIR__.'/../../../../vendor/autoload.php';
 //obtener info 
 $query = "SELECT * FROM motivos_gestion";
 $supervisorData = $con->prepare($query);
@@ -54,4 +55,30 @@ if(isset($_POST['delSup'])){
     }
     $stmt->close();
 }
+
+use PhpOffice\PhpSpreadsheet\IOFactory;
+if(isset($_POST['carga'])){
+    if ($_FILES['file']['error'] == UPLOAD_ERR_OK) {
+        $filePath = $_FILES['file']['tmp_name'];
+        $spreadsheet = IOFactory::load($filePath);
+        $worksheet = $spreadsheet->getActiveSheet();
+        $data = $worksheet->toArray();
+        
+        $stmt = $con->prepare("INSERT INTO motivos_gestion (motivo, tipo_motivo) VALUES (?,?)");
+    
+        foreach ($data as $index => $row) {
+            if ($index == 0) continue;
+            $motivo = $row[0];
+            $tipo = strtolower($row[1]);
+            
+            $stmt->bind_param("ss", $motivo, $tipo);
+            $stmt->execute();
+        }
+    
+        echo "<script>alert('Motivos registrados correctamente'); location.href='motivos.php';</script>";
+    } else {
+        echo "Error al subir el archivo.";
+    }
+}
+
 ?>

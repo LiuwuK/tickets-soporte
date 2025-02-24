@@ -34,3 +34,13 @@ td {
 span{
     color: red;
 }
+.mv{
+    text-align: center;
+}
+.mv-form{
+    display: flow;
+    flex-direction: column;
+}
+.mv-form input{
+    background-color: #fff;
+}

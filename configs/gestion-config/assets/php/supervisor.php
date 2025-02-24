@@ -1,4 +1,6 @@
 <?php
+require __DIR__.'/../../../../vendor/autoload.php';
+
 //obtener info de los supervisores
 $query = "SELECT * FROM supervisores";
 $supervisorData = $con->prepare($query);
@@ -62,5 +64,34 @@ if(isset($_POST['delSup'])){
         echo "<script>alert('Error al eliminar el supervisor.');</script>";
     }
     $stmt->close();
+}
+
+
+//Carga masiva
+use PhpOffice\PhpSpreadsheet\IOFactory;
+if(isset($_POST['carga'])){
+    if ($_FILES['file']['error'] == UPLOAD_ERR_OK) {
+        $filePath = $_FILES['file']['tmp_name'];
+        $spreadsheet = IOFactory::load($filePath);
+        $worksheet = $spreadsheet->getActiveSheet();
+        $data = $worksheet->toArray();
+        
+        $stmt = $con->prepare("INSERT INTO supervisores (nombre_supervisor, email, rut, numero_contacto) VALUES (?,?,?,?)");
+    
+        foreach ($data as $index => $row) {
+            if ($index == 0) continue;
+            $nombre = $row[0];
+            $email = $row[1];
+            $rut = $row[2];
+            $num = $row[3];
+    
+            $stmt->bind_param("sssi", $nombre, $email, $rut, $num);
+            $stmt->execute();
+        }
+    
+        echo "<script>alert('Supervisores registrados correctamente'); location.href='supervisor.php';</script>";
+    } else {
+        echo "Error al subir el archivo.";
+    }
 }
 ?>

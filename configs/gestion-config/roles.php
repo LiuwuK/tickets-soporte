@@ -55,6 +55,7 @@ check_login();
               <div class="body-crud">
                 <table class="table table-striped">
                     <thead>
+                        <th>ID</th>
                         <th>Nombre</th>
                         <th>Descripcion</th>
                         <th>Opciones</th>
@@ -67,6 +68,9 @@ check_login();
                         </div>  
                         <?php while ($row = mysqli_fetch_assoc($result)) { ?>    
                             <tr>
+                                <td>
+                                <strong style="margin:0px">#<?php echo $row['id']; ?></strong>
+                                </td>
                                 <td>
                                   <input type="text" class="form-control form-control-sm" id="name" name="name[]" value="<?php echo $row['nombre_rol'];?>" onchange="enableUpdateButton()" required>
                                   <input type="hidden" name="id[]" value="<?php echo $row['id']; ?>">
@@ -112,12 +116,24 @@ check_login();
                 <textarea id="description" name="description" class="form-control form-control-sm" rows="5"></textarea>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancelar</button>
+          
+          <div class="form-row-modal justify-content-end">
             <button type="submit"  name="newSup" class="btn pull-right btn-updt">Agregar</button>
+          </div>
         </div>
-      </form>
+        </form>
+        <form class="mb-2 mv" method="post" enctype="multipart/form-data">
+          <div class="modal-footer mv-form">
+            <h5 class="text-start">Carga masiva</h5>
+            <input class="mb-3" type="file" name="file" required >
+            <div class="form-row-modal d-flex justify-content-end">
+              <a href="assets/excel-ejemplos/rol.xlsx" download class="btn btn-default">
+                Excel Ejemplo
+              </a>
+              <button class="btn btn-updt" name="carga" type="submit">Cargar Datos</button>
+            </div>
+          </div>
+        </form> 
       </div>
   </div>
 </div>

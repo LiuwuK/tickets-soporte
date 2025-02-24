@@ -1,4 +1,5 @@
 <?php
+require __DIR__.'/../../../../vendor/autoload.php';
 //obtener info 
 $query = "SELECT * FROM sucursales";
 $supervisorData = $con->prepare($query);
@@ -97,7 +98,7 @@ if(isset($_POST['btnUpdt'])){
     echo "<script>alert('sucursales actualizados correctamente.'); location.href='instalaciones.php';</script>";
 
 }
-//eliminar 
+//eliminar
 if(isset($_POST['delSup'])){
     $id = $_POST['idSup'];
     $query = "DELETE FROM sucursales WHERE id = ?";
@@ -109,5 +110,56 @@ if(isset($_POST['delSup'])){
         echo "<script>alert('Error al eliminar la sucursal');</script>";
     }
     $stmt->close();
+}
+
+use PhpOffice\PhpSpreadsheet\IOFactory;
+if(isset($_POST['carga'])){
+    if ($_FILES['file']['error'] == UPLOAD_ERR_OK) {
+        $filePath = $_FILES['file']['tmp_name'];
+        $spreadsheet = IOFactory::load($filePath);
+        $worksheet = $spreadsheet->getActiveSheet();
+        $data = $worksheet->toArray();
+        $query_main = "INSERT INTO sucursales(nombre, direccion_calle, comuna, ciudad_id, departamento_id, supervisor_id, rol_id, estado)
+                VALUES (?,?,?,?,?,?,?,?)";
+        
+        $stmt = $con->prepare($query_main);
+    
+        foreach ($data as $index => $row) {
+            if ($index == 0) continue;
+            $nombre = $row[0];
+            $ciudad = strtolower($row[1]);
+            $comuna = $row[2];
+            $calle =  $row[3];
+            $supervisor  = $row[4];
+            $depto_id = $row[5];
+            $rol = $row[6];
+            $estado = strtolower($row[7]);
+
+            //obtener supervisor 
+            $query_s = "SELECT id FROM supervisores WHERE rut = ?";
+            $stmt_s = $con->prepare($query_s);
+            $stmt_s->bind_param("s", $supervisor); 
+            $stmt_s->execute();
+            $stmt_s->bind_result($supervisor_id);
+            $stmt_s->fetch();
+            $stmt_s->close();
+            //obtener ciudad
+            $query_c = "SELECT id FROM ciudades WHERE LOWER(nombre_ciudad) = ?";
+            $stmt_c = $con->prepare($query_c);
+            $stmt_c->bind_param("s", $ciudad); 
+            $stmt_c->execute();
+            $stmt_c->bind_result($ciudad_id);
+            $stmt_c->fetch();
+            $stmt_c->close();
+
+
+            $stmt->bind_param("sssiiiis", $nombre,$calle, $comuna, $ciudad_id, $depto_id, $supervisor_id, $rol, $estado);
+            $stmt->execute();
+        }
+    
+        echo "<script>alert('Sucursales registrados correctamente'); location.href='instalaciones.php';</script>";
+    } else {
+        echo "Error al subir el archivo.";
+    }
 }
 ?>

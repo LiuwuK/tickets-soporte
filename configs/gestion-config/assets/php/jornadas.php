@@ -1,4 +1,5 @@
 <?php
+require __DIR__.'/../../../../vendor/autoload.php';
 //obtener info 
 $query = "SELECT * FROM jornadas";
 $supervisorData = $con->prepare($query);
@@ -60,5 +61,33 @@ if(isset($_POST['delSup'])){
         echo "<script>alert('Error al eliminar el supervisor.');</script>";
     }
     $stmt->close();
+}
+
+//carga masiva
+use PhpOffice\PhpSpreadsheet\IOFactory;
+if(isset($_POST['carga'])){
+    if ($_FILES['file']['error'] == UPLOAD_ERR_OK) {
+        $filePath = $_FILES['file']['tmp_name'];
+        $spreadsheet = IOFactory::load($filePath);
+        $worksheet = $spreadsheet->getActiveSheet();
+        $data = $worksheet->toArray();
+        $query = "INSERT INTO jornadas(tipo_jornada, hora_entrada, hora_salida)
+                VALUES (?,?,?)";
+        $stmt = $con->prepare($query);
+    
+        foreach ($data as $index => $row) {
+            if ($index == 0) continue;
+            $tipo = $row[0];
+            $he = $row[1];
+            $hs = $row[2];
+            
+            $stmt->bind_param("sss", $tipo,$he, $hs);
+            $stmt->execute();
+        }
+    
+        echo "<script>alert('Jornadas registradas correctamente'); location.href='jornadas.php';</script>";
+    } else {
+        echo "Error al subir el archivo.";
+    }
 }
 ?>

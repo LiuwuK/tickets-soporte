@@ -67,7 +67,7 @@ if(!empty($traslados)){
 
         $mail->clearAddresses();
         $mail->setFrom('stsafeteck@gmail.com', 'Traslados');
-        $mail->addAddress('desarrolladorsafeteck@hotmail.com', 'Usuario');  
+        $mail->addAddress('fnorton@gruposafeteck.com', 'Usuario');  
 
         $mail->isHTML(true);
         $mail->Subject = 'Traslados del día de hoy';

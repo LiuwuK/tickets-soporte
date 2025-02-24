@@ -2,6 +2,7 @@
 session_start();
 include("../../checklogin.php");
 include("../../dbconnection.php");
+
 include("assets/php/supervisor.php");
 check_login();
 ?>
@@ -105,7 +106,7 @@ check_login();
   <div class="modal-dialog">
       <div class="modal-content">
       <div class="modal-header">
-          <h5 class="modal-title" id="newSuperLabel">Nuevo Supervisor</h5>
+          <h5 class="modal-title" id="newSuperLabel">Agregar Supervisores</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form id="newForm"  method="post" enctype="multipart/form-data">
@@ -131,12 +132,24 @@ check_login();
                 <input type="contacto" class="form-control form-control-sm" id="numC" name="numC" required>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancelar</button>
+
+          <div class="form-row-modal justify-content-end">
             <button type="submit"  name="newSup" class="btn pull-right btn-updt">Agregar</button>
+          </div>
         </div>
       </form>
+      <form class="mb-2 mv" method="post" enctype="multipart/form-data">
+        <div class="modal-footer mv-form">
+          <h5 class="text-start">Carga masiva</h5>
+          <input class="mb-3" type="file" name="file" required >
+          <div class="form-row-modal d-flex justify-content-end">
+            <a href="assets/excel-ejemplos/supervisor.xlsx" download class="btn btn-default">
+              Excel Ejemplo
+            </a>
+            <button class="btn btn-updt" name="carga" type="submit">Cargar Datos</button>
+          </div>
+        </div>
+      </form> 
       </div>
   </div>
 </div>

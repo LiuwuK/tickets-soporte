@@ -120,12 +120,23 @@ check_login();
               </div>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancelar</button>
+          <div class="form-row-modal justify-content-end">
             <button type="submit"  name="newSup" class="btn pull-right btn-updt">Agregar</button>
+          </div>
         </div>
-      </form>
+        </form>
+        <form class="mb-2 mv" method="post" enctype="multipart/form-data">
+          <div class="modal-footer mv-form">
+            <h5 class="text-start">Carga masiva</h5>
+            <input class="mb-3" type="file" name="file" required >
+            <div class="form-row-modal d-flex justify-content-end">
+              <a href="assets/excel-ejemplos/motivo.xlsx" download class="btn btn-default">
+                Excel Ejemplo
+              </a>
+              <button class="btn btn-updt" name="carga" type="submit">Cargar Datos</button>
+            </div>
+          </div>
+        </form> 
       </div>
   </div>
 </div>
@@ -134,11 +145,11 @@ check_login();
   <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="delSuperLabel">Eliminar Departamento</h5>
+            <h5 class="modal-title" id="delSuperLabel">Eliminar Motivo</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p>¿Estás seguro de que quieres eliminar este Departamento?</p>
+          <p>¿Estás seguro de que quieres eliminar este Motivo?</p>
           <form id="delForm" method="POST">
             <input type="hidden" name="idSup" id="idSup">
             <div class="modal-footer">
