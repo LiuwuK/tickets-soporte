@@ -34,6 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             "id" => $user["id"],
             "email" => $email,
             "name" => $user["name"],
+            "cargo" => $user["cargo"],
             "exp" => time() + (60 * 60 * 24) 
         ];
         $token = JWT::encode($payload, JWT_SECRET, JWT_ALG);
