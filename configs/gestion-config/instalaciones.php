@@ -61,7 +61,6 @@ check_login();
                         <th>Dirección Calle</th>
                         <th>Supervisor</th>
                         <th>Departamento</th>
-                        <th>Rol</th>
                         <th>Estado</th>
                         <th>Opciones</th>
                     </thead>
@@ -117,19 +116,6 @@ check_login();
                                             echo "<option value=".$row['id']." selected>".$row['nombre_departamento'] ."</option>";
                                         } else{ 
                                             echo "<option value=".$row['id'].">".$row['nombre_departamento'] ."</option>";
-                                        }
-                                    };
-                                    ?>
-                                  </select>
-                                </td>
-                                <td>
-                                  <select name="rol[]" id="rol" class="form-select form-select-sm"  onchange="enableUpdateButton()" required>
-                                    <?php
-                                     foreach ($rol AS $row) {
-                                        if ($row['id'] == $row_s['rol_id']) {
-                                            echo "<option value=".$row['id']." selected>".$row['nombre_rol'] ."</option>";
-                                        } else{ 
-                                            echo "<option value=".$row['id'].">".$row['nombre_rol'] ."</option>";
                                         }
                                     };
                                     ?>
@@ -222,19 +208,6 @@ check_login();
                     <?php
                     foreach ($depto AS $row) {
                       echo "<option value=".$row['id'].">".$row['nombre_departamento'] ."</option>";
-                    };
-                    ?>
-                  </select>
-                </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Rol</label>
-                <div>
-                  <select name="rol" id="rol" class="form-select form-select-sm" required>
-                    <option value="">Sin Asignar</option>
-                    <?php
-                    foreach ($rol AS $row) {
-                      echo "<option value=".$row['id'].">".$row['nombre_rol'] ."</option>";
                     };
                     ?>
                   </select>

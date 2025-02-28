@@ -15,14 +15,6 @@ while ($row = mysqli_fetch_assoc($supData)) {
     $sup[] = $row; 
 }
 
-$query = "SELECT * FROM roles";
-$supervisorData = $con->prepare($query);
-$supervisorData->execute();
-$rolData = $supervisorData->get_result();
-while ($row = mysqli_fetch_assoc($rolData)) {
-    $rol[] = $row; 
-}
-
 $query = "SELECT * FROM departamentos";
 $supervisorData = $con->prepare($query);
 $supervisorData->execute();
@@ -47,12 +39,11 @@ if(isset($_POST['newSup'])){
     $comuna = $_POST['comuna'];
     $supervisor = $_POST['supervisor'];
     $dept = $_POST['departamento'];
-    $rolS = $_POST['rol'];
 
-    $query  = "INSERT INTO sucursales(nombre, direccion_calle, comuna, ciudad_id, departamento_id, supervisor_id, rol_id)
-                VALUES (?,?,?,?,?,?,?)";
+    $query  = "INSERT INTO sucursales(nombre, direccion_calle, comuna, ciudad_id, departamento_id, supervisor_id)
+                VALUES (?,?,?,?,?,?)";
     $stmt = $con->prepare($query);
-    $stmt->bind_param("sssiiii",$name,$direccion, $comuna, $city, $dept, $supervisor, $rolS);
+    $stmt->bind_param("sssiii",$name,$direccion, $comuna, $city, $dept, $supervisor);
     if ($stmt->execute()) {
         echo "<script>alert('Sucursal registrada correctamente'); location.href='instalaciones.php';</script>";
     } else {
@@ -68,7 +59,6 @@ if(isset($_POST['btnUpdt'])){
     $comunas = $_POST['comuna'];
     $supervisores = $_POST['supervisor'];
     $depts = $_POST['depto'];
-    $roles = $_POST['rol'];
     $estados = $_POST['estado'];
 
     foreach ($ids as $index => $id) {
@@ -78,7 +68,6 @@ if(isset($_POST['btnUpdt'])){
         $comuna = $comunas[$index];
         $supervisor = $supervisores[$index];
         $dept = $depts[$index];
-        $rol = $roles[$index];
         $estado = $estados[$index];
 
         $query = "UPDATE sucursales 
@@ -88,11 +77,10 @@ if(isset($_POST['btnUpdt'])){
                         ciudad_id = ?,
                         departamento_id = ?,
                         supervisor_id = ?, 
-                        rol_id = ?,
                         estado = ?
                     WHERE id = ?";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("sssiiiisi", $nombre,$calle, $comuna, $ciudad, $dept, $supervisot, $rol, $estado, $id);
+        $stmt->bind_param("sssiiisi", $nombre,$calle, $comuna, $ciudad, $dept, $supervisot,$estado, $id);
         $stmt->execute();
     }
     echo "<script>alert('sucursales actualizados correctamente.'); location.href='instalaciones.php';</script>";
@@ -119,8 +107,8 @@ if(isset($_POST['carga'])){
         $spreadsheet = IOFactory::load($filePath);
         $worksheet = $spreadsheet->getActiveSheet();
         $data = $worksheet->toArray();
-        $query_main = "INSERT INTO sucursales(nombre, direccion_calle, comuna, ciudad_id, departamento_id, supervisor_id, rol_id, estado)
-                VALUES (?,?,?,?,?,?,?,?)";
+        $query_main = "INSERT INTO sucursales(nombre, direccion_calle, comuna, ciudad_id, departamento_id, supervisor_id, estado)
+                VALUES (?,?,?,?,?,?,?)";
         
         $stmt = $con->prepare($query_main);
     
@@ -132,8 +120,7 @@ if(isset($_POST['carga'])){
             $calle =  $row[3];
             $supervisor  = $row[4];
             $depto_id = $row[5];
-            $rol = $row[6];
-            $estado = strtolower($row[7]);
+            $estado = strtolower($row[6]);
 
             //obtener supervisor 
             $query_s = "SELECT id FROM supervisores WHERE rut = ?";
@@ -153,7 +140,7 @@ if(isset($_POST['carga'])){
             $stmt_c->close();
 
 
-            $stmt->bind_param("sssiiiis", $nombre,$calle, $comuna, $ciudad_id, $depto_id, $supervisor_id, $rol, $estado);
+            $stmt->bind_param("sssiiis", $nombre,$calle, $comuna, $ciudad_id, $depto_id, $supervisor_id,$estado);
             $stmt->execute();
         }
     

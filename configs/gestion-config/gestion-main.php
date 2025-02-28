@@ -59,10 +59,6 @@ check_login();
                     <i class="bi bi-buildings-fill"></i>
                     <h4>Sucursales</h4>
                 </div>
-                <div class="crd mx-auto" onclick="window.location.href='roles.php';">
-                    <i class="bi bi-person-fill-gear"></i>
-                    <h4>Roles</h4>
-                </div>
                 <div class="crd mx-auto" onclick="window.location.href='motivos.php';">
                     <i class="bi bi-door-closed-fill"></i>
                     <h4>Motivos Traslado y Egreso</h4>
