@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // Buscar usuario en la BD
-    $stmt = $con->prepare("SELECT id, password, name FROM user WHERE email = ?");
+    $stmt = $con->prepare("SELECT id, password, name, cargo FROM user WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
