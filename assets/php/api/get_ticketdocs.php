@@ -18,7 +18,7 @@ $tID = intval($_GET['ticketId']);
 
 try {
     // Obtener los documentos del ticket
-    $stmt = $con->prepare("SELECT archivo
+    $stmt = $con->prepare("SELECT archivo, id
                                     FROM ticket_archivos
                                     WHERE ticket_id = ?");
     $stmt->bind_param("i", $tID); 
