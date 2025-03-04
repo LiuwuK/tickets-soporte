@@ -40,6 +40,7 @@ if(isset($_POST['newSup'])){
     $supervisor = $_POST['supervisor'];
     $dept = $_POST['departamento'];
 
+
     $query  = "INSERT INTO sucursales(nombre, direccion_calle, comuna, ciudad_id, departamento_id, supervisor_id)
                 VALUES (?,?,?,?,?,?)";
     $stmt = $con->prepare($query);
@@ -119,9 +120,17 @@ if(isset($_POST['carga'])){
             $comuna = $row[2];
             $calle =  $row[3];
             $supervisor  = $row[4];
-            $depto_id = $row[5];
+            $depto = $row[5];
             $estado = strtolower($row[6]);
 
+            //Obtener departamento
+            $query_d = "SELECT id FROM departamentos WHERE depto_id = ?";
+            $stmt_d = $con->prepare($query_d);
+            $stmt_d->bind_param("s", $depto); 
+            $stmt_d->execute();
+            $stmt_d->bind_result($depto_id);
+            $stmt_d->fetch();
+            $stmt_d->close();
             //obtener supervisor 
             $query_s = "SELECT id FROM supervisores WHERE rut = ?";
             $stmt_s = $con->prepare($query_s);

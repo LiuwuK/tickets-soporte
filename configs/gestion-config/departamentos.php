@@ -67,11 +67,10 @@ check_login();
                         </div>  
                         <?php while ($row = mysqli_fetch_assoc($result)) { ?>    
                             <tr>
-                                <td >
-                                    <strong style="margin:0px">#<?php echo $row['id']; ?></strong>
-                                    <input type="hidden" name="id[]" value="<?php echo $row['id']; ?>">
+                                <td width="20%">
+                                  <input class="form-control form-control-sm" type="number" name="deptoId[]" value="<?php echo $row['depto_id']; ?>">
                                 </td>
-                                <td>
+                                <td width="50%">
                                   <input type="text" class="form-control form-control-sm" id="name" name="name[]" value="<?php echo $row['nombre_departamento'];?>" onchange="enableUpdateButton()" required>
                                 </td>
                                 <td>
@@ -103,6 +102,10 @@ check_login();
             <div class="form-group">
                 <label for="nombre" class="form-label">Nombre<span>*</span></label>
                 <input type="text" class="form-control form-control-sm" id="nombre" name="nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="deptoId" class="form-label">ID departamento<span>*</span></label>
+                <input type="number" class="form-control form-control-sm" id="deptoId" name="deptoId" required>
             </div>
           </div>
           <div class="form-row-modal justify-content-end">

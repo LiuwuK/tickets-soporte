@@ -7,13 +7,14 @@ $supervisorData->execute();
 $result = $supervisorData->get_result();
 
 
-//nuevo rol
+//nuevo 
 if(isset($_POST['newSup'])){ 
     $name = $_POST['nombre'];
-    $query  = "INSERT INTO departamentos(nombre_departamento)
-                VALUES (?)";
+    $deptoId = $_POST['deptoId'];
+    $query  = "INSERT INTO departamentos(nombre_departamento, depto_id)
+                VALUES (?,?)";
     $stmt = $con->prepare($query);
-    $stmt->bind_param("s",$name);
+    $stmt->bind_param("si",$name, $deptoId);
     if ($stmt->execute()) {
         echo "<script>alert('Departamento registrado correctamente'); location.href='departamentos.php';</script>";
     } else {
@@ -24,15 +25,18 @@ if(isset($_POST['newSup'])){
 if(isset($_POST['btnUpdt'])){
     $ids = $_POST['id'];
     $name = $_POST['name'];
+    $depto_id = $_POST['deptoId'];
 
     foreach ($ids as $index => $id) {
         $nombre = $name[$index];
+        $deptoId = $depto_id[$index];
         $query = "UPDATE departamentos 
                     SET nombre_departamento = ?
+                        depto_id = ?
                     WHERE id = ? 
-                    AND (nombre_departamento <> ? )";
+                    AND (nombre_departamento <> ? OR depto_id <> ?)";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("sis", $nombre, $id, $nombre);
+        $stmt->bind_param("siisi", $nombre,$deptoId, $id, $nombre, $deptoId);
         $stmt->execute();
     }
     echo "<script>alert('departamentos actualizados correctamente.'); location.href='departamentos.php';</script>";
@@ -60,12 +64,13 @@ if(isset($_POST['carga'])){
         $worksheet = $spreadsheet->getActiveSheet();
         $data = $worksheet->toArray();
         
-        $stmt = $con->prepare("INSERT INTO departamentos (nombre_departamento) VALUES (?)");
+        $stmt = $con->prepare("INSERT INTO departamentos (nombre_departamento, depto_id) VALUES (?,?)");
     
         foreach ($data as $index => $row) {
             if ($index == 0) continue;
             $nombre = $row[0];
-            $stmt->bind_param("s", $nombre);
+            $id = $row[1];
+            $stmt->bind_param("si", $nombre,$id);
             $stmt->execute();
         }
     
