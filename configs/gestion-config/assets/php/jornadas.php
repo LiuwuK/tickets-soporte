@@ -13,10 +13,10 @@ if(isset($_POST['newSup'])){
     $entrada = $_POST['entrada'];
     $salida = $_POST['salida'];
 
-    $query  = "INSERT INTO jornadas(tipo_jornada, hora_entrada, hora_salida)
-                VALUES (?,?,?)";
+    $query  = "INSERT INTO jornadas(tipo_jornada)
+                VALUES (?)";
     $stmt = $con->prepare($query);
-    $stmt->bind_param("sss",$tipo, $entrada, $salida);
+    $stmt->bind_param("s",$tipo);
     if ($stmt->execute()) {
         echo "<script>alert('Jornada registrada correctamente'); location.href='jornadas.php';</script>";
     } else {
@@ -33,17 +33,13 @@ if(isset($_POST['btnUpdt'])){
 
     foreach ($ids as $index => $id) {
         $tipo = $tipos[$index];
-        $entrada = $entradas[$index];
-        $salida = $salidas[$index];
 
         $query = "UPDATE jornadas 
                     SET tipo_jornada = ?, 
-                        hora_entrada = ?,
-                        hora_salida = ? 
                     WHERE id = ? 
-                    AND (tipo_jornada <> ? OR hora_entrada <> ? OR hora_salida <> ?)";
+                    AND (tipo_jornada <> ?)";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("sssisss", $tipo, $entrada, $salida, $id, $tipo, $entrada, $salida);
+        $stmt->bind_param("sis", $tipo, $id, $tipo);
         $stmt->execute();
     }
     echo "<script>alert('Jornadas actualizadas correctamente.'); location.href='jornadas.php';</script>";
@@ -71,17 +67,15 @@ if(isset($_POST['carga'])){
         $spreadsheet = IOFactory::load($filePath);
         $worksheet = $spreadsheet->getActiveSheet();
         $data = $worksheet->toArray();
-        $query = "INSERT INTO jornadas(tipo_jornada, hora_entrada, hora_salida)
-                VALUES (?,?,?)";
+        $query = "INSERT INTO jornadas(tipo_jornada)
+                VALUES (?)";
         $stmt = $con->prepare($query);
     
         foreach ($data as $index => $row) {
             if ($index == 0) continue;
             $tipo = $row[0];
-            $he = $row[1];
-            $hs = $row[2];
-            
-            $stmt->bind_param("sss", $tipo,$he, $hs);
+
+            $stmt->bind_param("s", $tipo);
             $stmt->execute();
         }
     

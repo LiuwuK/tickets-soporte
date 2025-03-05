@@ -54,13 +54,11 @@ check_login();
               <hr>
               <div class="body-crud">
                 <table class="table table-striped">
-                    <thead>
+                    <thead class="text-center">
                         <th>Tipo de jornada</th>
-                        <th>Hora de Entrada</th>
-                        <th>Hora de Salida</th>
                         <th>Opciones</th>
                     </thead>
-                    <tbody>
+                    <tbody class="text-center">
                       <form name="form" id="editJornada" method="post">
                         <div id="loading" style="display:none ;">
                             <div class="loading-spinner"></div>
@@ -71,12 +69,6 @@ check_login();
                                 <td>
                                   <input type="text" class="form-control form-control-sm" id="name" name="name[]" value="<?php echo $row['tipo_jornada'];?>" onchange="enableUpdateButton()" required>
                                   <input type="hidden" name="id[]" value="<?php echo $row['id']; ?>">
-                                </td>
-                                <td>
-                                  <input type="time" class="form-control form-control-sm" id="entrada" name="entrada[]" value="<?php echo $row['hora_entrada'];?>" onchange="enableUpdateButton()" required>
-                                </td>
-                                <td>
-                                  <input type="time" class="form-control form-control-sm" id="salida" name="salida[]" value="<?php echo $row['hora_salida'];?>" onchange="enableUpdateButton()" required>
                                 </td>
                                 <td>
                                   <button type="button" class="btn btn-del del-btn" data-bs-toggle="modal" data-bs-target="#delSuper" data-sup-id="<?php echo $row['id'];?>">Eliminar</button>
@@ -110,16 +102,6 @@ check_login();
             </div>
           </div>
 
-          <div class="form-row-modal mb-3">
-            <div class="form-group">
-                <label for="entrada" class="form-label">Hora de Entrada<span>*</span></label>
-                <input type="time" class="form-control form-control-sm" id="entrada" name="entrada" required>
-            </div>
-            <div class="form-group">
-                <label for="salida" class="form-label">Hora de Salida <span>*</span></label>
-                <input type="time" class="form-control form-control-sm" id="salida" name="salida" required>
-            </div>
-          </div>
           <div class="form-row-modal justify-content-end">
             <button type="submit"  name="newSup" class="btn pull-right btn-updt">Agregar</button>
           </div>

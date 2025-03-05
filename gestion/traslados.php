@@ -16,7 +16,8 @@ check_login();
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta content="" name="description" />
   <meta content="" name="author" />
-
+<!-- CSS de Choices.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 <!-- Bootstrap 5 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -25,9 +26,35 @@ check_login();
 <link href="assets/css/traslados.css" rel="stylesheet" type="text/css"/>
 <!-- Toast notificaciones -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
 <!-- Graficos -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
+<style>
+  .choices {
+    width: 100%; /* Asegura que se adapte al contenedor */
+}
+
+.choices__inner {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem; /* Tamaño del texto */
+    line-height: 1.5;
+    color: #33435e; /* Color del texto */
+    background-color: #E9F4F9; 
+    border: 1px solid #ced4da; 
+    border-radius: 0.25rem;
+}
+
+.choices__list--dropdown {
+    z-index: 1000;
+}
+
+.choices[data-type*='select-one'] .choices__inner {
+    padding-right: 2.25rem;
+}
+
+</style>
 
 <body class="test" >
     <!-- Sidebar -->
@@ -50,14 +77,12 @@ check_login();
               <div class ="form-group">
                   <label class="form-label">Solicitante</label>
                   <div >
-                      <select name="solicitante" class="form-select form-select-sm" >
-                        <?php echo "<option value=".$_SESSION['id'].">".$_SESSION['name']."</option>";?>
-                      </select>
+                    <input type="text" class="form-control form-control-sm"  name="solicitante" value="<?php echo $_SESSION['name'];?>" disabled>
                   </div>
               </div>
               <div class ="form-group">
                 <label for="fechaSoli" class="form-label">Fecha <span>*</span></label>
-                <input type="date" class="form-control form-control-sm" id="fechaSoli" name="fechaSoli" required>
+                <input type="date" class="form-control form-control-sm" id="fechaSoli" name="fechaSoli" disabled>
               </div>
             </div>
             <div class="form-row mx-auto d-flex">
@@ -118,19 +143,19 @@ check_login();
                 </div>
               </div>
               <div class="form-row mx-auto">
-                <div class ="form-group">
-                    <label class="form-label">Instalacion de Origen <span>*</span></label>
-                    <div >
+                <div class="form-group">
+                  <label class="form-label">Instalación de Origen <span>*</span></label>
+                  <div>
                       <select name="instalacion" id="instalacion" class="form-select form-select-sm" required>
-                        <option value="">Seleccionar</option>
-                        <?php
-                        foreach ($inst AS $row) {
-                          echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
-                        };
-                        ?>
+                          <option value="">Seleccionar</option>
+                          <?php
+                          foreach ($inst AS $row) {
+                              echo "<option value='".$row['id']."'>".$row['nombre']."</option>";
+                          };
+                          ?>
                       </select>
-                    </div>
-                </div>
+                  </div>
+              </div>
                 <div class ="form-group">
                     <label class="form-label">Jornada de Origen <span>*</span></label>
                     <div >
@@ -317,7 +342,7 @@ check_login();
               </div>
               <div class="form-row mx-auto">
                 <div class="form-group">
-                  <label for="observacion" class="form-label">Observación <span>*</span></label>
+                  <label for="observacion" class="form-label">Observación</label>
                   <textarea class="form-control form-control-sm" id="observacion" name="observacion" rows="6"></textarea>
                 </div>
               </div>
@@ -446,6 +471,25 @@ check_login();
   </div>
 </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    let fechaInput = document.getElementById("fechaSoli");
+    let hoy = new Date().toISOString().split("T")[0]; // Obtiene la fecha en formato YYYY-MM-DD
+    fechaInput.value = hoy;
+});
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("select.form-select-sm").forEach(selectElement => {
+        const choices = new Choices(selectElement, {
+            searchEnabled: true,
+            itemSelectText: "",
+            placeholder: true
+        });
+    });
+});
+
+</script>
+<!-- JS de Choices.js -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <!-- Bootstrap Bundle (con Popper.js) -->
