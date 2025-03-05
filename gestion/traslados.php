@@ -12,7 +12,7 @@ check_login();
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <meta charset="utf-8" />
-  <title>Traslados y Descvinculacion</title>
+  <title>Traslados y Desvinculacion</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta content="" name="description" />
   <meta content="" name="author" />
@@ -41,7 +41,7 @@ check_login();
     <div class="page-content">
     <?php include("../leftbar-test.php"); ?>
         <div class="page-title d-flex justify-content-between">
-          <h2>Traslado y Descvinculacion</h2>
+          <h2>Traslado y Desvinculacion</h2>
           <button class=" btn-back" onclick="window.location.href='main.php';"> 
               <i class="bi bi-arrow-left" ></i>
           </button>
