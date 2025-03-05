@@ -31,31 +31,6 @@ check_login();
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<style>
-  .choices {
-    width: 100%; /* Asegura que se adapte al contenedor */
-}
-
-.choices__inner {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.875rem; /* Tamaño del texto */
-    line-height: 1.5;
-    color: #33435e; /* Color del texto */
-    background-color: #E9F4F9; 
-    border: 1px solid #ced4da; 
-    border-radius: 0.25rem;
-}
-
-.choices__list--dropdown {
-    z-index: 1000;
-}
-
-.choices[data-type*='select-one'] .choices__inner {
-    padding-right: 2.25rem;
-}
-
-</style>
-
 <body class="test" >
     <!-- Sidebar -->
   <div class="page-container ">
@@ -117,7 +92,7 @@ check_login();
                       <p>(Supervisor a cargo de Instalación de origen)</p>
                     </div>
                     <div >
-                      <select name="supervisor" id="supervisor" class="form-select form-select-sm">
+                      <select name="supervisor" id="supervisor" class="form-select form-select-sm search-form">
                         <option value="">Seleccionar</option>
                         <?php
                         foreach ($sup AS $row) {
@@ -146,7 +121,7 @@ check_login();
                 <div class="form-group">
                   <label class="form-label">Instalación de Origen <span>*</span></label>
                   <div>
-                      <select name="instalacion" id="instalacion" class="form-select form-select-sm" required>
+                      <select name="instalacion" id="instalacion" class="form-select form-select-sm search-form" required>
                           <option value="">Seleccionar</option>
                           <?php
                           foreach ($inst AS $row) {
@@ -159,7 +134,7 @@ check_login();
                 <div class ="form-group">
                     <label class="form-label">Jornada de Origen <span>*</span></label>
                     <div >
-                      <select name="jornada" id="jornada" class="form-select form-select-sm">
+                      <select name="jornada" id="jornada" class="form-select form-select-sm search-form">
                         <option value="">Seleccionar</option>
                         <?php
                         foreach ($jornada AS $row) {
@@ -175,7 +150,7 @@ check_login();
                 <div class ="form-group">
                   <label class="form-label">Rol de Origen <span>*</span></label>
                   <div >
-                      <select name="rolOrigen" class="form-select form-select-sm" required>
+                      <select name="rolOrigen" class="form-select form-select-sm search-form" required>
                         <option value="">Seleccionar</option>
                         <?php
                         foreach ($rol AS $row) {
@@ -188,7 +163,7 @@ check_login();
                 <div class ="form-group">
                     <label class="form-label">Motivo de traslado</label>
                     <div >
-                        <select name="motivo" class="form-select form-select-sm" required>
+                        <select name="motivo" class="form-select form-select-sm search-form" required>
                           <option value="">Seleccionar</option>
                           <?php
                           foreach ($motivoT AS $row) {
@@ -203,7 +178,7 @@ check_login();
                 <div class ="form-group">
                   <label class="form-label">Instalacion de Destino <span>*</span></label>
                   <div >
-                      <select name="inDestino" class="form-select form-select-sm" required>
+                      <select name="inDestino" class="form-select form-select-sm search-form" required>
                         <option value="">Seleccionar</option>
                         <?php
                         foreach ($inst AS $row) {
@@ -216,7 +191,7 @@ check_login();
                 <div class ="form-group">
                   <label class="form-label">Jornada de Destino <span>*</span></label>
                   <div >
-                      <select name="joDestino" class="form-select form-select-sm" required>
+                      <select name="joDestino" class="form-select form-select-sm search-form" required>
                         <option value="">Seleccionar</option>
                         <?php
                         foreach ($jornada AS $row) {
@@ -231,7 +206,7 @@ check_login();
                 <div class ="form-group">
                   <label class="form-label">Rol de Destino<span>*</span></label>
                   <div >
-                      <select name="rolDestino" class="form-select form-select-sm" required>
+                      <select name="rolDestino" class="form-select form-select-sm search-form" required>
                         <option value="">Seleccionar</option>
                         <?php
                         foreach ($rol AS $row) {
@@ -253,7 +228,7 @@ check_login();
                       <p>(Supervisor a cargo de instalación de destino)</p>
                     </div>
                     <div >
-                        <select name="supervisorDestino" class="form-select form-select-sm" required>
+                        <select name="supervisorDestino" class="form-select form-select-sm search-form" required>
                           <option value="">Seleccionar</option>
                           <?php
                           foreach ($sup AS $row) {
@@ -285,7 +260,7 @@ check_login();
                       <p>(Supervisor a cargo de Instalación)</p>
                     </div>
                     <div >
-                        <select name="supervisorEncargado" class="form-select form-select-sm" required>
+                        <select name="supervisorEncargado" class="form-select form-select-sm search-form" required>
                           <option value="">Seleccionar</option>
                           <?php
                           foreach ($sup AS $row) {
@@ -315,7 +290,7 @@ check_login();
                 <div class ="form-group">
                     <label class="form-label">Instalacion de Origen <span>*</span></label>
                     <div >
-                        <select name="instalacion" class="form-select form-select-sm" required>
+                        <select name="instalacion" class="form-select form-select-sm search-form" required>
                           <option value="">Seleccionar</option>
                           <?php
                           foreach ($inst AS $row) {
@@ -328,7 +303,7 @@ check_login();
                 <div class ="form-group">
                     <label class="form-label">Motivo de Egreso <span>*</span></label>
                     <div >
-                        <select name="motivo" class="form-select form-select-sm" required>
+                        <select name="motivo" class="form-select form-select-sm search-form" required>
                           <option value="">Seleccionar</option>
                           <?php
                           foreach ($motivoE AS $row) {
@@ -366,6 +341,13 @@ check_login();
                   <strong>Colaborador: <?php echo $row['nombre_colaborador'];?></strong>
                   <p>Solicitante: <?php echo $row['soliN']?></p>
                   <p>Fecha: <?php echo $date?></p>
+                  <p>Estado: 
+                    <select class="form-select form-select-sm estado-select" data-id="<?php echo $row['id']; ?>">
+                        <option value="En gestión" <?php if ($row['estado'] == 'En gestión') echo 'selected'; ?>>En gestión</option>
+                        <option value="Realizado" <?php if ($row['estado'] == 'Realizado') echo 'selected'; ?>>Realizado</option>
+                        <option value="Anulado" <?php if ($row['estado'] == 'Anulado') echo 'selected'; ?>>Anulado</option>
+                    </select>
+                  </p>
                 </div>
                 <div class="origen-data">
                   <strong>Instalacion de Origen: <?php echo $row['suOrigen'] ?></strong>
@@ -404,6 +386,13 @@ check_login();
                   <strong>Colaborador: <?php echo $row['colaborador'];?></strong>
                   <p>Solicitante: <?php echo $row['soliN']?></p>
                   <p>Fecha: <?php echo $date?></p>
+                  <p>Estado: 
+                    <select class="form-select form-select-sm desv-select" data-id="<?php echo $row['id']; ?>">
+                      <option value="En gestión" <?php if ($row['estado'] == 'En gestión') echo 'selected'; ?>>En gestión</option>
+                      <option value="Realizado" <?php if ($row['estado'] == 'Realizado') echo 'selected'; ?>>Realizado</option>
+                      <option value="Anulado" <?php if ($row['estado'] == 'Anulado') echo 'selected'; ?>>Anulado</option>
+                    </select>
+                  </p>
                 </div>
                 <div class="origen-data">
                   <strong>Instalacion de Origen: <?php echo $row['instalacion'] ?></strong>
@@ -428,7 +417,7 @@ check_login();
     </div>
   </div>
 
-<!-- modal eliminar jornada -->
+<!-- modal eliminar traslados -->
 <div class="modal fade" id="delTraslado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delTrasladoLabel" aria-hidden="true">
   <div class="modal-dialog">
       <div class="modal-content">
@@ -471,23 +460,6 @@ check_login();
   </div>
 </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    let fechaInput = document.getElementById("fechaSoli");
-    let hoy = new Date().toISOString().split("T")[0]; // Obtiene la fecha en formato YYYY-MM-DD
-    fechaInput.value = hoy;
-});
-document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll("select.form-select-sm").forEach(selectElement => {
-        const choices = new Choices(selectElement, {
-            searchEnabled: true,
-            itemSelectText: "",
-            placeholder: true
-        });
-    });
-});
-
-</script>
 <!-- JS de Choices.js -->
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 <!-- Popper.js (para tooltips y otros componentes) -->

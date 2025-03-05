@@ -137,8 +137,8 @@ $query = "SELECT tr.*,
             JOIN supervisores sup_destino ON tr.supervisor_destino = sup_destino.id
             JOIN roles rol_origen ON tr.rol_origen = rol_origen.id
             JOIN roles rol_destino ON tr.rol_destino = rol_destino.id
-            WHERE tr.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
-            AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR
+            WHERE (tr.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
+            AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR) OR (tr.estado = 'En gestión')
             ORDER BY tr.fecha_registro ASC;";
 $trasladosData = $con->prepare($query);
 $trasladosData->execute();
@@ -155,8 +155,9 @@ $query = "SELECT de.*,
             JOIN sucursales su ON(de.instalacion = su.id)
             JOIN supervisores sup ON(de.supervisor_origen = sup.id)
             JOIN motivos_gestion mo ON(de.motivo = mo.id)
-            WHERE de.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
-            AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR
+            WHERE (de.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
+            AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR)
+            OR (de.estado = 'En gestión')
             ORDER BY de.fecha_registro ASC";
 $desvData = $con->prepare($query);
 $desvData->execute();
