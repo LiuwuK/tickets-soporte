@@ -50,7 +50,18 @@
       }
     ?>
     <?php
-    if($_SESSION['cargo'] == '6' or $_SESSION['cargo'] == '2' or $_SESSION['cargo'] == '4' or isset($_SESSION['deptos']) && in_array(17, $_SESSION['deptos'])){ 
+    if (
+      in_array($_SESSION['cargo'], ['6', '2', '4'], true) 
+      || 
+      // Verificar departamentos (17 o 19)
+      (
+        isset($_SESSION['deptos']) 
+        && 
+        is_array($_SESSION['deptos']) 
+        && 
+        array_intersect([17, 19], $_SESSION['deptos'])
+    )
+  ){
     ?>
     <!-- Modulo Gestion?? -->
     <li class="nav-item">
