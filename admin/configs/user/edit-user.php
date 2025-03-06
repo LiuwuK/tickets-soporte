@@ -92,7 +92,7 @@ include("assets/php/edit-user.php");
                       </div>
                       <div class="form-row">
                         <div class="form-group">
-                        <label>Departamentos Asociados:</label><br>
+                        <label>Departamentos y Modulos:</label><br>
                           <div class="deptos">
                             <?php while ($row = mysqli_fetch_assoc($deptos)) : ?>
                                   <div class="checks">
