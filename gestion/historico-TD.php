@@ -2,6 +2,7 @@
 session_start();
 include("../checklogin.php");
 include("../dbconnection.php");
+include("assets/php/historico-td.php");
 check_login();
 
 ?>
@@ -22,7 +23,7 @@ check_login();
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <!-- CSS personalizados -->
 <link href="../assets/css/sidebar.css" rel="stylesheet" type="text/css"/>
-<link href="assets/css/traslados.css" rel="stylesheet" type="text/css"/>
+<link href="assets/css/historico-TD.css" rel="stylesheet" type="text/css"/>
 <!-- Toast notificaciones -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 
@@ -44,14 +45,39 @@ check_login();
           <button class=" btn-back" onclick="window.location.href='main.php';"> 
               <i class="bi bi-arrow-left" ></i>
           </button>
-        </div> 
-        <div class="content">
-          
-        </div>   
+        </div> <br><br>
+        <div class="filtros ">
+          <div class="d-flex justify-content-arround mb-3">
+            <div class="all-fil">
+              <label for="filtroTipo">Tipo</label>
+              <select id="filtroTipo" class="form-select form-select-sm fil">
+                <option value="">Todos los tipos</option>
+                <option value="traslado">Traslados</option>
+                <option value="desvinculación">Desvinculaciones</option>
+              </select>
+            </div>
+            <div class="all-fil">  
+              <label for="filtroEstado">Estado</label>
+              <select id="filtroEstado"  class="form-select form-select-sm fil">
+                  <option value="">Todos los estados</option>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="aprobado">Aprobado</option>
+                  <option value="rechazado">Rechazado</option>
+              </select>
+            </div>
+            <div class="all-fil">
+              <label for="filtroFechaInicio">Fecha Inicio</label>
+              <input type="date" class="form-control form-control-sm fil" id="filtroFechaInicio">
+            </div>
+            <div class="all-fil">
+              <label for="filtroFechaInicio">Fecha Fin</label>
+              <input type="date" class="form-control form-control-sm fil" id="filtroFechaFin">
+            </div>
+          </div>
+        </div>
+        <div id="resultadoHistorico" class="content"></div>
     </div>
   </div>
-
-
 
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
@@ -59,8 +85,8 @@ check_login();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Scripts propios -->
 <script src="../assets/js/sidebar.js"></script>
-<!-- <script src="assets/js/.js"></script>
- -->
+<script src="assets/js/historico-TD.js"></script>
+
 </body>
 
 </html>

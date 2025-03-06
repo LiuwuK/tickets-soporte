@@ -1,0 +1,42 @@
+.content{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    justify-content: center;
+    gap: 20px;
+}
+.h-container{
+    background-color: #fff;
+    color: #33435e;
+    border-radius: 5px;
+    padding: 10px;
+    text-transform: capitalize;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+}
+.h-container:hover{
+    transform: scale(1.05);
+}
+
+.h-container strong{
+    font-size: larger;
+}
+.h-container p{
+    font-size:12px;
+    opacity: 0.7;
+    margin-bottom: 0px;
+}
+.h-body{
+    margin-top:8px;
+    text-align: justify;
+}
+.label-estado{
+    background-color: #5f9ea0;
+    color: #fff;
+    font-size: 11px;
+    border-radius: 8px;
+    padding:5px;
+}
+.all-fil{
+    margin: 5px;
+}

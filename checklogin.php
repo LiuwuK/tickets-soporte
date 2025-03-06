@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 function check_login()
 {
-    $session_expiration_time = 2 * 60 * 60; // 2 horas en segundos
+    $session_expiration_time = 6 * 60 * 60; 
 
     // Verificar si la sesión está activa y si el usuario no está logueado
     if (!isset($_SESSION['login']) || $_SESSION['login'] == '') {
@@ -27,8 +27,6 @@ function check_login()
 		}
         exit();
     }
-
-    // Verificar tiempo de inactividad (2 horas)
     if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $session_expiration_time) {
         session_unset();
         session_destroy();

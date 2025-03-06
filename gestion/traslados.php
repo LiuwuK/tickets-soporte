@@ -4,7 +4,7 @@ include("../checklogin.php");
 include("../dbconnection.php");
 include("assets/php/traslados.php");
 check_login();
-
+$usRol = $_SESSION['cargo'];
 ?>
 <!DOCTYPE html>
 <html>
@@ -341,6 +341,13 @@ check_login();
                   <strong>Colaborador: <?php echo $row['nombre_colaborador'];?></strong>
                   <p>Solicitante: <?php echo $row['soliN']?></p>
                   <p>Fecha: <?php echo $date?></p>
+                  <?php
+                  if ($usRol == '11'){
+                  ?>
+                  <p>Estado: <?php echo $row['estado'];?></p>
+                  <?php
+                  }else{
+                  ?>
                   <p>Estado: 
                     <select class="form-select form-select-sm estado-select" data-id="<?php echo $row['id']; ?>">
                         <option value="En gestión" <?php if ($row['estado'] == 'En gestión') echo 'selected'; ?>>En gestión</option>
@@ -348,6 +355,9 @@ check_login();
                         <option value="Anulado" <?php if ($row['estado'] == 'Anulado') echo 'selected'; ?>>Anulado</option>
                     </select>
                   </p>
+                  <?php
+                    }
+                  ?>
                 </div>
                 <div class="origen-data">
                   <strong>Instalacion de Origen: <?php echo $row['suOrigen'] ?></strong>
@@ -386,13 +396,23 @@ check_login();
                   <strong>Colaborador: <?php echo $row['colaborador'];?></strong>
                   <p>Solicitante: <?php echo $row['soliN']?></p>
                   <p>Fecha: <?php echo $date?></p>
+                  <?php
+                  if ($usRol == '11'){
+                  ?>
+                  <p>Estado: <?php echo $row['estado'];?></p>
+                  <?php
+                  }else{
+                  ?>
                   <p>Estado: 
-                    <select class="form-select form-select-sm desv-select" data-id="<?php echo $row['id']; ?>">
-                      <option value="En gestión" <?php if ($row['estado'] == 'En gestión') echo 'selected'; ?>>En gestión</option>
-                      <option value="Realizado" <?php if ($row['estado'] == 'Realizado') echo 'selected'; ?>>Realizado</option>
-                      <option value="Anulado" <?php if ($row['estado'] == 'Anulado') echo 'selected'; ?>>Anulado</option>
+                    <select class="form-select form-select-sm estado-select" data-id="<?php echo $row['id']; ?>">
+                        <option value="En gestión" <?php if ($row['estado'] == 'En gestión') echo 'selected'; ?>>En gestión</option>
+                        <option value="Realizado" <?php if ($row['estado'] == 'Realizado') echo 'selected'; ?>>Realizado</option>
+                        <option value="Anulado" <?php if ($row['estado'] == 'Anulado') echo 'selected'; ?>>Anulado</option>
                     </select>
                   </p>
+                  <?php
+                    }
+                  ?>
                 </div>
                 <div class="origen-data">
                   <strong>Instalacion de Origen: <?php echo $row['instalacion'] ?></strong>

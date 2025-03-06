@@ -101,7 +101,7 @@ check_login();
                     </div>       
                     <div class="form-row">
                         <div class="form-group">
-                            <label or="description" class="form-label">Descripción</label>
+                            <label for="description" class="form-label">Descripción</label>
                             <textarea id="description" name="description" required class="form-control form-control-sm" rows="5"></textarea>
                         </div>
                     </div>

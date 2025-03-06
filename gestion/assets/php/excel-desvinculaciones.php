@@ -1,4 +1,5 @@
 <?php
+session_start();
 require '../../../vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -51,9 +52,15 @@ $query = "SELECT de.*,
             JOIN sucursales su ON(de.instalacion = su.id)
             JOIN supervisores sup ON(de.supervisor_origen = sup.id)
             JOIN motivos_gestion mo ON(de.motivo = mo.id)
-            WHERE tr.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
-            AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR
-            ORDER BY de.fecha_registro ASC";
+            WHERE (de.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
+            AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR)
+            OR (de.estado = 'En gestión')
+            ";
+if($_SESSION['cargo'] == 11){
+    $usID = $_SESSION['id'];
+    $query .= " AND solicitante = $usID";    
+}
+$query .= " ORDER BY de.fecha_registro ASC;";
 $result = mysqli_query($con, $query);
 
 $rowNumber = 2;

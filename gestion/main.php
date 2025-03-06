@@ -52,15 +52,20 @@ check_login();
                         <h4>Distribuidores</h4>
                     </div>
                 <?php
-                }else if(isset($_SESSION['deptos']) && in_array(17, $_SESSION['deptos'])){
+                }
+                if(isset($_SESSION['deptos']) && in_array(17, $_SESSION['deptos'])){
                 ?>
                     <div class="crd mx-auto" onclick="window.location.href='traslados.php';">
                         <i class="bi bi-truck-front-fill"></i>
                         <h4>Traslado y Desvinculacion</h4>
                     </div>
+                    <div class="crd mx-auto" onclick="window.location.href='historico-TD.php';">
+                        <i class="bi bi-people-fill"></i>
+                        <h4> Historico</h4>
+                    </div>
                 <?php    
                 }
-                else{
+                if($_SESSION['cargo'] == 4){
                 ?>
                     <div class="crd mx-auto" onclick="window.location.href='clients.php';">
                         <i class="bi bi-people-fill"></i>

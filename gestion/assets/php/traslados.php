@@ -139,7 +139,12 @@ $query = "SELECT tr.*,
             JOIN roles rol_destino ON tr.rol_destino = rol_destino.id
             WHERE (tr.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
             AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR) OR (tr.estado = 'En gestión')
-            ORDER BY tr.fecha_registro ASC;";
+            ";
+if($_SESSION['cargo'] == 11){
+    $usID = $_SESSION['id'];
+    $query .= " AND solicitante = $usID";    
+}
+$query .= " ORDER BY tr.fecha_registro ASC;";
 $trasladosData = $con->prepare($query);
 $trasladosData->execute();
 $traslados = $trasladosData->get_result();
@@ -158,7 +163,12 @@ $query = "SELECT de.*,
             WHERE (de.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
             AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR)
             OR (de.estado = 'En gestión')
-            ORDER BY de.fecha_registro ASC";
+";
+if($_SESSION['cargo'] == 11){
+    $usID = $_SESSION['id'];
+    $query .= " AND solicitante = $usID";    
+}
+$query .= " ORDER BY de.fecha_registro ASC;";
 $desvData = $con->prepare($query);
 $desvData->execute();
 $desvinculaciones = $desvData->get_result();
