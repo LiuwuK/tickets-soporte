@@ -12,9 +12,9 @@ $query = "
         us.name AS solicitante
     FROM traslados tr
     JOIN user us ON tr.solicitante = us.id
-    
-    UNION ALL
-    
+";
+$query .= "  
+    UNION ALL  
     SELECT 
         de.id, 
         de.fecha_registro AS fecha, 
@@ -25,9 +25,15 @@ $query = "
         us.name AS solicitante
     FROM desvinculaciones de
     JOIN user us ON de.solicitante = us.id
-    ORDER BY fecha DESC
 ";
+if($_SESSION['cargo'] == 13){
+    $query = "
+        SELECT * FROM ($query) AS combined
+        WHERE estado = 'realizado'
+    ";
+}
 
+$query .= " ORDER BY fecha DESC";
 $result = mysqli_query($con, $query);
 
 // Obtener todos los resultados directamente en un array asociativo

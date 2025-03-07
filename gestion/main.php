@@ -57,17 +57,21 @@ check_login();
                 && 
                 is_array($_SESSION['deptos']) 
                 && 
-                array_intersect([17, 19, 20], $_SESSION['deptos'])){
+                array_intersect([17], $_SESSION['deptos'])){
                 ?>
                     <div class="crd mx-auto" onclick="window.location.href='traslados.php';">
                         <i class="bi bi-truck-front-fill"></i>
                         <h4>Traslado y Desvinculacion</h4>
                     </div>
+                <?php    
+                }
+                if(isset($_SESSION['deptos']) && in_array(20, $_SESSION['deptos'])){
+                ?>
                     <div class="crd mx-auto" onclick="window.location.href='historico-TD.php';">
                         <i class="bi bi-people-fill"></i>
                         <h4> Historico</h4>
                     </div>
-                <?php    
+                <?php
                 }
                 if($_SESSION['cargo'] == 4){
                 ?>

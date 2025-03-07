@@ -60,9 +60,9 @@ check_login();
               <label for="filtroEstado">Estado</label>
               <select id="filtroEstado"  class="form-select form-select-sm fil">
                   <option value="">Todos los estados</option>
-                  <option value="pendiente">Pendiente</option>
-                  <option value="aprobado">Aprobado</option>
-                  <option value="rechazado">Rechazado</option>
+                  <option value="en gestión">En Gestión</option>
+                  <option value="realizado">Realizado</option>
+                  <option value="anulado">Anulado</option>
               </select>
             </div>
             <div class="all-fil">

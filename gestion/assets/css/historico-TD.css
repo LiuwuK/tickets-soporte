@@ -4,7 +4,7 @@
     justify-content: center;
     gap: 20px;
 }
-.h-container{
+.h-container, .d-container{
     background-color: #fff;
     color: #33435e;
     border-radius: 5px;
@@ -39,4 +39,38 @@
 }
 .all-fil{
     margin: 5px;
+}
+.det-view{
+    text-transform: capitalize;
+}
+
+.form-group label{
+    font-weight:400;
+    font-size: 16px;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    gap: 20px; 
+    margin: 0 auto;
+    margin-bottom: 20px;
+  }
+  
+.form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.form-group input{
+    font-weight: 200;
+}
+
+h4{
+    padding-left: 20px;
+}
+hr{
+    margin: 0 0 15px 0;
 }

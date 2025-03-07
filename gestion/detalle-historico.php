@@ -41,16 +41,183 @@ check_login();
     <div class="page-content">
     <?php include("../leftbar-test.php"); ?>
         <div class="page-title d-flex justify-content-between">
-          <h2>Detalle del Traslado #<?php echo $_GET['id']?></h2>
-          <button class=" btn-back" onclick="window.location.href='detalle-historico.php';"> 
+          <h2 class="det-view">Detalle <?php echo $_GET['tipo'].' #'.$_GET['id']?></h2>
+          <button class=" btn-back" onclick="window.location.href='historico-TD.php';"> 
               <i class="bi bi-arrow-left" ></i>
           </button>
         </div> <br><br>
-        <div class="container">
-          <p></p>
+        <div class="d-container col-md-9 mx-auto">
+          <?php 
+            if($_GET['tipo'] == 'traslado'){
+              while ($row = mysqli_fetch_assoc($tr)) {
+          ?>
+            <!-- Datos Colaborador -->
+            <h4 class="mt-3">Datos colaborador</h4>
+            <hr width="90%" class="mx-auto">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="colaborador" >Nombre Colaborador</label>
+                <input type="text" name="colaborador" id="colaborador" value="<?php echo $row['colaborador']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="rutC" >Rut Colaborador</label>
+                <input type="text" name="rutC" id="rutC" value="<?php echo $row['rutC']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+            <br>
+            <!-- Datos instalacion origen -->
+            <h4>Datos Instalación Origen</h4>
+            <hr width="90%" class="mx-auto">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="instOrigen" >Instalación Origen</label>
+                <input type="text" name="instOrigen" id="instOrigen" value="<?php echo $row['suOrigen']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="supOrigen" >Supervisor Origen</label>
+                <input type="text" name="supOrigen" id="supOrigen" value="<?php echo $row['supOrigen']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+
+            <div class="form-row mt-3">
+              <div class="form-group">
+                <label class="form-label" for="rolOrigen" >Rol Origen</label>
+                <input type="text" name="rolOrigen" id="rolOrigen" value="<?php echo $row['rolOrigen']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="joOrigen" >Jornada Origen</label>
+                <input type="text" name="joOrigen" id="joOrigen" value="<?php echo $row['joOrigen']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+            <br>
+             <!-- Datos instalacion destino -->
+             <h4>Datos Instalación Destino</h4>
+             <hr width="90%" class="mx-auto">
+            <div class="form-row mt-3">
+              <div class="form-group">
+                <label class="form-label" for="instOrigen" >Instalación Destino</label>
+                <input type="text" name="instDestino" id="instDestino" value="<?php echo $row['suDestino']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="supDestino" >Supervisor Destino</label>
+                <input type="text" name="supDestino" id="supDestino" value="<?php echo $row['supDestino']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="rolDestino" >Rol Destino</label>
+                <input type="text" name="rolDestino" id="rolDestino" value="<?php echo $row['rolDestino']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="joDestino" >Jornada Destino</label>
+                <input type="text" name="joDestino" id="joDestino" value="<?php echo $row['joDestino']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+            <br>
+            <!-- Estado, fecha y observacion -->
+            <h4>Informacion General</h4>
+            <hr width="90%" class="mx-auto">
+            <div class="form-row">
+              <div class="form-group">
+              <?php 
+                if($_SESSION['cargo'] !== 13){
+              ?>
+                <label for="estado" class="form-label">Estado</label>
+                <select class="form-select form-select-sm estado-select" data-id="<?php echo $_GET['id']; ?>">
+                    <option value="En gestión" <?php if ($row['estado'] == 'En gestión') echo 'selected'; ?>>En gestión</option>
+                    <option value="Realizado" <?php if ($row['estado'] == 'Realizado') echo 'selected'; ?>>Realizado</option>
+                    <option value="Anulado" <?php if ($row['estado'] == 'Anulado') echo 'selected'; ?>>Anulado</option>
+                </select>
+              <?php   
+                }else{
+              ?>
+                  <label class="form-label" for="estado" >Estado</label>
+                  <input type="text" name="estado" id="estado" value="<?php echo $row['estado']; ?>" class="form-control form-control-sm " />
+              <?php  
+                }
+              ?>
+              </div>
+              <div class="form-group">
+                  <label for="fInicio" class="form-label">Fecha Inicio de Turno</label>
+                  <input name="fInicio" type="date" class="form-control form-control-sm" value="<?php echo $row['fecha_turno'];?>" aria-label="Date" aria-describedby="fInicio" readonly>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                  <label class="form-label" for="motivoN" >Motivo de Traslado</label>
+                  <input type="text" name="motivoN" id="motivoN" value="<?php echo $row['motivoN']; ?>" class="form-control form-control-sm " />
+                </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                  <label for="desc" class="form-label">Observacion</labe>
+                  <textarea class="form-control form-control-sm" id="desc" name="desc" rows="4" readonly><?php echo $row['obs'];?></textarea>     
+              </div>
+            </div>
+
+          <?php
+            }
+            }else{
+              while ($row = mysqli_fetch_assoc($dv)){
+          ?>
+          <!-- colaborador -->
+            <h4 class="mt-3">Datos colaborador</h4>
+            <hr width="90%" class="mx-auto">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="colaborador" >Nombre Colaborador</label>
+                <input type="text" name="colaborador" id="colaborador" value="<?php echo $row['colaborador']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="rutC" >Rut Colaborador</label>
+                <input type="text" name="rutC" id="rutC" value="<?php echo $row['rut']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+            <br>
+          <!-- instalacion -->
+            <h4 class="mt-3">Datos de Instalacion</h4>
+            <hr width="90%" class="mx-auto">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="instalacion" >Instalacion Origen</label>
+                <input type="text" name="instalacion" id="instalacion" value="<?php echo $row['instalacion']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="supervisor" >Supervisor Encargado</label>
+                <input type="text" name="supervisor" id="supervisor" value="<?php echo $row['supervisor']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+            <br>
+          <!-- Observacion, motivo y estado  -->
+          <h4>Informacion General</h4>
+            <hr width="90%" class="mx-auto">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="estado" >Estado</label>
+                <input type="text" name="estado" id="estado" value="<?php echo $row['estado']; ?>" class="form-control form-control-sm " />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="motivoEgreso" >Motivo de Egreso</label>
+                <input type="text" name="motivoEgreso" id="motivoEgreso" value="<?php echo $row['motivoEgreso']; ?>" class="form-control form-control-sm " />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                  <label for="desc" class="form-label">Observacion</labe>
+                  <textarea class="form-control form-control-sm" id="desc" name="desc" rows="4" readonly><?php echo $row['observacion'];?></textarea>     
+              </div>
+            </div>
+          <?php
+            }
+          } 
+          ?>
+
         </div>
     </div>
   </div>
+
+
 
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
@@ -58,7 +225,7 @@ check_login();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Scripts propios -->
 <script src="../assets/js/sidebar.js"></script>
-
+<script src="assets/js/detalle-historico.js"></script>
 </body>
 
 </html>

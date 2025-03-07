@@ -53,13 +53,12 @@
     if (
       in_array($_SESSION['cargo'], ['6', '2', '4'], true) 
       || 
-      // Verificar departamentos (17 o 19)
       (
         isset($_SESSION['deptos']) 
         && 
         is_array($_SESSION['deptos']) 
         && 
-        array_intersect([17, 19], $_SESSION['deptos'])
+        array_intersect([19], $_SESSION['deptos'])
     )
   ){
     ?>
