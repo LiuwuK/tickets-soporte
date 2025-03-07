@@ -53,7 +53,11 @@ check_login();
                     </div>
                 <?php
                 }
-                if(isset($_SESSION['deptos']) && in_array(17, $_SESSION['deptos'])){
+                if(isset($_SESSION['deptos']) 
+                && 
+                is_array($_SESSION['deptos']) 
+                && 
+                array_intersect([17, 19], $_SESSION['deptos'])){
                 ?>
                     <div class="crd mx-auto" onclick="window.location.href='traslados.php';">
                         <i class="bi bi-truck-front-fill"></i>
