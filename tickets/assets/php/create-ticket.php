@@ -1,6 +1,6 @@
 <?php
     $prioridad = mysqli_query($con, "select * from prioridades ");
-    $deptos = mysqli_query($con, "select * from departamentos_usuarios");
+    $deptos = mysqli_query($con, "select * from departamentos_usuarios where tipo = 'departamento'");
     //obtener tecnicos
     $query = "SELECT * 
                 FROM  user
