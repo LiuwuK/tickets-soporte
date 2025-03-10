@@ -133,7 +133,7 @@ check_login();
                 }else{
               ?>
                   <label class="form-label" for="estado" >Estado</label>
-                  <input type="text" name="estado" id="estado" value="<?php echo $row['estado']; ?>" class="form-control form-control-sm " />
+                  <input type="text" name="estado" id="estado" value="<?php echo $row['estado']; ?>" class="form-control form-control-sm " readonly/>
               <?php  
                 }
               ?>
@@ -151,11 +151,28 @@ check_login();
             </div>
             <div class="form-row">
               <div class="form-group">
-                  <label for="desc" class="form-label">Observacion</labe>
-                  <textarea class="form-control form-control-sm" id="desc" name="desc" rows="4" readonly><?php echo $row['obs'];?></textarea>     
+                  <label for="desc" class="form-label">Observación</labe>
+                  <textarea class="form-control form-control-sm" id="desc" name="desc" rows="3" readonly><?php echo $row['obs'];?></textarea>     
               </div>
             </div>
-
+            
+            <form id="newform" method="POST">
+              <div class="form-row">
+                <div class="form-group">
+                    <label for="desc" class="form-label">Observación RRHH</labe>
+                    <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3"><?php echo $row['obs_rrhh'];?></textarea>     
+                </div>
+              </div>
+              <?php
+                if($_SESSION['cargo'] == 12){
+              ?>
+                <div class="form-row justify-content-end">
+                  <button class="btn btn-updt" name="rrhh" id="updateBtn" disabled>Actualizar</button>
+                </div>
+              <?php
+              }
+              ?>
+            </form>
           <?php
             }
             }else{
@@ -194,31 +211,61 @@ check_login();
             <hr width="90%" class="mx-auto">
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label" for="estado" >Estado</label>
-                <input type="text" name="estado" id="estado" value="<?php echo $row['estado']; ?>" class="form-control form-control-sm " />
+                <?php 
+                  if($_SESSION['cargo'] !== 13){
+                ?>
+                  <label for="estado" class="form-label">Estado</label>
+                  <select class="form-select form-select-sm estado-select" data-id="<?php echo $_GET['id']; ?>">
+                      <option value="En gestión" <?php if ($row['estado'] == 'En gestión') echo 'selected'; ?>>En gestión</option>
+                      <option value="Realizado" <?php if ($row['estado'] == 'Realizado') echo 'selected'; ?>>Realizado</option>
+                      <option value="Anulado" <?php if ($row['estado'] == 'Anulado') echo 'selected'; ?>>Anulado</option>
+                  </select>
+                <?php   
+                  }else{
+                ?>
+                    <label class="form-label" for="estado" >Estado</label>
+                    <input type="text" name="estado" id="estado" value="<?php echo $row['estado']; ?>" class="form-control form-control-sm " readonly/>
+                <?php  
+                  }
+                ?>
               </div>
               <div class="form-group">
                 <label class="form-label" for="motivoEgreso" >Motivo de Egreso</label>
-                <input type="text" name="motivoEgreso" id="motivoEgreso" value="<?php echo $row['motivoEgreso']; ?>" class="form-control form-control-sm " />
+                <input type="text" name="motivoEgreso" id="motivoEgreso" value="<?php echo $row['motivoEgreso']; ?>" class="form-control form-control-sm" readonly/>
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
-                  <label for="desc" class="form-label">Observacion</labe>
-                  <textarea class="form-control form-control-sm" id="desc" name="desc" rows="4" readonly><?php echo $row['observacion'];?></textarea>     
+                  <label for="desc" class="form-label">Observación</labe>
+                  <textarea class="form-control form-control-sm" id="desc" name="desc" rows="3" readonly><?php echo $row['observacion'];?></textarea>     
               </div>
             </div>
+            <form id="newform" method="POST">
+              <div class="form-row">
+                <div class="form-group">
+                    <label for="desc" class="form-label">Observación RRHH</labe>
+                    <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3"><?php echo $row['obs_rrhh'];?></textarea>     
+                </div>
+              </div>
+
+              <?php
+                if($_SESSION['cargo'] == 12){
+              ?>
+                <div class="form-row justify-content-end">
+                  <button class="btn btn-updt" name="rrhh" id="updateBtn" disabled>Actualizar</button>
+                </div>
+              <?php
+              }
+              ?>
+            </form>
           <?php
             }
           } 
           ?>
-
+        
         </div>
     </div>
   </div>
-
-
-
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <!-- Bootstrap Bundle (con Popper.js) -->
