@@ -144,6 +144,10 @@ if($_SESSION['cargo'] == 11){
     $usID = $_SESSION['id'];
     $query .= " AND solicitante = $usID";    
 }
+if($_SESSION['cargo'] == 13){
+    $usID = $_SESSION['id'];
+    $query .= " AND solicitante = $usID";    
+}
 $query .= " ORDER BY tr.fecha_registro ASC;";
 $trasladosData = $con->prepare($query);
 $trasladosData->execute();
@@ -165,6 +169,10 @@ $query = "SELECT de.*,
             OR (de.estado = 'En gestión')
 ";
 if($_SESSION['cargo'] == 11){
+    $usID = $_SESSION['id'];
+    $query .= " AND solicitante = $usID";    
+}
+if($_SESSION['cargo'] == 13){
     $usID = $_SESSION['id'];
     $query .= " AND solicitante = $usID";    
 }

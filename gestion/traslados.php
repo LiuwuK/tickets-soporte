@@ -218,7 +218,7 @@ $usRol = $_SESSION['cargo'];
                 </div>
                 <div class ="form-group">
                   <label for="fechaInicio" class="form-label">Fecha de Inicio de Turno <span>*</span></label>
-                  <input type="date" class="form-control form-control-sm" id="fechaInicio" name="fechaInicio" required>
+                  <input type="date" class="form-control form-control-sm" id="fechaInicio" name="fechaInicio" required required min="<?php echo date('Y-m-d'); ?>">
                 </div>
               </div>
               <div class="form-row mx-auto">
