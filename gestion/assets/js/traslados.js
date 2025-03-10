@@ -26,7 +26,7 @@ document.addEventListener("input", function(e){
         let dv = rut.slice(-1); 
 
         if (cuerpo.length > 0) {
-            cuerpo = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            cuerpo = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, "");
             rut = cuerpo + (dv ? "-" + dv : "");
         }
         input.value = rut; 
