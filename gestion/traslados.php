@@ -26,7 +26,6 @@ $usRol = $_SESSION['cargo'];
 <link href="assets/css/traslados.css" rel="stylesheet" type="text/css"/>
 <!-- Toast notificaciones -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-
 <!-- Graficos -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -303,7 +302,7 @@ $usRol = $_SESSION['cargo'];
                 <div class ="form-group">
                     <label class="form-label">Motivo de Egreso <span>*</span></label>
                     <div >
-                        <select name="motivo" class="form-select form-select-sm search-form" required>
+                        <select id="motivo" name="motivo"class="form-select form-select-sm search-form" required>
                           <option value="">Seleccionar</option>
                           <?php
                           foreach ($motivoE AS $row) {
@@ -313,7 +312,15 @@ $usRol = $_SESSION['cargo'];
                         </select>
                     </div>
                 </div>
-
+              </div>
+              <div class="form-row mx-auto">
+                <div class="form-group" id="fechasAusenciaContainer" style="display: none;">
+                    <label for="nuevaFecha">Seleccionar Fecha de Ausencia</label>
+                    <input type="date" class="form-control form-control-sm" id="nuevaFecha">
+                    <button type="button" id="agregarFecha" class="btn btn-updt btn-sm mt-2">Agregar Fecha</button>
+                    <ul id="listaFechas" class="mt-2"></ul>
+                    <input type="hidden" id="fechasAusencia" name="fechasAusencia">
+                  </div>
               </div>
               <div class="form-row mx-auto">
                 <div class="form-group">
@@ -480,16 +487,78 @@ $usRol = $_SESSION['cargo'];
   </div>
 </div>
 
+
+
 <!-- JS de Choices.js -->
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <!-- Bootstrap Bundle (con Popper.js) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Litepicker -->
+<script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
 <!-- Scripts propios -->
 <script src="../assets/js/sidebar.js"></script>
 <script src="assets/js/traslados.js"></script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const motivoSelect = document.getElementById("motivo");
+    const fechasContainer = document.getElementById("fechasAusenciaContainer");
+    const nuevaFechaInput = document.getElementById("nuevaFecha");
+    const agregarFechaBtn = document.getElementById("agregarFecha");
+    const listaFechas = document.getElementById("listaFechas");
+    const fechasInput = document.getElementById("fechasAusencia");
+
+    let fechasSeleccionadas = [];
+
+    // Mostrar/ocultar el contenedor de fechas según el motivo seleccionado
+    motivoSelect.addEventListener("change", function() {
+        if (motivoSelect.value === "8") {
+            fechasContainer.style.display = "block";
+        } else {
+            fechasContainer.style.display = "none";
+            fechasSeleccionadas = [];
+            actualizarListaFechas();
+        }
+    });
+
+    // Agregar fecha a la lista
+    agregarFechaBtn.addEventListener("click", function() {
+        const nuevaFecha = nuevaFechaInput.value;
+
+        if (nuevaFecha && !fechasSeleccionadas.includes(nuevaFecha)) {
+            fechasSeleccionadas.push(nuevaFecha);
+            actualizarListaFechas();
+            nuevaFechaInput.value = ""; // Limpiar el input después de seleccionar
+        }
+    });
+
+    // Función para actualizar la lista de fechas en pantalla y en el input oculto
+    function actualizarListaFechas() {
+        listaFechas.innerHTML = "";
+
+        fechasSeleccionadas.forEach((fecha, index) => {
+            const li = document.createElement("li");
+            li.textContent = fecha;
+            
+            const eliminarBtn = document.createElement("button");
+            eliminarBtn.textContent = "❌";
+            eliminarBtn.classList.add("btn", "btn-sm", "btn-delt", "ml-2");
+            eliminarBtn.addEventListener("click", function() {
+                fechasSeleccionadas.splice(index, 1);
+                actualizarListaFechas();
+            });
+
+            li.appendChild(eliminarBtn);
+            listaFechas.appendChild(li);
+        });
+
+        // Actualizar el input oculto con las fechas separadas por comas
+        fechasInput.value = fechasSeleccionadas.join(", ");
+    }
+});
+</script>
 </body>
 
 </html>

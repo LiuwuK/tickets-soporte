@@ -95,9 +95,6 @@ if(isset($_POST['trasladoForm'])){
 }
 
 if(isset($_POST['desvForm'])){
-    echo "<pre>";
-    print_r($_POST);
-    echo "</pre>";
     $supOrigen = $_POST['supervisorEncargado'];
     $colaborador = $_POST['colaborador'];
     $rut = $_POST['rut'];
@@ -111,6 +108,23 @@ if(isset($_POST['desvForm'])){
     $stmt->bind_param("issiisi", $supOrigen, $colaborador, $rut, $instalacion, $motivo, $obs, $solicitante);
     
     if($stmt->execute()){
+        $desvinculacion_id = $stmt->insert_id;
+        if($motivo == 8 && !empty($_POST['fechasAusencia'])){
+            $fechas = explode(", ", $_POST['fechasAusencia']);
+             // Insertar cada fecha
+            $queryFechas = "INSERT INTO desvinculaciones_fechas (desvinculacion_id, fecha) VALUES (?, ?)";
+            $stmtFechas = $con->prepare($queryFechas);
+
+            foreach ($fechas as $fecha) {
+                $stmtFechas->bind_param("is", $desvinculacion_id, $fecha);
+                $stmtFechas->execute();
+            }
+
+            echo "Registro insertado correctamente con múltiples fechas.";
+
+            $stmt->close();
+            $stmtFechas->close();
+        }
         echo "<script>alert('Desvinculacion Registrada Correctamente'); location.replace(document.referrer)</script>";
     }
 }
