@@ -62,6 +62,7 @@ if(isset($_POST['btnUpdt'])){
     $depts = $_POST['depto'];
     $estados = $_POST['estado'];
 
+
     foreach ($ids as $index => $id) {
         $nombre = $names[$index];
         $ciudad = $ciudades[$index];
@@ -70,7 +71,6 @@ if(isset($_POST['btnUpdt'])){
         $supervisor = $supervisores[$index];
         $dept = $depts[$index];
         $estado = $estados[$index];
-
         $query = "UPDATE sucursales 
                     SET nombre = ?,
                         direccion_calle = ?,
@@ -81,7 +81,7 @@ if(isset($_POST['btnUpdt'])){
                         estado = ?
                     WHERE id = ?";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("sssiiisi", $nombre,$calle, $comuna, $ciudad, $dept, $supervisot,$estado, $id);
+        $stmt->bind_param("sssiiisi", $nombre,$calle, $comuna, $ciudad, $dept, $supervisor,$estado, $id);
         $stmt->execute();
     }
     echo "<script>alert('sucursales actualizados correctamente.'); location.href='instalaciones.php';</script>";

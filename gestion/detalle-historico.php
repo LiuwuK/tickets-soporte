@@ -151,7 +151,7 @@ check_login();
             </div>
             <div class="form-row">
               <div class="form-group">
-                  <label for="desc" class="form-label">Observación</labe>
+                  <label for="desc" class="form-label">Observación SSPP</labe>
                   <textarea class="form-control form-control-sm" id="desc" name="desc" rows="3" readonly><?php echo $row['obs'];?></textarea>     
               </div>
             </div>
@@ -245,7 +245,7 @@ check_login();
             </div>
             <div class="form-row">
               <div class="form-group">
-                  <label for="desc" class="form-label">Observación</labe>
+                  <label for="desc" class="form-label">Observación SSPP</labe>
                   <textarea class="form-control form-control-sm" id="desc" name="desc" rows="3" readonly><?php echo $row['observacion'];?></textarea>     
               </div>
             </div>
