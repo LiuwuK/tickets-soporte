@@ -49,20 +49,34 @@ $whereDesvinculaciones = !empty($filtrosDesvinculaciones) ? "WHERE " . implode("
 
 // Encabezados de la tabla
 $headers = [
-    'Colaborador', 'RUT', 'Fecha Turno', 'Solicitante', 'Sucursal Origen', 'Jornada Origen',
-    'Sucursal Destino', 'Jornada Destino', 'Supervisor Origen', 'Supervisor Destino',
-    'Motivo', 'Rol Origen', 'Rol Destino', 'Tipo', 'Estado'
+    'Estado','Tipo', 'Fecha de Registro', 'Hora de registro', 'Solicitante', 'Supervisor Origen', 'Colaborador', 'RUT', 
+    'Sucursal Origen', 'Jornada Origen', 'Rol Origen', 'Motivo', 
+    'Sucursal Destino', 'Jornada Destino','Rol Destino', 'Fecha de Inicio Turno', 'Supervisor Destino', 
+    'Observacion', 'Observacion RRHH'
 ];
 $sheet->fromArray([$headers], NULL, 'A1');
 
 // Consulta de Traslados
 $queryTraslados = "
-    SELECT tr.nombre_colaborador AS colaborador, tr.rut AS rutC, tr.fecha_inicio_turno AS fecha_turno,
-           us.name AS soliN, su_origen.nombre AS suOrigen, jo_origen.tipo_jornada AS joOrigen,
-           su_destino.nombre AS suDestino, jo_destino.tipo_jornada AS joDestino,
-           sup_origen.nombre_supervisor AS supOrigen, sup_destino.nombre_supervisor AS supDestino,
-           mg.motivo AS motivoN, rol_origen.nombre_rol AS rolOrigen, rol_destino.nombre_rol AS rolDestino,
-           'Traslado' AS tipo, tr.estado AS estadoN
+    SELECT  tr.estado AS estadoN,
+            'Traslado' AS tipo,
+            DATE(tr.fecha_registro) AS fecha_registro, 
+            TIME(tr.fecha_registro) AS hora_registro,
+            us.name AS soliN,
+            sup_origen.nombre_supervisor AS supOrigen, 
+            tr.nombre_colaborador AS colaborador, 
+            tr.rut AS rutC,
+            su_origen.nombre AS suOrigen,
+            jo_origen.tipo_jornada AS joOrigen,
+            rol_origen.nombre_rol AS rolOrigen, 
+            mg.motivo AS motivoN, 
+            su_destino.nombre AS suDestino, 
+            jo_destino.tipo_jornada AS joDestino,
+            rol_destino.nombre_rol AS rolDestino,
+            tr.fecha_inicio_turno AS fecha_turno,
+            sup_destino.nombre_supervisor AS supDestino,
+            tr.observacion AS observacion,
+            tr.obs_rrhh AS obs_rrhh
     FROM traslados tr
     JOIN user us ON tr.solicitante = us.id
     JOIN sucursales su_origen ON tr.instalacion_origen = su_origen.id
@@ -82,10 +96,25 @@ $resultTraslados = mysqli_query($con, $queryTraslados);
 
 // Consulta de Desvinculaciones
 $queryDesvinculaciones = "
-    SELECT de.colaborador AS colaborador, de.rut AS rutC, '' AS fecha_turno,
-           us.name AS soliN, su.nombre AS suOrigen, '' AS joOrigen, '' AS suDestino, '' AS joDestino,
-           sup.nombre_supervisor AS supOrigen, '' AS supDestino, mo.motivo AS motivoN,
-           '' AS rolOrigen, '' AS rolDestino, 'Desvinculación' AS tipo, de.estado AS estadoN    
+    SELECT  de.estado AS estadoN,
+            'Desvinculación' AS tipo,
+            DATE(de.fecha_registro) AS fecha_registro, 
+            TIME(de.fecha_registro) AS hora_registro,
+            us.name AS soliN, 
+            sup.nombre_supervisor AS supOrigen, 
+            de.colaborador AS colaborador, 
+            de.rut AS rutC,  
+            su.nombre AS suOrigen, 
+            '' AS joOrigen,
+            '' AS rolOrigen, 
+            mo.motivo AS motivoN,
+            '' AS suDestino, 
+            '' AS joDestino,
+            '' AS rolDestino, 
+            '' AS fecha_turno, 
+            '' AS supDestino, 
+            de.observacion AS observacion,
+            de.obs_rrhh AS obs_rrhh
     FROM desvinculaciones de
     JOIN user us ON de.solicitante = us.id
     JOIN sucursales su ON de.instalacion = su.id
@@ -94,7 +123,6 @@ $queryDesvinculaciones = "
     $whereDesvinculaciones
 ";
 $queryTraslados .= "ORDER BY de.fecha_registro DESC";
-
 
 $resultDesvinculaciones = mysqli_query($con, $queryDesvinculaciones);
 
@@ -114,9 +142,10 @@ while ($row = mysqli_fetch_assoc($resultDesvinculaciones)) {
 
 // Definir anchos de columna
 $columnWidths = [
-    'A' => 25, 'B' => 15, 'C' => 18, 'D' => 25, 'E' => 20, 'F' => 20,
-    'G' => 20, 'H' => 20, 'I' => 25, 'J' => 25, 'K' => 30, 'L' => 20,
-    'M' => 20, 'N' => 18, 'O' => 20,
+    'A' => 25, 'B' => 15, 'C' => 18, 'D' => 30, 'E' => 20, 'F' => 30,
+    'G' => 20, 'H' => 20, 'I' => 25, 'J' => 25, 'K' => 30, 'L' => 30,
+    'M' => 30, 'N' => 18, 'O' => 25, 'P' => 25, 'Q' => 30, 'R' => 35,
+    'S' => 35,
 ];
 
 // Aplicar anchos

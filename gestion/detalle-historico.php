@@ -146,7 +146,7 @@ check_login();
             <div class="form-row">
               <div class="form-group">
                   <label class="form-label" for="motivoN" >Motivo de Traslado</label>
-                  <input type="text" name="motivoN" id="motivoN" value="<?php echo $row['motivoN']; ?>" class="form-control form-control-sm " />
+                  <input type="text" name="motivoN" id="motivoN" value="<?php echo $row['motivoN']; ?>" class="form-control form-control-sm " readonly />
                 </div>
             </div>
             <div class="form-row">
