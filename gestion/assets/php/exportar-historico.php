@@ -20,8 +20,8 @@ $filtrosDesvinculaciones = [];
 
 // Filtro por fecha
 if (!empty($fecha_inicio) && !empty($fecha_fin)) {
-    $filtrosTraslados[] = "tr.fecha_inicio_turno BETWEEN '$fecha_inicio' AND '$fecha_fin'";
-    $filtrosDesvinculaciones[] = "de.fecha_egreso BETWEEN '$fecha_inicio' AND '$fecha_fin'";
+    $filtrosTraslados[] = "tr.fecha_registro BETWEEN '$fecha_inicio' AND '$fecha_fin'";
+    $filtrosDesvinculaciones[] = "de.fecha_registro BETWEEN '$fecha_inicio' AND '$fecha_fin'";
 }
 
 // Filtro por tipo (Traslado o Desvinculación)
