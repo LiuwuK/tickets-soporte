@@ -25,10 +25,10 @@ if (!empty($fecha_inicio) && !empty($fecha_fin)) {
 }
 
 // Filtro por tipo (Traslado o Desvinculación)
-if ($tipo === "Traslado") {
+if ($tipo === "traslado") {
     $filtrosDesvinculaciones[] = "1=0"; // No incluir desvinculaciones
 }
-if ($tipo === "Desvinculación") {
+if ($tipo === "desvinculación") {
     $filtrosTraslados[] = "1=0"; // No incluir traslados
 }
 
