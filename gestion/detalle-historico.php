@@ -157,20 +157,29 @@ check_login();
             </div>
             
             <form id="newform" method="POST">
-              <div class="form-row">
-                <div class="form-group">
-                    <label for="desc" class="form-label">Observación RRHH</labe>
-                    <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3"><?php echo $row['obs_rrhh'];?></textarea>     
-                </div>
-              </div>
               <?php
                 if($_SESSION['cargo'] == 12){
               ?>
+                <div class="form-row">
+                  <div class="form-group">
+                      <label for="desc" class="form-label">Observación RRHH</labe>
+                      <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3"><?php echo $row['obs_rrhh'];?></textarea>     
+                  </div>
+                </div>
                 <div class="form-row justify-content-end">
                   <button class="btn btn-updt" name="rrhh" id="updateBtn" disabled>Actualizar</button>
                 </div>
               <?php
-              }
+              }else{
+                ?>
+                  <div class="form-row">
+                    <div class="form-group">
+                        <label for="desc" class="form-label">Observación RRHH</labe>
+                        <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3"><?php echo $row['obs_rrhh'];?></textarea>     
+                    </div>
+                  </div>
+                <?php  
+                }
               ?>
             </form>
           <?php
@@ -240,21 +249,29 @@ check_login();
                   <textarea class="form-control form-control-sm" id="desc" name="desc" rows="3" readonly><?php echo $row['observacion'];?></textarea>     
               </div>
             </div>
-            <form id="newform" method="POST">
-              <div class="form-row">
-                <div class="form-group">
-                    <label for="desc" class="form-label">Observación RRHH</labe>
-                    <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3"><?php echo $row['obs_rrhh'];?></textarea>     
-                </div>
-              </div>
-
+            <form id="newform" method="POST">      
               <?php
                 if($_SESSION['cargo'] == 12){
               ?>
+                <div class="form-row">
+                  <div class="form-group">
+                      <label for="desc" class="form-label">Observación RRHH</labe>
+                      <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3"><?php echo $row['obs_rrhh'];?></textarea>     
+                  </div>
+                </div>
                 <div class="form-row justify-content-end">
                   <button class="btn btn-updt" name="rrhh" id="updateBtn" disabled>Actualizar</button>
                 </div>
               <?php
+              }else{
+              ?>
+                <div class="form-row">
+                  <div class="form-group">
+                      <label for="desc" class="form-label">Observación RRHH</labe>
+                      <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3"><?php echo $row['obs_rrhh'];?></textarea>     
+                  </div>
+                </div>
+              <?php  
               }
               ?>
             </form>
@@ -266,6 +283,38 @@ check_login();
         </div>
     </div>
   </div>
+
+<script>
+  function mostrarResultados(data) {
+      const contenedor = document.getElementById('resultadoHistorico');
+      contenedor.innerHTML = ''; 
+      data.forEach(item => {
+          const fechaFormateada = new Date(item.fecha).toLocaleDateString('es-CL', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric'
+          });
+
+          
+        const itemHTML = `
+            <div class="h-container"  onclick="window.location.href='detalle-historico.php?id=${item.id}&tipo=${item.tipo}';">
+                <div class="h-header d-flex justify-content-between">
+                    <strong>${item.colaborador}</strong>
+                    <span class="label label-estado">${item.estado}</span>
+                </div>
+                <div class="h-body">
+                    <p>Fecha: ${fechaFormateada}</p>
+                    <p>Tipo: ${item.tipo}</p>
+                    <p>Creado por: ${item.solicitante}</p>
+                </div>
+            </div>
+        `;
+
+        contenedor.insertAdjacentHTML('beforeend', itemHTML);
+      });
+    }
+    actualizarResultados();
+</script>
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <!-- Bootstrap Bundle (con Popper.js) -->
