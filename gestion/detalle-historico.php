@@ -180,7 +180,7 @@ check_login();
                   </div>
                 <?php  
                 }
-              ?>
+                ?>
             </form>
           <?php
             }
@@ -283,37 +283,20 @@ check_login();
         </div>
     </div>
   </div>
-
 <script>
-  function mostrarResultados(data) {
-      const contenedor = document.getElementById('resultadoHistorico');
-      contenedor.innerHTML = ''; 
-      data.forEach(item => {
-          const fechaFormateada = new Date(item.fecha).toLocaleDateString('es-CL', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric'
-          });
+const descField = document.getElementById('descRRHH');
+const updateBtn = document.getElementById('updateBtn');
 
-          
-        const itemHTML = `
-            <div class="h-container"  onclick="window.location.href='detalle-historico.php?id=${item.id}&tipo=${item.tipo}';">
-                <div class="h-header d-flex justify-content-between">
-                    <strong>${item.colaborador}</strong>
-                    <span class="label label-estado">${item.estado}</span>
-                </div>
-                <div class="h-body">
-                    <p>Fecha: ${fechaFormateada}</p>
-                    <p>Tipo: ${item.tipo}</p>
-                    <p>Creado por: ${item.solicitante}</p>
-                </div>
-            </div>
-        `;
-
-        contenedor.insertAdjacentHTML('beforeend', itemHTML);
-      });
+function toggleButtonState() {
+    if (descField.value.trim() !== '') {
+        updateBtn.disabled = false; 
+    } else {
+        updateBtn.disabled = true;
     }
-    actualizarResultados();
+}
+
+descField.addEventListener('input', toggleButtonState);
+toggleButtonState();
 </script>
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

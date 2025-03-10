@@ -42,17 +42,3 @@ document.querySelectorAll(".desv-select").forEach(select => {
         });
     });
 });
-
-const descField = document.getElementById('descRRHH');
-const updateBtn = document.getElementById('updateBtn');
-
-function toggleButtonState() {
-    if (descField.value.trim() !== '') {
-        updateBtn.disabled = false; 
-    } else {
-        updateBtn.disabled = true;
-    }
-}
-
-descField.addEventListener('input', toggleButtonState);
-toggleButtonState();
