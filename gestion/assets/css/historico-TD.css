@@ -74,3 +74,18 @@ h4{
 hr{
     margin: 0 0 15px 0;
 }
+.form-f{
+    align-items: center;
+}
+.btn-excel{
+    background-color: #5f9ea0;
+    color: #fff;
+    height: 50%;
+    transition: transform 0.2s ease-in-out;
+}
+.btn-excel:hover{
+    background-color: #5f9ea0;
+    color: #fff;
+    transform: scale(1.05);
+}
+

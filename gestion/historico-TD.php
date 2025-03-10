@@ -46,35 +46,42 @@ check_login();
               <i class="bi bi-arrow-left" ></i>
           </button>
         </div> <br><br>
-        <div class="filtros ">
-          <div class="d-flex justify-content-arround mb-3">
-            <div class="all-fil">
-              <label for="filtroTipo">Tipo</label>
-              <select id="filtroTipo" class="form-select form-select-sm fil">
-                <option value="">Todos los tipos</option>
-                <option value="traslado">Traslados</option>
-                <option value="desvinculación">Desvinculaciones</option>
-              </select>
-            </div>
-            <div class="all-fil">  
-              <label for="filtroEstado">Estado</label>
-              <select id="filtroEstado"  class="form-select form-select-sm fil">
-                  <option value="">Todos los estados</option>
-                  <option value="en gestión">En Gestión</option>
-                  <option value="realizado">Realizado</option>
-                  <option value="anulado">Anulado</option>
-              </select>
-            </div>
-            <div class="all-fil">
-              <label for="filtroFechaInicio">Fecha Inicio</label>
-              <input type="date" class="form-control form-control-sm fil" id="filtroFechaInicio">
-            </div>
-            <div class="all-fil">
-              <label for="filtroFechaInicio">Fecha Fin</label>
-              <input type="date" class="form-control form-control-sm fil" id="filtroFechaFin">
+        <form method="GET" action="assets/php/exportar-historico.php" class="d-flex justify-content-between form-f">
+          <div class="filtros ">
+            <div class="d-flex justify-content-arround mb-3">
+              <div class="all-fil">
+                <label for="filtroTipo">Tipo</label>
+                <select id="filtroTipo" name="tipo" class="form-select form-select-sm fil">
+                  <option value="">Todos los tipos</option>
+                  <option value="traslado">Traslados</option>
+                  <option value="desvinculación">Desvinculaciones</option>
+                </select>
+              </div>
+              <div class="all-fil">  
+                <label for="filtroEstado" >Estado</label>
+                <select id="filtroEstado" name="estado"  class="form-select form-select-sm fil">
+                    <option value="">Todos los estados</option>
+                    <option value="en gestión">En Gestión</option>
+                    <option value="realizado">Realizado</option>
+                    <option value="anulado">Anulado</option>
+                </select>
+              </div>
+              <div class="all-fil">
+                <label for="filtroFechaInicio">Fecha Inicio</label>
+                <input name="fecha_inicio" type="date" class="form-control form-control-sm fil" id="filtroFechaInicio">
+              </div>
+              <div class="all-fil">
+                <label for="filtroFechaInicio">Fecha Fin</label>
+                <input name="fecha_fin" type="date" class="form-control form-control-sm fil" id="filtroFechaFin">
+              </div>
             </div>
           </div>
-        </div>
+
+          <button type="submit" class="btn btn-excel">
+              <i class="bi bi-file-earmark-excel"></i> 
+              Exportar a Excel
+          </button>
+        </form>
         <div id="resultadoHistorico" class="content"></div>
     </div>
   </div>
