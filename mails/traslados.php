@@ -67,6 +67,21 @@ if(!empty($traslados)){
 
         $mail->clearAddresses();
         $mail->setFrom('stsafeteck@gmail.com', 'Traslados');
+        $destinatarios = [
+            'fnorton@gruposafeteck.com' => 'Usuario',
+            'fponce@gruposaeteck.com' => 'Usuario',
+            'dfsilva@gruposafeteck.com' => 'Usuario',
+            'kcarvajal@gruposafeteck.com' => 'Usuario',
+            'mserrano@gruposerrano.com' => 'Usuario',
+            'bjaramillo@gruposafeteck.com' => 'Usuario',
+            'dvegas@gruposafeteck.com' => 'Usuario',
+            'asistencia@gruposafeteck.com' => 'Usuario',
+            'mpacheco@gruposafeteck.com' => 'Usuario',
+        ];
+
+        foreach ($destinatarios as $email => $nombre) {
+            $mail->addAddress($email, $nombre);
+        }
         $mail->addAddress('fnorton@gruposafeteck.com', 'Usuario');  
 
         $mail->isHTML(true);

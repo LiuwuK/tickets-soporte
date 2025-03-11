@@ -53,10 +53,24 @@ if(!empty($desvinculaciones)){
 
         $mail->clearAddresses();
         $mail->setFrom('stsafeteck@gmail.com', 'Desvinculaciones');
-        $mail->addAddress('fnorton@gruposafeteck.com', 'Usuario');  
+        $destinatarios = [
+            'fnorton@gruposafeteck.com' => 'Usuario',
+            'fponce@gruposaeteck.com' => 'Usuario',
+            'dfsilva@gruposafeteck.com' => 'Usuario',
+            'kcarvajal@gruposafeteck.com' => 'Usuario',
+            'mserrano@gruposerrano.com' => 'Usuario',
+            'bjaramillo@gruposafeteck.com' => 'Usuario',
+            'dvegas@gruposafeteck.com' => 'Usuario',
+            'asistencia@gruposafeteck.com' => 'Usuario',
+            'mpacheco@gruposafeteck.com' => 'Usuario',
+        ];
+
+        foreach ($destinatarios as $email => $nombre) {
+            $mail->addAddress($email, $nombre);
+        }
 
         $mail->isHTML(true);
-        $mail->Subject = 'Traslados del día de hoy';
+        $mail->Subject = 'Desvinculaciones del día de hoy';
 
         $contenido = '
             <!DOCTYPE html>
