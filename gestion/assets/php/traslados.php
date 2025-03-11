@@ -81,16 +81,39 @@ if(isset($_POST['trasladoForm'])){
     $fInicio = $_POST['fechaInicio'];
     $supDestino = $_POST['supervisorDestino'];
 
-    $query =  "INSERT INTO 
-                    traslados(supervisor_origen, nombre_colaborador, rut, instalacion_origen, 
-                            jornada_origen, motivo_traslado, instalacion_destino, jornada_destino, 
-                            rol_origen,rol_destino, fecha_inicio_turno, supervisor_destino, solicitante)
+    $checkQuery = "SELECT COUNT(*) FROM traslados 
+               WHERE supervisor_origen = ? AND nombre_colaborador = ? AND rut = ? 
+               AND instalacion_origen = ? AND jornada_origen = ? 
+               AND motivo_traslado = ? AND instalacion_destino = ? 
+               AND jornada_destino = ? AND rol_origen = ? 
+               AND rol_destino = ? AND fecha_inicio_turno = ? 
+               AND supervisor_destino = ?";
+    $checkStmt = $con->prepare($checkQuery);
+    $checkStmt->bind_param("issiiiiiiisi", $supOrigen, $colaborador, $rut, $instOrigen, 
+                                        $jorOrigen, $motivo, $instDestino, $jorDestino, 
+                                        $rolOrigen, $rolDestino, $fInicio, $supDestino);
+    $checkStmt->execute();
+    $checkStmt->bind_result($count);
+    $checkStmt->fetch();
+    $checkStmt->close();
+
+    if ($count > 0) {
+        echo "<script>alert('Este traslado ya existe en la base de datos'); location.replace(document.referrer);</script>";
+    } else {
+        $query = "INSERT INTO traslados(supervisor_origen, nombre_colaborador, rut, instalacion_origen, 
+                                        jornada_origen, motivo_traslado, instalacion_destino, jornada_destino, 
+                                        rol_origen, rol_destino, fecha_inicio_turno, supervisor_destino, solicitante) 
                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    $stmt = $con->prepare($query);
-    $stmt->bind_param("issiiiiiiisii",$supOrigen, $colaborador, $rut, $instOrigen, $jorOrigen, 
-                    $motivo, $instDestino, $jorDestino, $rolOrigen,$rolDestino, $fInicio, $supDestino, $solicitante);
-    if($stmt->execute()){
-        echo "<script>alert('Traslado Registrado Correctamente'); location.replace(document.referrer)</script>";
+        $stmt = $con->prepare($query);
+        $stmt->bind_param("issiiiiiiisii", $supOrigen, $colaborador, $rut, $instOrigen, $jorOrigen, 
+                                        $motivo, $instDestino, $jorDestino, $rolOrigen, $rolDestino, 
+                                        $fInicio, $supDestino, $solicitante);
+        if ($stmt->execute()) {
+            echo "<script>alert('Traslado registrado correctamente'); location.replace(document.referrer);</script>";
+        } else {
+            echo "<script>alert('Error al registrar el traslado');</script>";
+        }
+        $stmt->close();
     }
 }
 
@@ -102,30 +125,44 @@ if(isset($_POST['desvForm'])){
     $motivo = $_POST['motivo'];
     $obs = $_POST['observacion'];
 
-    $query = "INSERT INTO desvinculaciones(supervisor_origen, colaborador, rut, instalacion, motivo, observacion, solicitante)
+    $checkQuery = "SELECT COUNT(*) FROM desvinculaciones 
+               WHERE supervisor_origen = ? AND colaborador = ? AND rut = ? 
+               AND instalacion = ? AND motivo = ? ";
+    $checkStmt = $con->prepare($checkQuery);
+    $checkStmt->bind_param("issis", $supOrigen, $colaborador, $rut, $instalacion, $motivo);
+    $checkStmt->execute();
+    $checkStmt->bind_result($count);
+    $checkStmt->fetch();
+    $checkStmt->close();
+
+    if ($count > 0) {
+        echo "<script>alert('Esta desvinculacion ya existe en la base de datos'); location.replace(document.referrer);</script>";
+    }else{
+        $query = "INSERT INTO desvinculaciones(supervisor_origen, colaborador, rut, instalacion, motivo, observacion, solicitante)
                 VALUES (?,?,?,?,?,?,?)";
-    $stmt = $con->prepare($query);
-    $stmt->bind_param("issiisi", $supOrigen, $colaborador, $rut, $instalacion, $motivo, $obs, $solicitante);
-    
-    if($stmt->execute()){
-        $desvinculacion_id = $stmt->insert_id;
-        if($motivo == 8 && !empty($_POST['fechasAusencia'])){
-            $fechas = explode(", ", $_POST['fechasAusencia']);
-             // Insertar cada fecha
-            $queryFechas = "INSERT INTO desvinculaciones_fechas (desvinculacion_id, fecha) VALUES (?, ?)";
-            $stmtFechas = $con->prepare($queryFechas);
+        $stmt = $con->prepare($query);
+        $stmt->bind_param("issiisi", $supOrigen, $colaborador, $rut, $instalacion, $motivo, $obs, $solicitante);
+        
+        if($stmt->execute()){
+            $desvinculacion_id = $stmt->insert_id;
+            if($motivo == 8 && !empty($_POST['fechasAusencia'])){
+                $fechas = explode(", ", $_POST['fechasAusencia']);
+                // Insertar cada fecha
+                $queryFechas = "INSERT INTO desvinculaciones_fechas (desvinculacion_id, fecha) VALUES (?, ?)";
+                $stmtFechas = $con->prepare($queryFechas);
 
-            foreach ($fechas as $fecha) {
-                $stmtFechas->bind_param("is", $desvinculacion_id, $fecha);
-                $stmtFechas->execute();
+                foreach ($fechas as $fecha) {
+                    $stmtFechas->bind_param("is", $desvinculacion_id, $fecha);
+                    $stmtFechas->execute();
+                }
+
+                echo "Registro insertado correctamente con múltiples fechas.";
+
+                $stmt->close();
+                $stmtFechas->close();
             }
-
-            echo "Registro insertado correctamente con múltiples fechas.";
-
-            $stmt->close();
-            $stmtFechas->close();
+            echo "<script>alert('Desvinculacion Registrada Correctamente'); location.replace(document.referrer)</script>";
         }
-        echo "<script>alert('Desvinculacion Registrada Correctamente'); location.replace(document.referrer)</script>";
     }
 }
 
