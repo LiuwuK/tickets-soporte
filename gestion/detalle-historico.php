@@ -224,7 +224,7 @@ check_login();
                   if($_SESSION['cargo'] !== 13){
                 ?>
                   <label for="estado" class="form-label">Estado</label>
-                  <select class="form-select form-select-sm estado-select" data-id="<?php echo $_GET['id']; ?>">
+                  <select class="form-select form-select-sm desv-select" data-id="<?php echo $_GET['id']; ?>">
                       <option value="En gestión" <?php if ($row['estado'] == 'En gestión') echo 'selected'; ?>>En gestión</option>
                       <option value="Realizado" <?php if ($row['estado'] == 'Realizado') echo 'selected'; ?>>Realizado</option>
                       <option value="Anulado" <?php if ($row['estado'] == 'Anulado') echo 'selected'; ?>>Anulado</option>
