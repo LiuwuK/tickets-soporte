@@ -238,6 +238,13 @@ $usRol = $_SESSION['cargo'];
                     </div>
                 </div>
               </div>
+
+              <div class="form-row mx-auto">
+                <div class="form-group">
+                  <label for="observacionT" class="form-label">Observación</label>
+                  <textarea class="form-control form-control-sm" id="observacionT" name="observacionT" rows="6"></textarea>
+                </div>
+              </div>
               <div class="footer">
                 <button tyoe="submit" name="trasladoForm" class="btn btn-updt">Enviar</button>
               </div>
