@@ -70,7 +70,7 @@ if(!empty($traslados)){
         $destinatarios = [
             'fnorton@gruposafeteck.com' => 'Usuario',
             'fponce@gruposaeteck.com' => 'Usuario',
-            'dfsilva@gruposafeteck.com' => 'Usuario',
+            'fsilva@gruposafeteck.com' => 'Usuario',
             'kcarvajal@gruposafeteck.com' => 'Usuario',
             'mserrano@gruposerrano.com' => 'Usuario',
             'bjaramillo@gruposafeteck.com' => 'Usuario',
