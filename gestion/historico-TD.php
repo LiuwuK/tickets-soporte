@@ -46,9 +46,13 @@ check_login();
               <i class="bi bi-arrow-left" ></i>
           </button>
         </div> <br><br>
-        <form method="GET" action="assets/php/exportar-historico.php" class="d-flex justify-content-between form-f">
-          <div class="filtros ">
+        
+          <div class="filtros d-flex justify-content-between form-f">
             <div class="d-flex justify-content-arround mb-3">
+              <div class="all-fil">
+                <label for="filtroTexto">Buscar</label>
+                <input type="text" id="filtroTexto" name="texto" class="form-control form-control-sm fil" placeholder="Buscar por nombre, tipo, etc.">
+              </div>
               <div class="all-fil">
                 <label for="filtroTipo">Tipo</label>
                 <select id="filtroTipo" name="tipo" class="form-select form-select-sm fil">
@@ -75,13 +79,16 @@ check_login();
                 <input name="fecha_fin" type="datetime-local" class="form-control form-control-sm fil" id="filtroFechaFin">
               </div>
             </div>
+
+            <form method="GET" action="assets/php/exportar-historico.php" class="">
+              <button type="submit" class="btn btn-excel">
+                  <i class="bi bi-file-earmark-excel"></i> 
+                  Exportar a Excel
+              </button>
+            </form>
+
           </div>
 
-          <button type="submit" class="btn btn-excel">
-              <i class="bi bi-file-earmark-excel"></i> 
-              Exportar a Excel
-          </button>
-        </form>
         <div id="resultadoHistorico" class="content"></div>
     </div>
   </div>

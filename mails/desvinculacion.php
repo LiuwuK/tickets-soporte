@@ -58,7 +58,7 @@ if(!empty($desvinculaciones)){
             'fponce@gruposaeteck.com' => 'Usuario',
             'fsilva@gruposafeteck.com' => 'Usuario',
             'kcarvajal@gruposafeteck.com' => 'Usuario',
-            'mserrano@gruposerrano.com' => 'Usuario',
+            'mserrano@gruposafeteck.com' => 'Usuario',
             'bjaramillo@gruposafeteck.com' => 'Usuario',
             'dvegas@gruposafeteck.com' => 'Usuario',
             'asistencia@gruposafeteck.com' => 'Usuario',
