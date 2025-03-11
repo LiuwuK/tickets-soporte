@@ -68,11 +68,11 @@ check_login();
               </div>
               <div class="all-fil">
                 <label for="filtroFechaInicio">Fecha Inicio</label>
-                <input name="fecha_inicio" type="date" class="form-control form-control-sm fil" id="filtroFechaInicio">
+                <input name="fecha_inicio" type="datetime-local" class="form-control form-control-sm fil" id="filtroFechaInicio">
               </div>
               <div class="all-fil">
                 <label for="filtroFechaInicio">Fecha Fin</label>
-                <input name="fecha_fin" type="date" class="form-control form-control-sm fil" id="filtroFechaFin">
+                <input name="fecha_fin" type="datetime-local" class="form-control form-control-sm fil" id="filtroFechaFin">
               </div>
             </div>
           </div>

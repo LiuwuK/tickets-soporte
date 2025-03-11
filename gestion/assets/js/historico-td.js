@@ -34,13 +34,20 @@ document.addEventListener('DOMContentLoaded', function() {
       const contenedor = document.getElementById('resultadoHistorico');
       contenedor.innerHTML = ''; 
       data.forEach(item => {
-          const fechaFormateada = new Date(item.fecha).toLocaleDateString('es-CL', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric'
-          });
-
-          
+             // Formatear la fecha
+            const fechaFormateada = new Date(item.fecha).toLocaleDateString('es-CL', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            // Formatear la hora
+            const horaFormateada = new Date(item.fecha).toLocaleTimeString('es-CL', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false 
+            });
+            const resultadoFinal = `${fechaFormateada} ${horaFormateada}`;
+            
         const itemHTML = `
             <div class="h-container"  onclick="window.location.href='detalle-historico.php?id=${item.id}&tipo=${item.tipo}';">
                 <div class="h-header d-flex justify-content-between">
@@ -52,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div> 
                 </div>
                 <div class="h-body">
-                    <p>Fecha: ${fechaFormateada}</p>
+                    <p>Fecha: ${resultadoFinal}</p>
                     <p>Tipo: ${item.tipo}</p>
                     <p>Creado por: ${item.solicitante}</p>
                     <p>Observación SSPP: ${item.observacion ? item.observacion : 'No hay observación'}</p>

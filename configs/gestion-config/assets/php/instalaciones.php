@@ -1,10 +1,51 @@
 <?php
 require __DIR__.'/../../../../vendor/autoload.php';
 //obtener info 
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+//página actual
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$perPage = 10; // Número de registros por página
+$offset = ($page - 1) * $perPage;
+
 $query = "SELECT * FROM sucursales";
+//agregar el filtro
+if (!empty($search)) {
+    $query .= " WHERE nombre LIKE ?";
+    $searchTerm = "%$search%"; // Búsqueda parcial
+}
+// Agregar paginación
+$query .= " LIMIT ? OFFSET ?";
+// Preparar y ejecutar la consulta
 $supervisorData = $con->prepare($query);
+if (!empty($search)) {
+    $supervisorData->bind_param('sii', $searchTerm, $perPage, $offset);
+} else {
+    $supervisorData->bind_param('ii', $perPage, $offset);
+}
 $supervisorData->execute();
 $result = $supervisorData->get_result();
+
+// Construir la consulta para contar el total de registros
+$totalQuery = "SELECT COUNT(*) as total FROM sucursales";
+
+// Si hay un valor de búsqueda, agregar el filtro
+if (!empty($search)) {
+    $totalQuery .= " WHERE nombre LIKE ?";
+}
+
+// Preparar y ejecutar la consulta para contar
+$totalResult = $con->prepare($totalQuery);
+
+if (!empty($search)) {
+    $totalResult->bind_param('s', $searchTerm);
+}
+
+$totalResult->execute();
+$totalRow = $totalResult->get_result()->fetch_assoc();
+$totalRecords = $totalRow['total'];
+// Calcular el número total de páginas
+$totalPages = ceil($totalRecords / $perPage);
+
 
 //obtener supervisores/departamentos/roles/ciudades
 $query = "SELECT * FROM supervisores";

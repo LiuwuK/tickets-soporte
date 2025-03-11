@@ -53,6 +53,17 @@ check_login();
               </div>
               <hr>
               <div class="body-crud">
+                <!-- Campo de búsqueda -->
+                <div class="search-container mb-3">
+                    <form method="GET" action="">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="search" placeholder="Buscar por nombre de sucursal" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                            <button type="submit" class="btn btn-updt">Buscar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tabla de sucursales -->
                 <table class="table table-striped">
                     <thead>
                         <th>Nombre</th>
@@ -65,76 +76,99 @@ check_login();
                         <th>Opciones</th>
                     </thead>
                     <tbody>
-                      <form name="form" id="editSu" method="post">
-                        <div id="loading" style="display:none ;">
-                            <div class="loading-spinner"></div>
-                            <p>Procesando...</p>
-                        </div>  
-                        <?php while ($row_s = mysqli_fetch_assoc($result)) { ?>    
-                            <tr>
-                                <td >
-                                  <input type="text" class="form-control form-control-sm" id="name" name="name[]" value="<?php echo $row_s['nombre'];?>" onchange="enableUpdateButton()" required>
-                                  <input type="hidden" name="id[]" value="<?php echo $row_s['id']; ?>">
-                                </td>
-                                <td>
-                                  <select name="ciudad[]" id="ciudad" class="form-select form-select-sm"  onchange="enableUpdateButton()" required>
-                                      <?php
-                                      foreach ($city AS $row) {
-                                          if ($row['id'] == $row_s['ciudad_id']) {
-                                              echo "<option value=".$row['id']." selected>".$row['nombre_ciudad'] ."</option>";
-                                          } else{
-                                              echo "<option value=".$row['id'].">".$row['nombre_ciudad'] ."</option>";
-                                          }
-                                      };
-                                      ?>
-                                  </select>
-                                </td>
-                                <td>
-                                  <input type="text" class="form-control form-control-sm" id="comuna" name="comuna[]" value="<?php echo $row_s['comuna'];?>" onchange="enableUpdateButton()" required>
-                                </td>
-                                <td>
-                                  <input type="text" class="form-control form-control-sm" id="calle" name="calle[]" value="<?php echo $row_s['direccion_calle'];?>" onchange="enableUpdateButton()" required>
-                                </td>
-                                <td>
-                                  <select name="supervisor[]" id="supervisor" class="form-select form-select-sm"  onchange="enableUpdateButton()" required>
-                                    <?php
-                                     foreach($sup AS $row) {
-                                        if ($row['id'] == $row_s['supervisor_id']) {
-                                            echo "<option value=".$row['id']." selected>".$row['nombre_supervisor'] ."</option>";
-                                        } else{
-                                            echo "<option value=".$row['id'].">".$row['nombre_supervisor'] ."</option>";
-                                        }
-                                    };
-                                    ?>
-                                  </select>
-                                </td>
-                                <td>
-                                  <select name="depto[]" id="depto" class="form-select form-select-sm"  onchange="enableUpdateButton()" required>
-                                    <?php
-                                      foreach ($depto AS $row) {
-                                        if ($row['id'] == $row_s['departamento_id']) {
-                                            echo "<option value=".$row['id']." selected>".$row['nombre_departamento'] ."</option>";
-                                        } else{ 
-                                            echo "<option value=".$row['id'].">".$row['nombre_departamento'] ."</option>";
-                                        }
-                                    };
-                                    ?>
-                                  </select>
-                                </td>
-                                <td>
-                                  <select name="estado[]" id="estado" class="form-select form-select-sm"  onchange="enableUpdateButton()" required>
-                                    <option value="activo" <?php if ($row_s['estado'] == 'activo') echo 'selected'; ?>>Activo</option>
-                                    <option value="inactivo" <?php if ($row_s['estado'] == 'inactivo') echo 'selected'; ?>>Inactivo</option>
-                                  </select>
-                                  </td>
-                                <td>
-                                  <button type="button" style="width: 100%;" class="btn btn-del del-btn" data-bs-toggle="modal" data-bs-target="#delSuper" data-sup-id="<?php echo $row['id'];?>">Eliminar</button>
-                                </td>
-                            </tr>
-                        <?php } ?>
-                      </form>
-                    </tbody>    
+                        <form name="form" id="editSu" method="post">
+                            <div id="loading" style="display:none ;">
+                                <div class="loading-spinner"></div>
+                                <p>Procesando...</p>
+                            </div>
+                            <?php while ($row_s = mysqli_fetch_assoc($result)) { ?>
+                                <tr>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" id="name" name="name[]" value="<?php echo $row_s['nombre']; ?>" onchange="enableUpdateButton()" required>
+                                        <input type="hidden" name="id[]" value="<?php echo $row_s['id']; ?>">
+                                    </td>
+                                    <td>
+                                        <select name="ciudad[]" id="ciudad" class="form-select form-select-sm" onchange="enableUpdateButton()" required>
+                                            <?php
+                                            foreach ($city as $row) {
+                                                if ($row['id'] == $row_s['ciudad_id']) {
+                                                    echo "<option value=" . $row['id'] . " selected>" . $row['nombre_ciudad'] . "</option>";
+                                                } else {
+                                                    echo "<option value=" . $row['id'] . ">" . $row['nombre_ciudad'] . "</option>";
+                                                }
+                                            };
+                                            ?>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" id="comuna" name="comuna[]" value="<?php echo $row_s['comuna']; ?>" onchange="enableUpdateButton()" required>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" id="calle" name="calle[]" value="<?php echo $row_s['direccion_calle']; ?>" onchange="enableUpdateButton()" required>
+                                    </td>
+                                    <td>
+                                        <select name="supervisor[]" id="supervisor" class="form-select form-select-sm" onchange="enableUpdateButton()" required>
+                                            <?php
+                                            foreach ($sup as $row) {
+                                                if ($row['id'] == $row_s['supervisor_id']) {
+                                                    echo "<option value=" . $row['id'] . " selected>" . $row['nombre_supervisor'] . "</option>";
+                                                } else {
+                                                    echo "<option value=" . $row['id'] . ">" . $row['nombre_supervisor'] . "</option>";
+                                                }
+                                            };
+                                            ?>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select name="depto[]" id="depto" class="form-select form-select-sm" onchange="enableUpdateButton()" required>
+                                            <?php
+                                            foreach ($depto as $row) {
+                                                if ($row['id'] == $row_s['departamento_id']) {
+                                                    echo "<option value=" . $row['id'] . " selected>" . $row['nombre_departamento'] . "</option>";
+                                                } else {
+                                                    echo "<option value=" . $row['id'] . ">" . $row['nombre_departamento'] . "</option>";
+                                                }
+                                            };
+                                            ?>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select name="estado[]" id="estado" class="form-select form-select-sm" onchange="enableUpdateButton()" required>
+                                            <option value="activo" <?php if ($row_s['estado'] == 'activo') echo 'selected'; ?>>Activo</option>
+                                            <option value="inactivo" <?php if ($row_s['estado'] == 'inactivo') echo 'selected'; ?>>Inactivo</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="button" style="width: 100%;" class="btn btn-del del-btn" data-bs-toggle="modal" data-bs-target="#delSuper" data-sup-id="<?php echo $row['id']; ?>">Eliminar</button>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </form>
+                    </tbody>
                 </table>
+
+                <!-- Controles de paginación -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <?php
+                        // Botón "Anterior"
+                        if ($page > 1) {
+                            echo '<li class="page-item"><a class="page-link" href="?page=' . ($page - 1) . '&search=' . urlencode($search) . '">Anterior</a></li>';
+                        }
+
+                        // Enlaces de las páginas
+                        for ($i = 1; $i <= $totalPages; $i++) {
+                            $active = $page == $i ? 'active' : '';
+                            echo '<li class="page-item ' . $active . '"><a class="page-link" href="?page=' . $i . '&search=' . urlencode($search) . '">' . $i . '</a></li>';
+                        }
+
+                        // Botón "Siguiente"
+                        if ($page < $totalPages) {
+                            echo '<li class="page-item"><a class="page-link" href="?page=' . ($page + 1) . '&search=' . urlencode($search) . '">Siguiente</a></li>';
+                        }
+                        ?>
+                    </ul>
+                </nav>
               </div>
             </div>
         </div>   

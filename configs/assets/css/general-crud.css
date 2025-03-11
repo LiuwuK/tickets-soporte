@@ -44,3 +44,24 @@ span{
 .mv-form input{
     background-color: #fff;
 }
+
+.pagination {
+    margin-top: 20px;
+}
+
+.page-item {
+    display: inline-block;
+}
+
+.page-link {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    text-decoration: none;
+    color: #33435e;
+}
+
+.page-item.active .page-link {
+    background-color: #33435e;
+    color: white;
+    border-color: #33435e;
+}
