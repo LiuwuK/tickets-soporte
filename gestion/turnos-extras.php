@@ -47,7 +47,7 @@ check_login();
             </div><br><br>
 
             <div class="content-body mx-auto col-xl-10">
-                <div class="crd mx-auto" onclick="window.location.href='';">
+                <div class="crd mx-auto" onclick="window.location.href='turnos-extra/nuevo-turno.php';">
                     <i class="bi bi-plus"></i>
                     <h4>Crear turnos</h4>
                 </div>  
