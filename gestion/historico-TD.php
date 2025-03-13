@@ -14,6 +14,7 @@ check_login();
   <meta charset="utf-8" />
   <title>Historico Traslados y Desvinculaciones</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="google" content="notranslate">
   <meta content="" name="description" />
   <meta content="" name="author" />
 <!-- CSS de Choices.js -->

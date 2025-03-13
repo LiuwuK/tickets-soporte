@@ -65,7 +65,7 @@ check_login();
                 </div>
                 <div class="crd mx-auto" onclick="window.location.href='motivos.php';">
                     <i class="bi bi-door-closed-fill"></i>
-                    <h4>Motivos Traslado y Egreso</h4>
+                    <h4>Motivos</h4>
                 </div>
                 <div class="crd mx-auto" onclick="window.location.href='departamentos.php';">
                     <i class="bi bi-building-fill-add"></i>

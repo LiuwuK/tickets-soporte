@@ -17,6 +17,8 @@ check_login();
   <meta content="" name="description" />
   <meta content="" name="author" />
 
+<!-- CSS de Choices.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 <!-- Bootstrap 5 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -47,97 +49,132 @@ check_login();
                     <i class="bi bi-arrow-left" ></i>
                 </button>
             </div>
-            <!-- Formulario nuevos turnos -->
-            <form class="form-horizontal" name="form" method="POST" action="" >
-                <div id="loading" style="display:none ;">
-                    <div class="loading-spinner"></div>
-                    <p>Procesando...</p>
-                </div>  
-                <div class="ticket-main col-xl-8 col-sm-12">
-                    <div class="form-row d-flex justify-content-between mt-4">
-                        <h3>Nuevo turno</h3>
+            <div class="ticket-main col-xl-8 col-sm-12">
+                <div class="form-row d-flex justify-content-between mt-4">
+                    <h3>Nuevo turno</h3>
+                    <form method="post" enctype="multipart/form-data">
                         <div class="excel">
-                            <button class="btn btn-updt" onclick="window.location.href='assets/php/';">Importar Turnos extra</button>
+                            <button class="btn btn-updt" type="submit" name="carga">Importar Turnos extra</button>
                         </div>
-                    </div>
-                    <br>
+                    </form>
+                </div>
+                <br>
+             <!-- Formulario nuevos turnos -->
+                <form class="form-horizontal" name="form" method="POST" action="" >
+                    <div id="loading" style="display:none ;">
+                        <div class="loading-spinner"></div>
+                        <p>Procesando...</p>
+                    </div>  
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="sucursal_id" class="form-label">Sucursal</label>
-                            <select name="sucursal_id" id="sucursal_id" class="form-control form-control-sm" required>
-                                <option value="">Seleccione una sucursal</option>
-                                <!-- Opciones cargadas dinámicamente -->
-                            </select>
-                        </div>
-
-                        <div class="form-group col-md-6">
-                            <label for="fecha_turno" class="form-label">Fecha del Turno</label>
-                            <input type="date" name="fecha_turno" id="fecha_turno" class="form-control form-control-sm" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="horas_cubiertas" class="form-label">Hora Cubiertas</label>
-                            <input type="time" name="horas_cubiertas" id="horas_cubiertas" class="form-control form-control-sm" required>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="monto" class="form-label">Monto</label>
-                            <input type="number" name="monto" id="monto" class="form-control form-control-sm" required>
+                            <label class="form-label">Instalación <span>*</span></label>
+                            <div>
+                                <select name="instalacion" id="instalacion" class="form-select form-select-sm search-form" required>
+                                    <option value="">Seleccionar</option>
+                                    <?php
+                                    foreach ($inst AS $row) {
+                                        echo "<option value='".$row['id']."'>".$row['nombre']."</option>";
+                                    };
+                                    ?>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="nombre_colaborador" class="form-label">Nombre del Colaborador</label>
+                            <label for="fecha_turno" class="form-label">Fecha del Turno <span>*</span></label>
+                            <input type="date" name="fecha_turno" id="fecha_turno" class="form-control form-control-sm" required min="<?php echo date('Y-m-d'); ?>">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="horas_cubiertas" class="form-label">Hora Cubiertas <span>*</span></label>
+                            <input type="number" name="horas_cubiertas" id="horas_cubiertas" class="form-control form-control-sm" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="monto" class="form-label">Monto <span>*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="montoP">$</span>
+                                <input type="number" name="monto" id="monto" class="form-control form-control-sm" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="nombre_colaborador" class="form-label">Nombre del Colaborador <span>*</span></label>
                             <input type="text" name="nombre_colaborador" id="nombre_colaborador" class="form-control form-control-sm" required>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="rut" class="form-label">RUT</label>
+                            <label for="rut" class="form-label">RUT <span>*</span></label>
                             <input type="text" name="rut" id="rut" class="form-control form-control-sm" required>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="motivo_turno_id" class="form-label">Motivo del Turno</label>
-                            <select name="motivo_turno_id" id="motivo_turno_id" class="form-control form-control-sm" required>
+                            <label for="motivo_turno" class="form-label">Motivo del Turno <span>*</span></label>
+                            <select name="motivo_turno" id="motivo_turno" class="form-select form-select-sm" required>
                                 <option value="">Seleccione un motivo</option>
+                                <?php
+                                foreach ($motivo AS $row) {
+                                    echo "<option value=".$row['id'].">".$row['motivo'] ."</option>";
+                                };
+                                ?>
                             </select>
                         </div>
 
                         <div class="form-group col-md-6">
-                            <label for="autorizado_por" class="form-label">Autorizado por</label>
-                            <select name="autorizado_por" id="autorizado_por" class="form-control form-control-sm" required>
-                                <option value="">Seleccione un usuario</option>
-                            </select>
+                            <label for="autorizado_por" class="form-label">Autorizado por <span>*</span></label>
+                            <input type="text" class="form-control form-control-sm"  name="autorizado_por" value="<?php echo $_SESSION['name'];?>" readonly>
                         </div>
                     </div>
 
                     <!-- Datos bancarios -->
-
+                    <div class="form-row mb-3">
+                    <h4>Datos bancarios</h4>
+                    </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                        <h4>Datos bancarios</h4>   
+
+                            <label for="banco" class="form-label">Banco <span>*</span></label>
+                            <input type="text" name="banco" id="banco" class="form-control form-control-sm" required>   
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="d-flex msg">
+                                <label for="rut" class="form-label">RUT Cta <span>*</span></label>
+                                <p> (Sin puntos)</p>
+                            </div>
+                            <input type="text" class="form-control form-control-sm" id="rut" name="rutCta" maxlength="12" required>
                         </div>
                     </div>
 
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="numCta" class="form-label">Numero de Cuenta <span>*</span></label>
+                            <input type="number" name="numCta" id="numCta" class="form-control form-control-sm" required>   
+                        </div>
+                    </div>
+                    <br>
                     <div class="footer">
                         <button type="submit" name="newExtra" class="btn btn-updt">Enviar</button>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>   
     </div>
 
   </div>
-
-
+<!-- JS de Choices.js -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <!-- Bootstrap Bundle (con Popper.js) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Complementos/Plugins-->
 <!-- Scripts propios -->
+<script src="../assets/js/turno-extra.js"></script>
 <script src="../../assets/js/sidebar.js"></script>
 </body>
 

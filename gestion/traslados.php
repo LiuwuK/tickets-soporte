@@ -111,10 +111,10 @@ $usRol = $_SESSION['cargo'];
                 <div class="form-group ">
                   <div class="d-flex msg">
                     <label for="rut" class="form-label">Rut <span>*</span></label>
-                    <p>(Sin puntos ni guion)</p>
+                    <p>(Sin puntos)</p>
                   </div>
                   <input type="text" class="form-control form-control-sm" id="rut" name="rut" maxlength="12" required>
-                  
+                
                 </div>
               </div>
               <div class="form-row mx-auto">

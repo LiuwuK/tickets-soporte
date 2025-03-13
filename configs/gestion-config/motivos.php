@@ -75,6 +75,7 @@ check_login();
                                   <select name="tipo[]" id="tipo" class="form-select form-select-sm"  onchange="enableUpdateButton()" required>
                                     <option value="traslado" <?php if ($row['tipo_motivo'] == 'traslado') echo 'selected'; ?>>Traslado</option>
                                     <option value="egreso" <?php if ($row['tipo_motivo'] == 'egreso') echo 'selected'; ?>>Egreso</option>
+                                    <option value="turnos" <?php if ($row['tipo_motivo'] == 'turnos') echo 'selected'; ?>>Turnos</option>
                                   </selec>
                                 </td>
                                 <td>
@@ -116,6 +117,7 @@ check_login();
                 <select name="tipo" id="tipo" class="form-select form-select-sm" required>
                   <option value="traslado">Traslado</option>
                   <option value="egreso">Egreso</option>
+                  <option value="turnos">Turnos</option>
                 </select>
               </div>
             </div>
