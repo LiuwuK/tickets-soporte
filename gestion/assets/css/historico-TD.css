@@ -30,6 +30,11 @@
     margin-top:8px;
     text-align: justify;
 }
+.h-footer{
+    display: flex;
+    justify-content: end;
+    color: #33435e;
+}
 .label-estado{
     background-color: #5f9ea0;
     color: #fff;

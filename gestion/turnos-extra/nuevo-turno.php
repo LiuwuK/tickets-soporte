@@ -49,22 +49,21 @@ check_login();
                     <i class="bi bi-arrow-left" ></i>
                 </button>
             </div>
-            <div class="ticket-main col-xl-8 col-sm-12">
-                <div class="form-row d-flex justify-content-between mt-4">
-                    <h3>Nuevo turno</h3>
-                    <form method="post" enctype="multipart/form-data">
-                        <div class="excel">
-                            <button class="btn btn-updt" type="submit" name="carga">Importar Turnos extra</button>
-                        </div>
-                    </form>
+            <div class="main-div col-xl-8 col-sm-12">
+                <div class="extra-title">
+                    <h3>Crear turno</h3>
+                    <div class="excel">
+                        <button class="btn btn-updt" data-bs-toggle="modal" data-bs-target="#newSuper">Importar Turnos extra</button>
+                    </div>                
                 </div>
-                <br>
-             <!-- Formulario nuevos turnos -->
-                <form class="form-horizontal" name="form" method="POST" action="" >
+                <!-- Formulario nuevos turnos -->
+
+                <form class="form-horizontal form-div" name="form" method="POST" action="" >
                     <div id="loading" style="display:none ;">
                         <div class="loading-spinner"></div>
                         <p>Procesando...</p>
                     </div>  
+                    <br>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label class="form-label">Instalación <span>*</span></label>
@@ -162,10 +161,30 @@ check_login();
                     </div>
                 </form>
             </div>
+                   
         </div>   
     </div>
-
   </div>
+<!-- Modal new -->
+<div class="modal fade" id="newSuper" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="newSuperLabel" aria-hidden="true">>
+  <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="newSuperLabel">Importar turnos</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form class="mb-2" method="post" enctype="multipart/form-data">
+            <div class="modal-body mt-3 d-flex justify-content-center">
+                <input class="mb-3" type="file" name="file" required>
+            </div>
+            <div class="modal-footer form-row-modal d-flex justify-content-end">
+              <button class="btn btn-updt" name="carga" type="submit">Cargar Datos</button>
+            </div>
+        </form> 
+      </div>
+  </div>
+</div>
+
 <!-- JS de Choices.js -->
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 <!-- Popper.js (para tooltips y otros componentes) -->
