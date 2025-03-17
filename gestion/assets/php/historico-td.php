@@ -30,7 +30,7 @@ $query .= "
     FROM desvinculaciones de
     JOIN user us ON de.solicitante = us.id
 ";
-if($_SESSION['cargo'] == 13){
+if($_SESSION['cargo'] == 13 && $_SESSION['id'] != 50){
     $query = "
         SELECT * FROM ($query) AS combined
         WHERE estado = 'realizado'

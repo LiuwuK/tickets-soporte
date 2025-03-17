@@ -323,8 +323,8 @@ $usRol = $_SESSION['cargo'];
               </div>
               <div class="form-row mx-auto">
                 <div class="form-group" id="fechasAusenciaContainer" style="display: none;">
-                    <label for="nuevaFecha">Seleccionar Fecha de Ausencia</label>
-                    <input type="date" class="form-control form-control-sm" id="nuevaFecha">
+                    <label for="nuevaFecha">Seleccionar Fecha de Ausencia <span>*</span></label>
+                    <input type="date" class="form-control form-control-sm" id="nuevaFecha" required>
                     <button type="button" id="agregarFecha" class="btn btn-updt btn-sm mt-2">Agregar Fecha</button>
                     <ul id="listaFechas" class="mt-2"></ul>
                     <input type="hidden" id="fechasAusencia" name="fechasAusencia">
@@ -539,6 +539,7 @@ document.addEventListener("DOMContentLoaded", function() {
             fechasSeleccionadas.push(nuevaFecha);
             actualizarListaFechas();
             nuevaFechaInput.value = ""; // Limpiar el input después de seleccionar
+            nuevaFechaInput.removeAttribute("required");
         }
     });
 

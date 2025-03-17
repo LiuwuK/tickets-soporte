@@ -87,11 +87,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         <p>Fecha del Turno: ${fechaT}</p>
                         <p>Horas Cubiertas: ${item.horas} hrs</p>
                         <p>Motivo: ${item.motivo}</p>
-                        <p>Autorizado por: ${item.autorizadoPor}</p>
+                        <div class="h-footer">
+                            <p>Autorizado por: ${item.autorizadoPor}</p>
+                            <p>${resultadoFinal}</p>
+                        </div>
+                        
                     </div>
-                    <div class="h-footer">
-                        <p>${resultadoFinal}</p>
-                    </div>
+              
                 </div>
             `;
 
