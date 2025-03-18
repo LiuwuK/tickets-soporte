@@ -1,5 +1,18 @@
 <?php
 
+//obtener estados 
+$query = "SHOW COLUMNS FROM turnos_extra LIKE 'estado'";
+$result = $con->query($query);
+
+if ($result) {
+    $row = $result->fetch_assoc();
+    $type = $row['Type']; 
+    preg_match("/^enum\(\'(.*)\'\)$/", $type, $matches);
+    $valoresEnum = explode("','", $matches[1]);
+} else {
+    die("Error al obtener los valores del enum.");
+}
+
 $turnos = [];
 
 $query = 'SELECT su.nombre AS "instalacion",
@@ -19,8 +32,28 @@ $query = 'SELECT su.nombre AS "instalacion",
             JOIN sucursales su ON (te.sucursal_id = su.id)
             JOIN datos_pago dp ON (te.datos_bancarios_id = dp.id)
             JOIN motivos_gestion mg ON (te.motivo_turno_id = mg.id)
-            JOIN user us ON (te.autorizado_por = us.id)
-            ORDER BY te.created_at DESC';
+            JOIN user us ON (te.autorizado_por = us.id) ';
+if ($_SESSION['cargo'] == 11){
+    $id  = $_SESSION['id'];
+    $query .= "WHERE te.autorizado_por = '$id' ";
+}
+if (isset($_SESSION['deptos']) && is_array($_SESSION['deptos'])) {
+    $estados = [
+        10 => "aprobado",
+        2 => "aprobado por remuneraciones",
+    ];
+
+    $estadoEncontrado = false;
+    foreach ($estados as $depto => $estado) {
+        if (array_intersect([$depto], $_SESSION['deptos'])) {
+            $query .= "WHERE te.estado = '$estado' ";
+            $estadoEncontrado = true;
+            break;
+        }
+    }
+}
+
+$query .= " ORDER BY te.created_at DESC"; 
 $result = mysqli_query($con, $query);
 $turnos = mysqli_fetch_all($result, MYSQLI_ASSOC);
 

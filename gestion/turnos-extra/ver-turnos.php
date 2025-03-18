@@ -52,11 +52,13 @@ check_login();
               </div>
               <div class="all-fil">  
                 <label for="filtroEstado" >Estado</label>
-                <select id="filtroEstado" name="estado"  class="form-select form-select-sm fil">
-                    <option value="">Todos los estados</option>
-                    <option value="pendiente en operaciones">Pendiente en Operaciones</option>
-                    <option value="aprobado">Aprobado</option>
-                    <option value="rechazado">Rechazado</option>
+                <select id="filtroEstado" name="estado" class="form-select form-select-sm fil-estado">
+                  <option value="">Todos los estados</option>
+                  <?php
+                  foreach ($valoresEnum as $valor) {
+                      echo "<option value='$valor'>$valor</option>";
+                  }
+                  ?>
                 </select>
               </div>
               <div class="all-fil">
