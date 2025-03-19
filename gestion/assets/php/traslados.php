@@ -124,6 +124,7 @@ if(isset($_POST['desvForm'])){
     $rut = $_POST['rut'];
     $instalacion = $_POST['instalacion'];
     $motivo = $_POST['motivo'];
+    $rol = $_POST['rol'];
     $obs = $_POST['observacion'];
 
     $checkQuery = "SELECT COUNT(*) FROM desvinculaciones 
@@ -139,10 +140,10 @@ if(isset($_POST['desvForm'])){
     if ($count > 0) {
         echo "<script>alert('Esta desvinculacion ya existe en la base de datos'); location.replace(document.referrer);</script>";
     }else{
-        $query = "INSERT INTO desvinculaciones(supervisor_origen, colaborador, rut, instalacion, motivo, observacion, solicitante)
-                VALUES (?,?,?,?,?,?,?)";
+        $query = "INSERT INTO desvinculaciones(supervisor_origen, colaborador, rut, instalacion, motivo, observacion, solicitante, rol)
+                VALUES (?,?,?,?,?,?,?,?)";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("issiisi", $supOrigen, $colaborador, $rut, $instalacion, $motivo, $obs, $solicitante);
+        $stmt->bind_param("issiisii", $supOrigen, $colaborador, $rut, $instalacion, $motivo, $obs, $solicitante, $rol);
         
         if($stmt->execute()){
             $desvinculacion_id = $stmt->insert_id;
@@ -210,12 +211,14 @@ $query = "SELECT de.*,
                 su.nombre AS instalacion,
                 us.name AS soliN,
                 sup.nombre_supervisor AS supervisor,
-                mo.motivo AS motivoEgreso
+                mo.motivo AS motivoEgreso,
+                rl.nombre_rol AS rolN
             FROM desvinculaciones de
             JOIN user us ON(de.solicitante = us.id)
             JOIN sucursales su ON(de.instalacion = su.id)
             JOIN supervisores sup ON(de.supervisor_origen = sup.id)
             JOIN motivos_gestion mo ON(de.motivo = mo.id)
+            LEFT JOIN roles rl ON(de.rol = rl.id)
             WHERE (de.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
             AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR)
             OR (de.estado = 'En gestión')

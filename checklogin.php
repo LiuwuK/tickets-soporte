@@ -30,13 +30,11 @@ function check_login()
     if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $session_expiration_time) {
         session_unset();
         session_destroy();
-        header("Location: login.php?session_expired=1");
+        header("Location:".BASE_URL."login.php?session_expired=1");
         exit();
     }
 
     // Actualizar el tiempo de la última actividad
     $_SESSION['last_activity'] = time();
-
-
 }
 ?>

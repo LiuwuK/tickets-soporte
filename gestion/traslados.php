@@ -262,21 +262,34 @@ $usRol = $_SESSION['cargo'];
               <h3>Formulario de Desvinculación</h3>
               <div class="form-row mx-auto">
                 <div class ="form-group">  
-                    <div class="d-flex msg">
-                      <label class="form-label">Supervisor Encargado <span>*</span></label>
-                      <p>(Supervisor a cargo de Instalación)</p>
-                    </div>
+                  <div class="d-flex msg">
+                    <label class="form-label">Supervisor Encargado <span>*</span></label>
+                    <p>(Supervisor a cargo de Instalación)</p>
+                  </div>
+                  
+                  <div >
+                      <select name="supervisorEncargado" class="form-select form-select-sm search-form" required>
+                        <option value="">Seleccionar</option>
+                        <?php
+                        foreach ($sup AS $row) {
+                          echo "<option value=".$row['id'].">".$row['nombre_supervisor'] ."</option>";
+                        }
+                        ?>
+                      </select>
+                  </div>
+                </div>
+                <div class ="form-group">
+                    <label class="form-label">Instalacion de Origen <span>*</span></label>
                     <div >
-                        <select name="supervisorEncargado" class="form-select form-select-sm search-form" required>
+                        <select name="instalacion" class="form-select form-select-sm search-form" required>
                           <option value="">Seleccionar</option>
                           <?php
-                          foreach ($sup AS $row) {
-                            echo "<option value=".$row['id'].">".$row['nombre_supervisor'] ."</option>";
-                          }
+                          foreach ($inst AS $row) {
+                            echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
+                          };
                           ?>
                         </select>
                     </div>
-                    
                 </div>
               </div>
               <div class="form-row mx-auto">
@@ -295,36 +308,36 @@ $usRol = $_SESSION['cargo'];
               </div>
               <div class="form-row mx-auto">
                 <div class ="form-group">
-                    <label class="form-label">Instalacion de Origen <span>*</span></label>
-                    <div >
-                        <select name="instalacion" class="form-select form-select-sm search-form" required>
-                          <option value="">Seleccionar</option>
-                          <?php
-                          foreach ($inst AS $row) {
-                            echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
-                          };
-                          ?>
-                        </select>
-                    </div>
+                  <label class="form-label">Rol <span>*</span></label>
+                  <div >
+                      <select id="rol" name="rol"class="form-select form-select-sm search-form" required>
+                        <option value="">Seleccionar</option>
+                        <?php
+                        foreach ($rol AS $row) {
+                          echo "<option value=".$row['id'].">".$row['nombre_rol'] ."</option>";
+                        };
+                        ?>
+                      </select>
+                  </div>
                 </div>
                 <div class ="form-group">
-                    <label class="form-label">Motivo de Egreso <span>*</span></label>
-                    <div >
-                        <select id="motivo" name="motivo"class="form-select form-select-sm search-form" required>
-                          <option value="">Seleccionar</option>
-                          <?php
-                          foreach ($motivoE AS $row) {
-                            echo "<option value=".$row['id'].">".$row['motivo'] ."</option>";
-                          };
-                          ?>
-                        </select>
-                    </div>
+                  <label class="form-label">Motivo de Egreso <span>*</span></label>
+                  <div >
+                      <select id="motivo" name="motivo"class="form-select form-select-sm search-form" required>
+                        <option value="">Seleccionar</option>
+                        <?php
+                        foreach ($motivoE AS $row) {
+                          echo "<option value=".$row['id'].">".$row['motivo'] ."</option>";
+                        };
+                        ?>
+                      </select>
+                  </div>
                 </div>
               </div>
-              <div class="form-row mx-auto">
+              <div class="form-row mx-auto">              
                 <div class="form-group" id="fechasAusenciaContainer" style="display: none;">
                     <label for="nuevaFecha">Seleccionar Fecha de Ausencia <span>*</span></label>
-                    <input type="date" class="form-control form-control-sm" id="nuevaFecha" required>
+                    <input type="date" class="form-control form-control-sm" id="nuevaFecha">
                     <button type="button" id="agregarFecha" class="btn btn-updt btn-sm mt-2">Agregar Fecha</button>
                     <ul id="listaFechas" class="mt-2"></ul>
                     <input type="hidden" id="fechasAusencia" name="fechasAusencia">
@@ -432,10 +445,11 @@ $usRol = $_SESSION['cargo'];
                 <div class="origen-data">
                   <strong>Instalacion de Origen: <?php echo $row['instalacion'] ?></strong>
                   <p>Supervisor: <?php echo $row['supervisor'];?></p>
+                  <p>Rol: <?php echo !empty($row['rolN']) ? $row['rolN'] : 'Sin Asignar' ;?></p>
                 </div>
                 <div class="destino-data">
                   <strong>Motivo de Egreso: <?php echo $row['motivoEgreso'] ?></strong>
-                  <p>Observación:  <?php echo $row['observacion'];?></p>
+                  <p>Observación:  <?php echo !empty($row['observacion']) ? $row['observacion'] : 'No tiene observación' ;?></p>
                 </div>
                 <div class="delete-btns">
                   <button class="btn btn-del del-btn" name="delDesv" data-bs-toggle="modal" data-bs-target="#delDesv" data-sup-id="<?php echo $row['id'];?>" >Eliminar</button>
