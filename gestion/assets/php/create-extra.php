@@ -104,7 +104,7 @@ if (isset($_POST['carga'])) {
             // Limpiar el monto
             $monto = floatval(str_replace(['$', ','], '', $row[8]));
             $rut = $row[9] . '-' . $row[10];
-            $colaborador = $row[11];
+            $colaborador = ucwords(strtolower($row[11]));
             $motivo = $row[16];
             $autorizado = $_SESSION['id'];
             // Datos bancarios

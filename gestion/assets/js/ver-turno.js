@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const itemHTML = `
                 <div class="h-container" onclick="window.location.href='detalle-turno.php?id=${item.id}';">
                     <div class="h-header d-flex justify-content-between">
-                        <div class="colab">
+                        <div class="colab-turno">
                             <strong>${item.colaborador}</strong>
                             <p>Rut: ${item.rut}</p>
                         </div>
@@ -103,3 +103,4 @@ document.addEventListener('DOMContentLoaded', function () {
     // Ejecutar la función al cargar la página
     actualizarResultados();
 });
+

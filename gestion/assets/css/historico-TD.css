@@ -98,3 +98,9 @@ hr{
     transform: scale(1.05);
 }
 
+.btn-acpt{
+    background-color: #5f9ea0;
+}
+.btn-acpt:hover{
+    background-color: #5f9ea0;
+}

@@ -36,7 +36,7 @@ if(isset($_GET['tipo'])){
         $tr = mysqli_query($con, $query);
 
     }else{
-        $query = "SELECT de.*, 
+        $query = "SELECT de.*,
                         su.nombre AS instalacion,
                         us.name AS soliN,
                         sup.nombre_supervisor AS supervisor,
@@ -48,7 +48,16 @@ if(isset($_GET['tipo'])){
                     JOIN motivos_gestion mo ON(de.motivo = mo.id)
                     WHERE de.id = $id
                     ";
-        $dv = mysqli_query($con, $query);
+        $info = mysqli_query($con, $query);
+        $dv = mysqli_fetch_assoc($info);
+        $motivo = $dv['motivo'];
+        if($motivo == 8){
+            $query = " SELECT *
+                        FROM desvinculaciones_fechas 
+                        WHERE desvinculacion_id = $id
+                    ";
+            $infoAusencia = mysqli_query($con, $query);
+        }
     }
 }
 

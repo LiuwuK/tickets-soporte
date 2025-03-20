@@ -70,11 +70,11 @@ check_login();
                 <input name="fecha_fin" type="date" class="form-control form-control-sm fil" id="filtroFechaFin">
               </div>
             </div>
-              <button type="submit" class="btn btn-excel">
-                  <i class="bi bi-file-earmark-excel"></i> 
-                  Exportar a Excel
-              </button>
-            
+        <!--<button type="submit" class="btn btn-excel">
+              <i class="bi bi-file-earmark-excel"></i> 
+              Exportar a Excel
+            </button>
+         -->
           </div>
         </form>
         <div id="resultadoTurnos" class="content"></div>

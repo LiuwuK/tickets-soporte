@@ -16,7 +16,8 @@ if (isset($_GET['id'])) {
                      te.estado AS estado, 
                      te.created_at AS fechaCreacion,
                      us.name AS autorizadoPor,
-                     te.id AS id
+                     te.id AS id,
+                     te.motivo_rechazo AS motivoN
               FROM turnos_extra te
               JOIN sucursales su ON te.sucursal_id = su.id
               JOIN datos_pago dp ON te.datos_bancarios_id = dp.id
@@ -34,4 +35,28 @@ if (isset($_GET['id'])) {
     mysqli_stmt_close($stmt);
 }
 
+if(isset($_POST['approved'])){
+    $id = $_GET['id'];
+    $estado = 'aprobado';
+    $query = "UPDATE turnos_extra 
+                SET estado = ? 
+                WHERE id = ?";
+    $stmt = $con->prepare($query);
+    $stmt->bind_param("si", $estado, $id);
+    $stmt->execute();
+    echo "<script>alert('Turno Aprobado'); location.href='detalle-turno.php?id=$id';</script>";
+}
+if(isset($_POST['denTurno'])){
+    $id = $_GET['id'];
+    $estado = 'rechazado';
+    $motivo = $_POST['motivoR'];
+    $query = "UPDATE turnos_extra 
+                SET estado = ? ,
+                    motivo_rechazo = ?
+                WHERE id = ?";
+    $stmt = $con->prepare($query);
+    $stmt->bind_param("ssi", $estado, $motivo, $id);
+    $stmt->execute();
+    echo "<script>alert('Turno Rechazado'); location.href='detalle-turno.php?id=$id';</script>";
+}
 ?>

@@ -69,7 +69,7 @@ while ($row = mysqli_fetch_assoc($motivoData)) {
 $solicitante = $_SESSION['id'];
 if(isset($_POST['trasladoForm'])){
     $supOrigen = $_POST['supervisor'];
-    $colaborador = $_POST['colaborador'];
+    $colaborador = ucwords(strtolower($_POST['colaborador']));
     $rut = $_POST['rut'];
     $instOrigen = $_POST['instalacion'];
     $jorOrigen = $_POST['jornada'];
@@ -120,7 +120,7 @@ if(isset($_POST['trasladoForm'])){
 
 if(isset($_POST['desvForm'])){
     $supOrigen = $_POST['supervisorEncargado'];
-    $colaborador = $_POST['colaborador'];
+    $colaborador = ucwords(strtolower($_POST['colaborador']));
     $rut = $_POST['rut'];
     $instalacion = $_POST['instalacion'];
     $motivo = $_POST['motivo'];

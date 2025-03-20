@@ -266,7 +266,6 @@ $usRol = $_SESSION['cargo'];
                     <label class="form-label">Supervisor Encargado <span>*</span></label>
                     <p>(Supervisor a cargo de Instalación)</p>
                   </div>
-                  
                   <div >
                       <select name="supervisorEncargado" class="form-select form-select-sm search-form" required>
                         <option value="">Seleccionar</option>

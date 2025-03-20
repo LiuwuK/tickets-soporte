@@ -119,16 +119,55 @@ check_login();
                 <input type="text" name="numCuenta" id="numCuenta" value="<?php echo $row['numCuenta']; ?>" class="form-control form-control-sm " readonly/>
             </div>
           </div>
-    
+          <?php 
+            if(isset($row['motivoN'])){
+              echo "test";
+            }
+          ?>
+          <hr>
+          <div class="form-row">
+            <div class="form-group">
+              <button type="button" class="btn btn-del del-btn den-btn ms-auto" data-bs-toggle="modal" data-bs-target="#denied" data-sup-id="<?php echo $row['id'];?>">Rechazar</button>
+            </div>
+            <div class="form-group">
+            <form method="post" enctype="multipart/form-data">
+              <button class="btn btn-updt btn-acpt" name="approved">Aprobar</button>
+            </form>
+            </div>
+          </div>
+
         </div>
     </div>
   </div>
+<!-- modal eliminar  -->
+<div class="modal fade" id="denied" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deniedLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="deniedLabel">Rechazar turno</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="delForm" method="POST">
+        <div class="modal-body">
+          <label for="motivoR" class="form-label">Motivo del Rechazo</label>
+          <textarea class="form-control form-control-sm" id="motivoR" name="motivoR" rows="4"></textarea>
+          <input type="hidden" name="idDen" id="idDen">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-updt" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" name="denTurno" class="btn pull-right btn-del">Eliminar</button>
+        </div>
+        </form>
+      </div>
+  </div>
+</div>
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <!-- Bootstrap Bundle (con Popper.js) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Scripts propios -->
 <script src="../../assets/js/sidebar.js"></script>
+<script src="../assets/js/detalle-turno.js"></script>
 </body>
 
 </html>

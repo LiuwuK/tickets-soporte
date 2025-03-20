@@ -185,7 +185,7 @@ check_login();
           <?php
             }
             }else{
-              while ($row = mysqli_fetch_assoc($dv)){
+            $row = $dv
           ?>
           <!-- colaborador -->
             <h4 class="mt-3">Datos colaborador</h4>
@@ -243,6 +243,27 @@ check_login();
                 <input type="text" name="motivoEgreso" id="motivoEgreso" value="<?php echo $row['motivoEgreso']; ?>" class="form-control form-control-sm" readonly/>
               </div>
             </div>
+            <?php
+            if($row['motivo'] == 8){
+            ?>
+              <div class="form-row">
+
+                <div class="form-group">
+                <p>Fechas de Ausencia</p>
+                  <ul>
+                  <?php
+                    while ($fecha = mysqli_fetch_assoc($infoAusencia)) {
+                      $fecha = new DateTime($fecha['fecha']);
+                      $fechaF = $fecha->format("d-m-Y");
+                      echo "<li>".$fechaF."</li>";
+                    }
+                  ?>
+                  </ul>
+                </div>
+              </div>
+            <?php
+            }
+            ?>
             <div class="form-row">
               <div class="form-group">
                   <label for="desc" class="form-label">Observación SSPP</labe>
@@ -276,7 +297,6 @@ check_login();
               ?>
             </form>
           <?php
-            }
           } 
           ?>
         
