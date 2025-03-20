@@ -32,21 +32,21 @@ $query = 'SELECT su.nombre AS "instalacion",
             JOIN sucursales su ON (te.sucursal_id = su.id)
             JOIN datos_pago dp ON (te.datos_bancarios_id = dp.id)
             JOIN motivos_gestion mg ON (te.motivo_turno_id = mg.id)
-            JOIN user us ON (te.autorizado_por = us.id) ';
+            JOIN user us ON (te.autorizado_por = us.id)';
 if ($_SESSION['cargo'] == 11){
     $id  = $_SESSION['id'];
-    $query .= "WHERE te.autorizado_por = '$id' ";
+    $query .= " WHERE te.autorizado_por = '$id' ";
 }
 if (isset($_SESSION['deptos']) && is_array($_SESSION['deptos'])) {
     $estados = [
-        10 => "aprobado",
-        2 => "aprobado por remuneraciones",
+        10 => "aprobado"
     ];
 
     $estadoEncontrado = false;
     foreach ($estados as $depto => $estado) {
         if (array_intersect([$depto], $_SESSION['deptos'])) {
-            $query .= "WHERE te.estado = '$estado' ";
+            $query .= "WHERE (te.created_at >= DATE_SUB(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 1 WEEK)
+            AND te.created_at < DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY)) AND te.estado = '$estado' ";
             $estadoEncontrado = true;
             break;
         }

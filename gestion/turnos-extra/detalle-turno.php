@@ -119,23 +119,77 @@ check_login();
                 <input type="text" name="numCuenta" id="numCuenta" value="<?php echo $row['numCuenta']; ?>" class="form-control form-control-sm " readonly/>
             </div>
           </div>
+          <br>
           <?php 
-            if(isset($row['motivoN'])){
-              echo "test";
-            }
+          if(isset($row['motivoN']) && $row['estado'] != "aprobado"){
           ?>
-          <hr>
+          <!-- Datos del pago -->
+          <h4>Informacion General</h4>
+          <hr width="90%" class="mx-auto">
+          
           <div class="form-row">
             <div class="form-group">
-              <button type="button" class="btn btn-del del-btn den-btn ms-auto" data-bs-toggle="modal" data-bs-target="#denied" data-sup-id="<?php echo $row['id'];?>">Rechazar</button>
-            </div>
-            <div class="form-group">
-            <form method="post" enctype="multipart/form-data">
-              <button class="btn btn-updt btn-acpt" name="approved">Aprobar</button>
-            </form>
+              <label for="motivoN" class="form-label">Motivo del rechazo</labe>
+              <textarea class="form-control form-control-sm" id="" name="motivoN" rows="3" readonly><?php echo $row['motivoN'];?></textarea>     
             </div>
           </div>
-
+          <?php
+          if($_SESSION['cargo'] == 11 && is_null($row['justificacion'])){
+          ?>
+          <form method="post" enctype="multipart/form-data">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="justi" class="form-label">Justificación</labe>
+                <textarea class="form-control form-control-sm" id="justi" name="justi" rows="3" required></textarea>     
+              </div>
+            </div>
+            <div class="form-row">
+              <button class="btn btn-updt ms-auto" name="justificar" >Justificar</button>
+            </div>
+          </form>
+          <?php
+          }else{
+          ?>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="justi" class="form-label">Justificación</labe>
+              <textarea class="form-control form-control-sm" id="justi" name="justi" rows="3" readonly><?php echo $row['justificacion'];?></textarea>     
+            </div>
+          </div>
+          <?php
+            }
+          }
+          ?>
+          <hr>
+          <?php
+          if($_SESSION['cargo'] != 11 && $row['estado'] != "aprobado"){
+          ?>
+            <div class="form-row">
+              <div class="form-group">
+                <button type="button" class="btn btn-del del-btn den-btn ms-auto" data-bs-toggle="modal" data-bs-target="#denied" data-sup-id="<?php echo $row['id'];?>">Rechazar</button>
+              </div>
+              <div class="form-group">
+              <form method="post" enctype="multipart/form-data">
+                <button class="btn btn-updt btn-acpt" name="approved">Aprobar</button>
+              </form>
+              </div>
+            </div>
+          <?php
+          }else if (array_intersect([10], $_SESSION['deptos'])){
+          ?>
+            <div class="form-row">
+              <div class="form-group">
+                <button type="button" class="btn btn-del del-btn den-btn ms-auto" data-bs-toggle="modal" data-bs-target="#denied" data-sup-id="<?php echo $row['id'];?>">Rechazar</button>
+              </div>
+              <div class="form-group">
+              <form method="post" enctype="multipart/form-data">
+                <button class="btn btn-updt btn-acpt" name="pago">Aprobar pago</button>
+              </form>
+              </div>
+            </div>
+          <?php  
+          }
+          ?>
         </div>
     </div>
   </div>
@@ -155,7 +209,7 @@ check_login();
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-updt" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" name="denTurno" class="btn pull-right btn-del">Eliminar</button>
+          <button type="submit" name="denTurno" class="btn pull-right btn-del">Rechazar</button>
         </div>
         </form>
       </div>

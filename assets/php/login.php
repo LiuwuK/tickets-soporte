@@ -86,7 +86,7 @@ if (isset($_POST['login'])) {
         }   
     }
 } else if (isset($_POST['registro'])) { 
-    $name = $_POST['name'];
+    $name = ucwords(strtolower($_POST['name']));
     $email = strtolower($_POST['email']);
     $password = $_POST['password'];
     $mobile = $_POST['phone'];

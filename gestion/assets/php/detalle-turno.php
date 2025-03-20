@@ -17,7 +17,8 @@ if (isset($_GET['id'])) {
                      te.created_at AS fechaCreacion,
                      us.name AS autorizadoPor,
                      te.id AS id,
-                     te.motivo_rechazo AS motivoN
+                     te.motivo_rechazo AS motivoN,
+                     te.justificacion AS justificacion
               FROM turnos_extra te
               JOIN sucursales su ON te.sucursal_id = su.id
               JOIN datos_pago dp ON te.datos_bancarios_id = dp.id
@@ -34,7 +35,7 @@ if (isset($_GET['id'])) {
     $row = mysqli_fetch_assoc($result);
     mysqli_stmt_close($stmt);
 }
-
+//aprobar turno
 if(isset($_POST['approved'])){
     $id = $_GET['id'];
     $estado = 'aprobado';
@@ -46,6 +47,20 @@ if(isset($_POST['approved'])){
     $stmt->execute();
     echo "<script>alert('Turno Aprobado'); location.href='detalle-turno.php?id=$id';</script>";
 }
+//aprobar pago del turno
+if(isset($_POST['pago'])){
+    $id = $_GET['id'];
+    $estado = 'pago procesado';
+    $query = "UPDATE turnos_extra 
+                SET estado = ? 
+                WHERE id = ?";
+    $stmt = $con->prepare($query);
+    $stmt->bind_param("si", $estado, $id);
+    $stmt->execute();
+    echo "<script>alert('Turno Aprobado'); location.href='detalle-turno.php?id=$id';</script>";
+}
+
+//rechazar turno
 if(isset($_POST['denTurno'])){
     $id = $_GET['id'];
     $estado = 'rechazado';
@@ -58,5 +73,20 @@ if(isset($_POST['denTurno'])){
     $stmt->bind_param("ssi", $estado, $motivo, $id);
     $stmt->execute();
     echo "<script>alert('Turno Rechazado'); location.href='detalle-turno.php?id=$id';</script>";
+}
+
+//justificacion del turno
+if(isset($_POST['justificar'])){
+    $id = $_GET['id'];
+    $estado = 'pendiente en operaciones';
+    $justificacion = $_POST['justi'];
+    $query = "UPDATE turnos_extra 
+                SET estado = ? ,
+                    justificacion = ?
+                WHERE id = ?";
+    $stmt = $con->prepare($query);
+    $stmt->bind_param("ssi", $estado, $justificacion, $id);
+    $stmt->execute();
+    echo "<script>alert('Turno Justificado'); location.href='detalle-turno.php?id=$id';</script>";
 }
 ?>
