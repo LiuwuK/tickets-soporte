@@ -1,5 +1,5 @@
 <?php
-
+require '../../vendor/autoload.php';
 //obtener estados 
 $query = "SHOW COLUMNS FROM turnos_extra LIKE 'estado'";
 $result = $con->query($query);
@@ -59,4 +59,69 @@ $turnos = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 // Convertir a JSON para JavaScript
 echo "<script>var turnosData = " . json_encode($turnos) . ";</script>";
+
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
+if (isset($_POST['carga'])) {
+    if ($_FILES['file']['error'] == UPLOAD_ERR_OK) {
+        $filePath = $_FILES['file']['tmp_name'];
+        $spreadsheet = IOFactory::load($filePath);
+        $worksheet = $spreadsheet->getActiveSheet();
+        $data = $worksheet->toArray();
+
+        // Preparar consultas
+        $queryEstado = "UPDATE turnos_extra 
+                        SET estado = ? 
+                        WHERE id = ?";
+        $stmtEstado = $con->prepare($queryEstado);
+
+        $queryEstadoYRechazo = "UPDATE turnos_extra 
+                                SET estado = ?,
+                                    motivo_rechazo = ? 
+                                WHERE id = ?";
+        $stmtEstadoYRechazo = $con->prepare($queryEstadoYRechazo);
+
+        if (!$stmtEstado || !$stmtEstadoYRechazo) {
+            die("Error al preparar las consultas: " . $con->error);
+        }
+
+        foreach ($data as $index => $row) {
+            if ($index < 1) continue; // Saltar la primera fila (encabezados)
+
+            // Mostrar datos de la fila (para depuración)
+            echo "<pre>";
+            print_r($row);
+            echo "</pre>";
+
+            // Obtener datos de la fila
+            $id = $row[0] ?? null;
+            $estado = ucwords(strtolower($row[2] ?? ''));
+            $motivo_rechazo = $row[16] ?? null;
+
+            if (empty($id)) {
+                echo "Error: ID vacío en la fila $index.<br>";
+                continue;
+            }
+            if (empty($estado)) {
+                echo "Error: Estado vacío en la fila $index.<br>";
+                continue;
+            }
+
+            if ($motivo_rechazo && strtolower($estado) == 'rechazado') {
+                $stmtEstadoYRechazo->bind_param("ssi", $estado, $motivo_rechazo, $id);
+                if (!$stmtEstadoYRechazo->execute()) {
+                    echo "Error al actualizar fila $index: ".$stmtEstadoYRechazo->error."<br>";
+                }
+            } else {
+                $stmtEstado->bind_param("si", $estado, $id);
+                if (!$stmtEstado->execute()) {
+                    echo "Error al actualizar fila $index: ".$stmtUpdateEstado->error."<br>";
+                }
+            }
+        }
+        echo "<script>alert('Turnos actualizados correctamente'); location.href='ver-turnos.php';</script>";
+    } else {
+        echo "Error al subir el archivo.";
+    }
+}
 ?>
