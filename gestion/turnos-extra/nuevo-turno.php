@@ -178,7 +178,10 @@ check_login();
                 <input class="mb-3" type="file" name="file" required>
             </div>
             <div class="modal-footer form-row-modal d-flex justify-content-end">
-              <button class="btn btn-updt" name="carga" type="submit">Cargar Datos</button>
+                <a href="../assets/excel-ejemplos/turnos.xlsm" download class="btn btn-default">
+                    Excel Ejemplo
+                </a> 
+                <button class="btn btn-updt" name="carga" type="submit">Cargar Datos</button>
             </div>
         </form> 
       </div>

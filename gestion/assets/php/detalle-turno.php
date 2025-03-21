@@ -18,7 +18,10 @@ if (isset($_GET['id'])) {
                      us.name AS autorizadoPor,
                      te.id AS id,
                      te.motivo_rechazo AS motivoN,
-                     te.justificacion AS justificacion
+                     te.persona_motivo AS persona_motivo,
+                     te.contratado AS contratado,
+                     te.justificacion AS justificacion,
+                     te.nacionalidad AS nacionalidad
               FROM turnos_extra te
               JOIN sucursales su ON te.sucursal_id = su.id
               JOIN datos_pago dp ON te.datos_bancarios_id = dp.id
@@ -40,7 +43,9 @@ if(isset($_POST['approved'])){
     $id = $_GET['id'];
     $estado = 'aprobado';
     $query = "UPDATE turnos_extra 
-                SET estado = ? 
+                SET estado = ?,
+                    motivo_rechazo = null,
+                    justificacion = null
                 WHERE id = ?";
     $stmt = $con->prepare($query);
     $stmt->bind_param("si", $estado, $id);

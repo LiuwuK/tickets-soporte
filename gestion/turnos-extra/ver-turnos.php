@@ -43,7 +43,7 @@ check_login();
               <i class="bi bi-arrow-left" ></i>
           </button>
         </div> <br><br>
-        <form method="GET" action="assets/php/exportar-turnos.php" class="">
+        <form method="GET" action="../assets/php/exportar-turnos.php" class="">
           <div class="filtros d-flex justify-content-between form-f">
             <div class="d-flex justify-content-arround mb-3">
               <div class="all-fil">
@@ -70,11 +70,10 @@ check_login();
                 <input name="fecha_fin" type="date" class="form-control form-control-sm fil" id="filtroFechaFin">
               </div>
             </div>
-        <!--<button type="submit" class="btn btn-excel">
+            <button type="submit" class="btn btn-excel">
               <i class="bi bi-file-earmark-excel"></i> 
               Exportar a Excel
             </button>
-         -->
           </div>
         </form>
         <div id="resultadoTurnos" class="content"></div>

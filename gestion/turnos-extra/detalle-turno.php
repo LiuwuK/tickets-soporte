@@ -62,6 +62,12 @@ check_login();
               <input type="text" name="rutC" id="rutC" value="<?php echo $row['rut']; ?>" class="form-control form-control-sm " readonly/>
             </div>
           </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="nacionalidad" >Nacionalidad</label>
+              <input type="text" name="nacionalidad" id="nacionalidad" value="<?php echo $row['nacionalidad']; ?>" class="form-control form-control-sm " readonly/>
+            </div>
+          </div>
           <br>
           <!-- DATOS GENERALES -->
           <h4>Datos del Turno</h4>
@@ -92,6 +98,17 @@ check_login();
             <div class="form-group">
               <label class="form-label" for="motivo" >Motivo</label>
               <input type="text" name="motivo" id="motivo" value="<?php echo $row['motivo']; ?>" class="form-control form-control-sm " readonly/>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="personaMotivo" >Persona del Motivo</label>
+              <input type="text" name="personaMotivo" id="personaMotivo" value="<?php echo $row['persona_motivo']; ?>" class="form-control form-control-sm " readonly/>
+            </div>
+          </div>
+
+          <div class="form-row mt-3">
+            <div class="form-group">
+              <label class="form-label" for="contratado" >Contratado</label>
+              <input type="text" name="contratado" id="contratado" value="<?php echo ($row['contratado'] == 1) ? "SI" : "NO"; ?> " class="form-control form-control-sm " readonly/>
             </div>
             <div class="form-group">
               <label class="form-label" for="autorizadoPor" >Autorizado Por</label>
