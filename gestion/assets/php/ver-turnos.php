@@ -61,7 +61,7 @@ $turnos = mysqli_fetch_all($result, MYSQLI_ASSOC);
 echo "<script>var turnosData = " . json_encode($turnos) . ";</script>";
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
-
+//Actualizar turnos masivamente 
 if (isset($_POST['carga'])) {
     if ($_FILES['file']['error'] == UPLOAD_ERR_OK) {
         $filePath = $_FILES['file']['tmp_name'];
