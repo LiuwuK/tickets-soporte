@@ -125,10 +125,10 @@ if (isset($_POST['carga'])) {
 
         foreach ($data as $index => $row) {
             if ($index < 2) continue; // Saltar las dos primeras filas
-            echo "<pre>";
+            /*echo "<pre>";
             print_r($row);
             echo "</pre>";
-
+            */
             // Datos bancarios
             $banco = $row[13] ?? null;
             $rutNum = $row[14] ?? null;
@@ -189,11 +189,11 @@ if (isset($_POST['carga'])) {
                 $bancoID = $stmtBanco->insert_id;
             }
             $stmtCheck->free_result(); 
-
+            /* Ver info por pantalla
             echo "<pre>";
             var_dump($instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoID, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             echo "</pre>";
-
+            */
             // Insertar en turnos_extra
             $stmt->bind_param("isiissiiisis", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoID, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             if (!$stmt->execute()) {
