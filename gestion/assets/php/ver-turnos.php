@@ -89,10 +89,11 @@ if (isset($_POST['carga'])) {
             if ($index < 1) continue; // Saltar la primera fila (encabezados)
 
             // Mostrar datos de la fila (para depuración)
+            /*
             echo "<pre>";
             print_r($row);
             echo "</pre>";
-
+            */
             // Obtener datos de la fila
             $id = $row[0] ?? null;
             $estado = ucwords(strtolower($row[2] ?? ''));
