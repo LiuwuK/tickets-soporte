@@ -154,7 +154,7 @@ foreach ($columnWidths as $col => $width) {
 $fecha = date('dmY');
 // Generar el archivo
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment; filename="Nomina_de_pago_'.$fecha.'.xlsx"');
+header('Content-Disposition: attachment; filename="Nomina_de_pago_'.$fecha.'_.xlsx"');
 header('Cache-Control: max-age=0');
 
 $writer = new Xlsx($spreadsheet);
