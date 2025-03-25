@@ -80,8 +80,19 @@ check_login();
                   Exportar Turnos
                 </button>
                 <button class="btn btn-excel" type="button"  data-bs-toggle="modal" data-bs-target="#newSuper">
+                <i class="bi bi-file-earmark-excel"></i> 
                   Actualizar turnos
                 </button>
+                <?php
+                  if (array_intersect([10], $_SESSION['deptos'])) {
+                ?>    
+                  <button type="button" class="btn btn-excel" onclick="window.location.href='../assets/php/exportar-pagos.php';">
+                    <i class="bi bi-file-earmark-excel"></i> 
+                    Exportar Pagos
+                  </button>
+                <?php
+                  }
+                ?>    
               </div>
             <?php
               }

@@ -125,10 +125,11 @@ if (isset($_POST['carga'])) {
 
         foreach ($data as $index => $row) {
             if ($index < 2) continue; // Saltar las dos primeras filas
+            /*
             echo "<pre>";
             print_r($row);
             echo "</pre>";
-
+            */
             // Datos bancarios
             $banco = $row[13] ?? null;
             $rutNum = $row[14] ?? null;
@@ -145,8 +146,7 @@ if (isset($_POST['carga'])) {
             $fecha_obj = DateTime::createFromFormat('m/d/Y', $fecha_turno);
             $fecha = $fecha_obj ? $fecha_obj->format('Y-m-d') : null;
             $horas = $row[7];
-            echo "FECHA FORMATEADA :".$fecha;
-            die();
+
             // Limpiar el monto
             $monto = floatval(str_replace(['$', ','], '', $row[8]));
             $rut = $row[9] . '-' . $row[10];
