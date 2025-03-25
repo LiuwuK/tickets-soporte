@@ -142,7 +142,7 @@ if (isset($_POST['carga'])) {
             $instalacion = $row[2];
             $fecha_turno = $row[5];        
             // Convertir fecha al formato correcto
-            $fecha_obj = DateTime::createFromFormat('j/n/Y', $fecha_turno);
+            $fecha_obj = DateTime::createFromFormat('d/m/Y', $fecha_turno);
             $fecha = $fecha_obj ? $fecha_obj->format('Y-m-d') : null;
             $horas = $row[7];
             
@@ -205,7 +205,5 @@ if (isset($_POST['carga'])) {
         echo "Error al subir el archivo.";
     }
 }
-
-
 
 ?>
