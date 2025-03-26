@@ -40,7 +40,7 @@ check_login();
     <?php include("../leftbar-test.php"); ?>
         <div class="content">
             <div class="page-title">
-                <h2>Gestión Clientes</h2>
+                <h2>Gestión</h2>
             </div><br><br>
 
             <div class="content-body mx-auto col-xl-10">

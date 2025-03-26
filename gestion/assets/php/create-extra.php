@@ -1,5 +1,6 @@
 <?php
 require '../../vendor/autoload.php';
+
 $query = "SELECT * FROM sucursales";
 $sucursalesData = $con->prepare($query);
 $sucursalesData->execute();
@@ -7,6 +8,16 @@ $sucursalData = $sucursalesData->get_result();
 while ($row = mysqli_fetch_assoc($sucursalData)) {
     $inst[] = $row; 
 }
+
+//obtener bancos
+$query = "SELECT * FROM bancos";
+$bancosData = $con->prepare($query);
+$bancosData->execute();
+$bancodata = $bancosData->get_result();
+while ($row = mysqli_fetch_assoc($bancodata)) {
+    $bancos[] = $row; 
+}
+
 //motivos turnos extra
 $query = "SELECT * 
             FROM motivos_gestion
@@ -54,10 +65,11 @@ if(isset($_POST['newExtra'])){
     $autorizado = $_SESSION['id'];
 
     $query = "INSERT INTO turnos_extra (sucursal_id, fecha_turno, horas_cubiertas, monto, nombre_colaborador, rut, datos_bancarios_id,
-                                        motivo_turno_id, autorizado_por)
-                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                                        motivo_turno_id, autorizado_por, persona_motivo, contratado, nacionalidad)
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $con->prepare($query);
-    $stmt->bind_param("isiissiii", $instalacion, $fecha_turno, $horas, $monto, $colaborador, $rut, $bancoID, $motivo, $autorizado);
+    $stmt->bind_param("isiissiiisis", $instalacion, $fecha_turno, $horas, $monto, $colaborador, $rut, $bancoID, $motivo, 
+                        $autorizado);
     $stmt->execute();
     $bancoID = $stmt->insert_id;
     $stmt->close();
@@ -69,7 +81,6 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 function is_empty($value) {
     return $value === null || trim($value) === '';
 }
-// Habilitar reporting de errores
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 

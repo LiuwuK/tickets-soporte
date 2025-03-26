@@ -100,7 +100,10 @@ check_login();
                             </div>
                         </div>
                     </div>
-
+                
+                    <div class="form-row mb-3">
+                    <h4>Datos del Colaborador</h4>
+                    </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="nombre_colaborador" class="form-label">Nombre del Colaborador <span>*</span></label>
@@ -113,6 +116,14 @@ check_login();
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
+                            <label for="contratado" class="form-label">Colaborador Contratado? <span>*</span></label>
+                            <select name="contratado" id="contratado" class="form-select form-select-sm" required>
+                                <option value="">Seleccionar</option>
+                                <option value="1">Si</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
                             <label for="motivo_turno" class="form-label">Motivo del Turno <span>*</span></label>
                             <select name="motivo_turno" id="motivo_turno" class="form-select form-select-sm" required>
                                 <option value="">Seleccione un motivo</option>
@@ -123,7 +134,16 @@ check_login();
                                 ?>
                             </select>
                         </div>
-
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="nacionalidad" class="form-label">Nacionalidad <span>*</span></label>
+                            <select name="nacionalidad" id="nacionalidad" class="form-select form-select-sm" required>
+                                <option value="">Seleccionar</option>
+                                <option value="chileno">Chileno</option>
+                                <option value="extranjero">Extranjero</option>
+                            </select>
+                        </div>
                         <div class="form-group col-md-6">
                             <label for="autorizado_por" class="form-label">Autorizado por <span>*</span></label>
                             <input type="text" class="form-control form-control-sm"  name="autorizado_por" value="<?php echo $_SESSION['name'];?>" readonly>
@@ -136,9 +156,15 @@ check_login();
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
-
-                            <label for="banco" class="form-label">Banco <span>*</span></label>
-                            <input type="text" name="banco" id="banco" class="form-control form-control-sm" required>   
+                            <label for="banco" class="form-label">Banco<span>*</span></label>
+                            <select name="banco" id="banco" class="form-select form-select-sm" required>
+                                <option value="">Seleccione un Banco</option>
+                                <?php
+                                foreach ($bancos AS $row) {
+                                    echo "<option value=".$row['id'].">".$row['nombre_banco'] ."</option>";
+                                };
+                                ?>
+                            </select>
                         </div>
                         <div class="form-group col-md-6">
                             <div class="d-flex msg">
