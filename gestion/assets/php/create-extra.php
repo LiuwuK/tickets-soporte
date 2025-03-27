@@ -1,6 +1,6 @@
 <?php
 require '../../vendor/autoload.php';
-
+date_default_timezone_set('America/Santiago'); 
 $query = "SELECT * FROM sucursales";
 $sucursalesData = $con->prepare($query);
 $sucursalesData->execute();

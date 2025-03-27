@@ -68,8 +68,8 @@ if(!empty($traslados)){
         $mail->clearAddresses();
         $mail->setFrom('stsafeteck@gmail.com', 'Traslados');
         $destinatarios = [
-            'fnorton@gruposafeteck.com' => 'Usuario',
-            'fponce@gruposaeteck.com' => 'Usuario',
+            'fnorton@gruposafeteck.com' => 'Supervisor',
+            'fponce@gruposafeteck.com' => 'Usuario',
             'fsilva@gruposafeteck.com' => 'Usuario',
             'kcarvajal@gruposafeteck.com' => 'Usuario',
             'mserrano@gruposafeteck.com' => 'Usuario',
