@@ -9,7 +9,7 @@ if (isset($_GET['id'])) {
                      te.monto AS monto,
                      te.nombre_colaborador AS colaborador, 
                      te.rut AS rut,  
-                     dp.banco AS banco, 
+                     bc.nombre_banco AS banco, 
                      CONCAT(dp.rut_cta, "-", dp.digito_verificador) AS RUTcta, 
                      dp.numero_cuenta AS numCuenta,
                      mg.motivo AS motivo, 
@@ -25,6 +25,7 @@ if (isset($_GET['id'])) {
               FROM turnos_extra te
               JOIN sucursales su ON te.sucursal_id = su.id
               JOIN datos_pago dp ON te.datos_bancarios_id = dp.id
+              JOIN bancos bc ON dp.banco = bc.id
               JOIN motivos_gestion mg ON te.motivo_turno_id = mg.id
               JOIN `user` us ON te.autorizado_por = us.id
               WHERE te.id = ?';

@@ -116,7 +116,7 @@ $query = "
         te.nombre_colaborador AS colaborador, 
         te.rut AS rut,
         te.nacionalidad AS nacionalidad,  
-        dp.banco AS banco, 
+        bc.nombre_banco AS banco, 
         CONCAT(IFNULL(dp.rut_cta, ''), '-', IFNULL(dp.digito_verificador, '')) AS RUTcta, 
         dp.numero_cuenta AS numCuenta,
         mg.motivo AS motivo,
@@ -127,6 +127,7 @@ $query = "
     FROM turnos_extra te
     JOIN sucursales su ON te.sucursal_id = su.id
     JOIN datos_pago dp ON te.datos_bancarios_id = dp.id
+    JOIN bancos bc ON dp.banco = bc.id
     JOIN motivos_gestion mg ON te.motivo_turno_id = mg.id
     JOIN `user` us ON te.autorizado_por = us.id
     $where

@@ -106,7 +106,7 @@ $query = "
     SELECT
         '63320975' AS cuenta_cargo,
         dp.numero_cuenta AS numCuenta,
-        dp.banco AS banco, 
+        bc.codigo AS banco, 
         dp.rut_cta AS rut_cuenta,
         dp.digito_verificador AS rut_dv,
         te.monto AS monto,
@@ -119,6 +119,7 @@ $query = "
     FROM turnos_extra te
     JOIN sucursales su ON te.sucursal_id = su.id
     JOIN datos_pago dp ON te.datos_bancarios_id = dp.id
+    JOIN bancos bc ON bc.id = dp.banco
     JOIN `user` us ON te.autorizado_por = us.id
     $where
     ORDER BY te.created_at DESC

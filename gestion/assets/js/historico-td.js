@@ -85,10 +85,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                     <div class="h-body">
                         <p>Fecha: ${resultadoFinal}</p>
-                        <p>Tipo: ${item.tipo}</p>
+                        <p>Tipo: ${item.tipo.charAt(0).toUpperCase() + item.tipo.slice(1).toLowerCase()}</p>
                         <p>Creado por: ${item.solicitante}</p>
-                        <p>Observación SSPP: ${item.observacion ? item.observacion : 'No hay observación'}</p>
-                        <p>Observación RRHH: ${item.obs_rrhh ? item.obs_rrhh : 'No hay observación'}</p>
+                        <p>Observación SSPP: ${item.observacion ? item.observacion.charAt(0).toUpperCase() +
+                            item.observacion.slice(1).toLowerCase() : 'No hay observación'}</p>
+                        <p>Observación RRHH: ${item.observacion ? item.observacion.charAt(0).toUpperCase() +
+                            item.observacion.slice(1).toLowerCase() : 'No hay observación'}</p>
                     </div>
                 </div>
             `;

@@ -49,7 +49,7 @@ if(isset($_POST['newExtra'])){
         //Insertar datos bancarios
         $queryInsert = "INSERT INTO datos_pago (banco, rut_cta, digito_verificador, numero_cuenta) VALUES (?, ?, ?, ?)";
         $stmtInsert = $con->prepare($queryInsert);
-        $stmtInsert->bind_param("ssss", $banco, $rutNum, $dv, $numCta);
+        $stmtInsert->bind_param("isss", $banco, $rutNum, $dv, $numCta);
         $stmtInsert->execute();
         $bancoID = $stmtInsert->insert_id; // Obtener el ID recién insertado
         $stmtInsert->close();
@@ -63,9 +63,9 @@ if(isset($_POST['newExtra'])){
     $rut = $_POST['rutCta'];
     $motivo = $_POST['motivo_turno'];
     $autorizado = $_SESSION['id'];
-    $persona_motivo = $_SESSION['persona_motivo'];
-    $contratado = $_SESSION['contratado'];
-    $nacionalidad = $_SESSION['nacionalidad'];
+    $persona_motivo = $_POST['persona_motivo'];
+    $contratado = $_POST['contratado'];
+    $nacionalidad = $_POST['nacionalidad'];
 
     $query = "INSERT INTO turnos_extra (sucursal_id, fecha_turno, horas_cubiertas, monto, nombre_colaborador, rut, datos_bancarios_id,
                                         motivo_turno_id, autorizado_por, persona_motivo, contratado, nacionalidad)
@@ -99,31 +99,39 @@ if (isset($_POST['carga'])) {
             die("Error de conexión: " . mysqli_connect_error());
         }
 
-        // Preparar queries
-        $queryCheck = "SELECT id FROM datos_pago WHERE banco = ? AND rut_cta = ? AND digito_verificador = ? AND numero_cuenta = ?";
-        $stmtCheck = $con->prepare($queryCheck);
+        // Preparar consultas
+        $queryBanco = "SELECT id FROM bancos WHERE nombre_banco = ?";
+        $stmtBanco = $con->prepare($queryBanco);
+        if (!$stmtBanco) {
+            die("Error al preparar la consulta de bancos: " . $con->error);
+        }
 
+        $queryCheck = "SELECT dp.id, bc.nombre_banco  
+                        FROM datos_pago dp
+                        JOIN bancos bc ON(bc.id = dp.banco)
+                        WHERE bc.nombre_banco = ? 
+                            AND dp.rut_cta = ? 
+                            AND dp.digito_verificador = ? 
+                            AND dp.numero_cuenta = ?";
+        $stmtCheck = $con->prepare($queryCheck);
         if (!$stmtCheck) {
             die("Error al preparar la consulta de verificación: " . $con->error);
         }
 
-        $queryBanco = "INSERT INTO datos_pago (banco, rut_cta, digito_verificador, numero_cuenta) VALUES (?, ?, ?, ?)";
-        $stmtBanco = $con->prepare($queryBanco);
-
-        if (!$stmtBanco) {
+        $queryDatosPago = "INSERT INTO datos_pago (banco, rut_cta, digito_verificador, numero_cuenta) VALUES (?, ?, ?, ?)";
+        $stmtDatosPago = $con->prepare($queryDatosPago);
+        if (!$stmtDatosPago) {
             die("Error al preparar la consulta de inserción de banco: " . $con->error);
         }
 
         $query_s = "SELECT id FROM sucursales WHERE nombre = ?";
         $stmt_s = $con->prepare($query_s);
-
         if (!$stmt_s) {
             die("Error al preparar la consulta de sucursales: " . $con->error);
         }
 
         $query_m = "SELECT id FROM motivos_gestion WHERE motivo = ?";
         $stmt_m = $con->prepare($query_m);
-
         if (!$stmt_m) {
             die("Error al preparar la consulta de motivos: " . $con->error);
         }
@@ -155,10 +163,36 @@ if (isset($_POST['carga'])) {
             }
             //datos instalacion
             $instalacion = $row[2];
-            $fecha_turno = $row[5];        
-            // Convertir fecha al formato correcto
-            $fecha_obj = DateTime::createFromFormat('m/d/Y', $fecha_turno);
-            $fecha = $fecha_obj ? $fecha_obj->format('Y-m-d') : null;
+            $fecha_turno = $row[5];  // Asumiendo que la fecha está en la columna 5
+
+            // Convertir fecha a Y-m-d 
+            $fecha_obj = DateTime::createFromFormat('m/d/Y', $fecha_turno) ?: 
+                        DateTime::createFromFormat('Y-m-d', $fecha_turno) ?: 
+                        new DateTime($fecha_turno);
+
+            if (!$fecha_obj) {
+                continue; 
+            }
+
+            $fechaTurnoFormateada = $fecha_obj->format('Y-m-d');
+            // validar fecha turno (SOLO DIA ACTUAL HASTA LAS 10:00 DEL DIA SIGUIENTE)
+            $horaActual = (int)date('H');
+            $fechaHoy = date('Y-m-d');
+            $fechaAyer = date('Y-m-d', strtotime('-1 day'));
+
+            if ($horaActual < 10) {
+                if ($fechaTurnoFormateada != $fechaAyer && $fechaTurnoFormateada != $fechaHoy) {
+                    echo "TURNO NO VALIDO1";
+                    continue;
+                }
+            } else {
+                if ($fechaTurnoFormateada != $fechaHoy) {
+                    echo "TURNO NO VALIDO2";
+                    continue;
+                }
+            }
+
+            $fecha = $fechaTurnoFormateada;  
             $horas = $row[7];
 
             // Limpiar el monto
@@ -194,23 +228,33 @@ if (isset($_POST['carga'])) {
             $stmtCheck->bind_param("ssss", $banco, $rutNum, $dv, $numCta);
             $stmtCheck->execute();
             $stmtCheck->store_result();
-            $stmtCheck->bind_result($bancoID);
+            $stmtCheck->bind_result($bancoId, $bancoNombre);
             $stmtCheck->fetch();
-
             if (!$stmtCheck->num_rows) {
                 // Insertar datos bancarios si no existen
-                $stmtBanco->bind_param("ssss", $banco, $rutNum, $dv, $numCta);
+                //obtengo el id del banco
+                $stmtBanco->bind_param("s", $banco);
                 $stmtBanco->execute();
-                $bancoID = $stmtBanco->insert_id;
+                $stmtBanco->bind_result($idBanco);
+                $stmtBanco->fetch();
+                $stmtBanco->free_result();
+                
+                if (!$idBanco) {
+                    // Banco no encontrado, manejar error
+                    continue;
+                }
+                $stmtDatosPago->bind_param("isss", $idBanco, $rutNum, $dv, $numCta);
+                $stmtDatosPago->execute();
+                $bancoId = $stmtDatosPago->insert_id;
             }
             $stmtCheck->free_result(); 
-            /* Ver info por pantalla
+            //Ver info por pantalla
             echo "<pre>";
             var_dump($instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoID, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             echo "</pre>";
-            */
+            
             // Insertar en turnos_extra
-            $stmt->bind_param("isiissiiisis", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoID, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
+            $stmt->bind_param("isiissiiisis", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             if (!$stmt->execute()) {
                 die("Error al ejecutar la consulta de inserción de turnos: " . $stmt->error);
             }

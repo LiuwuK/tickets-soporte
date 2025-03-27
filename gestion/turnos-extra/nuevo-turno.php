@@ -3,7 +3,7 @@ session_start();
 include("../../checklogin.php");
 include BASE_PATH . 'dbconnection.php';
 include("../assets/php/create-extra.php");
-
+date_default_timezone_set('America/Santiago'); 
 check_login();
 ?>
 <!DOCTYPE html>
@@ -83,7 +83,14 @@ check_login();
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="fecha_turno" class="form-label">Fecha del Turno <span>*</span></label>
-                            <input type="date" name="fecha_turno" id="fecha_turno" class="form-control form-control-sm" required min="<?php echo date('Y-m-d'); ?>">
+                            <input type="date" name="fecha_turno" id="fecha_turno" class="form-control form-control-sm" 
+                            required 
+                            min="<?php 
+                                $horaActual = (int)date('H');
+                                echo ($horaActual < 10) ? date('Y-m-d', strtotime('-1 day')) : date('Y-m-d');
+                            ?>" 
+                            max="<?php echo date('Y-m-d'); ?>"
+                            value="<?php echo date('Y-m-d'); ?>">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="horas_cubiertas" class="form-label">Hora Cubiertas <span>*</span></label>
