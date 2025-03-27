@@ -20,7 +20,10 @@ $filtrosTraslados = [];
 $filtrosDesvinculaciones = [];
 
 // Filtro por fecha
-if (!empty($fecha_inicio) && !empty($fecha_fin)) {
+if (!empty($fecha_inicio)) {
+    if(empty($fecha_fin)){
+        $fecha_fin = date('Y-m-d');
+    }
     $filtrosTraslados[] = "tr.fecha_registro BETWEEN '$fecha_inicio' AND '$fecha_fin'";
     $filtrosDesvinculaciones[] = "de.fecha_registro BETWEEN '$fecha_inicio' AND '$fecha_fin'";
 }

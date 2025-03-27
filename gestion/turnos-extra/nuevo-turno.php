@@ -124,6 +124,16 @@ check_login();
                             </select>
                         </div>
                         <div class="form-group col-md-6">
+                            <label for="nacionalidad" class="form-label">Nacionalidad <span>*</span></label>
+                            <select name="nacionalidad" id="nacionalidad" class="form-select form-select-sm" required>
+                                <option value="">Seleccionar</option>
+                                <option value="chileno">Chileno</option>
+                                <option value="extranjero">Extranjero</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
                             <label for="motivo_turno" class="form-label">Motivo del Turno <span>*</span></label>
                             <select name="motivo_turno" id="motivo_turno" class="form-select form-select-sm" required>
                                 <option value="">Seleccione un motivo</option>
@@ -134,16 +144,12 @@ check_login();
                                 ?>
                             </select>
                         </div>
+                        <div class="form-group col-md-6">
+                            <label for="persona_motivo" class="form-label">Persona del Motivo <span>*</span></label>
+                            <input type="text" class="form-control form-control-sm"  name="persona_motivo" >
+                        </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="nacionalidad" class="form-label">Nacionalidad <span>*</span></label>
-                            <select name="nacionalidad" id="nacionalidad" class="form-select form-select-sm" required>
-                                <option value="">Seleccionar</option>
-                                <option value="chileno">Chileno</option>
-                                <option value="extranjero">Extranjero</option>
-                            </select>
-                        </div>
                         <div class="form-group col-md-6">
                             <label for="autorizado_por" class="form-label">Autorizado por <span>*</span></label>
                             <input type="text" class="form-control form-control-sm"  name="autorizado_por" value="<?php echo $_SESSION['name'];?>" readonly>

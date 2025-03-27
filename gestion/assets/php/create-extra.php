@@ -40,7 +40,7 @@ if(isset($_POST['newExtra'])){
     // Verificar si ya existe
     $queryCheck = "SELECT id FROM datos_pago WHERE banco = ? AND rut_cta = ? AND digito_verificador = ? AND numero_cuenta = ?";
     $stmtCheck = $con->prepare($queryCheck);
-    $stmtCheck->bind_param("ssss", $banco, $rutNum, $dv, $numCta);
+    $stmtCheck->bind_param("isss", $banco, $rutNum, $dv, $numCta);
     $stmtCheck->execute();
     $stmtCheck->bind_result($bancoID);
     $stmtCheck->fetch();
@@ -63,13 +63,16 @@ if(isset($_POST['newExtra'])){
     $rut = $_POST['rutCta'];
     $motivo = $_POST['motivo_turno'];
     $autorizado = $_SESSION['id'];
+    $persona_motivo = $_SESSION['persona_motivo'];
+    $contratado = $_SESSION['contratado'];
+    $nacionalidad = $_SESSION['nacionalidad'];
 
     $query = "INSERT INTO turnos_extra (sucursal_id, fecha_turno, horas_cubiertas, monto, nombre_colaborador, rut, datos_bancarios_id,
                                         motivo_turno_id, autorizado_por, persona_motivo, contratado, nacionalidad)
                 VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $con->prepare($query);
     $stmt->bind_param("isiissiiisis", $instalacion, $fecha_turno, $horas, $monto, $colaborador, $rut, $bancoID, $motivo, 
-                        $autorizado);
+                        $autorizado, $persona_motivo, $contratado, $nacionalidad);
     $stmt->execute();
     $bancoID = $stmt->insert_id;
     $stmt->close();
