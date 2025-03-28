@@ -180,18 +180,6 @@ if (isset($_POST['carga'])) {
             $fechaHoy = date('Y-m-d');
             $fechaAyer = date('Y-m-d', strtotime('-1 day'));
 
-            if ($horaActual < 10) {
-                if ($fechaTurnoFormateada != $fechaAyer && $fechaTurnoFormateada != $fechaHoy) {
-                    echo "TURNO NO VALIDO1";
-                    continue;
-                }
-            } else {
-                if ($fechaTurnoFormateada != $fechaHoy) {
-                    echo "TURNO NO VALIDO2";
-                    continue;
-                }
-            }
-
             $fecha = $fechaTurnoFormateada;  
             $horas = $row[7];
 
