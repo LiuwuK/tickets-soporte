@@ -144,7 +144,9 @@ if (isset($_POST['carga'])) {
         if (!$stmt) {
             die("Error al preparar la consulta de inserción de turnos: " . $con->error);
         }
-
+        //info fechas no validas
+        $count = 0;
+        $fechasInvalidas = [];
         foreach ($data as $index => $row) {
             if ($index < 2) continue; // Saltar las dos primeras filas
             /*
@@ -179,6 +181,19 @@ if (isset($_POST['carga'])) {
             $horaActual = (int)date('H');
             $fechaHoy = date('Y-m-d');
             $fechaAyer = date('Y-m-d', strtotime('-1 day'));
+            if ($horaActual < 10) {
+                if ($fechaTurnoFormateada != $fechaAyer && $fechaTurnoFormateada != $fechaHoy) {
+                    $count = $count + 1;
+                    $fechasInvalidas[] = $fechaTurnoFormateada;
+                    continue;
+                }
+            } else {
+                if ($fechaTurnoFormateada != $fechaHoy) {
+                    $count = $count + 1;
+                    $fechasInvalidas[] = $fechaTurnoFormateada;
+                    continue;
+                }
+            }
 
             $fecha = $fechaTurnoFormateada;  
             $horas = $row[7];
@@ -247,7 +262,14 @@ if (isset($_POST['carga'])) {
                 die("Error al ejecutar la consulta de inserción de turnos: " . $stmt->error);
             }
         }
+       if($count > 0 ){
+        foreach($fechasInvalidas AS $fechas){
+            echo "El turno con Fecha ".$fechas." no corresponde al dia de hoy <br>";    
+        }
+        echo "<script>alert('Error al Insertar turnos, Algunos no corresponden al dia de hoy'); location.href='nuevo-turno.php';</script>";
+       }else{
         echo "<script>alert('Turnos insertados correctamente'); location.href='nuevo-turno.php';</script>";
+       }
     } else {
         echo "Error al subir el archivo.";
     }

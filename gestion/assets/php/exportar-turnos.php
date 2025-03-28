@@ -60,7 +60,7 @@ $styleColor3 = [
 
 // Encabezados de la tabla
 $headers = [
-    'Turno ID', 'Fecha de Subida', 'Estado', 'Autorizado Por', 'Instalación',
+    'Turno ID', 'Fecha de Subida', 'Estado', 'Autorizado Por', 'Instalación','Supervisor',
     'Fecha del Turno (DIA-MES-AÑO)', 'Horas cubiertas', 'Monto',
     'Nombre y Apellido', 'RUT', 'Nacionalidad',
     'Banco', 'RUT Cuenta', 'Número de cuenta',
@@ -69,15 +69,11 @@ $headers = [
 ];
 
 // Aplicar estilos a los encabezados
-$sheet->fromArray([$headers], NULL, 'A1');
-// Aplicar estilo Color 1 a las primeras 8 columnas (A-H)
-$sheet->getStyle('A1:H1')->applyFromArray($styleColor1);
-// Aplicar estilo Color 2 a las siguientes 3 columnas (I-K)
-$sheet->getStyle('I1:K1')->applyFromArray($styleColor2);
-// Aplicar estilo Color 3 a las siguientes 3 columnas (L-N)
-$sheet->getStyle('L1:N1')->applyFromArray($styleColor3);
-// Aplicar estilo Color 1 a las últimas 5 columnas (O-S)
-$sheet->getStyle('O1:S1')->applyFromArray($styleColor1);
+$sheet->fromArray([$headers], NULL, 'A1'); 
+$sheet->getStyle('A1:I1')->applyFromArray($styleColor1);
+$sheet->getStyle('J1:L1')->applyFromArray($styleColor2);
+$sheet->getStyle('M1:O1')->applyFromArray($styleColor3); 
+$sheet->getStyle('P1:T1')->applyFromArray($styleColor1);
 
 // Capturar filtros
 $fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : '';
@@ -110,6 +106,7 @@ $query = "
         te.estado AS estado, 
         us.name AS autorizadoPor,
         su.nombre AS instalacion,
+        sup.nombre_supervisor AS supervisor,
         te.fecha_turno AS fechaTurno, 
         te.horas_cubiertas AS horas, 
         te.monto AS monto,
@@ -126,6 +123,7 @@ $query = "
         te.contratado AS contratado
     FROM turnos_extra te
     JOIN sucursales su ON te.sucursal_id = su.id
+    JOIN supervisores sup ON su.supervisor_id = sup.id
     JOIN datos_pago dp ON te.datos_bancarios_id = dp.id
     JOIN bancos bc ON dp.banco = bc.id
     JOIN motivos_gestion mg ON te.motivo_turno_id = mg.id

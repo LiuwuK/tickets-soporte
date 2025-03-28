@@ -17,7 +17,7 @@ $querySupervisores = "SELECT id, email, name
                         FROM user 
                         WHERE cargo = '11'";
 $supervisores = $con->query($querySupervisores)->fetch_all(MYSQLI_ASSOC);
-    foreach ($supervisores as $supervisor) {
+foreach ($supervisores as $supervisor) {
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     // Definir estilos para los encabezados

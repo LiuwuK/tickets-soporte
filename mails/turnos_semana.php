@@ -168,8 +168,11 @@ try {
     // Remitente y destinatarios
     $mail->setFrom('stsafeteck@gmail.com', 'Turnos Semanales');
     $destinatarios = [
-        'kantecao@gruposafeteck.com' => 'Usuario',
-
+        'fnorton@gruposafeteck.com' => 'Usuario',
+        'fponce@gruposafeteck.com' => 'Usuario',
+        'fsilva@gruposafeteck.com' => 'Usuario',
+        'kcarvajal@gruposafeteck.com' => 'Usuario',
+        'aarriagada@gruposafeteck.com' => 'Usuario',
     ];
 
     foreach ($destinatarios as $email => $nombre) {
