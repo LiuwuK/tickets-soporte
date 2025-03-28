@@ -51,7 +51,7 @@ while ($sucursal = $sucursales->fetch_assoc()) {
         // Formato de moneda
         $sheet->getStyle($columna.$fila)
               ->getNumberFormat()
-              ->setFormatCode('"$"#,##0.00');
+              ->setFormatCode('"$"#,##0');
               
         $columna++;
     }
