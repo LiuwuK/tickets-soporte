@@ -42,58 +42,74 @@ check_login();
     <div class="page-content">
     <?php include("../../leftbar-test.php"); ?>
         <div class="content row d-flex justify-content-around">
-            <div class="page-title">
+            <div class="page-title d-flex justify-content-between">
                 <h2>Recuperaciones</h2>
+                <button class=" btn-back" onclick="window.location.href='../main.php';"> 
+                    <i class="bi bi-arrow-left" ></i>
+                </button>
             </div><br><br>
 
-            <div class="rec-form col-md-4">
-                <form class="form-horizontal" name="form" method="POST" action="" >
-                    <div id="loading" style="display:none ;">
-                        <div class="loading-spinner"></div>
-                        <p>Procesando...</p>
-                    </div>
-                    <h3>Ingresar Recuperación</h3>
-                    <br>
-                    <div class="form-group">
-                        <label class="form-label">Instalación <span>*</span></label>
-                        <div>
-                            <select name="instalacion" id="instalacion" class="form-select form-select-sm search-form" required>
-                                <option value="">Seleccionar</option>
-                                <?php
+            <div class="col-md-4">
+                <div class="rec-form">
+                    <form class="form-horizontal" name="form" method="POST" action="" >
+                        <div id="loading" style="display:none ;">
+                            <div class="loading-spinner"></div>
+                            <p>Procesando...</p>
+                        </div>
+                        <h3>Ingresar Recuperación</h3>
+                        <br>
+                        <div class="form-group">
+                            <label class="form-label">Instalación <span>*</span></label>
+                            <div>
+                                <select name="instalacion" id="instalacion" class="form-select form-select-sm search-form" required>
+                                    <option value="">Seleccionar</option>
+                                    <?php
+                                    foreach ($inst AS $row) {
+                                        echo "<option value='".$row['id']."'>".$row['nombre']."</option>";
+                                    };
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="monto" class="form-label">Monto <span>*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="montoP">$</span>
+                                <input type="number" name="monto" id="monto" class="form-control form-control-sm" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                        <label for="fecha" class="form-label">Fecha de recuperación <span>*</span></label>
+                            <input type="date" name="fecha" id="fecha" class="form-control form-control-md" required >
+                        </div>
+                        <div class="btn-div d-flex justify-content-end mt-4 ">
+                            <button class="btn btn-updt" type="submit" name="send">Enviar</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="rec-form">
+                    <h3>Total Recaudado</h3>
+                </div>
+            </div>
+            <div class="calendario col-md-7">
+                <div class="filtros mb-4 d-flex justify-content-between">
+                    <div class="filtro">
+                        <label>Sucursal:</label>
+                        <select id="filtro-sucursal" class="form-select ">
+                            <option value="">Todas las sucursales</option>
+                            <?php 
                                 foreach ($inst AS $row) {
                                     echo "<option value='".$row['id']."'>".$row['nombre']."</option>";
                                 };
-                                ?>
-                            </select>
-                        </div>
+                            ?>
+                        </select>
                     </div>
-                    <div class="form-group">
-                        <label for="monto" class="form-label">Monto <span>*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text" id="montoP">$</span>
-                            <input type="number" name="monto" id="monto" class="form-control form-control-sm" required>
-                        </div>
+                    <div class="exp">
+                        <button type="button" class="btn btn-excel" onclick="window.location.href='../assets/php/exportar-recuperaciones.php';">
+                            <i class="bi bi-file-earmark-excel"></i> 
+                            Exportar Recuperaciones
+                        </button>
                     </div>
-                    <div class="form-group">
-                    <label for="fecha" class="form-label">Fecha de recuperación <span>*</span></label>
-                        <input type="date" name="fecha" id="fecha" class="form-control form-control-md" required >
-                    </div>
-                    <div class="btn-div d-flex justify-content-end mt-4 mb-2">
-                        <button class="btn btn-updt" type="submit" name="send">Enviar</button>
-                    </div>
-                </form>
-            </div>
-            <div class="calendario col-md-7">
-                <div class="filtros mb-4">
-                    <label>Sucursal:</label>
-                    <select id="filtro-sucursal" class="form-select ">
-                        <option value="">Todas las sucursales</option>
-                        <?php 
-                            foreach ($inst AS $row) {
-                                echo "<option value='".$row['id']."'>".$row['nombre']."</option>";
-                            };
-                        ?>
-                    </select>
                 </div>
                 <div class="calendar-main" id="calendario">
                 </div>
