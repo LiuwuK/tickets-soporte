@@ -40,7 +40,7 @@ if(isset($_POST['newExtra'])){
     // Verificar si ya existe
     $queryCheck = "SELECT id FROM datos_pago WHERE banco = ? AND rut_cta = ? AND digito_verificador = ? AND numero_cuenta = ?";
     $stmtCheck = $con->prepare($queryCheck);
-    $stmtCheck->bind_param("isss", $banco, $rutNum, $dv, $numCta);
+    $stmtCheck->bind_param("iisi", $banco, $rutNum, $dv, $numCta);
     $stmtCheck->execute();
     $stmtCheck->bind_result($bancoID);
     $stmtCheck->fetch();
@@ -49,7 +49,7 @@ if(isset($_POST['newExtra'])){
         //Insertar datos bancarios
         $queryInsert = "INSERT INTO datos_pago (banco, rut_cta, digito_verificador, numero_cuenta) VALUES (?, ?, ?, ?)";
         $stmtInsert = $con->prepare($queryInsert);
-        $stmtInsert->bind_param("isss", $banco, $rutNum, $dv, $numCta);
+        $stmtInsert->bind_param("iisi", $banco, $rutNum, $dv, $numCta);
         $stmtInsert->execute();
         $bancoID = $stmtInsert->insert_id; // Obtener el ID recién insertado
         $stmtInsert->close();
@@ -213,7 +213,7 @@ if (isset($_POST['carga'])) {
             $stmt_m->free_result(); 
 
             // Verificar si los datos bancarios ya existen
-            $stmtCheck->bind_param("ssss", $banco, $rutNum, $dv, $numCta);
+            $stmtCheck->bind_param("sisi", $banco, $rutNum, $dv, $numCta);
             $stmtCheck->execute();
             $stmtCheck->store_result();
             $stmtCheck->bind_result($bancoId, $bancoNombre);
@@ -231,14 +231,14 @@ if (isset($_POST['carga'])) {
                     // Banco no encontrado, manejar error
                     continue;
                 }
-                $stmtDatosPago->bind_param("isss", $idBanco, $rutNum, $dv, $numCta);
+                $stmtDatosPago->bind_param("iisi", $idBanco, $rutNum, $dv, $numCta);
                 $stmtDatosPago->execute();
                 $bancoId = $stmtDatosPago->insert_id;
             }
             $stmtCheck->free_result(); 
             //Ver info por pantalla
             echo "<pre>";
-            var_dump($instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoID, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
+            var_dump($instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             echo "</pre>";
             
             // Insertar en turnos_extra
