@@ -1,0 +1,65 @@
+.rec-form, .calendario{
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin-top: 50px;
+    color: #33435e;
+}
+
+.choices {
+    width: 100%;
+}
+
+.choices__inner {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #33435e;
+    background-color: #E9F4F9; 
+    border: 1px solid #ced4da; 
+    border-radius: 0.25rem;
+}
+
+.choices__list--dropdown {
+    z-index: 3000;
+}
+
+.choices[data-type*='select-one'] .choices__inner {
+    padding-right: 2.25rem;
+}
+.form-group span{
+    color:red
+}
+.form-group{
+    margin-bottom: 20px;
+}
+
+.fc-col-header-cell-cushion, .fc-daygrid-day-number{
+    color: #33435e;
+}
+.fc-toolbar-title{
+    text-transform: capitalize;
+}
+.input-group span{
+    color: black;
+}
+.row {
+    align-items: flex-start;
+}
+.fc-custom-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1000;
+    white-space: nowrap;
+    pointer-events: none;
+}

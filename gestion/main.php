@@ -94,6 +94,10 @@ check_login();
                 <?php    
                 }
                 ?>
+                <div class="crd mx-auto" onclick="window.location.href='recuperaciones/recuperaciones.php';">
+                    <i class="bi bi-cash-coin"></i>
+                    <h4>Recuperaciones</h4>
+                </div>
             </div>
         </div>   
     </div>
