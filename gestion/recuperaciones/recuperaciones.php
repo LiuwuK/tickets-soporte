@@ -82,7 +82,7 @@ check_login();
                             </div>
                         </div>
                         <div class="form-group">
-                        <label for="fecha" class="form-label">Fecha de recuperación <span>*</span></label>
+                            <label for="fecha" class="form-label">Fecha de recuperación <span>*</span></label>
                             <input type="date" name="fecha" id="fecha" class="form-control form-control-md" required >
                         </div>
                         <div class="btn-div d-flex justify-content-end mt-4 ">
@@ -117,6 +117,39 @@ check_login();
         </div>   
     </div>
   </div>
+
+
+<!-- Modal detalles del evento -->
+<div class="modal fade" id="eventoModal" tabindex="-1" aria-labelledby="eventoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    <form class="form-horizontal" name="form" method="POST" action="" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="eventoModalLabel">Detalles de Recuperación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex modal-r">
+        <div class="form-modal mb-3">
+            <label for="inputFecha" class="form-label">Fecha de recuperación <span>*</span></label>
+            <input type="date" name="fecha" id="inputFecha" class="form-control form-control-md" required>
+        </div>
+        <div class="form-modal">
+            <label for="inputMonto" class="form-label">Monto Recuperado <span>*</span></label>
+            <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" name="monto" id="inputMonto" class="form-control form-control-sm" required>
+            </div>
+        </div>
+        <input type="hidden" id="inputId" name="id">
+      </div>
+      <div class="modal-footer">
+            <button type="submit" name="edit" class="btn btn-default" >Editar</button>
+            <button type="submit" name="del" class="btn pull-right btn-del">Eliminar</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
 
 
 <!-- JS de Choices.js -->

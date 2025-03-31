@@ -10,25 +10,42 @@ document.addEventListener("DOMContentLoaded", function() {
                 .then(data => successCallback(data))
                 .catch(error => failureCallback(error));
         },
+        eventClick: function(info) {
+            // Obtener datos del evento
+            const eventData = info.event.extendedProps;
+            const modal = new bootstrap.Modal(document.getElementById('eventoModal'));
+            const fechaEvento = new Date(info.event.start);
+            const fechaFormatoInput = fechaEvento.toISOString().split('T')[0];
+            // Asignar valores
+            document.getElementById('inputFecha').value = fechaFormatoInput;
+            document.getElementById('inputMonto').value = eventData.monto || '';
+            document.getElementById('inputId').value = eventData.id || 'N/A';
+            document.getElementById('eventoModalLabel').textContent = eventData.sucursal;
+            
+            // Mostrar modal
+            modal.show();            
+            info.jsEvent.preventDefault();
+        },
         eventDidMount: function(info) {
-            const tooltip = document.createElement('div');
-            tooltip.className = 'fc-custom-tooltip';
-            tooltip.textContent = info.event.title;
-            info.el.appendChild(tooltip);
-
-            info.el.addEventListener('mouseenter', () => tooltip.style.opacity = '1');
-            info.el.addEventListener('mouseleave', () => tooltip.style.opacity = '0');
+            // Tooltip con Bootstrap (opcional)
+            new bootstrap.Tooltip(info.el, {
+                title: info.event.title,
+                placement: 'top',
+                trigger: 'hover',
+                container: 'body'
+            });
         },
         headerToolbar: {
-            left:'dayGridMonth,dayGridDay',
+            left: 'dayGridMonth,dayGridDay',
             center: 'title',
-            right: 'prev,next',
+            right: 'prev,next'
         },
         buttonText: {
             dayGridMonth: 'Mes',
             dayGridDay: 'Día'
         }
     });
+
     calendar.render();
     // Filtra eventos al cambiar la sucursal
     document.getElementById('filtro-sucursal').addEventListener('change', function() {

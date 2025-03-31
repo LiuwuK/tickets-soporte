@@ -74,3 +74,15 @@
     color: #fff;
     transform: scale(1.05);
 }
+.modal-r{
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.form-modal{
+    color: #33435e;
+    width: 100%;
+}
+label span{
+    color: red;
+}
