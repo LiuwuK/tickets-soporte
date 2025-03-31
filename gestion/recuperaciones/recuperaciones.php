@@ -50,6 +50,9 @@ check_login();
             </div><br><br>
 
             <div class="col-md-4">
+                <div class="rec-form" id="contenedor-resultados">
+                    <h3>Total Recaudado</h3>
+                </div>
                 <div class="rec-form">
                     <form class="form-horizontal" name="form" method="POST" action="" >
                         <div id="loading" style="display:none ;">
@@ -87,9 +90,6 @@ check_login();
                         </div>
                     </form>
                 </div>
-                <div class="rec-form">
-                    <h3>Total Recaudado</h3>
-                </div>
             </div>
             <div class="calendario col-md-7">
                 <div class="filtros mb-4 d-flex justify-content-between">
@@ -119,55 +119,6 @@ check_login();
   </div>
 
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var calendarEl = document.getElementById('calendario');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            locale: 'es',
-            events: function(fetchInfo, successCallback, failureCallback) {
-                var sucursalId = document.getElementById('filtro-sucursal').value;
-                fetch(`../assets/php/get_recuperaciones.php?sucursal_id=${sucursalId}`)
-                    .then(response => response.json())
-                    .then(data => successCallback(data))
-                    .catch(error => failureCallback(error));
-            },
-            eventDidMount: function(info) {
-                const tooltip = document.createElement('div');
-                tooltip.className = 'fc-custom-tooltip';
-                tooltip.textContent = info.event.title;
-                info.el.appendChild(tooltip);
-
-                info.el.addEventListener('mouseenter', () => tooltip.style.opacity = '1');
-                info.el.addEventListener('mouseleave', () => tooltip.style.opacity = '0');
-            },
-            headerToolbar: {
-                left:'dayGridMonth,dayGridDay',
-                center: 'title',
-                right: 'prev,next',
-            },
-            buttonText: {
-                dayGridMonth: 'Mes',
-                dayGridDay: 'Día'
-            }
-        });
-        calendar.render();
-        // Filtra eventos al cambiar la sucursal
-        document.getElementById('filtro-sucursal').addEventListener('change', function() {
-            calendar.refetchEvents();
-        });
-
-        document.querySelectorAll("select.search-form").forEach(selectElement => {
-            const choices = new Choices(selectElement, {
-                searchEnabled: true,
-                itemSelectText: "",
-                placeholder: true
-            });
-        });
-    });
-
-  </script>
-  
 <!-- JS de Choices.js -->
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 <!-- Popper.js (para tooltips y otros componentes) -->
@@ -180,6 +131,7 @@ check_login();
 <!-- Complementos/Plugins-->
 <!-- Scripts propios -->
 <script src="../../assets/js/sidebar.js"></script>
+<script src="../assets/js/recuperaciones.js"></script>
 </body>
 
 </html>
