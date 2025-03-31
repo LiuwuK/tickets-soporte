@@ -17,7 +17,7 @@ $events = array();
 
 while ($row = $result->fetch_assoc()) {
     $events[] = array(
-        'title' => $row['sucursal'] . ' - $' . number_format($row['monto'], 2),
+        'title' => $row['sucursal'] . ' - $' . number_format($row['monto']),
         'start' => $row['fecha'],
         'color' => '#378006'
     );

@@ -52,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     function actualizarMontos(data) {
+        const formateador = new Intl.NumberFormat('en-US');
         const contenedorResultados = document.getElementById('contenedor-resultados');
         // Limpiar contenedor
         contenedorResultados.innerHTML = '';
@@ -63,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function() {
             let html = '<h3>Total por sucursal:</h3>';
             data.forEach(item => {
                 const monto = item['SUM(r.monto)'] || 0;
-                html += `<li><strong>${item.sucursal || 'Sin sucursal'}:</strong> $${monto.toLocaleString()}</li>`;
+                html += `<li><strong>${item.sucursal || 'Sin sucursal'}:</strong> $${formateador.format(monto)}</li>`;
             });
             contenedorResultados.innerHTML = html;
         } 
@@ -73,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const monto = item['SUM(r.monto)'] || 0;
             contenedorResultados.innerHTML = `
                 <h3>Total para ${item.sucursal}:</h3>
-                <p><strong>Monto recuperado:</strong> $${monto.toLocaleString()}</p>
+                <p><strong>Monto recuperado:</strong> $${formateador.format(monto)}</p>
             `;
         }
     }

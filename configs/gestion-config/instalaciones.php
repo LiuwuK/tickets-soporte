@@ -179,14 +179,13 @@ check_login();
 <!-- Modal new -->
 <div class="modal fade" id="newSuper" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="newSuperLabel" aria-hidden="true">>
   <div class="modal-dialog">
-      <div class="modal-content">
+    <div class="modal-content">
       <div class="modal-header">
           <h5 class="modal-title" id="newSuperLabel">Nuevo Sucursal</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form id="newForm"  method="post" enctype="multipart/form-data">
         <div class="modal-body">
-          
           <div class="form-row-modal mb-3 mx-auto">
             <div class="form-group">
                 <label for="nombre" class="form-label">Nombre<span>*</span></label>
@@ -265,8 +264,10 @@ check_login();
           </div>
         </div>
       </form> 
+    </div>
   </div>
 </div>
+
 <!-- modal eliminar  -->
 <div class="modal fade" id="delSuper" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delSuperLabel" aria-hidden="true">
   <div class="modal-dialog">
