@@ -417,6 +417,13 @@ $usRol = $_SESSION['cargo'];
               echo '<button class="btn btn-updt" onclick="window.location.href=\'assets/php/excel-desvinculaciones.php\';">Descargar</button>';
               while($row = $desvinculaciones->fetch_assoc()){
                 $date = date("Y-m-d H:i", strtotime($row['fecha_registro']));
+                if($row['motivo'] == 8){
+                  $id = $row['id'];
+                  $query = " SELECT *
+                              FROM desvinculaciones_fechas 
+                              WHERE desvinculacion_id = $id";
+                  $infoAusencia = mysqli_query($con, $query);
+                }
             ?>
               <div class="mt-3 card col-md-11 mx-auto p-3 card-t">
                 <div class="colab-data">
@@ -449,6 +456,17 @@ $usRol = $_SESSION['cargo'];
                 <div class="destino-data">
                   <strong>Motivo de Egreso: <?php echo $row['motivoEgreso'] ?></strong>
                   <p>Observación:  <?php echo !empty($row['observacion']) ? $row['observacion'] : 'No tiene observación' ;?></p>
+                  <?php
+                    if($row['motivo'] == 8){
+                      echo "<div class='fechasAusencia'>";
+                      while ($fecha = mysqli_fetch_assoc($infoAusencia)) {
+                        $fecha = new DateTime($fecha['fecha']);
+                        $fechaF = $fecha->format("d-m-Y");
+                        echo "<li>".$fechaF."</li>";
+                      }
+                      echo "</div>";
+                    }
+                  ?>
                 </div>
                 <div class="delete-btns">
                   <button class="btn btn-del del-btn" name="delDesv" data-bs-toggle="modal" data-bs-target="#delDesv" data-sup-id="<?php echo $row['id'];?>" >Eliminar</button>
