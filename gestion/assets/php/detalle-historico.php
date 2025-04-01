@@ -41,23 +41,76 @@ if(isset($_GET['tipo'])){
                         su.nombre AS instalacion,
                         us.name AS soliN,
                         sup.nombre_supervisor AS supervisor,
-                        mo.motivo AS motivoEgreso
+                        mo.motivo AS motivoEgreso,
+                        doc.url AS url,
+                        de.id AS idDesv
                     FROM desvinculaciones de
                     JOIN user us ON(de.solicitante = us.id)
                     JOIN sucursales su ON(de.instalacion = su.id)
                     JOIN supervisores sup ON(de.supervisor_origen = sup.id)
                     JOIN motivos_gestion mo ON(de.motivo = mo.id)
+                    LEFT JOIN desvinculaciones_docs doc ON(de.id = doc.desvinculacion_id)
                     WHERE de.id = $id
                     ";
         $info = mysqli_query($con, $query);
         $dv = mysqli_fetch_assoc($info);
-        $motivo = $dv['motivo'];
+        $motivo = $dv['motivo'];    
         if($motivo == 8){
             $query = " SELECT *
                         FROM desvinculaciones_fechas 
                         WHERE desvinculacion_id = $id
                     ";
             $infoAusencia = mysqli_query($con, $query);
+        }
+    }
+}
+
+if(isset($_POST['newDoc'])){
+    if(isset($_FILES['desvDocs']) && $_FILES['desvDocs']['error'] === UPLOAD_ERR_OK) {
+        $desvinculacion_id = $_POST['desv'];
+        // Configuración de Supabase
+        $supabase_url = 'https://zessdkphohirwcsbqnif.supabase.co';
+        $supabase_key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inplc3Nka3Bob2hpcndjc2JxbmlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAwNjMxOTMsImV4cCI6MjA1NTYzOTE5M30.iTUsOH7OxO49h62FQCmXV05-DZKUwQ1RFLGdC_FEEWE';
+        $bucket_name = "safeteck.uploads";
+        
+        // Define la subcarpeta (puedes hacerla dinámica según tus necesidades)
+        $subcarpeta = "desvinculaciones/".date('Y-m')."/"; 
+        
+        // Prepara el nombre del archivo
+        $file_name = str_replace(" ", "_", $_FILES["desvDocs"]["name"]);
+        $file_path = $_FILES["desvDocs"]["tmp_name"];
+        $file_type = $_FILES["desvDocs"]["type"];
+        
+        // URL con subcarpeta
+        $url = "$supabase_url/storage/v1/object/$bucket_name/$subcarpeta$file_name";
+        
+        // Inicializar cURL
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Authorization: Bearer $supabase_key",
+            "Content-Type: $file_type",
+            "x-upsert: true"
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($file_path));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        $response = curl_exec($ch);
+        $error = curl_error($ch);
+        curl_close($ch);
+        
+        if ($response === false) {
+            echo "Error en cURL: $error";
+        } else {
+            $filePath = $url;
+            $query = "INSERT INTO desvinculaciones_docs(desvinculacion_id, url)
+            VALUES (?,?)";
+            $stmt = $con->prepare($query);
+            $stmt->bind_param("is",$desvinculacion_id, $filePath);
+            $stmt->execute();
+            $stmt->close();
+            echo "✅ Archivo subido correctamente a $subcarpeta: $file_name";
         }
     }
 }

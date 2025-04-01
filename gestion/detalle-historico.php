@@ -263,16 +263,29 @@ check_login();
               </div>
             <?php
             }
-            if($row['instalacion_id'] == 195){  
-              echo '<div class="form-row"> <div class="form-group">';
-              echo '<a href="'.$row['url'].'" target="_blank" class="btn btn-primary">Descargar Documento</a>';
-              echo '</div> </div>';
-            }
+            echo '<div class="form-row"> <div class="form-group">';
+              if(isset($row['url'])){  
+                  echo "<label class='form-label'> Archivos Adjuntos</label><a href='".$row['url']."' target='_blank' class='document-link'>📄 Descargar documento </a>";
+              }else{
+            ?>
+            <form name="form" method="POST" enctype="multipart/form-data">
+              <div id="loading" style="display:none ;">
+                  <div class="loading-spinner"></div>
+                  <p>Procesando...</p>
+              </div>
+              <label for="desvDocs" class="form-label">Subir Archivos</label>
+              <input class="form-control form-control-sm" type="file" id="desvDocs" name="desvDocs">
+              <input type="hidden" name="desv" value="<?php echo $row['idDesv']; ?>">
+              <button name="newDoc" class="btn btn-updt mt-3">Subir</button>
+            </form>
+            <?php                
+              }
+            echo '</div> </div>';
             ?>
             
             <div class="form-row">
               <div class="form-group">
-                  <label for="desc" class="form-label">Observación SSPP</labe>
+                  <label for="desc" class="form-label">Observación SSPP</label>
                   <textarea class="form-control form-control-sm" id="desc" name="desc" rows="3" readonly><?php echo $row['observacion'];?></textarea>     
               </div>
             </div>
