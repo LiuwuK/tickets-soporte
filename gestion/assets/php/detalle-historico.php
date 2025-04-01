@@ -37,6 +37,7 @@ if(isset($_GET['tipo'])){
 
     }else{
         $query = "SELECT de.*,
+                        de.instalacion AS instalacion_id,
                         su.nombre AS instalacion,
                         us.name AS soliN,
                         sup.nombre_supervisor AS supervisor,

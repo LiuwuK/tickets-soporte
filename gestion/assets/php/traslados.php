@@ -126,6 +126,7 @@ if(isset($_POST['desvForm'])){
     $motivo = $_POST['motivo'];
     $rol = $_POST['rol'];
     $obs = $_POST['observacion'];
+    $inNombre = $_POST['inNombre'] ?? null;
 
     $checkQuery = "SELECT COUNT(*) FROM desvinculaciones 
                WHERE supervisor_origen = ? AND colaborador = ? AND rut = ? 
@@ -140,10 +141,10 @@ if(isset($_POST['desvForm'])){
     if ($count > 0) {
         echo "<script>alert('Esta desvinculacion ya existe en la base de datos'); location.replace(document.referrer);</script>";
     }else{
-        $query = "INSERT INTO desvinculaciones(supervisor_origen, colaborador, rut, instalacion, motivo, observacion, solicitante, rol)
-                VALUES (?,?,?,?,?,?,?,?)";
+        $query = "INSERT INTO desvinculaciones(supervisor_origen, colaborador, rut, instalacion, motivo, observacion, solicitante, rol, in_nombre)
+                VALUES (?,?,?,?,?,?,?,?,?)";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("issiisii", $supOrigen, $colaborador, $rut, $instalacion, $motivo, $obs, $solicitante, $rol);
+        $stmt->bind_param("issiisiis", $supOrigen, $colaborador, $rut, $instalacion, $motivo, $obs, $solicitante, $rol, $inNombre);
         
         if($stmt->execute()){
             $desvinculacion_id = $stmt->insert_id;
@@ -157,11 +158,57 @@ if(isset($_POST['desvForm'])){
                     $stmtFechas->bind_param("is", $desvinculacion_id, $fecha);
                     $stmtFechas->execute();
                 }
-
                 echo "Registro insertado correctamente con múltiples fechas.";
-
                 $stmt->close();
                 $stmtFechas->close();
+            }
+            //Subida de archivos-------------------------------------------------------------------------------------------------------
+
+            if(isset($_FILES['desvDocs']) && $_FILES['desvDocs']['error'] === UPLOAD_ERR_OK) {
+                // Configuración de Supabase
+                $supabase_url = 'https://zessdkphohirwcsbqnif.supabase.co';
+                $supabase_key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inplc3Nka3Bob2hpcndjc2JxbmlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAwNjMxOTMsImV4cCI6MjA1NTYzOTE5M30.iTUsOH7OxO49h62FQCmXV05-DZKUwQ1RFLGdC_FEEWE';
+                $bucket_name = "safeteck.uploads";
+                
+                // Define la subcarpeta (puedes hacerla dinámica según tus necesidades)
+                $subcarpeta = "desvinculaciones/".date('Y-m')."/"; 
+                
+                // Prepara el nombre del archivo
+                $file_name = str_replace(" ", "_", $_FILES["desvDocs"]["name"]);
+                $file_path = $_FILES["desvDocs"]["tmp_name"];
+                $file_type = $_FILES["desvDocs"]["type"];
+                
+                // URL con subcarpeta
+                $url = "$supabase_url/storage/v1/object/$bucket_name/$subcarpeta$file_name";
+                
+                // Inicializar cURL
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    "Authorization: Bearer $supabase_key",
+                    "Content-Type: $file_type",
+                    "x-upsert: true"
+                ]);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($file_path));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                
+                $response = curl_exec($ch);
+                $error = curl_error($ch);
+                curl_close($ch);
+                
+                if ($response === false) {
+                    echo "Error en cURL: $error";
+                } else {
+                    $filePath = $url;
+                    $query = "INSERT INTO desvinculaciones_docs(desvinculacion_id, url)
+                    VALUES (?,?)";
+                    $stmt = $con->prepare($query);
+                    $stmt->bind_param("is",$desvinculacion_id, $filePath);
+                    $stmt->execute();
+                    $stmt->close();
+                    echo "✅ Archivo subido correctamente a $subcarpeta: $file_name";
+                }
             }
             echo "<script>alert('Desvinculacion Registrada Correctamente'); location.replace(document.referrer)</script>";
         }

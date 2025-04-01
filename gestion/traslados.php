@@ -77,7 +77,7 @@ $usRol = $_SESSION['cargo'];
               </div>
             </div>
           </div>
-          <!-- Formulario de Traslado -->
+          <!-- Formulario de Traslado --> 
           <form name="form" method="POST" enctype="multipart/form-data">
             <div id="loading" style="display:none ;">
                 <div class="loading-spinner"></div>
@@ -119,6 +119,7 @@ $usRol = $_SESSION['cargo'];
               </div>
               <div class="form-row mx-auto">
                 <div class="form-group">
+                  <!-- Si la instalacion es "otra", dar la opcion de escribir el nombre de la instalacion -->
                   <label class="form-label">Instalación de Origen <span>*</span></label>
                   <div>
                       <select name="instalacion" id="instalacion" class="form-select form-select-sm search-form" required>
@@ -176,6 +177,7 @@ $usRol = $_SESSION['cargo'];
               </div>
               <div class="form-row mx-auto">
                 <div class ="form-group">
+                  <!-- Si la instalacion es "otra", dar la opcion de escribir el nombre de la instalacion -->
                   <label class="form-label">Instalacion de Destino <span>*</span></label>
                   <div >
                       <select name="inDestino" class="form-select form-select-sm search-form" required>
@@ -278,9 +280,10 @@ $usRol = $_SESSION['cargo'];
                   </div>
                 </div>
                 <div class ="form-group">
+                  <!-- Si la instalacion es "otra", dar la opcion de escribir el nombre de la instalacion -->
                     <label class="form-label">Instalacion de Origen <span>*</span></label>
                     <div >
-                        <select name="instalacion" class="form-select form-select-sm search-form" required>
+                        <select name="instalacion" id="instalacionSelect" class="form-select form-select-sm search-form" required>
                           <option value="">Seleccionar</option>
                           <?php
                           foreach ($inst AS $row) {
@@ -291,6 +294,14 @@ $usRol = $_SESSION['cargo'];
                     </div>
                 </div>
               </div>
+              
+              <div class="form-row mx-auto in_origen">
+                <div class="form-group">
+                  <label for="inNombre" class="form-label">Nombre Instalacion<span>*</span></label>
+                  <input type="text" class="form-control form-control-sm" id="inNombre" name="inNombre" required>
+                </div>
+              </div>
+
               <div class="form-row mx-auto">
                 <div class="form-group">
                   <label for="colaborador" class="form-label">Nombre Colaborador <span>*</span></label>
@@ -342,6 +353,14 @@ $usRol = $_SESSION['cargo'];
                     <input type="hidden" id="fechasAusencia" name="fechasAusencia">
                   </div>
               </div>
+
+              <div class="form-row mx-auto">
+                <div class="form-group">
+                  <label for="desvDocs" class="form-label">Subir Archivos</label>
+                  <input class="form-control form-control-sm" type="file" id="desvDocs" name="desvDocs">
+                </div>
+              </div>
+
               <div class="form-row mx-auto">
                 <div class="form-group">
                   <label for="observacion" class="form-label">Observación</label>
@@ -449,7 +468,7 @@ $usRol = $_SESSION['cargo'];
                   ?>
                 </div>
                 <div class="origen-data">
-                  <strong>Instalacion de Origen: <?php echo $row['instalacion'] ?></strong>
+                  <strong>Instalación Origen: <?php echo $row['in_nombre'] ?? $row['instalacion'] ?></strong>
                   <p>Supervisor: <?php echo $row['supervisor'];?></p>
                   <p>Rol: <?php echo !empty($row['rolN']) ? $row['rolN'] : 'Sin Asignar' ;?></p>
                 </div>
@@ -526,7 +545,30 @@ $usRol = $_SESSION['cargo'];
   </div>
 </div>
 
-
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const selectElement = document.getElementById('instalacionSelect');
+    const origenDiv = document.querySelector('.in_origen');
+    const nombreInput = document.getElementById('inNombre');
+    
+    // Función para mostrar/ocultar
+    function toggleOrigenField() {
+      if (selectElement.value === '195') {
+        origenDiv.style.display = 'block';
+        nombreInput.required = true;
+      } else {
+        origenDiv.style.display = 'none';
+        nombreInput.required = false;
+      }
+    }
+    
+    // Escuchar cambios en el select
+    selectElement.addEventListener('change', toggleOrigenField);
+    
+    // Ejecutar al cargar por si ya está seleccionado
+    toggleOrigenField();
+  });
+</script>
 
 <!-- JS de Choices.js -->
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>

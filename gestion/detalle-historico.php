@@ -207,7 +207,7 @@ check_login();
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="instalacion" >Instalacion Origen</label>
-                <input type="text" name="instalacion" id="instalacion" value="<?php echo $row['instalacion']; ?>" class="form-control form-control-sm " readonly/>
+                <input type="text" name="instalacion" id="instalacion" value="<?php echo $row['in_nombre'] ?? $row['instalacion']; ?>" class="form-control form-control-sm " readonly/>
               </div>
               <div class="form-group">
                 <label class="form-label" for="supervisor" >Supervisor Encargado</label>
@@ -263,7 +263,13 @@ check_login();
               </div>
             <?php
             }
+            if($row['instalacion_id'] == 195){  
+              echo '<div class="form-row"> <div class="form-group">';
+              echo '<a href="'.$row['url'].'" target="_blank" class="btn btn-primary">Descargar Documento</a>';
+              echo '</div> </div>';
+            }
             ?>
+            
             <div class="form-row">
               <div class="form-group">
                   <label for="desc" class="form-label">Observación SSPP</labe>
@@ -289,7 +295,7 @@ check_login();
                 <div class="form-row">
                   <div class="form-group">
                       <label for="desc" class="form-label">Observación RRHH</labe>
-                      <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3"><?php echo $row['obs_rrhh'];?></textarea>     
+                      <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3" readonly><?php echo $row['obs_rrhh'];?></textarea>     
                   </div>
                 </div>
               <?php  
