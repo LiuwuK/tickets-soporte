@@ -553,7 +553,7 @@ $usRol = $_SESSION['cargo'];
     
     // Función para mostrar/ocultar
     function toggleOrigenField() {
-      if (selectElement.value === '195') {
+      if (selectElement.value === '196') {
         origenDiv.style.display = 'block';
         nombreInput.required = true;
       } else {
