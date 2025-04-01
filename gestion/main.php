@@ -93,11 +93,19 @@ check_login();
                     </div>
                 <?php    
                 }
+                if(isset($_SESSION['deptos']) 
+                && 
+                is_array($_SESSION['deptos']) 
+                && 
+                array_intersect([22], $_SESSION['deptos'])){
                 ?>
-                <div class="crd mx-auto" onclick="window.location.href='recuperaciones/recuperaciones.php';">
-                    <i class="bi bi-cash-coin"></i>
-                    <h4>Recuperaciones</h4>
-                </div>
+                    <div class="crd mx-auto" onclick="window.location.href='recuperaciones/recuperaciones.php';">
+                        <i class="bi bi-cash-coin"></i>
+                        <h4>Recuperaciones</h4>
+                    </div>
+                <?php    
+                }
+                ?>
             </div>
         </div>   
     </div>

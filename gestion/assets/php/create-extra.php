@@ -181,7 +181,7 @@ if (isset($_POST['carga'])) {
             $horaActual = (int)date('H');
             $fechaHoy = date('Y-m-d');
             $fechaAyer = date('Y-m-d', strtotime('-1 day'));
-            /*
+            
             if ($horaActual < 10) {
                 if ($fechaTurnoFormateada != $fechaAyer && $fechaTurnoFormateada != $fechaHoy) {
                     $count = $count + 1;
@@ -195,7 +195,7 @@ if (isset($_POST['carga'])) {
                     continue;
                 }
             }
-            */
+            
             $fecha = $fechaTurnoFormateada;  
             $horas = $row[7];
 
