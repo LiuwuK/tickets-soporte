@@ -81,6 +81,8 @@ if(isset($_POST['trasladoForm'])){
     $fInicio = $_POST['fechaInicio'];
     $supDestino = $_POST['supervisorDestino'];
     $observacionT = $_POST['observacionT'];
+    $inOrigen = $_POST['inOrigen'] ?? null;
+    $inDestino = $_POST['iDestino'] ?? null;
 
     $checkQuery = "SELECT COUNT(*) FROM traslados 
                WHERE supervisor_origen = ? AND nombre_colaborador = ? AND rut = ? 
@@ -103,12 +105,14 @@ if(isset($_POST['trasladoForm'])){
     } else {
         $query = "INSERT INTO traslados(supervisor_origen, nombre_colaborador, rut, instalacion_origen, 
                                         jornada_origen, motivo_traslado, instalacion_destino, jornada_destino, 
-                                        rol_origen, rol_destino, fecha_inicio_turno, supervisor_destino, solicitante, observacion) 
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                                        rol_origen, rol_destino, fecha_inicio_turno, supervisor_destino, solicitante, observacion,
+                                        inOrigen_nombre, inDestino_nombre) 
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("issiiiiiiisiis", $supOrigen, $colaborador, $rut, $instOrigen, $jorOrigen, 
+        $stmt->bind_param("issiiiiiiisiisss", $supOrigen, $colaborador, $rut, $instOrigen, $jorOrigen, 
                                         $motivo, $instDestino, $jorDestino, $rolOrigen, $rolDestino, 
-                                        $fInicio, $supDestino, $solicitante,$observacionT);
+                                        $fInicio, $supDestino, $solicitante,$observacionT,
+                                    $inOrigen, $inDestino);
         if ($stmt->execute()) {
             echo "<script>alert('Traslado registrado correctamente'); location.replace(document.referrer);</script>";
         } else {

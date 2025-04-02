@@ -8,6 +8,8 @@ if(isset($_GET['tipo'])){
                     tr.rut AS rutC,
                     tr.fecha_inicio_turno AS fecha_turno,
                     tr.observacion AS obs,
+                    tr.inOrigen_nombre AS nombre_origen,
+                    tr.inDestino_nombre AS nombre_destino,
                     us.name AS soliN, -- Nombre del solicitante
                     su_origen.nombre AS suOrigen, -- Sucursal de origen
                     jo_origen.tipo_jornada AS joOrigen, -- Jornada de origen

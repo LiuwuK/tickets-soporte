@@ -71,7 +71,7 @@ check_login();
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="instOrigen" >Instalación Origen</label>
-                <input type="text" name="instOrigen" id="instOrigen" value="<?php echo $row['suOrigen']; ?>" class="form-control form-control-sm " readonly/>
+                <input type="text" name="instOrigen" id="instOrigen" value="<?php echo $row['nombre_origen'] ?? $row['suOrigen']; ?>" class="form-control form-control-sm " readonly/>
               </div>
               <div class="form-group">
                 <label class="form-label" for="supOrigen" >Supervisor Origen</label>
@@ -96,7 +96,7 @@ check_login();
             <div class="form-row mt-3">
               <div class="form-group">
                 <label class="form-label" for="instOrigen" >Instalación Destino</label>
-                <input type="text" name="instDestino" id="instDestino" value="<?php echo $row['suDestino']; ?>" class="form-control form-control-sm " readonly/>
+                <input type="text" name="instDestino" id="instDestino" value="<?php echo $row['nombre_destino'] ?? $row['suDestino']; ?>" class="form-control form-control-sm " readonly/>
               </div>
               <div class="form-group">
                 <label class="form-label" for="supDestino" >Supervisor Destino</label>
@@ -175,7 +175,7 @@ check_login();
                   <div class="form-row">
                     <div class="form-group">
                         <label for="desc" class="form-label">Observación RRHH</labe>
-                        <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3"><?php echo $row['obs_rrhh'];?></textarea>     
+                        <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3" readonly><?php echo $row['obs_rrhh'];?></textarea>     
                     </div>
                   </div>
                 <?php  

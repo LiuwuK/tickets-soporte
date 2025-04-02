@@ -106,14 +106,14 @@ $usRol = $_SESSION['cargo'];
               <div class="form-row mx-auto">
                 <div class="form-group">
                   <label for="colaborador" class="form-label">Nombre Colaborador <span>*</span></label>
-                  <input type="text" class="form-control form-control-sm" id="colaborador" name="colaborador" required>
+                  <input type="text" class="form-control form-control-md" id="colaborador" name="colaborador" required>
                 </div>
                 <div class="form-group ">
                   <div class="d-flex msg">
                     <label for="rut" class="form-label">Rut <span>*</span></label>
                     <p>(Sin puntos)</p>
                   </div>
-                  <input type="text" class="form-control form-control-sm" id="rut" name="rut" maxlength="12" required>
+                  <input type="text" class="form-control form-control-md" id="rut" name="rut" maxlength="12" required>
                 
                 </div>
               </div>
@@ -135,7 +135,7 @@ $usRol = $_SESSION['cargo'];
                 <div class ="form-group">
                     <label class="form-label">Jornada de Origen <span>*</span></label>
                     <div >
-                      <select name="jornada" id="jornada" class="form-select form-select-sm search-form">
+                      <select name="jornada" id="jornada" class="form-select form-select-sm search-form" required>
                         <option value="">Seleccionar</option>
                         <?php
                         foreach ($jornada AS $row) {
@@ -147,10 +147,10 @@ $usRol = $_SESSION['cargo'];
                 </div>
               </div>
 
-              <div class="form-row mx-auto insOrigen">
+              <div class="form-row mx-auto insOrigen" >
                 <div class="form-group">
                   <label for="inOrigen" class="form-label">Nombre Instalacion Origen<span>*</span></label>
-                  <input type="text" class="form-control form-control-sm" id="inOrigen" name="inOrigen" required>
+                  <input type="text" class="form-control form-control-md" id="inOrigen" name="inOrigen" required>
                 </div>
               </div>
 
@@ -187,7 +187,7 @@ $usRol = $_SESSION['cargo'];
                   <!-- Si la instalacion es "otra", dar la opcion de escribir el nombre de la instalacion -->
                   <label class="form-label">Instalacion de Destino <span>*</span></label>
                   <div >
-                      <select name="inDestino" class="form-select form-select-sm search-form" required>
+                      <select name="inDestino" id="inDestino" class="form-select form-select-sm search-form" required>
                         <option value="">Seleccionar</option>
                         <?php
                         foreach ($inst AS $row) {
@@ -212,7 +212,7 @@ $usRol = $_SESSION['cargo'];
                 </div>
               </div>
 
-              <div class="form-row mx-auto insDestino">
+              <div class="form-row mx-auto insDestino" >
                 <div class="form-group">
                   <label for="iDestino" class="form-label">Nombre Instalacion Destino<span>*</span></label>
                   <input type="text" class="form-control form-control-sm" id="iDestino" name="iDestino" required>
@@ -235,7 +235,7 @@ $usRol = $_SESSION['cargo'];
                 </div>
                 <div class ="form-group">
                   <label for="fechaInicio" class="form-label">Fecha de Inicio de Turno <span>*</span></label>
-                  <input type="date" class="form-control form-control-sm" id="fechaInicio" name="fechaInicio" required required min="<?php echo date('Y-m-d'); ?>">
+                  <input type="date" class="form-control form-control-md" id="fechaInicio" name="fechaInicio" required required min="<?php echo date('Y-m-d'); ?>">
                 </div>
               </div>
               <div class="form-row mx-auto">
@@ -421,13 +421,13 @@ $usRol = $_SESSION['cargo'];
                   ?>
                 </div>
                 <div class="origen-data">
-                  <strong>Instalacion de Origen: <?php echo $row['suOrigen'] ?></strong>
+                  <strong>Instalacion de Origen: <?php echo $row['inOrigen_nombre'] ?? $row['suOrigen'] ?></strong>
                   <p>Supervisor: <?php echo $row['supOrigen'];?></p>
                   <p>Jornada Origen: <?php echo $row['joOrigen'];?></p>
                   <p>Rol: <?php echo $row['rolOrigen'];?></p>
                 </div>
                 <div class="destino-data">
-                  <strong>Instalacion de Destino: <?php echo $row['suDestino'] ?></strong>
+                  <strong>Instalacion de Destino: <?php echo $row['inDestino_nombre'] ?? $row['suDestino'] ?></strong>
                   <p>Supervisor: <?php echo $row['supDestino'];?></p>
                   <p>Jornada Destino: <?php echo $row['joDestino'];?></p>
                   <p>Rol: <?php echo $row['rolDestino'];?></p>
@@ -563,32 +563,52 @@ $usRol = $_SESSION['cargo'];
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const selectElement = document.getElementById('instalacionSelect');
-    const selectOrigen = document.getelementById('instalacion');
-    const selectDestino = document.getelementById('inDestino');
+    const selectOrigen = document.getElementById('instalacion');
+    const selectDestino = document.getElementById('inDestino');
 
     const origenDiv = document.querySelector('.in_origen');
     const origenTraslado = document.querySelector('.insOrigen');
     const destinoTraslado = document.querySelector('.insDestino');
 
     const nombreInput = document.getElementById('inNombre');
-    const origenimput = document.getElementById('inOrigen');
+    const origeninput = document.getElementById('inOrigen');
     const destinoInput = document.getElementById('iDestino');
     
     // Función para mostrar/ocultar
     function toggleOrigenField() {
-      if (selectElement.value === '196') {
+      if (selectElement.value === '195' || selectOrigen.value === '195') {
         origenDiv.style.display = 'block';
+        origenTraslado.style.display = 'block';
+
+        origeninput.required = true;
         nombreInput.required = true;
       } else {
         origenDiv.style.display = 'none';
+        origenTraslado.style.display = 'none';
+
+        origeninput.required = false;  
         nombreInput.required = false;
+      }
+    };
+
+    function toggleDestinoField() {
+      if (selectDestino.value === '195') {
+        destinoTraslado.style.display = 'block';
+        destinoInput.required = true;
+      } else {
+        destinoTraslado.style.display = 'none';
+        destinoInput.required = false;
       }
     }
     
+
     // Escuchar cambios en el select
+    
+    selectOrigen.addEventListener('change', toggleOrigenField);
     selectElement.addEventListener('change', toggleOrigenField);
-    // Ejecutar al cargar por si ya está seleccionado
     toggleOrigenField();
+    selectDestino.addEventListener('change', toggleDestinoField);
+    toggleDestinoField();
   });
 </script>
 
