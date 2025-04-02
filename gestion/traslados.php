@@ -131,7 +131,7 @@ $usRol = $_SESSION['cargo'];
                           ?>
                       </select>
                   </div>
-              </div>
+                </div>
                 <div class ="form-group">
                     <label class="form-label">Jornada de Origen <span>*</span></label>
                     <div >
@@ -145,8 +145,15 @@ $usRol = $_SESSION['cargo'];
                       </select>
                     </div>
                 </div>
-
               </div>
+
+              <div class="form-row mx-auto insOrigen">
+                <div class="form-group">
+                  <label for="inOrigen" class="form-label">Nombre Instalacion Origen<span>*</span></label>
+                  <input type="text" class="form-control form-control-sm" id="inOrigen" name="inOrigen" required>
+                </div>
+              </div>
+
               <div class="form-row mx-auto">
                 <div class ="form-group">
                   <label class="form-label">Rol de Origen <span>*</span></label>
@@ -204,6 +211,14 @@ $usRol = $_SESSION['cargo'];
                   </div>
                 </div>
               </div>
+
+              <div class="form-row mx-auto insDestino">
+                <div class="form-group">
+                  <label for="iDestino" class="form-label">Nombre Instalacion Destino<span>*</span></label>
+                  <input type="text" class="form-control form-control-sm" id="iDestino" name="iDestino" required>
+                </div>
+              </div>
+
               <div class="form-row mx-auto">
                 <div class ="form-group">
                   <label class="form-label">Rol de Destino<span>*</span></label>
@@ -548,8 +563,16 @@ $usRol = $_SESSION['cargo'];
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const selectElement = document.getElementById('instalacionSelect');
+    const selectOrigen = document.getelementById('instalacion');
+    const selectDestino = document.getelementById('inDestino');
+
     const origenDiv = document.querySelector('.in_origen');
+    const origenTraslado = document.querySelector('.insOrigen');
+    const destinoTraslado = document.querySelector('.insDestino');
+
     const nombreInput = document.getElementById('inNombre');
+    const origenimput = document.getElementById('inOrigen');
+    const destinoInput = document.getElementById('iDestino');
     
     // Función para mostrar/ocultar
     function toggleOrigenField() {
@@ -564,7 +587,6 @@ $usRol = $_SESSION['cargo'];
     
     // Escuchar cambios en el select
     selectElement.addEventListener('change', toggleOrigenField);
-    
     // Ejecutar al cargar por si ya está seleccionado
     toggleOrigenField();
   });
