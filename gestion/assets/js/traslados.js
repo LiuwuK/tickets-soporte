@@ -70,23 +70,28 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Función para mostrar/ocultar
     function toggleOrigenField() {
-      if (selectElement.value === '196' || selectOrigen.value === '196') {
+      if (selectElement.value === '196') {
         origenDiv.style.display = 'block';
-        origenTraslado.style.display = 'block';
-
-        origeninput.required = true;
         nombreInput.required = true;
       } else {
         origenDiv.style.display = 'none';
-        origenTraslado.style.display = 'none';
-
-        origeninput.required = false;  
         nombreInput.required = false;
       }
     };
 
+
+    function toggleInOrigenField() {
+        if (selectOrigen.value === '195') {
+          origenTraslado.style.display = 'block';
+          origeninput.required = true;
+        } else {
+          origenTraslado.style.display = 'none';
+          origeninput.required = false;  
+        }
+    };
+
     function toggleDestinoField() {
-      if (selectDestino.value === '196') {
+      if (selectDestino.value === '195') {
         destinoTraslado.style.display = 'block';
         destinoInput.required = true;
       } else {
@@ -98,7 +103,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Escuchar cambios en el select
     
-    selectOrigen.addEventListener('change', toggleOrigenField);
+    selectOrigen.addEventListener('change', toggleInOrigenField);
+    toggleInOrigenField();
     selectElement.addEventListener('change', toggleOrigenField);
     toggleOrigenField();
     selectDestino.addEventListener('change', toggleDestinoField);
