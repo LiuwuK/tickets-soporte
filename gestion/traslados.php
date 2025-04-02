@@ -570,57 +570,6 @@ $usRol = $_SESSION['cargo'];
   </div>
 </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const selectElement = document.getElementById('instalacionSelect');
-    const selectOrigen = document.getElementById('instalacion');
-    const selectDestino = document.getElementById('inDestino');
-
-    const origenDiv = document.querySelector('.in_origen');
-    const origenTraslado = document.querySelector('.insOrigen');
-    const destinoTraslado = document.querySelector('.insDestino');
-
-    const nombreInput = document.getElementById('inNombre');
-    const origeninput = document.getElementById('inOrigen');
-    const destinoInput = document.getElementById('iDestino');
-    
-    // Función para mostrar/ocultar
-    function toggleOrigenField() {
-      if (selectElement.value === '195' || selectOrigen.value === '195') {
-        origenDiv.style.display = 'block';
-        origenTraslado.style.display = 'block';
-
-        origeninput.required = true;
-        nombreInput.required = true;
-      } else {
-        origenDiv.style.display = 'none';
-        origenTraslado.style.display = 'none';
-
-        origeninput.required = false;  
-        nombreInput.required = false;
-      }
-    };
-
-    function toggleDestinoField() {
-      if (selectDestino.value === '195') {
-        destinoTraslado.style.display = 'block';
-        destinoInput.required = true;
-      } else {
-        destinoTraslado.style.display = 'none';
-        destinoInput.required = false;
-      }
-    }
-    
-
-    // Escuchar cambios en el select
-    
-    selectOrigen.addEventListener('change', toggleOrigenField);
-    selectElement.addEventListener('change', toggleOrigenField);
-    toggleOrigenField();
-    selectDestino.addEventListener('change', toggleDestinoField);
-    toggleDestinoField();
-  });
-</script>
 
 <!-- JS de Choices.js -->
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
