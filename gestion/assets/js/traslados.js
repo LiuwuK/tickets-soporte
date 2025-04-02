@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     function toggleInOrigenField() {
-        if (selectOrigen.value === '195') {
+        if (selectOrigen.value === '196') {
           origenTraslado.style.display = 'block';
           origeninput.required = true;
         } else {
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function toggleDestinoField() {
-      if (selectDestino.value === '195') {
+      if (selectDestino.value === '196') {
         destinoTraslado.style.display = 'block';
         destinoInput.required = true;
       } else {
