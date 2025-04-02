@@ -23,7 +23,7 @@ if (isset($_GET['id'])) {
                      te.justificacion AS justificacion,
                      te.nacionalidad AS nacionalidad
               FROM turnos_extra te
-              JOIN sucursales su ON te.sucursal_id = su.id
+              LEFT JOIN sucursales su ON te.sucursal_id = su.id
               JOIN datos_pago dp ON te.datos_bancarios_id = dp.id
               JOIN bancos bc ON dp.banco = bc.id
               JOIN motivos_gestion mg ON te.motivo_turno_id = mg.id

@@ -157,8 +157,14 @@ if (isset($_POST['carga'])) {
             // Datos bancarios
             $banco = $row[13] ?? null;
             $rutNum = $row[14] ?? null;
+            if ($rutNum !== null) {
+                $rutNum = preg_replace('/[^0-9]/', '', $rutNum);
+            }
             $dv = $row[15] ?? null;
             $numCta = $row[16] ?? null;
+            if ($numCta !== null) {
+                $numCta = preg_replace('/[^0-9]/', '', $numCta);
+            }
             // columnas vacías, saltar la fila
             if (is_empty($banco) || is_empty($rutNum) || is_empty($dv) || is_empty($numCta)) {
                 continue;
@@ -182,6 +188,7 @@ if (isset($_POST['carga'])) {
             $fechaHoy = date('Y-m-d');
             $fechaAyer = date('Y-m-d', strtotime('-1 day'));
             
+            /*
             if ($horaActual < 10) {
                 if ($fechaTurnoFormateada != $fechaAyer && $fechaTurnoFormateada != $fechaHoy) {
                     $count = $count + 1;
@@ -195,7 +202,7 @@ if (isset($_POST['carga'])) {
                     continue;
                 }
             }
-            
+            */
             $fecha = $fechaTurnoFormateada;  
             $horas = $row[7];
 
