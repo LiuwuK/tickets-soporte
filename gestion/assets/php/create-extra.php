@@ -233,7 +233,12 @@ if (isset($_POST['carga'])) {
             $stmt_m->bind_result($motivo_id);
             $stmt_m->fetch();
             if (!$stmt_m->num_rows) $motivo_id = null;
-            $stmt_m->free_result(); 
+            $stmt_m->free_result();
+            
+            if($motivo_id == null){
+                echo "<script>alert('Error al Insertar el turno de ".$colaborador.", El motivo ".$motivo." no existe en el sistema');</script>";
+                continue; 
+            } 
 
             // Verificar si los datos bancarios ya existen
             $stmtCheck->bind_param("sisi", $banco, $rutNum, $dv, $numCta);
