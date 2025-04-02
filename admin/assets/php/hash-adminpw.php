@@ -1,4 +1,5 @@
 <?php 
+  include("../../../checklogin.php");
   include('../../../dbconnection.php');
     $sql = mysqli_query($con, "SELECT id, password FROM user WHERE id = 46");
     while ($row = mysqli_fetch_assoc($sql)) {

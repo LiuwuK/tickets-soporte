@@ -432,9 +432,15 @@ $usRol = $_SESSION['cargo'];
                   <p>Jornada Destino: <?php echo $row['joDestino'];?></p>
                   <p>Rol: <?php echo $row['rolDestino'];?></p>
                 </div>
-                <div class="delete-btns">
-                  <button class="btn btn-del del-btn" name="delTraslado" data-bs-toggle="modal" data-bs-target="#delTraslado" data-sup-id="<?php echo $row['id'];?>" >Eliminar</button>
-                </div>
+
+               <?php
+                if($_SESSION['id'] == 38){
+                  echo '<div class="delete-btns">
+                        <button class="btn btn-del del-btn" name="delTraslado" data-bs-toggle="modal" data-bs-target="#delTraslado" data-sup-id="'.$row['id'].'" >Eliminar</button>
+                        </div>';
+                }
+               ?>
+              
               </div>  
             <?php   
               }
@@ -502,9 +508,13 @@ $usRol = $_SESSION['cargo'];
                     }
                   ?>
                 </div>
-                <div class="delete-btns">
-                  <button class="btn btn-del del-btn" name="delDesv" data-bs-toggle="modal" data-bs-target="#delDesv" data-sup-id="<?php echo $row['id'];?>" >Eliminar</button>
-                </div>
+                <?php
+                if($_SESSION['id'] == 38){
+                  echo '<div class="delete-btns">
+                    <button class="btn btn-del del-btn" name="delDesv" data-bs-toggle="modal" data-bs-target="#delDesv" data-sup-id="'.$row['id'].'" >Eliminar</button>
+                    </div>';
+                }
+               ?>
               </div>  
             <?php   
               }
