@@ -138,15 +138,37 @@ if (isset($_POST['carga'])) {
 
         $query = "INSERT INTO turnos_extra (sucursal_id, fecha_turno, horas_cubiertas, monto, nombre_colaborador, 
                                             rut, datos_bancarios_id, motivo_turno_id, autorizado_por, persona_motivo, contratado, nacionalidad) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $con->prepare($query);
+
+        $checkTurnos = "SELECT dp.id
+                        FROM turnos_extra
+                        WHERE sucursal_id = ? 
+                        AND fecha_turno = ? 
+                        AND horas_cubiertas = ? 
+                        AND monto = ? 
+                        AND nombre_colaborador = ? 
+                        AND rut = ? 
+                        AND motivo_turno_id = ? 
+                        AND autorizado_por = ? 
+                        AND persona_motivo = ? 
+                        AND contratado = ? 
+                        AND nacionalidad = ?";
+        $stmtTurnos = $con->prepare($checkTurnos);
+
+        if (!$stmtTurnos) {
+            die("Error al preparar la consulta de verificación: " . $con->error);
+        }
+
 
         if (!$stmt) {
             die("Error al preparar la consulta de inserción de turnos: " . $con->error);
         }
         //info fechas no validas
         $count = 0;
+        $turnos = 0;
         $fechasInvalidas = [];
+        $colaboradorTurno = [];
         foreach ($data as $index => $row) {
             if ($index < 2) continue; // Saltar las dos primeras filas
             /*
@@ -154,6 +176,9 @@ if (isset($_POST['carga'])) {
             print_r($row);
             echo "</pre>";
             */
+            //validar si ya existen los datos
+
+
             // Datos bancarios
             $banco = $row[13] ?? null;
             $rutNum = $row[14] ?? null;
@@ -240,6 +265,15 @@ if (isset($_POST['carga'])) {
                 continue; 
             } 
 
+            //Verificar si existe los datos 
+            $stmtTurnos->bind_param("isiissiisis", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
+            $stmtTurnos->execute();
+            $stmtTurnos->fetch();
+            if ($stmtCheck->num_rows) {
+                $turnos = $turnos + 1;
+                $colaboradorTurno[] = $colaborador;
+                continue;
+            }
             // Verificar si los datos bancarios ya existen
             $stmtCheck->bind_param("sisi", $banco, $rutNum, $dv, $numCta);
             $stmtCheck->execute();
@@ -280,6 +314,11 @@ if (isset($_POST['carga'])) {
             echo "El turno con Fecha ".$fechas." no corresponde al dia de hoy <br>";    
         }
         echo "<script>alert('Error al Insertar turnos, Algunos no corresponden al dia de hoy'); location.href='nuevo-turno.php';</script>";
+       }else if ($turnos > 0){
+        foreach($colaboradorTurno AS $colaboradores){
+            echo "El turno con Fecha ".$colaboradores." no corresponde al dia de hoy <br>";    
+        }
+        echo "<script>alert('Error al Insertar turnos, Algunos turnos estan duplicados'); location.href='nuevo-turno.php';</script>";
        }else{
         echo "<script>alert('Turnos insertados correctamente'); location.href='nuevo-turno.php';</script>";
        }
