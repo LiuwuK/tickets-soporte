@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Función para mostrar/ocultar
     function toggleOrigenField() {
-      if (selectElement.value === '195' || selectOrigen.value === '195') {
+      if (selectElement.value === '196' || selectOrigen.value === '196') {
         origenDiv.style.display = 'block';
         origenTraslado.style.display = 'block';
 
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function toggleDestinoField() {
-      if (selectDestino.value === '195') {
+      if (selectDestino.value === '196') {
         destinoTraslado.style.display = 'block';
         destinoInput.required = true;
       } else {
