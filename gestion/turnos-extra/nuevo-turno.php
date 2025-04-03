@@ -212,7 +212,11 @@ check_login();
             <h5 class="modal-title" id="newSuperLabel">Importar turnos</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form class="mb-2" method="post" enctype="multipart/form-data">
+        <form class="mb-2" name="form" method="post" enctype="multipart/form-data">
+            <div id="loading" style="display:none ;">
+                <div class="loading-spinner"></div>
+                <p>Procesando...</p>
+            </div>  
             <div class="modal-body mt-3 d-flex justify-content-center">
                 <input class="mb-3" type="file" name="file" required>
             </div>
