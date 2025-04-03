@@ -132,17 +132,17 @@ if(isset($_POST['desvForm'])){
     $obs = $_POST['observacion'];
     $inNombre = $_POST['inNombre'] ?? null;
 
-    $checkQuery = "SELECT COUNT(*) FROM desvinculaciones 
+    $checkQuery = "SELECT COUNT(*), estado FROM desvinculaciones 
                WHERE supervisor_origen = ? AND colaborador = ? AND rut = ? 
-               AND instalacion = ? AND motivo = ? ";
+               AND instalacion = ?";
     $checkStmt = $con->prepare($checkQuery);
-    $checkStmt->bind_param("issis", $supOrigen, $colaborador, $rut, $instalacion, $motivo);
+    $checkStmt->bind_param("issi", $supOrigen, $colaborador, $rut, $instalacion);
     $checkStmt->execute();
-    $checkStmt->bind_result($count);
+    $checkStmt->bind_result($count, $estado);
     $checkStmt->fetch();
     $checkStmt->close();
 
-    if ($count > 0) {
+    if ($count > 0 && $estado != 'Anulado' OR $count > 2 ) {
         echo "<script>alert('Esta desvinculacion ya existe en la base de datos'); location.replace(document.referrer);</script>";
     }else{
         $query = "INSERT INTO desvinculaciones(supervisor_origen, colaborador, rut, instalacion, motivo, observacion, solicitante, rol, in_nombre)
