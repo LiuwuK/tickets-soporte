@@ -48,7 +48,7 @@ check_login();
             <div class="d-flex justify-content-arround mb-3">
               <div class="all-fil">
                 <label for="filtroTexto">Buscar</label>
-                <input type="text" id="filtroTexto" name="texto" class="form-control form-control-sm fil" placeholder="Buscar por nombre, instalación, etc.">
+                <input type="text" id="filtroTexto" name="texto" class="form-control form-control-sm fil" placeholder="Buscar por nombre, instalación, etc." onkeydown="return event.key !== 'Enter';">
               </div>
               <div class="all-fil">  
                 <label for="filtroEstado" >Estado</label>

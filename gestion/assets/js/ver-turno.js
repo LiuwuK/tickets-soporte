@@ -25,12 +25,12 @@ document.addEventListener('DOMContentLoaded', function () {
             // filtro texto coincide con algún campo
             const coincideTexto = (
                 texto === '' || 
-                item.colaborador.toLowerCase().includes(texto) ||
-                item.estado.toLowerCase().includes(texto) ||
-                item.autorizadoPor.toLowerCase().includes(texto) ||
-                item.rut.toLowerCase().includes(texto)||
-                item.motivo.toLowerCase().includes(texto)||
-                item.instalacion.toLowerCase().includes(texto)
+                (item.colaborador || '').toLowerCase().includes(texto) ||
+                (item.estado || '').toLowerCase().includes(texto) ||
+                (item.autorizadoPor || '').toLowerCase().includes(texto) ||
+                (item.rut || '').toLowerCase().includes(texto) ||
+                (item.motivo || '').toLowerCase().includes(texto) ||
+                (item.instalacion || '').toLowerCase().includes(texto)
             );
 
             const coincideFecha = (
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                     </div>
                     <div class="h-body">
-                        <p>Instalación: ${item.instalacion} </p>
+                        <p>Instalación: ${item.instalacion ?? 'Sin Instalación'} </p>
                         <p>Fecha del Turno: ${fechaT}</p>
                         <p>Horas Cubiertas: ${item.horas} hrs</p>
                         <p>Motivo: ${item.motivo}</p>

@@ -138,13 +138,12 @@ if (isset($_POST['carga'])) {
 
         $query = "INSERT INTO turnos_extra (sucursal_id, fecha_turno, horas_cubiertas, monto, nombre_colaborador, 
                                             rut, datos_bancarios_id, motivo_turno_id, autorizado_por, persona_motivo, contratado, nacionalidad) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $con->prepare($query);
 
-        $checkTurnos = "SELECT dp.id
+        $checkTurnos = "SELECT id
                         FROM turnos_extra
-                        WHERE sucursal_id = ? 
-                        AND fecha_turno = ? 
+                        WHERE fecha_turno = ? 
                         AND horas_cubiertas = ? 
                         AND monto = ? 
                         AND nombre_colaborador = ? 
@@ -195,7 +194,7 @@ if (isset($_POST['carga'])) {
                 continue;
             }
             //datos instalacion
-            $instalacion = $row[2];
+            $instalacion = $row[2] ?? null;;
             $fecha_turno = $row[5];  // Asumiendo que la fecha está en la columna 5
 
             // Convertir fecha a Y-m-d 
@@ -243,14 +242,17 @@ if (isset($_POST['carga'])) {
 
             
             // Obtener instalación
-            $stmt_s->bind_param("s", $instalacion);
-            $stmt_s->execute();
-            $stmt_s->store_result();
-            $stmt_s->bind_result($instalacion_id);
-            $stmt_s->fetch();
-            if (!$stmt_s->num_rows) $instalacion_id = null;
-            $stmt_s->free_result(); 
-
+            if($instalacion != null){
+                $stmt_s->bind_param("s", $instalacion);
+                $stmt_s->execute();
+                $stmt_s->store_result();
+                $stmt_s->bind_result($instalacion_id);
+                $stmt_s->fetch();
+                if (!$stmt_s->num_rows) $instalacion_id = null;
+                $stmt_s->free_result();     
+            }else{
+                $instalacion_id = null;
+            }
             // Obtener Motivo
             $stmt_m->bind_param("s", $motivo);
             $stmt_m->execute();
@@ -259,21 +261,22 @@ if (isset($_POST['carga'])) {
             $stmt_m->fetch();
             if (!$stmt_m->num_rows) $motivo_id = null;
             $stmt_m->free_result();
-            
+
+            //Verificar si existe los datos 
+            $stmtTurnos->bind_param("siissiisis", $fecha, $horas, $monto, $colaborador, $rut, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
+            $stmtTurnos->execute();
+            $stmtTurnos->store_result();    
+            if ($stmtTurnos->num_rows > 0) {
+                $turnos += 1;
+                $colaboradorTurno[] = $colaborador;
+                continue;
+            }
+            $stmtTurnos->free_result();
+        
             if($motivo_id == null){
                 echo "<script>alert('Error al Insertar el turno de ".$colaborador.", El motivo ".$motivo." no existe en el sistema');</script>";
                 continue; 
             } 
-
-            //Verificar si existe los datos 
-            $stmtTurnos->bind_param("isiissiisis", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
-            $stmtTurnos->execute();
-            $stmtTurnos->fetch();
-            if ($stmtCheck->num_rows) {
-                $turnos = $turnos + 1;
-                $colaboradorTurno[] = $colaborador;
-                continue;
-            }
             // Verificar si los datos bancarios ya existen
             $stmtCheck->bind_param("sisi", $banco, $rutNum, $dv, $numCta);
             $stmtCheck->execute();
