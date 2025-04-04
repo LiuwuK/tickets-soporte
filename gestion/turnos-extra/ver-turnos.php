@@ -70,15 +70,14 @@ check_login();
                 <input name="fecha_fin" type="date" class="form-control form-control-sm fil" id="filtroFechaFin">
               </div>
             </div>
+            <div>
+              <button type="submit" class="btn btn-excel">
+                <i class="bi bi-file-earmark-excel"></i> 
+                Exportar Turnos
+              </button>
             <?php
               if($_SESSION['cargo'] != 11){
             ?>    
-              
-              <div>
-                <button type="submit" class="btn btn-excel">
-                  <i class="bi bi-file-earmark-excel"></i> 
-                  Exportar Turnos
-                </button>
                 <button class="btn btn-excel" type="button"  data-bs-toggle="modal" data-bs-target="#newSuper">
                 <i class="bi bi-file-earmark-excel"></i> 
                   Actualizar turnos
@@ -93,10 +92,11 @@ check_login();
                 <?php
                   }
                 ?>    
-              </div>
+              
             <?php
               }
             ?>
+            </div>
           </div>
         </form>
         <div id="resultadoTurnos" class="content"></div>

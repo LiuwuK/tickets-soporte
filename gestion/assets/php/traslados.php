@@ -84,23 +84,22 @@ if(isset($_POST['trasladoForm'])){
     $inOrigen = $_POST['inOrigen'] ?? null;
     $inDestino = $_POST['iDestino'] ?? null;
 
-    $checkQuery = "SELECT COUNT(*) FROM traslados 
-               WHERE supervisor_origen = ? AND nombre_colaborador = ? AND rut = ? 
-               AND instalacion_origen = ? AND jornada_origen = ? 
-               AND motivo_traslado = ? AND instalacion_destino = ? 
-               AND jornada_destino = ? AND rol_origen = ? 
-               AND rol_destino = ? AND fecha_inicio_turno = ? 
-               AND supervisor_destino = ?";
+    $checkQuery = "SELECT COUNT(*), estado FROM traslados 
+                WHERE supervisor_origen = ? AND nombre_colaborador = ? AND rut = ? 
+                AND instalacion_origen = ? AND jornada_origen = ? 
+                AND instalacion_destino = ? AND jornada_destino = ? 
+                AND rol_origen = ? AND rol_destino = ? 
+                AND fecha_inicio_turno = ? AND supervisor_destino = ?";
     $checkStmt = $con->prepare($checkQuery);
-    $checkStmt->bind_param("issiiiiiiisi", $supOrigen, $colaborador, $rut, $instOrigen, 
-                                        $jorOrigen, $motivo, $instDestino, $jorDestino, 
+    $checkStmt->bind_param("issiiiiiisi", $supOrigen, $colaborador, $rut, $instOrigen, 
+                                        $jorOrigen, $instDestino, $jorDestino, 
                                         $rolOrigen, $rolDestino, $fInicio, $supDestino);
     $checkStmt->execute();
-    $checkStmt->bind_result($count);
+    $checkStmt->bind_result($count, $estado);
     $checkStmt->fetch();
     $checkStmt->close();
 
-    if ($count > 0) {
+    if ($count > 0 && $estado != 'Anulado' ) {
         echo "<script>alert('Este traslado ya existe en la base de datos'); location.replace(document.referrer);</script>";
     } else {
         $query = "INSERT INTO traslados(supervisor_origen, nombre_colaborador, rut, instalacion_origen, 
