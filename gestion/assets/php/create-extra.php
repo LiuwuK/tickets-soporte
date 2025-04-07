@@ -243,6 +243,7 @@ if (isset($_POST['carga'])) {
             
             // Obtener instalación
             if($instalacion != null){
+                echo 'Si tiene instalacion'.$instalacion;
                 $stmt_s->bind_param("s", $instalacion);
                 $stmt_s->execute();
                 $stmt_s->store_result();
@@ -251,6 +252,7 @@ if (isset($_POST['carga'])) {
                 if (!$stmt_s->num_rows) $instalacion_id = null;
                 $stmt_s->free_result();     
             }else{
+                echo "no tiene instalacion";
                 $instalacion_id = null;
             }
             // Obtener Motivo
