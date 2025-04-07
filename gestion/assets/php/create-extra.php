@@ -170,11 +170,11 @@ if (isset($_POST['carga'])) {
         $colaboradorTurno = [];
         foreach ($data as $index => $row) {
             if ($index < 2) continue; // Saltar las dos primeras filas
-            /*
+            
             echo "<pre>";
             print_r($row);
             echo "</pre>";
-            */
+            
             //validar si ya existen los datos
 
 
