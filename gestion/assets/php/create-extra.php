@@ -236,7 +236,7 @@ if (isset($_POST['carga'])) {
             $colaborador = ucwords(strtolower($row[11]));
             $nacionalidad = ucwords(strtolower($row[12]));
             $motivo = $row[17];
-            $persona_motivo = ucwords(strtolower($row[18]));
+            $persona_motivo = $row[18] ? ucwords(strtolower($row[18])) : null;
             $contratado = ($row[19] == "SI") ? 1 : 0;
             $autorizado = $_SESSION['id'];
 
@@ -306,13 +306,15 @@ if (isset($_POST['carga'])) {
             var_dump($instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             echo "</pre>";
             
-            die();
+
             // Insertar en turnos_extra
             $stmt->bind_param("isiissiiisis", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             if (!$stmt->execute()) {
                 die("Error al ejecutar la consulta de inserción de turnos: " . $stmt->error);
             }
         }
+
+        die();
        if($count > 0 ){
         foreach($fechasInvalidas AS $fechas){
             echo "El turno con Fecha ".$fechas." no corresponde al dia de hoy <br>";    
