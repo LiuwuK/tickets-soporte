@@ -314,20 +314,21 @@ if (isset($_POST['carga'])) {
             }
         }
 
-        die();
+
        if($count > 0 ){
         foreach($fechasInvalidas AS $fechas){
             echo "El turno con Fecha ".$fechas." no corresponde al dia de hoy <br>";    
         }
-        echo "<script>alert('Error al Insertar turnos, Algunos no corresponden al dia de hoy'); location.href='nuevo-turno.php';</script>";
+        echo "<script>alert('Error al Insertar turnos, Algunos no corresponden al dia de hoy');</script>";
        }else if ($turnos > 0){
         foreach($colaboradorTurno AS $colaboradores){
             echo "El turno con Fecha ".$colaboradores." no corresponde al dia de hoy <br>";    
         }
-        echo "<script>alert('Error al Insertar turnos, Algunos turnos estan duplicados'); location.href='nuevo-turno.php';</script>";
+        echo "<script>alert('Error al Insertar turnos, Algunos turnos estan duplicados');</script>";
        }else{
-        echo "<script>alert('Turnos insertados correctamente'); location.href='nuevo-turno.php';</script>";
+        echo "<script>alert('Turnos insertados correctamente');</script>";
        }
+       die();
     } else {
         echo "Error al subir el archivo.";
     }
