@@ -301,11 +301,11 @@ if (isset($_POST['carga'])) {
                 $bancoId = $stmtDatosPago->insert_id;
             }
             $stmtCheck->free_result(); 
-            /*Ver info por pantalla
+         
             echo "<pre>";
             var_dump($instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             echo "</pre>";
-            */
+         
             // Insertar en turnos_extra
             $stmt->bind_param("isiissiiisis", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             if (!$stmt->execute()) {
