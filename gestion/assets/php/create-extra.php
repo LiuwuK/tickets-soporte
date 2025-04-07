@@ -166,15 +166,18 @@ if (isset($_POST['carga'])) {
         //info fechas no validas
         $count = 0;
         $turnos = 0;
-        $fechasInvalidas = [];
-        $colaboradorTurno = [];
+        $bancoscount = 0;
+        
+        $bancosInvalidos = '';
+        $fechasInvalidas = '';
+        $colaboradorTurno = '';
         foreach ($data as $index => $row) {
             if ($index < 2) continue; // Saltar las dos primeras filas
-            
+            /*
             echo "<pre>";
             print_r($row);
             echo "</pre>";
-            
+            */
             //validar si ya existen los datos
 
 
@@ -203,6 +206,7 @@ if (isset($_POST['carga'])) {
                         new DateTime($fecha_turno);
 
             if (!$fecha_obj) {
+                echo 'Sin fecha SALTANDO REGISTRO';   
                 continue; 
             }
 
@@ -216,13 +220,13 @@ if (isset($_POST['carga'])) {
             if ($horaActual < 10) {
                 if ($fechaTurnoFormateada != $fechaAyer && $fechaTurnoFormateada != $fechaHoy) {
                     $count = $count + 1;
-                    $fechasInvalidas[] = $fechaTurnoFormateada;
+                    $fechasInvalidas = $fechaTurnoFormateada;
                     continue;
                 }
             } else {
                 if ($fechaTurnoFormateada != $fechaHoy) {
                     $count = $count + 1;
-                    $fechasInvalidas[] = $fechaTurnoFormateada;
+                    $fechasInvalidas = $fechaTurnoFormateada;
                     continue;
                 }
             }
@@ -243,14 +247,14 @@ if (isset($_POST['carga'])) {
             
             // Obtener instalación
             if($instalacion != null){
-                echo 'Si tiene instalacion'.$instalacion;
                 $stmt_s->bind_param("s", $instalacion);
                 $stmt_s->execute();
                 $stmt_s->store_result();
                 $stmt_s->bind_result($instalacion_id);
                 $stmt_s->fetch();
                 if (!$stmt_s->num_rows) $instalacion_id = null;
-                $stmt_s->free_result();     
+                $stmt_s->free_result(); 
+                //echo  'INSTALACION ID :'.$instalacion_id;    
             }else{
                 echo "no tiene instalacion";
                 $instalacion_id = null;
@@ -270,7 +274,7 @@ if (isset($_POST['carga'])) {
             $stmtTurnos->store_result();    
             if ($stmtTurnos->num_rows > 0) {
                 $turnos += 1;
-                $colaboradorTurno[] = $colaborador;
+                $colaboradorTurno = $colaborador;
                 continue;
             }
             $stmtTurnos->free_result();
@@ -296,6 +300,8 @@ if (isset($_POST['carga'])) {
                 
                 if (!$idBanco) {
                     // Banco no encontrado, manejar error
+                    $bancoscount += 1;
+                    $bancosInvalidos = $banco;
                     continue;
                 }
                 $stmtDatosPago->bind_param("iisi", $idBanco, $rutNum, $dv, $numCta);
@@ -303,34 +309,31 @@ if (isset($_POST['carga'])) {
                 $bancoId = $stmtDatosPago->insert_id;
             }
             $stmtCheck->free_result(); 
-         
+            /*
             echo "<pre>";
             var_dump($instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             echo "</pre>";
-            
-
+             */
+            if($count > 0 ){
+                 echo "<script>alert('Error al Insertar turno con fecha la fecha '.$fechasInvalidas.', no corresponde al dia de hoy');</script>";
+            }
+            if ($turnos > 0){
+                echo "<script>alert('Error al Insertar turno del colaborador ".$colaboradorTurno.", su turno esta duplicado');</script>";
+            }
+            if ($bancoscount > 0){
+                echo "<script>alert('Error al Insertar turno con el banco'.$bancosInvalidos.', el Banco esta mal escrito o no esta registrado');</script>";
+            }
             // Insertar en turnos_extra
             $stmt->bind_param("isiissiiisis", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             if (!$stmt->execute()) {
                 die("Error al ejecutar la consulta de inserción de turnos: " . $stmt->error);
             }
         }
-
-
-       if($count > 0 ){
-        foreach($fechasInvalidas AS $fechas){
-            echo "El turno con Fecha ".$fechas." no corresponde al dia de hoy <br>";    
+        if($count > 0){
+            echo "<script>alert('Error al insertar turnos') location.href='nuevo-turno.php' ;</script>";
+        }else{
+            echo "<script>alert('Turnos insertados correctamente') location.href='nuevo-turno.php' ;</script>";
         }
-        echo "<script>alert('Error al Insertar turnos, Algunos no corresponden al dia de hoy');</script>";
-       }else if ($turnos > 0){
-        foreach($colaboradorTurno AS $colaboradores){
-            echo "El turno con Fecha ".$colaboradores." no corresponde al dia de hoy <br>";    
-        }
-        echo "<script>alert('Error al Insertar turnos, Algunos turnos estan duplicados');</script>";
-       }else{
-        echo "<script>alert('Turnos insertados correctamente');</script>";
-       }
-       die();
     } else {
         echo "Error al subir el archivo.";
     }
