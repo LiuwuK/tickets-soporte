@@ -305,7 +305,8 @@ if (isset($_POST['carga'])) {
             echo "<pre>";
             var_dump($instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             echo "</pre>";
-         
+            
+            die();
             // Insertar en turnos_extra
             $stmt->bind_param("isiissiiisis", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             if (!$stmt->execute()) {
