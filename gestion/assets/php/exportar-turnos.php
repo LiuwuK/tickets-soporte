@@ -105,7 +105,7 @@ $query = "
         te.created_at AS fechaCreacion,          
         te.estado AS estado, 
         us.name AS autorizadoPor,
-        su.nombre AS instalacion,
+        CASE WHEN su.id IS NULL THEN 'Sin sucursal' ELSE su.nombre END AS instalacion,
         sup.nombre_supervisor AS supervisor,
         te.fecha_turno AS fechaTurno, 
         te.horas_cubiertas AS horas, 
@@ -122,8 +122,8 @@ $query = "
         te.justificacion AS justificacion,
         te.contratado AS contratado
     FROM turnos_extra te
-    JOIN sucursales su ON te.sucursal_id = su.id
-    JOIN supervisores sup ON su.supervisor_id = sup.id
+    LEFT JOIN sucursales su ON te.sucursal_id = su.id
+    LEFT JOIN supervisores sup ON su.supervisor_id = sup.id
     JOIN datos_pago dp ON te.datos_bancarios_id = dp.id
     JOIN bancos bc ON dp.banco = bc.id
     JOIN motivos_gestion mg ON te.motivo_turno_id = mg.id
