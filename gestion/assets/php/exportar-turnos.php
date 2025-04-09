@@ -139,13 +139,15 @@ if (!$result) {
 $rowIndex = 2;
 // Agregar datos a la hoja
 while ($row = mysqli_fetch_assoc($result)) {
+    $fechaCreacion = DateTime::createFromFormat('Y-m-d H:i:s', $row['fechaCreacion']);
+    $row['fechaCreacion'] = $fechaCreacion ? $fechaCreacion->format('d-m-Y H:i:s') : '';
+    echo $row['fechaCreacion'];
+
     // Formatear fechas
     $fechaTurno = DateTime::createFromFormat('Y-m-d', $row['fechaTurno']);
     $row['fechaTurno'] = $fechaTurno ? $fechaTurno->format('d-m-Y') : '';
-
-    $fechaCreacion = DateTime::createFromFormat('Y-m-d H:i:s', $row['fechaCreacion']);
-    $row['fechaCreacion'] = $fechaCreacion ? $fechaCreacion->format('d-m-Y H:i:s') : '';
-
+    echo $row['fechaTurno'];
+    
     // Formatear "contratado"
     $row['contratado'] = ($row['contratado'] == 1) ? "SI" : "NO";
 
@@ -167,6 +169,8 @@ $columnWidths = [
 foreach ($columnWidths as $col => $width) {
     $sheet->getColumnDimension($col)->setWidth($width);
 }
+
+die('');
 
 // Generar el archivo
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
