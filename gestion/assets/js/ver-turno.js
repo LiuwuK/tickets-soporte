@@ -59,11 +59,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 year: 'numeric'
             });
  
-            const fechaT = new Date(item.fechaTurno).toLocaleDateString({
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
             // Formatear la hora
             const horaFormateada = new Date(item.fechaCreacion).toLocaleTimeString('es-CL', {
                 hour: '2-digit',
@@ -85,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                     <div class="h-body">
                         <p>Instalación: ${item.instalacion ?? 'Sin Instalación'} </p>
-                        <p>Fecha del Turno: ${fechaT}</p>
+                        <p>Fecha del Turno: ${item.fechaTurno}</p>
                         <p>Horas Cubiertas: ${item.horas} hrs</p>
                         <p>Motivo: ${item.motivo}</p>
                         <div class="h-footer">
