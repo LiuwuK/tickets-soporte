@@ -77,6 +77,13 @@ check_login();
               <label class="form-label" for="instalacion" >Instalación</label>
               <input type="text" name="instalacion" id="instalacion" value="<?php echo $row['instalacion']; ?>" class="form-control form-control-sm " readonly/>
             </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="horario" >Horario Cubierto</label>
+              <input type="text" name="horario" id="horario" value="<?php echo $row['horario']; ?>" class="form-control form-control-sm " readonly/>
+            </div>
             <div class="form-group">
               <label class="form-label" for="horas" >Horas Cubiertas</label>
               <input type="number" name="horas" id="horas" value="<?php echo $row['horas']; ?>" class="form-control form-control-sm " readonly/>

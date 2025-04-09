@@ -29,12 +29,11 @@ check_login();
 <body class="test" >
     <!-- Sidebar -->
 <div class="sidebar-overlay"></div> 
-  <div class="page-container ">
-
+<div class="page-container ">
     <div class="sidebar">
     <?php include("../header-test.php"); ?>
     <?php include("../assets/php/phone-sidebar.php"); ?>
-      
+        
     </div>
     <div class="page-content">
     <?php include("../leftbar-test.php"); ?>
@@ -57,11 +56,9 @@ check_login();
                     <h4>Ver turnos</h4>
                 </div> 
             </div>
-            
         </div>   
     </div>
-  </div>
-
+</div>
 
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

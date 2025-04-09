@@ -137,8 +137,9 @@ if (isset($_POST['carga'])) {
         }
 
         $query = "INSERT INTO turnos_extra (sucursal_id, fecha_turno, horas_cubiertas, monto, nombre_colaborador, 
-                                            rut, datos_bancarios_id, motivo_turno_id, autorizado_por, persona_motivo, contratado, nacionalidad) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                                            rut, datos_bancarios_id, motivo_turno_id, autorizado_por, persona_motivo, 
+                                            contratado, nacionalidad, hora_inicio, hora_termino) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $con->prepare($query);
 
         $checkTurnos = "SELECT id
@@ -196,10 +197,22 @@ if (isset($_POST['carga'])) {
             if (is_empty($banco) || is_empty($rutNum) || is_empty($dv) || is_empty($numCta)) {
                 continue;
             }
-            //datos instalacion
-            $instalacion = $row[2] ?? null;;
-            $fecha_turno = $row[5];  // Asumiendo que la fecha está en la columna 5
+            //datos instalacion y turno
+            $instalacion = $row[2] ?? null;
+            $fecha_turno = $row[5]; 
+            $horario_cubierto = $row[6];
+            //Obtener hora inicio y termino 
+            $horas = explode("-", $horario_cubierto);
 
+            $hora_inicio = $horas[0]; 
+            $hora_termino = $horas[1];
+
+
+            $hora_inicio_obj = DateTime::createFromFormat('H:i', $hora_inicio);
+            $hora_termino_obj = DateTime::createFromFormat('H:i', $hora_termino);
+
+            $hora_inicio_str = $hora_inicio_obj->format('H:i:s');
+            $hora_termino_str = $hora_termino_obj->format('H:i:s');
             // Convertir fecha a Y-m-d 
             $fecha_obj = DateTime::createFromFormat('m/d/Y', $fecha_turno) ?: 
                         DateTime::createFromFormat('Y-m-d', $fecha_turno) ?: 
@@ -324,7 +337,8 @@ if (isset($_POST['carga'])) {
                 echo "<script>alert('Error al Insertar turno con el banco'.$bancosInvalidos.', el Banco esta mal escrito o no esta registrado');</script>";
             }
             // Insertar en turnos_extra
-            $stmt->bind_param("isiissiiisis", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
+            $stmt->bind_param("isiissiiisisss", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, 
+                                $autorizado, $persona_motivo, $contratado, $nacionalidad, $hora_inicio_str, $hora_termino_str);
             if (!$stmt->execute()) {
                 die("Error al ejecutar la consulta de inserción de turnos: " . $stmt->error);
             }

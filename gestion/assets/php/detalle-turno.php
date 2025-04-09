@@ -21,7 +21,8 @@ if (isset($_GET['id'])) {
                      te.persona_motivo AS persona_motivo,
                      te.contratado AS contratado,
                      te.justificacion AS justificacion,
-                     te.nacionalidad AS nacionalidad
+                     te.nacionalidad AS nacionalidad,
+                     CONCAT(TIME_FORMAT(te.hora_inicio, "%H:%i"), " - ", TIME_FORMAT(te.hora_termino, "%H:%i")) AS horario
               FROM turnos_extra te
               LEFT JOIN sucursales su ON te.sucursal_id = su.id
               JOIN datos_pago dp ON te.datos_bancarios_id = dp.id
