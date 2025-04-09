@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', function () {
         estado: document.getElementById('filtroEstado'),
         fechaInicio: document.getElementById('filtroFechaInicio'),
         fechaFin: document.getElementById('filtroFechaFin'),
-        texto: document.getElementById('filtroTexto') 
+        texto: document.getElementById('filtroTexto'),
+        supervisor: document.getElementById('filtroSupervisor')
     };
 
     Object.values(filtros).forEach(filtro => {
@@ -18,7 +19,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const fechaInicio = Date.parse(filtros.fechaInicio.value) || null;
         const fechaFin = Date.parse(filtros.fechaFin.value) || null;
         const texto = filtros.texto.value.toLowerCase();
+        const supervisor = filtros.supervisor.value.toLowerCase();
 
+        console.log(supervisor)
         const resultados = turnosData.filter(item => {
             const itemFecha = Date.parse(item.fechaCreacion);
 
@@ -37,12 +40,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 (fechaInicio === null || itemFecha >= fechaInicio) &&
                 (fechaFin === null || itemFecha <= fechaFin)
             );
+
+            const coincideSupervisor = (
+                (supervisor === '' || item.autorizadoPor.toLowerCase() === supervisor)
+            );
             // filtros de  estado
             const coincideEstado = (
                 (estado === '' || item.estado.toLowerCase() === estado)
             );
             // Aplicar todos los filtros
-            return coincideTexto && coincideFecha && coincideEstado;
+            return coincideTexto && coincideFecha && coincideEstado && coincideSupervisor;
         });
 
         mostrarResultados(resultados);

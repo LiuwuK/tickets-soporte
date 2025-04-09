@@ -13,6 +13,12 @@ if ($result) {
     die("Error al obtener los valores del enum.");
 }
 
+$stmt_s = $con->prepare("SELECT id, name FROM user WHERE cargo = ?");
+$cargo_id = 11;
+$stmt_s->bind_param("i", $cargo_id);
+$stmt_s->execute();
+$result_sup = $stmt_s->get_result();
+
 $turnos = [];
 
 $query = 'SELECT su.nombre AS "instalacion",

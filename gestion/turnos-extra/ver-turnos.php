@@ -61,6 +61,23 @@ check_login();
                   ?>
                 </select>
               </div>
+              <div class="all-fil">  
+                <label for="filtroSupervisor" >Supervisor</label>
+                <select id="filtroSupervisor" name="supervisor" class="form-select form-select-sm">
+                  <option value="">Todos los supervisores</option>
+                  <?php
+                    if ($result_sup->num_rows > 0) {
+                      while ($supervisor = $result_sup->fetch_assoc()) {
+                          echo '<option value="' . htmlspecialchars($supervisor['name'], ENT_QUOTES) . '">' 
+                            . htmlspecialchars($supervisor['name'], ENT_QUOTES) . '</option>';
+                      }
+                    } else {
+                      echo '<option value="">No hay supervisores</option>';
+                    }
+                    $stmt_s->close();
+                  ?>
+                </select>
+              </div>
               <div class="all-fil">
                 <label for="filtroFechaInicio">Fecha Inicio</label>
                 <input name="fecha_inicio" type="date" class="form-control form-control-sm fil" id="filtroFechaInicio">
