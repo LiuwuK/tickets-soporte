@@ -73,7 +73,7 @@ check_login();
                     </div>
                 <?php
                 }
-                if($_SESSION['cargo'] == 4){
+                if($_SESSION['cargo'] == 2){
                 ?>
                     <div class="crd mx-auto" onclick="window.location.href='clients.php';">
                         <i class="bi bi-people-fill"></i>
