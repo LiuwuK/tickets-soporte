@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 month: '2-digit',
                 year: 'numeric'
             });
+ 
             const fechaT = new Date(item.fechaTurno).toLocaleDateString('es-CL', {
                 day: '2-digit',
                 month: '2-digit',
@@ -84,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                     <div class="h-body">
                         <p>Instalación: ${item.instalacion ?? 'Sin Instalación'} </p>
-                        <p>Fecha del Turno: ${fechaT}</p>
+                        <p>Fecha del Turno: ${item.fechaTurno}</p>
                         <p>Horas Cubiertas: ${item.horas} hrs</p>
                         <p>Motivo: ${item.motivo}</p>
                         <div class="h-footer">
