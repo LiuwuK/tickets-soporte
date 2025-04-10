@@ -198,6 +198,7 @@ else if(isset($_POST['updtProject'])) {
     $finCt     = isset($_POST['finContrato']) && $_POST['finContrato'] != '' ? $_POST['finContrato'] : NULL;
     $etapa     = isset($_POST['etapaEst']) && $_POST['etapaEst'] != '' ? $_POST['etapaEst'] : NULL;
     //datos del formulario
+    $competidor = isset($_POST['competidor']) && !empty($_POST['competidor']) ? $_POST['competidor'] : null;
     $newData = [
         'id'                        => $_GET['projectId'],
         'nombre'                    => $_POST['name'],
@@ -221,9 +222,14 @@ else if(isset($_POST['updtProject'])) {
         'fecha_cierre_documental'   => $cierre,
         'fecha_adjudicacion'        => $fAdj,
         'fecha_fin_contrato'        => $finCt,
-        'competidor'                => $_POST['competidor']
+        'competidor'                => $competidor
     ];
 
+    echo '<pre>';
+    print_r($newData);
+    echo '</pre>';
+
+    
     //Datos de la db
     $currentJson = json_encode($projectData);
     //Datos nuevos (del formulario)

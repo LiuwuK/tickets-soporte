@@ -71,13 +71,13 @@ check_login();
                             <div>
                             <select name="client" id="client" class="form-select form-select-sm" required>
                                 <?php
-                                while ($row = mysqli_fetch_assoc($clients)) {
-                                    if ($row['id'] == $row_p['cliente']) {
-                                        echo "<option value=".$row['id']." isSelected>".$row['nombre'] ."</option>";
-                                    } else{
-                                        echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
-                                    }
-                                };
+                                    while ($row = mysqli_fetch_assoc(result: $clients)) {
+                                        if ($row['id'] == $row_p['cliente']) {
+                                            echo "<option value=".$row['id']." selected>".$row['nombre']."</option>";
+                                        }else {
+                                            echo "<option value=".$row['id'].">".$row['nombre']."</option>";
+                                        }
+                                    };
                                 ?>
                             </select>
                             </div>
@@ -132,7 +132,7 @@ check_login();
                             <div class ="form-group">
                                 <label class="form-label">Portal</label>
                                 <div >
-                                <select name="portal" class="form-select form-select-sm" >
+                                <select name="portal" class="form-select form-select-sm" required>
                                     <?php
                                         echo "<option value='' >Sin asignar</option>";
                                         while ($row = mysqli_fetch_assoc(result: $portal)) {
