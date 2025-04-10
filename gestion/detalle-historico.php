@@ -207,7 +207,14 @@ check_login();
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="instalacion" >Instalacion Origen</label>
-                <input type="text" name="instalacion" id="instalacion" value="<?php echo $row['in_nombre'] ?? $row['instalacion']; ?>" class="form-control form-control-sm " readonly/>
+                <input type="text" name="instalacion" id="instalacion" 
+                value="<?php
+                  if (!empty(trim($row['in_nombre'] ?? ''))) {
+                    echo htmlspecialchars($row['in_nombre']);
+                  } elseif (!empty(trim($row['instalacion'] ?? ''))) {
+                    echo htmlspecialchars($row['instalacion']);
+                  } ?>" 
+                class="form-control form-control-sm " readonly/>
               </div>
               <div class="form-group">
                 <label class="form-label" for="supervisor" >Supervisor Encargado</label>

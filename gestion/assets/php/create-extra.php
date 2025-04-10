@@ -204,8 +204,8 @@ if (isset($_POST['carga'])) {
             //Obtener hora inicio y termino 
             $horas = explode("-", $horario_cubierto);
 
-            $hora_inicio = $horas[0]; 
-            $hora_termino = $horas[1];
+            $hora_inicio = trim($horas[0]);
+            $hora_termino = trim($horas[1]);
 
 
             $hora_inicio_obj = DateTime::createFromFormat('H:i', $hora_inicio);
