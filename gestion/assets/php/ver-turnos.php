@@ -33,9 +33,10 @@ $query = 'SELECT su.nombre AS "instalacion",
             te.estado AS "estado", 
             te.created_at AS "fechaCreacion",
             us.name AS "autorizadoPor",
-            te.id  AS "id"
+            te.id  AS "id",
+            te.autorizado_por AS "supID"
             FROM turnos_extra te
-            LEFT JOIN sucursales su ON (te.sucursal_id = su.id)
+            LEFT JOIN sucursales su ON (te.sucursal_id = su.id) 
             JOIN datos_pago dp ON (te.datos_bancarios_id = dp.id)
             JOIN motivos_gestion mg ON (te.motivo_turno_id = mg.id)
             JOIN user us ON (te.autorizado_por = us.id)';

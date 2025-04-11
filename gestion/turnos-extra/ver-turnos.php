@@ -68,7 +68,7 @@ check_login();
                   <?php
                     if ($result_sup->num_rows > 0) {
                       while ($supervisor = $result_sup->fetch_assoc()) {
-                          echo '<option value="' . htmlspecialchars($supervisor['name'], ENT_QUOTES) . '">' 
+                          echo '<option value="'.$supervisor['id'].'">' 
                             . htmlspecialchars($supervisor['name'], ENT_QUOTES) . '</option>';
                       }
                     } else {

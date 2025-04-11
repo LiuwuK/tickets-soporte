@@ -79,6 +79,7 @@ $sheet->getStyle('Q1:U1')->applyFromArray($styleColor1);
 $fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : '';
 $fecha_fin = isset($_GET['fecha_fin']) ? $_GET['fecha_fin'] : '';
 $estado = isset($_GET['estado']) ? $_GET['estado'] : '';
+$supervisor = isset($_GET['supervisor']) ? $_GET['supervisor'] : '';
 
 // Filtros para consulta
 $filtros = [];
@@ -94,6 +95,10 @@ if (array_intersect([10], $_SESSION['deptos'])) {
     $filtros[] = "te.estado = 'aprobado'";
 } elseif (!empty($estado)) {
     $filtros[] = "te.estado = '$estado'";
+}
+
+if (!empty($supervisor)){
+    $filtros[] = "te.autorizado_por = '$supervisor'";
 }
 
 // Generar condiciones WHERE para consulta

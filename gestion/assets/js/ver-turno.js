@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
             const coincideSupervisor = (
-                (supervisor === '' || item.autorizadoPor.toLowerCase() === supervisor)
+                (supervisor === '' || item.supID === supervisor)
             );
             // filtros de  estado
             const coincideEstado = (
