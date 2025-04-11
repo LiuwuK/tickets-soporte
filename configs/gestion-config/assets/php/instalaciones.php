@@ -72,6 +72,21 @@ while ($row = mysqli_fetch_assoc($cityData)) {
     $city[] = $row; 
 }
 
+//Funcion formatear rut
+function formatRut($rut){
+    if (strpos($rut, '.' !== false)){
+        return $rut;
+    }
+    $rut = preg_replace('/[0-9kK]/', '', $rut);
+    $dv = substr($rut, -1);
+    $cuerpo = substr($rut, 0, -1);
+
+    $fRut = number_format($cuerpo, 0, '', '.');
+    $format = $fRut.'-'.$dv;
+    
+    return $format;
+}
+
 //nueva sucursal
 if(isset($_POST['newSup'])){ 
     $name = $_POST['nombre'];
@@ -172,6 +187,7 @@ if(isset($_POST['carga'])){
             $stmt_d->bind_result($depto_id);
             $stmt_d->fetch();
             $stmt_d->close();
+            $supervisor = formatRut($supervisor);
             echo $supervisor;
             die();
             //obtener supervisor 
