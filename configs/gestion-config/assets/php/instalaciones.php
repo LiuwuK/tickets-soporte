@@ -172,6 +172,8 @@ if(isset($_POST['carga'])){
             $stmt_d->bind_result($depto_id);
             $stmt_d->fetch();
             $stmt_d->close();
+            echo $supervisor;
+            die();
             //obtener supervisor 
             $query_s = "SELECT id FROM supervisores WHERE rut = ?";
             $stmt_s = $con->prepare($query_s);
