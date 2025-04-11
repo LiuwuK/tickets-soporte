@@ -77,7 +77,7 @@ function formatRut($rut){
     if (strpos($rut, '.' !== false)){
         return $rut;
     }
-    $rut = preg_replace('/[0-9kK]/', '', $rut);
+    $rut = preg_replace('/[^0-9kK]/', '', $rut);
     $dv = substr($rut, -1);
     $cuerpo = substr($rut, 0, -1);
 
