@@ -188,8 +188,8 @@ if(isset($_POST['carga'])){
             $stmt_d->fetch();
             $stmt_d->close();
             $supervisor = formatRut($supervisor);
-            echo $supervisor;
-            die();
+            
+            //echo $supervisor;
             //obtener supervisor 
             $query_s = "SELECT id FROM supervisores WHERE rut = ?";
             $stmt_s = $con->prepare($query_s);
