@@ -1,7 +1,6 @@
 <?php
 $query = "SELECT *
-    FROM sucursales
-    WHERE departamento_id = 25"; 
+    FROM sucursales"; 
 $sucursalesData = $con->prepare($query);
 $sucursalesData->execute();
 $sucursalData = $sucursalesData->get_result();
