@@ -71,7 +71,12 @@ check_login();
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="instOrigen" >Instalación Origen</label>
-                <input type="text" name="instOrigen" id="instOrigen" value="<?php echo $row['nombre_origen'] ?? $row['suOrigen']; ?>" class="form-control form-control-sm " readonly/>
+                <input type="text" name="instOrigen" id="instOrigen"  value="<?php
+                  if (!empty(trim($row['nombre_origen'] ?? ''))) {
+                    echo htmlspecialchars($row['nombre_origen']);
+                  } elseif (!empty(trim($row['suOrigen'] ?? ''))) {
+                    echo htmlspecialchars($row['suOrigen']);
+                  } ?>"  class="form-control form-control-sm " readonly/>
               </div>
               <div class="form-group">
                 <label class="form-label" for="supOrigen" >Supervisor Origen</label>
@@ -96,7 +101,12 @@ check_login();
             <div class="form-row mt-3">
               <div class="form-group">
                 <label class="form-label" for="instOrigen" >Instalación Destino</label>
-                <input type="text" name="instDestino" id="instDestino" value="<?php echo $row['nombre_destino'] ?? $row['suDestino']; ?>" class="form-control form-control-sm " readonly/>
+                <input type="text" name="instDestino" id="instDestino" value="<?php
+                  if (!empty(trim($row['nombre_destino'] ?? ''))) {
+                    echo htmlspecialchars($row['nombre_destino']);
+                  } elseif (!empty(trim($row['suDestino'] ?? ''))) {
+                    echo htmlspecialchars($row['suDestino']);
+                  } ?>"   class="form-control form-control-sm " readonly/>
               </div>
               <div class="form-group">
                 <label class="form-label" for="supDestino" >Supervisor Destino</label>
