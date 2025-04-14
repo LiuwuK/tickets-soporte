@@ -152,7 +152,7 @@ if (isset($_POST['carga'])) {
                         AND rut = ? 
                         AND motivo_turno_id = ? 
                         AND autorizado_por = ? 
-                        AND persona_motivo = ? 
+                        AND (persona_motivo IS NULL OR persona_motivo = ?)
                         AND contratado = ? 
                         AND nacionalidad = ?";
         $stmtTurnos = $con->prepare($checkTurnos);
@@ -173,11 +173,11 @@ if (isset($_POST['carga'])) {
         $colaboradorTurno = '';
         foreach ($data as $index => $row) {
             if ($index < 2) continue; // Saltar las dos primeras filas
-            /*
+            
             echo "<pre>";
             print_r($row);
             echo "</pre>";
-            */
+            
             //validar si ya existen los datos
 
 
@@ -247,7 +247,7 @@ if (isset($_POST['carga'])) {
             $horas = $row[7];
 
             // Limpiar el monto
-            $monto = floatval(str_replace(['$', ','], '', $row[8]));
+            $monto = floatval(str_replace(['$', ',', '.'], '', $row[8]));
             $rut = $row[9] . '-' . $row[10];
             $colaborador = ucwords(strtolower($row[11]));
             $nacionalidad = ucwords(strtolower($row[12]));
@@ -280,11 +280,25 @@ if (isset($_POST['carga'])) {
             if (!$stmt_m->num_rows) $motivo_id = null;
             $stmt_m->free_result();
 
+            /*
+            echo   'INSTALACION ID '.$instalacion_id;
+            echo   '<br>fecha turno'.$fecha;
+            echo   '<br>horas '.$horas;
+            echo   '<br>monto '.$monto;
+            echo   '<br>colaborador '.$colaborador;
+            echo   '<br>rut '.$rut;
+            echo   '<br>motivo '.$motivo_id;
+            echo   '<br>persona motivo '.$persona_motivo;
+            echo   '<br>autorizadopor '.$autorizado;
+            echo   '<br>contratado '.$contratado;
+            echo   '<br>nacionalidad '.$nacionalidad;
+            */
             //Verificar si existe los datos 
             $stmtTurnos->bind_param("isiissiisis",$instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             $stmtTurnos->execute();
             $stmtTurnos->store_result();    
             if ($stmtTurnos->num_rows > 0) {
+                echo "SI EXISTE";
                 $turnos += 1;
                 $colaboradorTurno = $colaborador;
                 continue;
@@ -321,11 +335,7 @@ if (isset($_POST['carga'])) {
                 $bancoId = $stmtDatosPago->insert_id;
             }
             $stmtCheck->free_result(); 
-           /*
-            echo "<pre>";
-            var_dump($instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
-            echo "</pre>";
-            */
+        
             if($count > 0 ){
                  echo "<script>alert('Error al Insertar turno con fecha la fecha '.$fechasInvalidas.', no corresponde al dia de hoy');</script>";
             }
@@ -335,11 +345,12 @@ if (isset($_POST['carga'])) {
             if ($bancoscount > 0){
                 echo "<script>alert('Error al Insertar turno con el banco'.$bancosInvalidos.', el Banco esta mal escrito o no esta registrado');</script>";
             }
-            // Insertar en turnos_extra
+
+            // Insertar en turnos_extra-
             $stmt->bind_param("isiissiiisisss", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, 
                                 $autorizado, $persona_motivo, $contratado, $nacionalidad, $hora_inicio_str, $hora_termino_str);
             if (!$stmt->execute()) {
-                die("Error al ejecutar la consulta de inserción de turnos: " . $stmt->error);
+                die("ERROR AL INSERTAR". $stmt->error);
             }
         }
         if($count > 0){
