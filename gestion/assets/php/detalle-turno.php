@@ -33,12 +33,23 @@ if (isset($_GET['id'])) {
 
     // Preparar la consulta
     $stmt = mysqli_prepare($con, $query);
+    if (!$stmt) {
+        die("Error al preparar la consulta: " . mysqli_error($con));
+    }
     mysqli_stmt_bind_param($stmt, 'i', $id);
-    mysqli_stmt_execute($stmt);
+    if (!mysqli_stmt_execute($stmt)) {
+        die("Error al ejecutar la consulta: " . mysqli_stmt_error($stmt));
+    }
     $result = mysqli_stmt_get_result($stmt);
-    
+    if (!$result) {
+        die("Error al obtener resultados: " . mysqli_error($con));
+    }
     $row = mysqli_fetch_assoc($result);
-    mysqli_stmt_close($stmt);
+    if (!$row) {
+        die("No se encontró ningún turno con el ID proporcionado");
+    }
+} else {
+    die("No se proporcionó ID de turno");
 }
 //aprobar turno
 if(isset($_POST['approved'])){

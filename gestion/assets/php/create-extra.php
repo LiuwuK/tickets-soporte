@@ -144,7 +144,8 @@ if (isset($_POST['carga'])) {
 
         $checkTurnos = "SELECT id
                         FROM turnos_extra
-                        WHERE fecha_turno = ? 
+                        WHERE sucursal_id = ? 
+                        AND fecha_turno = ?
                         AND horas_cubiertas = ? 
                         AND monto = ? 
                         AND nombre_colaborador = ? 
@@ -159,8 +160,6 @@ if (isset($_POST['carga'])) {
         if (!$stmtTurnos) {
             die("Error al preparar la consulta de verificación: " . $con->error);
         }
-
-
         if (!$stmt) {
             die("Error al preparar la consulta de inserción de turnos: " . $con->error);
         }
@@ -282,7 +281,7 @@ if (isset($_POST['carga'])) {
             $stmt_m->free_result();
 
             //Verificar si existe los datos 
-            $stmtTurnos->bind_param("siissiisis", $fecha, $horas, $monto, $colaborador, $rut, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
+            $stmtTurnos->bind_param("isiissiisis",$instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             $stmtTurnos->execute();
             $stmtTurnos->store_result();    
             if ($stmtTurnos->num_rows > 0) {
@@ -322,11 +321,11 @@ if (isset($_POST['carga'])) {
                 $bancoId = $stmtDatosPago->insert_id;
             }
             $stmtCheck->free_result(); 
-            /*
+           /*
             echo "<pre>";
             var_dump($instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
             echo "</pre>";
-             */
+            */
             if($count > 0 ){
                  echo "<script>alert('Error al Insertar turno con fecha la fecha '.$fechasInvalidas.', no corresponde al dia de hoy');</script>";
             }
