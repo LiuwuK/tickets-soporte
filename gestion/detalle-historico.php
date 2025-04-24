@@ -79,6 +79,12 @@ check_login();
                   } ?>"  class="form-control form-control-sm " readonly/>
               </div>
               <div class="form-group">
+                <label class="form-label" for="raOrigen" >Razón Social</label>
+                <input type="text" name="raOrigen" id="raOrigen" value="<?php echo $row['raOrigen']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
                 <label class="form-label" for="supOrigen" >Supervisor Origen</label>
                 <input type="text" name="supOrigen" id="supOrigen" value="<?php echo $row['supOrigen']; ?>" class="form-control form-control-sm " readonly/>
               </div>
@@ -108,6 +114,13 @@ check_login();
                     echo htmlspecialchars($row['suDestino']);
                   } ?>"   class="form-control form-control-sm " readonly/>
               </div>
+              <div class="form-group">
+                <label class="form-label" for="raDestino" >Razón Social</label>
+                <input type="text" name="raDestino" id="raDestino" value="<?php echo $row['raDestino']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+
+            <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="supDestino" >Supervisor Destino</label>
                 <input type="text" name="supDestino" id="supDestino" value="<?php echo $row['supDestino']; ?>" class="form-control form-control-sm " readonly/>
@@ -226,6 +239,12 @@ check_login();
                   } ?>" 
                 class="form-control form-control-sm " readonly/>
               </div>
+              <div class="form-group">
+                <label class="form-label" for="razon" >Razón Social</label>
+                <input type="text" name="razon" id="razon" value="<?php echo $row['razon']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+            <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="supervisor" >Supervisor Encargado</label>
                 <input type="text" name="supervisor" id="supervisor" value="<?php echo $row['supervisor']; ?>" class="form-control form-control-sm " readonly/>

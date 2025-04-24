@@ -220,16 +220,18 @@ if(isset($_POST['desvForm'])){
 
 //datos traslados y desvinculaciones del dia(16:00 dia anterior - 16:00 hoy)
 //traslados
-$query = "SELECT tr.*, 
-                us.name AS soliN, -- Nombre del solicitante
-                su_origen.nombre AS suOrigen, -- Sucursal de origen
-                jo_origen.tipo_jornada AS joOrigen, -- Jornada de origen
-                su_destino.nombre AS suDestino, -- Sucursal de destino
-                jo_destino.tipo_jornada AS joDestino, -- Jornada de destino
-                sup_origen.nombre_supervisor AS supOrigen, -- Supervisor de origen
-                sup_destino.nombre_supervisor AS supDestino, -- Supervisor destino
-                rol_origen.nombre_rol AS rolOrigen, -- rol origen
-                rol_destino.nombre_rol AS rolDestino -- rol destino
+$query = "  SELECT tr.*, 
+                us.name AS soliN,
+                su_origen.nombre AS suOrigen,
+                jo_origen.tipo_jornada AS joOrigen,
+                su_destino.nombre AS suDestino,
+                jo_destino.tipo_jornada AS joDestino,
+                sup_origen.nombre_supervisor AS supOrigen,
+                sup_destino.nombre_supervisor AS supDestino,
+                su_origen.razon_social AS raOrigen,
+                su_destino.razon_social AS raDestino,
+                rol_origen.nombre_rol AS rolOrigen,
+                rol_destino.nombre_rol AS rolDestino
             FROM traslados tr
             JOIN user us ON tr.solicitante = us.id
             JOIN sucursales su_origen ON tr.instalacion_origen = su_origen.id
@@ -240,8 +242,12 @@ $query = "SELECT tr.*,
             JOIN supervisores sup_destino ON tr.supervisor_destino = sup_destino.id
             JOIN roles rol_origen ON tr.rol_origen = rol_origen.id
             JOIN roles rol_destino ON tr.rol_destino = rol_destino.id
-            WHERE (tr.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
-            AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR) OR (tr.estado = 'En gestión')
+            WHERE (tr.fecha_registro BETWEEN 
+                    DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 DAY), '%Y-%m-%d 16:00:00')
+                AND 
+                    DATE_FORMAT(NOW(), '%Y-%m-%d 16:00:00')
+                )
+            OR tr.estado = 'En gestión'
             ";
 if($_SESSION['cargo'] == 11){
     $usID = $_SESSION['id'];
@@ -259,6 +265,7 @@ $num = $traslados->num_rows;
 
 $query = "SELECT de.*, 
                 su.nombre AS instalacion,
+                su.razon_social AS razon,
                 us.name AS soliN,
                 sup.nombre_supervisor AS supervisor,
                 mo.motivo AS motivoEgreso,
@@ -269,8 +276,11 @@ $query = "SELECT de.*,
             JOIN supervisores sup ON(de.supervisor_origen = sup.id)
             JOIN motivos_gestion mo ON(de.motivo = mo.id)
             LEFT JOIN roles rl ON(de.rol = rl.id)
-            WHERE (de.fecha_registro BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) + INTERVAL 16 HOUR 
-            AND CURDATE() + INTERVAL 1 DAY + INTERVAL 16 HOUR)
+            WHERE (de.fecha_registro BETWEEN 
+                    DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 DAY), '%Y-%m-%d 16:00:00')
+                AND 
+                    DATE_FORMAT(NOW(), '%Y-%m-%d 16:00:00')
+                )
             OR (de.estado = 'En gestión')
 ";
 if($_SESSION['cargo'] == 11){

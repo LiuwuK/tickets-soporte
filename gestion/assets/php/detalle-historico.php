@@ -17,6 +17,8 @@ if(isset($_GET['tipo'])){
                     jo_destino.tipo_jornada AS joDestino, -- Jornada de destino
                     sup_origen.nombre_supervisor AS supOrigen, -- Supervisor de origen
                     sup_destino.nombre_supervisor AS supDestino, -- Supervisor destino
+                    su_origen.razon_social AS raOrigen,
+                    su_destino.razon_social AS raDestino,
                     mg.motivo AS motivoN, -- Motivo traslado
                     rol_origen.nombre_rol AS rolOrigen, -- rol origen
                     rol_destino.nombre_rol AS rolDestino, -- rol destino
@@ -45,7 +47,8 @@ if(isset($_GET['tipo'])){
                         sup.nombre_supervisor AS supervisor,
                         mo.motivo AS motivoEgreso,
                         doc.url AS url,
-                        de.id AS idDesv
+                        de.id AS idDesv,
+                        su.razon_social AS razon
                     FROM desvinculaciones de
                     JOIN user us ON(de.solicitante = us.id)
                     JOIN sucursales su ON(de.instalacion = su.id)

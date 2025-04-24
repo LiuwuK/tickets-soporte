@@ -421,14 +421,26 @@ $usRol = $_SESSION['cargo'];
                   ?>
                 </div>
                 <div class="origen-data">
-                  <strong>Instalacion de Origen: <?php echo $row['inOrigen_nombre'] ?? $row['suOrigen'] ?></strong>
+                  <strong>Instalacion de Origen: <?php  
+                  if (!empty(trim($row['inOrigen_nombre'] ?? ''))) {
+                    echo htmlspecialchars($row['inOrigen_nombre']);
+                  } elseif (!empty(trim($row['suOrigen'] ?? ''))) {
+                    echo htmlspecialchars($row['suOrigen']);
+                  } ?></strong>
                   <p>Supervisor: <?php echo $row['supOrigen'];?></p>
+                  <p>Razón Social: <?php echo $row['raOrigen'] ?? 'Sin razón social' ?></p>
                   <p>Jornada Origen: <?php echo $row['joOrigen'];?></p>
                   <p>Rol: <?php echo $row['rolOrigen'];?></p>
                 </div>
                 <div class="destino-data">
-                  <strong>Instalacion de Destino: <?php echo $row['inDestino_nombre'] ?? $row['suDestino'] ?></strong>
+                  <strong>Instalacion de Destino: <?php 
+                  if (!empty(trim($row['inDestino_nombre'] ?? ''))) {
+                    echo htmlspecialchars($row['inDestino_nombre']);
+                  } elseif (!empty(trim($row['suDestino'] ?? ''))) {
+                    echo htmlspecialchars($row['suDestino']);
+                  }?></strong>
                   <p>Supervisor: <?php echo $row['supDestino'];?></p>
+                  <p>Razón Social: <?php echo $row['raDestino'] ?? 'Sin razón social' ?></p>
                   <p>Jornada Destino: <?php echo $row['joDestino'];?></p>
                   <p>Rol: <?php echo $row['rolDestino'];?></p>
                 </div>
@@ -489,8 +501,15 @@ $usRol = $_SESSION['cargo'];
                   ?>
                 </div>
                 <div class="origen-data">
-                  <strong>Instalación Origen: <?php echo $row['in_nombre'] ?? $row['instalacion'] ?></strong>
+                  <strong>Instalación Origen: <?php 
+                   if (!empty(trim($row['in_nombre'] ?? ''))) {
+                    echo htmlspecialchars($row['in_nombre']);
+                  } elseif (!empty(trim($row['instalacion'] ?? ''))) {
+                    echo htmlspecialchars($row['instalacion']);
+                  } 
+                  ?></strong>
                   <p>Supervisor: <?php echo $row['supervisor'];?></p>
+                  <p>Razón Social: <?php echo $row['razon'] ?? 'Sin razón social' ?></p>
                   <p>Rol: <?php echo !empty($row['rolN']) ? $row['rolN'] : 'Sin Asignar' ;?></p>
                 </div>
                 <div class="destino-data">
