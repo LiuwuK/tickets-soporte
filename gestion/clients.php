@@ -87,14 +87,11 @@ check_login();
         </div>
         <div class="modal-body">
             <form id="form" method="post" enctype="multipart/form-data">
-              <div class="form-row-modal mb-3">
+              <div class="form-row mb-3">
                   <div class="form-group">
                       <label for="nombreCliente" class="form-label">Nombre Cliente</label>
                       <input type="text" class="form-control form-control-sm" id="nombreCliente" name="nombreCliente" required>
                   </div>
-              </div>
-
-              <div class="form-row-modal mb-3">
                   <div class="form-group">
                       <label class="form-label">Vertical</label>
                       <div>
@@ -109,7 +106,26 @@ check_login();
                       </div>
                   </div>
               </div>
-              <div class="form-row-modal mb-3">
+
+              <div class="form-row mb-3">
+                <div class="form-group">
+                  <label for="nombreEnc" class="form-label">Nombre Encargado</label>
+                  <input type="text" class="form-control form-control-sm" id="nombreEnc" name="nombreEnc" required>
+                </div>
+                <div class="form-group">
+                  <label for="cargo" class="form-label">Cargo</label>
+                  <input type="text" class="form-control form-control-sm" id="cargo" name="cargo" required>
+                </div>
+              </div>
+
+              <div class="form-row mb-3">
+                <div class="form-group">
+                  <label for="correo" class="form-label">Correo</label>
+                  <input type="email" class="form-control form-control-sm" id="correo" name="correo" required>
+                </div>
+              </div>
+
+              <div class="form-row mb-3">
                 <div class="form-group">
                     <label for="clientImg" class="form-label">Subir Imagen</label>
                     <input class="form-control form-control-sm" type="file" id="clientImg" name="clientImg" accept="image/*">

@@ -37,6 +37,17 @@ if(isset($_GET['clientID'])){
     $competidores = $compData->get_result();
     $num_com = $competidores->num_rows;
 
+    //Obtener info de actividades
+
+    $query = "SELECT * 
+                FROM actividades
+                WHERE cliente_id = $id
+                ";
+    $actData = $con->prepare($query);
+    $actData->execute();
+    $actividades = $actData->get_result();
+    $num_act = $actividades->num_rows;
+
     //obtener licitaciones ganadas por los competidores
     $query = "SELECT pr.*, co.nombre_competidor AS competidorN , cl.nombre AS clasiN
                 FROM proyectos pr
@@ -103,6 +114,9 @@ if(isset($_GET['clientID'])){
 if(isset($_POST['addClient'])){
     $cliente = $_POST['nombreCliente'];
     $vertical = $_POST['vertical'];
+    $encargado = $_POST['nombreEnc'];
+    $cargo = $_POST['cargo'];
+    $correo = $_POST['correo'];
     // Verificar si el cliente ya existe
     $checkQuery = "SELECT id FROM clientes WHERE nombre = ?";
     $stmtCheck = $con->prepare($checkQuery);
@@ -138,10 +152,10 @@ if(isset($_POST['addClient'])){
             
         } 
 
-        $query =  "INSERT INTO clientes(nombre, vertical, img_perfil)
-                VALUES(?, ?, ?)";
+        $query =  "INSERT INTO clientes(nombre, vertical, encargado, cargo, correo, img_perfil)
+                VALUES(?, ?, ?, ?, ?, ?)";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("sis", $cliente, $vertical, $filePath); 
+        $stmt->bind_param("sissss", $cliente, $vertical, $encargado, $cargo, $correo, $filePath); 
         $stmt->execute();
         echo "<script>alert('Cliente Registrado Correctamente'); location.replace(document.referrer)</script>";
     }

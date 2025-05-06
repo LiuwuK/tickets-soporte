@@ -51,11 +51,12 @@ check_login();
           <img src="<?php echo $img ?>" alt="">
           <div class="info-body">
             <h4><?php echo $row['nombre'];?></h4>
-            <p>Vertical: <?php echo $row['verticalN'];?></p>
+            <p>Encargado: <?php echo $row['encargado'];?> || Cargo: <?php echo $row['cargo'];?></p>
+            <p>Correo: <?php echo $row['correo'];?></p>
+            <p class="mb-3" >Vertical: <?php echo $row['verticalN'];?></p>
             <h5>Monto total Proyectos: <?php echo '$'.number_format($monto['monto_total'], 0, '.', ',');?></h5>
           </div>
-        </div>   
-
+        </div>
         <div class="col-md-10 compe-card mx-auto">
           <div class="title d-flex">
             <h4>Lista de competidores</h4>
@@ -74,6 +75,35 @@ check_login();
                   <div class="img">
                     <img src="<?php echo $img?>" alt="">
                   </div>
+                  <div class="info-comp">
+                    <strong><?php echo $row['nombre_competidor']; ?> </strong>
+                    <p><?php echo $row['rut']; ?></p>
+                    <p><?php echo $row['especialidad']; ?></p>
+                  </div>
+                </div>  
+              <?php
+              }
+            }else {
+              echo "<h5 class='text-center'>No hay competidores registrados</h5>";
+            }
+            ?>
+          </div>
+        </div>   
+
+        <div class="col-md-10 compe-card mx-auto">
+          <div class="title d-flex">
+            <h4>Lista de Actividades</h4>
+            <button type="button" class="btn btn-sm btn-updt"  data-bs-toggle="modal" data-bs-target="#compModal">
+                <i class="bi bi-plus"></i> 
+            </button>
+          </div>
+          <div class="competidores">
+            <!-- while competidores -->
+            <?php
+            if($num_com > 0){
+              while($row = $competidores->fetch_assoc()){
+              ?>
+                <div class="list d-flex">
                   <div class="info-comp">
                     <strong><?php echo $row['nombre_competidor']; ?> </strong>
                     <p><?php echo $row['rut']; ?></p>
