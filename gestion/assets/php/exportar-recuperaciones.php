@@ -11,7 +11,6 @@ $sheet = $spreadsheet->getActiveSheet();
 
 $query = "SELECT id, nombre 
             FROM sucursales 
-            WHERE departamento_id = 25 
             ORDER BY nombre";
 // 1. Obtener todas las sucursales
 $sucursales = $con->query($query);
