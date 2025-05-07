@@ -93,21 +93,23 @@ check_login();
         <div class="col-md-10 compe-card mx-auto">
           <div class="title d-flex">
             <h4>Lista de Actividades</h4>
-            <button type="button" class="btn btn-sm btn-updt"  data-bs-toggle="modal" data-bs-target="#compModal">
+            <button type="button" class="btn btn-sm btn-updt"  data-bs-toggle="modal" data-bs-target="#actividadModal">
                 <i class="bi bi-plus"></i> 
             </button>
           </div>
           <div class="competidores">
-            <!-- while competidores -->
+            <!-- while actividades -->
             <?php
             if($num_com > 0){
-              while($row = $competidores->fetch_assoc()){
+              while($row = $actividades->fetch_assoc()){
+                $date = DateTime::createFromFormat('Y-m-d H:i:s', $row['fecha_inicio']);
+                $ff = $date->format('d-m-Y H:i');
               ?>
-                <div class="list d-flex">
-                  <div class="info-comp">
-                    <strong><?php echo $row['nombre_competidor']; ?> </strong>
-                    <p><?php echo $row['rut']; ?></p>
-                    <p><?php echo $row['especialidad']; ?></p>
+                <div class="list-act d-flex justify-content-center">
+                  <div class="info-comp justify-content-start">
+                    <strong ><?php echo $row['nombre']; ?></strong>
+                    <p class="mb-1"><?php echo $ff ?></p>
+                    <p><?php echo $row['descripcion']; ?></p>
                   </div>
                 </div>  
               <?php
@@ -190,6 +192,43 @@ check_login();
           <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancelar</button>
           <button type="submit" form="form" name="addComp" class="btn pull-right btn-updt">Agregar</button>
       </div>
+      </div>
+  </div>
+</div>
+
+<div class="modal fade" id="actividadModal"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="actividadModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="actividadModalLabel">Agregar Actividad</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <form id="formA" method="post">
+              <div class="mb-3">
+                  <label for="nombreActividad" class="form-label">Nombre de la Actividad</label>
+                  <input type="text" class="form-control form-control-sm" id="nombreActividad" name="nombreActividad" required>
+              </div>
+              <div class="form-row-modal mb-3 d-flex">
+                  <div class="form-group">
+                      <label for="fechaInicio" class="form-label">Fecha inicio</label>
+                      <input type="datetime-local" class="form-control form-control-sm" id="fechaInicio" name="fechaInicio" required>
+                  </div>
+                  <div class="form-group">
+                      <label for="fechaTermino" class="form-label">Fecha termino</label>
+                      <input type="datetime-local" class="form-control form-control-sm" id="fechaTermino" name="fechaTermino" required>
+                  </div>
+              </div>
+              <div class="mb-3">
+                  <label for="descripcionActividad" class="form-label">Descripción</label>
+                  <textarea class="form-control form-control-sm" id="descripcionActividad" name="descripcionActividad" rows="3"></textarea>
+              </div>
+              </form>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
+              <button type="submit" form="formA" name="addAct" class="btn btn-updt pull-right">Agregar</button>
+          </div>
       </div>
   </div>
 </div>

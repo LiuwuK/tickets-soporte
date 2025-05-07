@@ -80,6 +80,7 @@
 }
 .info-comp strong{
     font-size: 15px;
+    text-transform: capitalize;
 }
 .end{
     margin-left: 3%;  
@@ -94,6 +95,11 @@
 .list{
     background-color: #f4f4f4;
     min-height: 100px;
+}
+.list-act{
+    background-color: #f4f4f4;
+    min-height: 100px;
+    width: 200px
 }
 .img{
     width: 40%;

@@ -42,6 +42,7 @@ if(isset($_GET['clientID'])){
     $query = "SELECT * 
                 FROM actividades
                 WHERE cliente_id = $id
+                ORDER BY fecha_inicio ASC
                 ";
     $actData = $con->prepare($query);
     $actData->execute();
@@ -106,6 +107,20 @@ if(isset($_GET['clientID'])){
             $stmt->execute();
             echo "<script>alert('Competidor Registrado Correctamente'); location.replace(document.referrer)</script>";
         }
+    }
+    if(isset($_POST['addAct'])){
+        $nombre = $_POST['nombreActividad']; 
+        $fInicio = $_POST['fechaInicio'];
+        $fTermino = $_POST['fechaTermino'];
+        $descripcion = $_POST['descripcionActividad'];
+        $cliente_id = $_GET['clientID'];
+
+        $query =  "INSERT INTO actividades(nombre, fecha_inicio, fecha_termino, descripcion, cliente_id)
+        VALUES(?, ?, ?, ?, ?)";
+        $stmt = $con->prepare($query);
+        $stmt->bind_param("ssssi", $nombre, $fInicio, $fTermino, $descripcion, $cliente_id); 
+        $stmt->execute();
+        echo "<script>alert('Actividad Registrada Correctamente'); location.replace(document.referrer)</script>";
     }
 
 }
