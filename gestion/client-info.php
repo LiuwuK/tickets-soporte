@@ -51,10 +51,29 @@ check_login();
           <img src="<?php echo $img ?>" alt="">
           <div class="info-body">
             <h4><?php echo $row['nombre'];?></h4>
-            <p>Encargado: <?php echo $row['encargado'];?> || Cargo: <?php echo $row['cargo'];?></p>
-            <p>Correo: <?php echo $row['correo'];?></p>
+            <div class="editable-info">
+              <p>
+                  <strong>Encargado:</strong>
+                  <span class="editable" contenteditable="true" data-field="encargado">
+                      <?php echo !empty(trim($row['encargado'])) ? htmlspecialchars(trim($row['encargado'])) : 'Sin definir'; ?>
+                  </span>
+                  || 
+                  <strong>Cargo:</strong>
+                  <span class="editable" contenteditable="true" data-field="cargo">
+                      <?php echo !empty(trim($row['cargo'])) ? htmlspecialchars(trim($row['cargo'])) : 'Sin definir'; ?>
+                  </span>
+              </p>
+              <p>
+                  <strong>Correo:</strong>
+                  <span class="editable" contenteditable="true" data-field="correo">
+                      <?php echo !empty(trim($row['correo'])) ? htmlspecialchars(trim($row['correo'])) : 'Sin definir'; ?>
+                  </span>
+              </p>
+            </div>
+
             <p class="mb-3" >Vertical: <?php echo $row['verticalN'];?></p>
             <h5>Monto total Proyectos: <?php echo '$'.number_format($monto['monto_total'], 0, '.', ',');?></h5>
+            <button id="guardarCambios" class="btn btn-default mt-2" disabled>Guardar Cambios</button>
           </div>
         </div>
         <div class="col-md-10 compe-card mx-auto">
@@ -232,6 +251,99 @@ check_login();
       </div>
   </div>
 </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editables = document.querySelectorAll('.editable');
+    const guardarBtn = document.getElementById('guardarCambios');
+    
+    // Almacenar valores originales
+    const originalValues = {};
+    editables.forEach(editable => {
+        const field = editable.dataset.field;
+        originalValues[field] = editable.textContent.trim();
+        editable.dataset.original = editable.textContent.trim();
+    });
+
+    // Función para verificar cambios
+    function checkForChanges() {
+        let hasChanges = false;
+        
+        editables.forEach(editable => {
+            const field = editable.dataset.field;
+            const currentValue = editable.textContent.trim();
+            
+            if (currentValue !== originalValues[field]) {
+                hasChanges = true;
+            }
+        });
+        
+        guardarBtn.disabled = !hasChanges;
+        guardarBtn.classList.toggle('btn-updt', hasChanges);
+        guardarBtn.classList.toggle('btn-default', !hasChanges);
+    }
+    editables.forEach(editable => {
+        editable.addEventListener('input', checkForChanges);    
+        editable.addEventListener('blur', function() {
+            this.textContent = this.textContent.trim();
+            checkForChanges();
+        });
+    });
+
+    guardarBtn.addEventListener('click', function() {
+        const cambios = {};
+        
+        editables.forEach(editable => {
+            const field = editable.dataset.field;
+            cambios[field] = editable.textContent.trim();
+        });
+        
+        if (cambios.correo && cambios.correo !== 'Sin definir') {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(cambios.correo)) {
+                alert('Por favor ingrese un correo electrónico válido');
+                return;
+            }
+        }
+        
+        fetch('assets/php/updt-clientD.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id: <?php echo $_GET['clientID'] ?>,
+                datos: cambios
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Cambios guardados correctamente');
+                editables.forEach(editable => {
+                    const field = editable.dataset.field;
+                    originalValues[field] = editable.textContent.trim();
+                    editable.dataset.original = editable.textContent.trim();
+                });
+                guardarBtn.disabled = true;
+                guardarBtn.classList.remove('btn-updt');
+                guardarBtn.classList.add('btn-default');
+            } else {
+                alert('Error al guardar: ' + (data.error || ''));
+            }
+        });
+    });
+});
+</script>
+
+<style>
+.btn-updt {
+    transition: all 0.3s ease;
+}
+.btn-updt:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+</style>
 
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
