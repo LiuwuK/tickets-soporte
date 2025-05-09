@@ -335,15 +335,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<style>
-.btn-updt {
-    transition: all 0.3s ease;
-}
-.btn-updt:disabled {
-    cursor: not-allowed;
-    opacity: 0.65;
-}
-</style>
 
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

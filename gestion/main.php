@@ -106,6 +106,11 @@ check_login();
                 <?php    
                 }
                 ?>
+                <div class="crd mx-auto" onclick="window.location.href='planificador/main.php';">
+                    <i class="bi bi-calendar-event"></i>
+                    <h4>Planificador</h4>
+                </div>
+
             </div>
         </div>   
     </div>
