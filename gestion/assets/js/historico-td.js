@@ -89,8 +89,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         <p>Creado por: ${item.solicitante}</p>
                         <p>Observación SSPP: ${item.observacion ? item.observacion.charAt(0).toUpperCase() +
                             item.observacion.slice(1).toLowerCase() : 'No hay observación'}</p>
-                        <p>Observación RRHH: ${item.observacion ? item.observacion.charAt(0).toUpperCase() +
-                            item.observacion.slice(1).toLowerCase() : 'No hay observación'}</p>
+                        <p>Observación RRHH: ${item.obs_rrhh ? item.obs_rrhh.charAt(0).toUpperCase() +
+                            item.obs_rrhh.slice(1).toLowerCase() : 'No hay observación'}</p>
                     </div>
                 </div>
             `;
