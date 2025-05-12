@@ -51,6 +51,10 @@ check_login();
                     <i class="bi bi-person-badge-fill"></i>
                     <h4>Supervisores</h4>
                 </div>
+                <div class="crd mx-auto" onclick="window.location.href='colaboradores.php';">
+                    <i class="bi bi-person-fill-gear"></i>
+                    <h4>Colaboradores</h4>
+                </div>
                 <div class="crd mx-auto" onclick="window.location.href='jornadas.php';">
                     <i class="bi bi-calendar-check-fill"></i>
                     <h4>Jornadas</h4>
