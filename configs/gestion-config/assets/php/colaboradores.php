@@ -177,12 +177,13 @@ if(isset($_POST['carga'])) {
             
             foreach ($data as $index => $row) {
                 if ($index == 0) continue; // Saltar encabezado
-                
+
                 // Validar datos básicos
                 if(empty($row[0]) || empty($row[2]) ) {
                     $errores[] = "Fila $index: Datos básicos faltantes";
                     continue;
                 }
+
                 // Obtener ID de sucursal
                 $stmt_sucursal->bind_param("s", $row[60]);
                 $stmt_sucursal->execute();
@@ -197,7 +198,6 @@ if(isset($_POST['carga'])) {
                 // Formatear fechas
                 $bday = DateTime::createFromFormat('d-m-Y', $row[6])->format('Y-m-d');
                 $entrydate = DateTime::createFromFormat('d-m-Y', $row[14])->format('Y-m-d');
-                
                 
                 // Bind parameters
                 $vigente = ($row[64] == 'SI') ? 1 : 0;
@@ -240,6 +240,7 @@ if(isset($_POST['carga'])) {
                 $mensaje .= "\nErrores: " . count($errores);
                 // Guardar errores en log
                 file_put_contents('errores_carga.log', implode("\n", $errores), FILE_APPEND);
+                echo "<script>alert('".addslashes($mensaje)."'); location.href='colaboradores.php';</script>";
             }
             echo "<script>alert('".addslashes($mensaje)."'); location.href='colaboradores.php';</script>";
         } catch (Exception $e) {
