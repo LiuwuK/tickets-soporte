@@ -139,13 +139,13 @@ if(isset($_POST['btnUpdt'])){
 //eliminar
 if(isset($_POST['delColab'])){
     $id = $_POST['idColab'];
-    $query = "DELETE FROM sucursales WHERE id = ?";
+    $query = "DELETE FROM colaboradores WHERE id = ?";
     $stmt = $con->prepare($query);
     $stmt->bind_param("i", $id);
     if ($stmt->execute()) {
-        echo "<script>alert('sucursal eliminada correctamente.'); location.href='instalaciones.php';</script>";
+        echo "<script>alert('Colaborador eliminado correctamente.'); location.href='colaboradores.php';</script>";
     } else {
-        echo "<script>alert('Error al eliminar la sucursal');</script>";
+        echo "<script>alert('Error al eliminar al colaborador');</script>";
     }
     $stmt->close();
 }
@@ -210,7 +210,7 @@ if(isset($_POST['carga'])) {
                 $entrydate = DateTime::createFromFormat('d-m-Y', $row[14])->format('Y-m-d');
                 
                 // Bind parameters
-                $vigente = ($row[64] == 'Si') ? 1 : 0;
+                $vigente = ($row[65] == 'Si') ? 1 : 0;
                 $email = !empty($row[33]) ? $row[33] : null;
                 $phone = !empty($row[30]) ? $row[30] : null;
                 $lReason = !empty($row[49]) ? $row[49] : null;
@@ -262,7 +262,7 @@ if(isset($_POST['carga'])) {
         $con->autocommit(true);
         $stmt->close();
         $stmt_sucursal->close();
-
+         echo "<script>alert('".addslashes($mensaje)."'); location.href='colaboradores.php';</script>";
     } else {
         echo "<script>alert('Error al subir el archivo: ".$_FILES['file']['error']."');</script>";
     }
