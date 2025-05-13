@@ -48,19 +48,21 @@ check_login();
         <div class="content">
         <?php
           if($num_cl > 0){
-            while($row = $clientes->fetch_assoc()){
-              $img = !empty($row['img_perfil']) && file_exists($row['img_perfil']) ? $row['img_perfil'] : '../../assets/img/user.png';
+            while($row = $colab->fetch_assoc()){
+              $img = !empty($row['img_perfil']) && file_exists($row['img_perfil']) ? $row['img_perfil'] : '../../assets/img/admin.jpg';
         ?>
-              <div class="card" onclick="window.location.href='client-info.php?clientID=<?php echo $row['id']; ?>';">
+              <div class="card" onclick="window.location.href='colab-info.php?colabID=<?php echo $row['id']; ?>';">
                 <div class="profile-img mt-3">
                   <img src="<?php echo $img ?>" alt="">
                 </div>
                 <div class="card-body text-center">
-                    <strong><?php echo $row['nombre'] ?></strong>
-                    <p>Vertical: <?php echo $row['verticalN'] ?></p>
+                    <strong><?php echo $row['name'].' '.$row['fname'].' '.$row['mname']?></strong>
+                    <p>Rut: <?php echo $row['rut'] ?></p>
+                    <p>Razon Social: <?php echo $row['rsocial'] ?></p>
+                    <p>Antiguedad:  <?php echo calcularAntiguedad($row['entry_date']) ?></p>
                 </div>
                 <div class="card-footer text-center">
-                    <strong>Ver Historico</strong>
+                    <strong>Ver Detalles</strong>
                 </div>
               </div>
         <?php
@@ -73,7 +75,7 @@ check_login();
     </div>
   </div>
 
-  <!-- Modal Clientes -->
+  <!-- Modal Clientes 
   <div class="modal fade" id="clientsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="clientsModalLabel" aria-hidden="true">>
     <div class="modal-dialog">
         <div class="modal-content">
@@ -136,6 +138,7 @@ check_login();
         </div>
     </div>
   </div>
+   -->
 
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

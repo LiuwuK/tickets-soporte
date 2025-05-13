@@ -1,10 +1,19 @@
 <?php
 require __DIR__.'/../../../../vendor/autoload.php';
+// Funcion para caclular antiguedad
+function calcularAntiguedad($fechaIngreso) {
+    $entryDate = new DateTime($fechaIngreso);
+    $currentDate = new DateTime();
+    $interval = $currentDate->diff($entryDate);
+    
+    return $interval->format('%y años, %m meses');
+}
+
 //obtener info 
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 //página actual
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$perPage = 10; // Número de registros por página
+$perPage = 20; // Número de registros por página
 $offset = ($page - 1) * $perPage;
 
 $query = "SELECT * FROM colaboradores";
@@ -164,10 +173,11 @@ if(isset($_POST['carga'])) {
         
         $stmt = $con->prepare($query_main);
         $stmt_sucursal = $con->prepare($query_sucursal);
+        /*
         echo "<pre>";
         print_r($data);
         echo "</pre>";
-
+        */
         // Desactivar autocommit para transacción
         $con->autocommit(false);
         
@@ -200,7 +210,7 @@ if(isset($_POST['carga'])) {
                 $entrydate = DateTime::createFromFormat('d-m-Y', $row[14])->format('Y-m-d');
                 
                 // Bind parameters
-                $vigente = ($row[64] == 'SI') ? 1 : 0;
+                $vigente = ($row[64] == 'Si') ? 1 : 0;
                 $email = !empty($row[33]) ? $row[33] : null;
                 $phone = !empty($row[30]) ? $row[30] : null;
                 $lReason = !empty($row[49]) ? $row[49] : null;
