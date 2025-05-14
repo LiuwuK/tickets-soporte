@@ -55,7 +55,7 @@ if(!empty($desvinculaciones)){
         $mail->setFrom('stsafeteck@gmail.com', 'Desvinculaciones');
         $destinatarios = [
             'fnorton@gruposafeteck.com' => 'Usuario',
-            'fponce@gruposaeteck.com' => 'Usuario',
+            'fponce@gruposafeteck.com' => 'Usuario',
             'fsilva@gruposafeteck.com' => 'Usuario',
             'kcarvajal@gruposafeteck.com' => 'Usuario',
             'mserrano@gruposafeteck.com' => 'Usuario',
@@ -144,6 +144,7 @@ if(!empty($desvinculaciones)){
                 <div class="soli-data" style="margin-bottom:25px;">
                     <p><strong>Solicitado por</strong>: '.$dv['soliN'].'</p>
                     <p style="margin-left:5px"><strong>Fecha</strong>: '.$dv['fecha_registro'].'</p>
+                    <p style="margin-left:5px"><strong>Estado</strong>: '.$dv['estado'].'</p>
                 </div>
                 <div class="colaborador">
                     <h3>Datos del colaborador</h3>

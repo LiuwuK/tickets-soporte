@@ -8,7 +8,9 @@ include('../dbconnection.php');
 $user = 'stsafeteck@gmail.com'; // Correo
 $pass = 'molc xtfj nfev kruf'; // Contraseña de aplicación
 
-$query = "SELECT tr.nombre_colaborador,
+$query = "SELECT
+                tr.estado,
+                tr.nombre_colaborador,
                 tr.rut,
                 tr.fecha_inicio_turno,
                 tr.fecha_registro,
@@ -160,6 +162,7 @@ if(!empty($traslados)){
                 <div class="soli-data" style="margin-bottom:25px;">
                     <p><strong>Solicitado por</strong>: '.$tr['soliN'].'</p>
                     <p style="margin-left:5px"><strong>Fecha</strong>: '.$tr['fecha_registro'].'</p>
+                    <p style="margin-left:5px"><strong>Estado</strong>: '.$tr['estado'].'</p>
                 </div>
                 <div class="colaborador">
                     <h3>Datos del colaborador</h3>
