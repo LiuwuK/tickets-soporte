@@ -177,8 +177,9 @@ foreach ($supervisores as $supervisor) {
 
         // Remitente y destinatarios
         $mail->setFrom('stsafeteck@gmail.com', 'Turnos Diarios');
-        $mail->addAddress($supervisor['email'], $supervisor['name']);  
+        $mail->addAddress($supervisor['email'], $supervisor['name']);
 
+        date_default_timezone_set('America/Santiago');
         // Asunto y cuerpo del mensaje
         $mail->Subject = 'Reporte Diario de Turnos - '.$fTurnos;
         $mail->Body = '

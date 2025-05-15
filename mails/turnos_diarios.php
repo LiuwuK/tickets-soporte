@@ -176,6 +176,7 @@ try {
         $mail->addAddress($email, $nombre);
     }
 
+    date_default_timezone_set('America/Santiago');
     // Asunto y cuerpo del mensaje
     $mail->Subject = 'Reporte Diario de Turnos - '.$fTurnos;
     $mail->Body = '
