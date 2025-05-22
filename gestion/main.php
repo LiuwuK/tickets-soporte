@@ -104,13 +104,20 @@ check_login();
                         <h4>Recuperaciones</h4>
                     </div>
                 <?php    
-                }
+                }if(isset($_SESSION['deptos']) 
+                && 
+                is_array($_SESSION['deptos']) 
+                && 
+                array_intersect([23], $_SESSION['deptos'])){
                 ?>
+                
                 <div class="crd mx-auto" onclick="window.location.href='planificador/main.php';">
                     <i class="bi bi-calendar-event"></i>
                     <h4>Planificador</h4>
                 </div>
-
+                <?php    
+                }
+                ?>
             </div>
         </div>   
     </div>
