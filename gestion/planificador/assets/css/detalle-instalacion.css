@@ -1,0 +1,29 @@
+/* Turnos */
+.info{
+    padding: 25px;
+}
+.info h3{
+    font-weight: 600;
+}
+.info p{
+    padding: 0px;
+    margin: 0px;
+}
+.main-turnos, .main-colab{
+    margin: 0px auto;
+    margin-top: 2%;
+}
+#cuerpo-tabla td{
+    text-align: center;
+}
+
+
+/*Calendario*/
+#calendar a{
+  text-decoration: none;
+  color: #33435e
+}
+
+.fc-toolbar-title{
+  text-transform: capitalize;
+}

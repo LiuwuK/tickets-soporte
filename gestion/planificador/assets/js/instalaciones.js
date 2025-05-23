@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
         data.forEach(item => {
 
             const itemHTML = `
-                <div class="h-container" onclick="window.location.href='detalle-sucursal.php?id=${item.id}';">
+                <div class="h-container" onclick="window.location.href='detalle-instalacion.php?id=${item.id}';">
                     <div class="h-header d-flex justify-content-between">
                         <div class="colab">
                             <strong>${item.nombre}</strong>
