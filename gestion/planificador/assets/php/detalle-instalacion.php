@@ -3,7 +3,6 @@
 $query = "SELECT * FROM jornadas";
 $jornadas = mysqli_query($con, $query);
 
-// Verificamos si hay resultados
 if (!$jornadas) {
     die("Error al obtener jornadas: " . mysqli_error($con));
 }
@@ -80,12 +79,13 @@ if (isset($_GET['id'])) {
     }
     mysqli_stmt_close($stmt);
 
-    //Colaboradores asociados
-    $query = "  SELECT * 
-                FROM `colaboradores` 
-                WHERE vigente = 1 
-                AND facility = ?;";
-    
+    // Colaboradores asociados con sus codigos
+    $query = "SELECT c.*
+            FROM `colaboradores` c
+            WHERE c.vigente = 1 
+            AND c.facility = ?
+            GROUP BY c.id";
+
     $stmt = mysqli_prepare($con, $query);
     if (!$stmt) {
         die("Error al preparar la consulta de colaboradores: " . mysqli_error($con));

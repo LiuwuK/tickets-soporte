@@ -123,32 +123,31 @@ if (isset($_SESSION['error_message'])) {
                 <tbody id="cuerpo-tabla">
                   <!-- Mostrar turnos existentes -->
                   <?php 
-                    $codigo = 1;
                     if (!empty($turnosExistentes)) {
-                        foreach ($turnosExistentes as $index => $turno): ?>
-                        <tr>
-                            <td class="align-middle text-center">
-                              <?= $turno['nombre_turno'] ?>
-                            </td>
-                            <td class="align-middle text-center">
-                              <?= $turno['nJo'] ?>
-                            </td>
-                            <td class="align-middle text-center">
-                                <?= $turno['hora_entrada'] ?>
-                            </td>
-                            <td class="align-middle text-center">
-                              <?= $turno['hora_salida'] ?>
-                            </td>
-                            <td class="align-middle text-center">
-                              <?= 'M'.$codigo ?>
-                            </td>
-                            <td class="align-middle text-center">
-                              <button type="button" class="btn btn-danger" onclick="eliminarTurno(this)" <?= count($turnosExistentes) <= 1 ? 'disabled' : '' ?>>X</button>
-                            </td>
-                        </tr>
-                        <?php 
-                        $codigo = $codigo + 1;
-                        endforeach; 
+                      foreach ($turnosExistentes as $index => $turno): ?>
+                      <tr data-turno-id="<?= $turno['id'] ?>" data-jornada="<?= $turno['nJo'] ?>" data-codigo="<?= $turno['nJo'] ?>" >
+                        <td class="align-middle text-center">
+                          <?= $turno['nombre_turno'] ?>
+                        </td>
+                        <td class="align-middle text-center">
+                          <?= $turno['nJo'] ?>
+                        </td>
+                        <td class="align-middle text-center">
+                            <?= $turno['hora_entrada'] ?>
+                        </td>
+                        <td class="align-middle text-center">
+                          <?= $turno['hora_salida'] ?>
+                        </td>
+                        <td class="align-middle text-center">
+                          <?= $turno['codigo'] ?>
+                        </td>
+                        <td class="align-middle text-center">
+                          <button type="button" class="btn btn-updt btn-dates">Asignar fecha</button>
+                          <button type="button" class="btn btn-danger" onclick="eliminarTurno(this)" <?= count($turnosExistentes) <= 1 ? 'disabled' : '' ?>>X</button>
+                        </td>
+                      </tr>
+                      <?php 
+                      endforeach; 
                     }
                   ?>
                                       
@@ -195,11 +194,12 @@ if (isset($_SESSION['error_message'])) {
             <table class="table table-hover" id="tabla-colab">
               <thead>
                 <tr>
-                    <th scope="col" class="align-middle text-center w-20">Rut</th>
-                    <th scope="col" class="align-middle text-center">Nombre</th>
-                    <th scope="col" class="align-middle text-center">Telefono</th>
-                    <th scope="col" class="align-middle text-center">Fecha Inicio Contrato</th>
-                    <th scope="col" class="align-middle text-center">Acciones</th>
+                  <th scope="col" class="align-middle text-center">Rol</th>        
+                  <th scope="col" class="align-middle text-center w-20">Rut</th>
+                  <th scope="col" class="align-middle text-center">Nombre</th>
+                  <th scope="col" class="align-middle text-center">Telefono</th>
+                  <th scope="col" class="align-middle text-center">Fecha Inicio Contrato</th>
+                  <th scope="col" class="align-middle text-center">Acciones</th>
                 </tr>
               </thead>
               <tbody id="cuerpo-colab">
@@ -208,6 +208,9 @@ if (isset($_SESSION['error_message'])) {
                   if (!empty($colaboradorAsociado)) {
                     foreach ($colaboradorAsociado as $index => $colab): ?>
                     <tr data-id="<?= $colab['id'] ?>">
+                      <td class="align-middle text-center">
+                        <?= 'por definir' ?>
+                      </td>
                       <td class="align-middle text-center">
                         <?= $colab['rut'] ?>
                       </td>
@@ -221,7 +224,7 @@ if (isset($_SESSION['error_message'])) {
                         <?= $colab['entry_date'] ?>
                       </td>
                       <td class="align-middle text-center">
-                        <button type="submit" class="btn btn-updt">Asignar Horario</button>
+                        <button type="button" class="btn btn-updt">Asignar rol</button>
                       </td>
                     </tr>
                     <?php 
@@ -238,175 +241,159 @@ if (isset($_SESSION['error_message'])) {
     </div>
   </div>
 
-<!-- Modal para asignar turno -->
-<div class="modal fade" id="modalHorario" tabindex="-1" aria-hidden="true">
+  <div class="modal fade" id="modalHorario" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Asignar Turno a <span id="nombreColaborador"></span></h5>
+        <h5 class="modal-title">Asignar Fechas a jornada</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form id="formHorario">
-          <input type="hidden" id="colaboradorId" >
           <input type="hidden" id="sucursalId" value="<?= $_GET['id'] ?>">
-          
+          <input type="hidden" id="turnoId">
+          <input type="hidden" id="horaEntrada">
+          <input type="hidden" id="horaSalida">
+          <input type="hidden" id="patronJornada">
           <div class="row mb-3">
             <div class="col-md-6">
               <label class="form-label">Fecha Inicio</label>
               <input type="date" class="form-control" id="fechaInicio" required>
             </div>
             <div class="col-md-6">
-              <label class="form-label">Turno</label>
-              <select class="form-control" id="turnoSeleccionado" required>
-                <option value="">Seleccionar turno</option>
-                <?php foreach($turnosExistentes as $turno): ?>
-                <option value="<?= $turno['id'] ?>" 
-                        data-hora-entrada="<?= $turno['hora_entrada'] ?>"
-                        data-hora-salida="<?= $turno['hora_salida'] ?>"
-                        data-jornada="<?= $turno['nJo'] ?>">
-                  <?= $turno['nombre_turno'] ?> (<?= $turno['hora_entrada'] ?> - <?= $turno['hora_salida'] ?>)
-                </option>
-                <?php endforeach; ?>
-              </select>
-            </div>
-          </div>
-          
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label class="form-label">Duración (semanas)</label>
-              <input type="number" class="form-control" id="duracion" min="1" value="4" required>
+              <label class="form-label">Fecha Termino</label>
+              <input type="date" class="form-control" id="fechaTermino" required>
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="guardarHorario">Guardar Turno</button>
+        <button type="button" class="btn btn-primary" id="guardarHorario">Guardar turnos</button>
       </div>
     </div>
   </div>
 </div>
+
 <script>
-  // Asignar Horario
-document.querySelectorAll('#tabla-colab .btn-updt').forEach(btn => {
+// Asignar evento a los botones "Asignar fecha"
+document.querySelectorAll('.btn-dates').forEach(btn => {
   btn.addEventListener('click', function() {
     const fila = this.closest('tr');
-    colaboradorSeleccionado = {
-      id: fila.dataset.id,
-      nombre: fila.querySelector('td:nth-child(2)').textContent.trim()
-    };
+    const turnoId = fila.dataset.turnoId; 
     
-    // Configurar el modal
-    document.getElementById('nombreColaborador').textContent = colaboradorSeleccionado.nombre;
-    document.getElementById('colaboradorId').value = colaboradorSeleccionado.id;
-    document.getElementById('fechaInicio').valueAsDate = new Date();
+    document.getElementById('turnoId').value = turnoId;
+    document.getElementById('horaEntrada').value = fila.cells[2].textContent.trim();
+    document.getElementById('horaSalida').value = fila.cells[3].textContent.trim();
+    document.getElementById('patronJornada').value = fila.dataset.jornada;
     
-    // Mostrar el modal
+    const hoy = new Date();
+    document.getElementById('fechaInicio').valueAsDate = hoy;
+    
+    const fin = new Date();
+    fin.setMonth(fin.getMonth() + 1);
+    document.getElementById('fechaTermino').valueAsDate = fin;
+    
     const modal = new bootstrap.Modal(document.getElementById('modalHorario'));
     modal.show();
   });
 });
 
-// Guardar el horario
+// Guardar horario
 document.getElementById('guardarHorario').addEventListener('click', async function() {
-    const btn = this;
-    try {
-        // Deshabilitar botón durante la solicitud
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Guardando...';
+  const btn = this;
+  try {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Guardando...';
 
-        // Validar formulario
-        const form = document.getElementById('formHorario');
-        if (!form.checkValidity()) {
-            form.reportValidity();
-            return;
-        }
+      // Validar formulario
+      const form = document.getElementById('formHorario');
+      if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+      }
 
-        // Obtener datos del formulario
-        const turnoSelect = document.getElementById('turnoSeleccionado');
-        const turnoOption = turnoSelect.selectedOptions[0];
-        
-        const datos = {
-            colaborador_id: document.getElementById('colaboradorId').value,
-            sucursal_id: document.getElementById('sucursalId').value,
-            fecha_inicio: document.getElementById('fechaInicio').value,
-            turno_id: turnoSelect.value,
-            hora_entrada: turnoOption.dataset.horaEntrada,
-            hora_salida: turnoOption.dataset.horaSalida,
-            jornada: turnoOption.dataset.jornada,
-            duracion: document.getElementById('duracion').value
-        };
+      // Validar fechas
+      const fechaInicio = new Date(document.getElementById('fechaInicio').value);
+      const fechaTermino = new Date(document.getElementById('fechaTermino').value);
+      
+      if (fechaTermino < fechaInicio) {
+          alert('La fecha de término no puede ser anterior a la de inicio');
+          return;
+      }
 
-        console.log(datos)
-        // Realizar petición
-        const response = await fetch('assets/php/guardar-horario.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(datos)
-        });
+      // Preparar datos
+      const datos = {
+          sucursal_id: document.getElementById('sucursalId').value,
+          turno_id: document.getElementById('turnoId').value,
+          hora_entrada: document.getElementById('horaEntrada').value,
+          hora_salida: document.getElementById('horaSalida').value,
+          fecha_inicio: document.getElementById('fechaInicio').value,
+          fecha_fin: document.getElementById('fechaTermino').value,
+          patron_jornada: document.getElementById('patronJornada').value
+      };
 
-        // Verificar si la respuesta es JSON
-        const contentType = response.headers.get('content-type');
-        const text = await response.text();
+      console.log(datos);
+      // Enviar datos al servidor
+      const response = await fetch('assets/php/test.php', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(datos)
+      });
 
-        if (!contentType || !contentType.includes('application/json')) {
-            console.error('Respuesta no JSON:', text);
-            throw new Error(`La respuesta del servidor no es JSON: ${text}`);
-        }
+      const data = await response.json();
 
-        const data = JSON.parse(text);
-        
+      if (!response.ok || !data.success) {
+          throw new Error(data.message || 'Error al guardar el horario');
+      }
 
-        if (!response.ok || !data.success) {
-            throw new Error(data.message || 'Error desconocido al guardar el horario');
-        }
-
-        // Éxito - actualizar interfaz
-        alert(data.message);
-        if (typeof calendar !== 'undefined' && calendar.refetchEvents) {
-            calendar.refetchEvents();
-        }
-        
-        // Cerrar modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('modalHorario'));
-        if (modal) modal.hide();
+      // Éxito
+      alert(data.message);
+      
+      // Recargar o actualizar la vista
+      if (typeof calendar !== 'undefined') {
+          calendar.refetchEvents();
+      } else {
+          window.location.reload();
+      }
+      
+      // Cerrar modal
+      bootstrap.Modal.getInstance(document.getElementById('modalHorario')).hide();
 
     } catch (error) {
-        console.error('Error al guardar horario:', error);
+        console.error('Error:', error);
         alert(`Error: ${error.message}`);
-
     } finally {
-        // Restaurar botón
         btn.disabled = false;
         btn.innerHTML = 'Guardar Horario';
     }
 });
+
 //CALENDARIO
-  document.addEventListener('DOMContentLoaded', function() {
-    const sucursalId = document.getElementById('sucursalId').value;
-    const calendarEl = document.getElementById('calendar');
-    const calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth',
-      locale: 'es',
-      headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
-      },
-      dateClick: function(info) {
-          alert('Fecha clickeada: ' + info.dateStr);
-      },
-      eventClick: function(info) {
-          alert('Evento clickeado: ' + info.event.title);
-      },
-      events:  `assets/php/listar-horarios.php?sucursal_id=${sucursalId}`
-    });
-    calendar.render();
+document.addEventListener('DOMContentLoaded', function() {
+  const sucursalId = document.getElementById('sucursalId').value;
+  const calendarEl = document.getElementById('calendar');
+  const calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    locale: 'es',
+    headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    },
+    displayEventTime: false,
+    dateClick: function(info) {
+        alert('Fecha clickeada: ' + info.dateStr);
+    },
+    eventClick: function(info) {
+        alert('Evento clickeado: ' + info.event.title);
+    },
+    events:  `assets/php/listar-horarios.php?sucursal_id=${sucursalId}`
   });
+  calendar.render();
+});
 // Contador para nuevos turnos
 let contadorNuevos = <?= !empty($turnosExistentes) ? count($turnosExistentes) : 0 ?>;
 </script>

@@ -10,8 +10,6 @@ $result = $supervisorData->get_result();
 //nueva jornada
 if(isset($_POST['newSup'])){ 
     $tipo = $_POST['tipoJornada'];
-    $entrada = $_POST['entrada'];
-    $salida = $_POST['salida'];
 
     $query  = "INSERT INTO jornadas(tipo_jornada)
                 VALUES (?)";

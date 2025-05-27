@@ -16,8 +16,9 @@ if (!isset($_GET['sucursal_id']) || !is_numeric($_GET['sucursal_id'])) {
 
 $sucursal_id = (int)$_GET['sucursal_id'];
 
-$query = "SELECT hc.fecha, hc.tipo, hc.hora_entrada, hc.hora_salida, co.name 
+$query = "SELECT hc.fecha, hc.tipo, hc.hora_entrada, hc.hora_salida, ti.codigo, co.name 
           FROM horarios_colaboradores hc
+          left JOIN turnos_instalacion ti ON hc.turno_id = ti.id
           JOIN colaboradores co ON hc.colaborador_id = co.id
           WHERE hc.sucursal_id = ?";
 
@@ -49,7 +50,7 @@ while ($row = $result->fetch_assoc()) {
 
     if ($row['tipo'] === 'TRABAJO') {
         $eventos[] = [
-            'title' => $colaborador,
+            'title' => $row['codigo'],
             'start' => $row['fecha'].'T'.$row['hora_entrada'],
             'end'   => $row['fecha'].'T'.$row['hora_salida'],
             'color' => $colaboradorColores[$colaborador]
