@@ -17,6 +17,9 @@
     text-align: center;
 }
 
+.img img{
+  width: 200px;
+}
 
 /*Calendario*/
 #calendar a{

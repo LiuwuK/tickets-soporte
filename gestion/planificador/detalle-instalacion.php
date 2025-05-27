@@ -93,12 +93,12 @@ if (isset($_SESSION['error_message'])) {
             </div>
             <div class="img col-md-6 text-center">
               <?php 
-                if ($razon_social === 'Sucursal A') {
-                  echo '<img src="ruta/logo_sucursal_a.png" alt="Logo Sucursal A" />';
-                } elseif ($razon_social === 'Sucursal B') {
-                  echo '<img src="ruta/logo_sucursal_b.png" alt="Logo Sucursal B" />';
-                } elseif ($razon_social === 'Sucursal C') {
-                  echo '<img src="ruta/logo_sucursal_c.png" alt="Logo Sucursal C" />';
+                if ($row['razon_social'] === 'ARGENTO SEGURIDAD') {
+                  echo '<img src="assets/img/argento.png" alt="Logo ARGENTO" />';
+                } elseif ($row['razon_social'] === 'RESULVE') {
+                  echo '<img src="assets/img/resuelve.png" alt="Logo resuelve" />';
+                } elseif ($row['razon_social'] === 'SAFETECK SPA') {
+                  echo '<img src="assets/img/safeteck.png" alt="Logo safeteck" />';
                 } else {
                   echo '<h1>Logo razón social</h1>';
                 }
