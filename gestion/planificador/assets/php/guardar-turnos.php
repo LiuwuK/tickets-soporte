@@ -15,7 +15,7 @@ if (!isset($_POST['sucursal_id']) || !is_numeric($_POST['sucursal_id'])) {
 $sucursal_id = $_POST['sucursal_id'];
 
 // Eliminar turnos existentes
-$con->query("DELETE FROM turnos_instalacion WHERE sucursal_id = $sucursal_id");
+//$con->query("DELETE FROM turnos_instalacion WHERE sucursal_id = $sucursal_id");
 
 // Insertar nuevos turnos
 if (isset($_POST['turnos']) && is_array($_POST['turnos'])) {

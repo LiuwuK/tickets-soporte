@@ -79,7 +79,29 @@ if (isset($_GET['id'])) {
         $turnosExistentes[] = $fila;
     }
     mysqli_stmt_close($stmt);
+
+    //Colaboradores asociados
+    $query = "  SELECT * 
+                FROM `colaboradores` 
+                WHERE vigente = 1 
+                AND facility = ?;";
     
+    $stmt = mysqli_prepare($con, $query);
+    if (!$stmt) {
+        die("Error al preparar la consulta de colaboradores: " . mysqli_error($con));
+    }
+    mysqli_stmt_bind_param($stmt, 'i', $id);
+    if (!mysqli_stmt_execute($stmt)) {
+        die("Error al ejecutar consulta de colaboradores: " . mysqli_stmt_error($stmt));
+    }
+    $result = mysqli_stmt_get_result($stmt);
+    $colaboradorAsociado = [];
+    while ($fila = mysqli_fetch_assoc($result)) {
+        $colaboradorAsociado[] = $fila;
+    }
+    mysqli_stmt_close($stmt);
+    
+
 } else {
     die("No se proporcionó ID de turno");
 }

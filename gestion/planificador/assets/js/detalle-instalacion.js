@@ -27,15 +27,13 @@ function agregarTurno() {
     const nuevaFila = plantilla.cloneNode(true);
     nuevaFila.style.display = '';
     nuevaFila.removeAttribute('id');
-    
-    // Actualizar los names y agregar required solo a filas visibles
+
     const inputs = nuevaFila.querySelectorAll('[name]');
     inputs.forEach(input => {
         const originalName = input.name;
         const newName = originalName.replace('nuevos_turnos[]', `turnos[${contadorNuevos}]`);
         input.name = newName;
         
-        // Agregar required solo si es un input/select visible
         if (input.tagName === 'INPUT' || input.tagName === 'SELECT') {
             input.required = true;
         }
