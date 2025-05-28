@@ -126,6 +126,7 @@ if (isset($_SESSION['error_message'])) {
                     if (!empty($turnosExistentes)) {
                       foreach ($turnosExistentes as $index => $turno): ?>
                       <tr data-turno-id="<?= $turno['id'] ?>" data-jornada="<?= $turno['nJo'] ?>" data-codigo="<?= $turno['nJo'] ?>" >
+                        <input type="hidden" id="sucursalId" value="<?= $_GET['id'] ?>">
                         <td class="align-middle text-center">
                           <?= $turno['nombre_turno'] ?>
                         </td>
@@ -299,6 +300,8 @@ document.querySelectorAll('.btn-dates').forEach(btn => {
   });
 });
 
+let calendar; // 🔁 Declarar fuera para acceso global
+
 // Guardar horario
 document.getElementById('guardarHorario').addEventListener('click', async function() {
   const btn = this;
@@ -306,23 +309,19 @@ document.getElementById('guardarHorario').addEventListener('click', async functi
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Guardando...';
 
-      // Validar formulario
       const form = document.getElementById('formHorario');
       if (!form.checkValidity()) {
           form.reportValidity();
           return;
       }
 
-      // Validar fechas
       const fechaInicio = new Date(document.getElementById('fechaInicio').value);
       const fechaTermino = new Date(document.getElementById('fechaTermino').value);
-      
       if (fechaTermino < fechaInicio) {
           alert('La fecha de término no puede ser anterior a la de inicio');
           return;
       }
 
-      // Preparar datos
       const datos = {
           sucursal_id: document.getElementById('sucursalId').value,
           turno_id: document.getElementById('turnoId').value,
@@ -333,8 +332,6 @@ document.getElementById('guardarHorario').addEventListener('click', async functi
           patron_jornada: document.getElementById('patronJornada').value
       };
 
-      console.log(datos);
-      // Enviar datos al servidor
       const response = await fetch('assets/php/test.php', {
           method: 'POST',
           headers: {
@@ -349,33 +346,33 @@ document.getElementById('guardarHorario').addEventListener('click', async functi
           throw new Error(data.message || 'Error al guardar el horario');
       }
 
-      // Éxito
       alert(data.message);
-      
-      // Recargar o actualizar la vista
-      if (typeof calendar !== 'undefined') {
+
+      // 🔁 Refrescar eventos del calendario
+      if (calendar) {
           calendar.refetchEvents();
       } else {
           window.location.reload();
       }
-      
+
       // Cerrar modal
       bootstrap.Modal.getInstance(document.getElementById('modalHorario')).hide();
 
-    } catch (error) {
-        console.error('Error:', error);
-        alert(`Error: ${error.message}`);
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = 'Guardar Horario';
-    }
+  } catch (error) {
+      console.error('Error:', error);
+      alert(`Error: ${error.message}`);
+  } finally {
+      btn.disabled = false;
+      btn.innerHTML = 'Guardar Horario';
+  }
 });
 
-//CALENDARIO
+// CALENDARIO
 document.addEventListener('DOMContentLoaded', function() {
   const sucursalId = document.getElementById('sucursalId').value;
   const calendarEl = document.getElementById('calendar');
-  const calendar = new FullCalendar.Calendar(calendarEl, {
+
+  calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
     locale: 'es',
     headerToolbar: {
@@ -384,14 +381,15 @@ document.addEventListener('DOMContentLoaded', function() {
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
     displayEventTime: false,
+    events: `assets/php/listar-horarios.php?sucursal_id=${sucursalId}`,
     dateClick: function(info) {
         alert('Fecha clickeada: ' + info.dateStr);
     },
     eventClick: function(info) {
         alert('Evento clickeado: ' + info.event.title);
-    },
-    events:  `assets/php/listar-horarios.php?sucursal_id=${sucursalId}`
+    }
   });
+
   calendar.render();
 });
 // Contador para nuevos turnos

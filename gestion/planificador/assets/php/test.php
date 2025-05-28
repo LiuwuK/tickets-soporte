@@ -66,16 +66,19 @@ try {
     $contadorDiasPatron = 0;
     $totalTurnosGenerados = 0;
 
+
     while ($fechaActual <= $fechaFin) {
         if ($esDiaTrabajo) {
+            $fechaStr = $fechaActual->format('Y-m-d');
+            $tipo = 'TRABAJO';
             $stmt->bind_param(
-                "isssss",
+                "isisss",
                 $sucursalId,
-                $fechaActual->format('Y-m-d'), 
+                $fechaStr,
                 $turnoId,
                 $horaEntrada,
                 $horaSalida,
-                'TRABAJO' // Tipo fijo para días laborales
+                $tipo
             );
             
             if (!$stmt->execute()) {
@@ -94,7 +97,6 @@ try {
             $contadorDiasPatron = 0;
         }
 
-        // Avanzar al siguiente día (esto debe estar al final del bucle)
         $fechaActual->modify('+1 day');
     }
 

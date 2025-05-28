@@ -14,12 +14,11 @@ if (!isset($_GET['sucursal_id']) || !is_numeric($_GET['sucursal_id'])) {
     exit;
 }
 
-$sucursal_id = (int)$_GET['sucursal_id'];
+$sucursal_id = 97;
 
-$query = "SELECT hc.fecha, hc.tipo, hc.hora_entrada, hc.hora_salida, ti.codigo, co.name 
-          FROM horarios_colaboradores hc
-          left JOIN turnos_instalacion ti ON hc.turno_id = ti.id
-          JOIN colaboradores co ON hc.colaborador_id = co.id
+$query = "SELECT hc.fecha, hc.tipo, hc.hora_entrada, hc.hora_salida, ti.codigo
+          FROM horarios_sucursal hc
+          LEFT JOIN turnos_instalacion ti ON hc.turno_id = ti.id    
           WHERE hc.sucursal_id = ?";
 
 $stmt = $con->prepare($query);
@@ -42,8 +41,7 @@ $colores = [
 $colorCount = count($colores);
 
 while ($row = $result->fetch_assoc()) {
-    $colaborador = $row['name'];
-    // Asignar color único al colaborador si no tiene uno aún
+    $colaborador = $row['codigo'];
     if (!isset($colaboradorColores[$colaborador])) {
         $colaboradorColores[$colaborador] = $colores[count($colaboradorColores) % $colorCount];
     }

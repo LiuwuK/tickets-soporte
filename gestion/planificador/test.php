@@ -7,17 +7,16 @@
 <script>
 async function probar() {
     const datos = {
-        colaborador_id: 1536,
-        sucursal_id: 166,
+        sucursal_id: 97,
         fecha_inicio: "2025-05-26",
-        turno_id: 2,
-        hora_entrada: "08:00",
-        hora_salida: "17:00",
-        jornada: "5x2",
-        duracion: 4
+        fecha_fin: "2025-06-26",
+        turno_id: 8,
+        hora_entrada: "08:30",
+        hora_salida: "18:30",
+        patron_jornada: "5x2",
     };
 
-    const res = await fetch("assets/php/guardar-horario.php", {
+    const res = await fetch("assets/php/test.php", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
