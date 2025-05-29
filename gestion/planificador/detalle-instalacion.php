@@ -208,7 +208,7 @@ if (isset($_SESSION['error_message'])) {
                 <?php 
                   if (!empty($colaboradorAsociado)) {
                     foreach ($colaboradorAsociado as $index => $colab): ?>
-                    <tr data-id="<?= $colab['id'] ?>">
+                    <tr data-id="<?= $colab['id'] ?>" data-sucursal-id="<?= $_GET['id'] ?>">
                       <td class="align-middle text-center">
                         <?= 'por definir' ?>
                       </td>
@@ -225,15 +225,13 @@ if (isset($_SESSION['error_message'])) {
                         <?= $colab['entry_date'] ?>
                       </td>
                       <td class="align-middle text-center">
-                        <button type="button" class="btn btn-updt">Asignar rol</button>
+                        <button type="button" class="btn btn-updt btn-rol">Asignar rol</button>
                       </td>
                     </tr>
                     <?php 
                     endforeach; 
                   }
                 ?>
-                                
-
               </tbody>
             </table>
           </div>
@@ -242,7 +240,7 @@ if (isset($_SESSION['error_message'])) {
     </div>
   </div>
 
-  <div class="modal fade" id="modalHorario" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalHorario" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -276,7 +274,180 @@ if (isset($_SESSION['error_message'])) {
   </div>
 </div>
 
+<!-- modal asignacion rol -->
+<div class="modal fade" id="modalAsignarTurno">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Asignar Turno a Colaborador</h5>
+      </div>
+      <div class="modal-body">
+        <form id="formAsignarTurno">
+          <div class="mb-3">
+            <label class="form-label">Fecha de inicio</label>
+            <input type="date" class="form-control" id="fechaInicioAsignacion" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Fecha de finalización</label>
+            <input type="date" class="form-control" id="fechaFinAsignacion">
+          </div>
+          <input type="hidden" id="sucursalId" value="<?= $_GET['id'] ?>">
+          <input type="hidden" id="colabId" name="colabId">
+
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" id="mismoTurnoCheck">
+            <label class="form-check-label" for="mismoTurnoCheck">
+              Usar el mismo turno para todas las semanas
+            </label>
+          </div>
+
+          <div id="turnoUnicoContainer" class="mb-3 d-none">
+            <label class="form-label">Turno para todas las semanas</label>
+            <select class="form-select" id="turnoUnicoSelect" name="turnoUnico">
+              <option value="">Seleccionar turno</option>
+              <option value="m1">Turno Mañana (m1)</option>
+              <option value="m2">Turno Tarde (m2)</option>
+            </select>
+          </div>
+
+          <div class="mb-3" id="contenedorSemanas">
+            <!-- Aquí se generarán los turnos por semana -->
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="btnConfirmarAsignacion">Asignar</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
+
+const fechaInicioInput = document.getElementById('fechaInicioAsignacion');
+const fechaFinInput = document.getElementById('fechaFinAsignacion');
+const contenedorSemanas = document.getElementById('contenedorSemanas');
+const checkMismoTurno = document.getElementById('mismoTurnoCheck');
+const turnoUnicoContainer = document.getElementById('turnoUnicoContainer');
+const turnoUnicoSelect = document.getElementById('turnoUnicoSelect');
+const sucursalIdInput = document.getElementById('sucursalId');
+
+// Detectar cambios en fechas
+fechaInicioInput.addEventListener('change', generarTablaTurnos);
+fechaFinInput.addEventListener('change', generarTablaTurnos);
+checkMismoTurno.addEventListener('change', () => {
+  turnoUnicoContainer.classList.toggle('d-none', !checkMismoTurno.checked);
+  generarTablaTurnos();
+});
+
+async function cargarTurnosDisponibles() {
+  const sucursalId = sucursalIdInput.value;
+  const inicio = fechaInicioInput.value;
+  const fin = fechaFinInput.value;
+
+  const url = `assets/php/get-turnos-sucursal.php?sucursal_id=${sucursalId}&fecha_inicio=${inicio}&fecha_fin=${fin}`;
+  if (!sucursalId || !inicio || !fin) return [];
+
+  try {  
+    const response = await fetch(`assets/php/get-turnos-sucursal.php?sucursal_id=${sucursalId}&fecha_inicio=${inicio}&fecha_fin=${fin}`);
+    const data = await response.json();
+  
+    return data;
+  } catch (error) {
+    console.log(url);
+    console.error('Error al cargar turnos:', error);
+    return [];
+  }
+  
+
+}
+
+async function generarTablaTurnos() {
+  const inicio = new Date(fechaInicioInput.value);
+  const fin = new Date(fechaFinInput.value);
+
+  if (isNaN(inicio) || isNaN(fin) || inicio > fin) {
+    contenedorSemanas.innerHTML = '';
+    return;
+  }
+
+  const turnosDisponibles = await cargarTurnosDisponibles();
+
+  let html = '';
+  let semanaIndex = 1;
+  const fechaActual = new Date(inicio);
+  const usarMismoTurno = checkMismoTurno.checked;
+
+  if (usarMismoTurno) {
+    html += `<input type="hidden" name="usarMismoTurno" value="1">`;
+
+    // Actualizar opciones del <select> único
+    turnoUnicoSelect.innerHTML = '<option value="">Seleccionar turno</option>' + 
+      turnosDisponibles.map(turno => `<option value="${turno}">Turno ${turno}</option>`).join('');
+  }
+
+  const opciones = turnosDisponibles.map(turno => `<option value="${turno}">Turno ${turno}</option>`).join('');
+
+  while (fechaActual <= fin) {
+    const inicioSemana = new Date(fechaActual);
+    const finSemana = new Date(fechaActual);
+    finSemana.setDate(finSemana.getDate() + 6);
+    if (finSemana > fin) finSemana.setTime(fin.getTime());
+
+    const fechaStr = inicioSemana.toISOString().split('T')[0];
+
+    html += `<input type="hidden" name="fechasInicio[]" value="${fechaStr}">`;
+
+    if (!usarMismoTurno) {
+      html += `
+        <tr>
+          <td>Semana ${semanaIndex} (${inicioSemana.toLocaleDateString()} - ${finSemana.toLocaleDateString()})</td>
+          <td>
+            <select class="form-select" name="turnos[]" required>
+              <option value="">Seleccionar turno</option>
+              ${opciones}
+            </select>
+          </td>
+        </tr>
+      `;
+    }
+
+    fechaActual.setDate(fechaActual.getDate() + 7);
+    semanaIndex++;
+  }
+
+  if (usarMismoTurno) {
+    contenedorSemanas.innerHTML = '';
+  } else {
+    contenedorSemanas.innerHTML = `
+      <label class="form-label">Asignar turno por semana:</label>
+      <table class="table table-sm">
+        <thead>
+          <tr><th>Semana</th><th>Turno</th></tr>
+        </thead>
+        <tbody>${html}</tbody>
+      </table>
+    `;
+  }
+}
+
+// abrir modal de asignación
+document.querySelectorAll('.btn-rol').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const fila = this.closest('tr');
+    const colabId = fila.dataset.id; 
+
+    document.getElementById('colabId').value = colabId;
+    document.getElementById('fechaInicioAsignacion').value = '';
+    document.getElementById('fechaFinAsignacion').value = '';
+    contenedorSemanas.innerHTML = '';
+    turnoUnicoSelect.innerHTML = '<option value="">Seleccionar turno</option>';
+
+    const modal = new bootstrap.Modal(document.getElementById('modalAsignarTurno'));
+    modal.show();
+  });
+});
+
 // Asignar evento a los botones "Asignar fecha"
 document.querySelectorAll('.btn-dates').forEach(btn => {
   btn.addEventListener('click', function() {
@@ -300,8 +471,8 @@ document.querySelectorAll('.btn-dates').forEach(btn => {
   });
 });
 
-let calendar; // 🔁 Declarar fuera para acceso global
 
+let calendar; 
 // Guardar horario
 document.getElementById('guardarHorario').addEventListener('click', async function() {
   const btn = this;
