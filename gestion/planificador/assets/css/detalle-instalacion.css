@@ -30,3 +30,11 @@
 .fc-toolbar-title{
   text-transform: capitalize;
 }
+.fc-event {
+    margin-bottom: 1px !important;
+    opacity: 0.9;
+}
+.fc-event:hover {
+    opacity: 1;
+    z-index: 100 !important;
+}

@@ -14,17 +14,30 @@ if (!isset($_GET['sucursal_id']) || !is_numeric($_GET['sucursal_id'])) {
     exit;
 }
 
-$sucursal_id = 97;
+$sucursal_id = (int)$_GET['sucursal_id'];
 
-$query = "SELECT hc.fecha, hc.tipo, hc.hora_entrada, hc.hora_salida, ti.codigo
+// Consulta optimizada para obtener múltiples colaboradores por turno
+$query = "SELECT 
+            hc.id AS horario_id,
+            hc.fecha, 
+            hc.tipo, 
+            hc.hora_entrada, 
+            hc.hora_salida, 
+            ti.codigo,
+            c.id AS colaborador_id,
+            CONCAT(c.name, ' ', c.fname) AS nombre_colaborador
           FROM horarios_sucursal hc
-          LEFT JOIN turnos_instalacion ti ON hc.turno_id = ti.id    
-          WHERE hc.sucursal_id = ?";
+          JOIN turnos_instalacion ti ON hc.turno_id = ti.id
+          LEFT JOIN colaborador_turno ct ON hc.turno_id = ct.turno_id 
+            AND hc.fecha BETWEEN ct.fecha_inicio AND ct.fecha_fin
+          LEFT JOIN colaboradores c ON ct.colaborador_id = c.id
+          WHERE hc.sucursal_id = ?
+          ORDER BY hc.fecha, hc.hora_entrada, ti.codigo";
 
 $stmt = $con->prepare($query);
 if (!$stmt) {
     http_response_code(500);
-    echo json_encode(['error' => 'Error en la preparación de la consulta']);
+    echo json_encode(['error' => 'Error en la preparación de la consulta: ' . $con->error]);
     exit;
 }
 
@@ -40,29 +53,64 @@ $colores = [
 ];
 $colorCount = count($colores);
 
+// Primero agrupar los resultados por horario
+$horarios = [];
 while ($row = $result->fetch_assoc()) {
-    $colaborador = $row['codigo'];
-    if (!isset($colaboradorColores[$colaborador])) {
-        $colaboradorColores[$colaborador] = $colores[count($colaboradorColores) % $colorCount];
+    $horarioId = $row['horario_id'];
+    if (!isset($horarios[$horarioId])) {
+        $horarios[$horarioId] = [
+            'fecha' => $row['fecha'],
+            'tipo' => $row['tipo'],
+            'hora_entrada' => $row['hora_entrada'],
+            'hora_salida' => $row['hora_salida'],
+            'codigo' => $row['codigo'],
+            'colaboradores' => []
+        ];
+    }
+    
+    if ($row['colaborador_id']) {
+        $horarios[$horarioId]['colaboradores'][] = $row['nombre_colaborador'];
+    }
+}
+
+// generar los eventos
+foreach ($horarios as $horario) {
+    $codigoTurno = $horario['codigo'];
+
+    if (!isset($colaboradorColores[$codigoTurno])) {
+        $colaboradorColores[$codigoTurno] = $colores[count($colaboradorColores) % $colorCount];
     }
 
-    if ($row['tipo'] === 'TRABAJO') {
+    if ($horario['tipo'] === 'TRABAJO') {
+        $hayColaboradores = !empty($horario['colaboradores']);
+        
+        $colaboradoresTexto = $hayColaboradores
+            ? implode(', ', $horario['colaboradores'])
+            : 'Sin asignar';
+
+        $titulo = $codigoTurno . ' - ' . ($hayColaboradores ? 'TURNO ASIGNADO' : 'SIN ASIGNAR');
+
         $eventos[] = [
-            'title' => $row['codigo'],
-            'start' => $row['fecha'].'T'.$row['hora_entrada'],
-            'end'   => $row['fecha'].'T'.$row['hora_salida'],
-            'color' => $colaboradorColores[$colaborador]
+            'groupId' => $horario['fecha'] . $codigoTurno,
+            'title' => $titulo,
+            'start' => $horario['fecha'] . 'T' . $horario['hora_entrada'],
+            'end' => $horario['fecha'] . 'T' . $horario['hora_salida'],
+            'color' => $colaboradorColores[$codigoTurno],
+            'extendedProps' => [
+                'codigo_turno' => $codigoTurno,
+                'colaboradores' => $colaboradoresTexto
+            ]
         ];
     } else {
-        // Evento de descanso con color fijo
         $eventos[] = [
             'title' => 'Descanso',
-            'start' => $row['fecha'],
+            'start' => $horario['fecha'],
             'allDay' => true,
-            'color' => '#f44336' 
+            'color' => '#f44336'
         ];
     }
 }
+
 
 echo json_encode($eventos);
 exit;
