@@ -173,22 +173,22 @@ if (isset($_POST['carga'])) {
         $colaboradorTurno = '';
         foreach ($data as $index => $row) {
             if ($index < 2) continue; // Saltar las dos primeras filas
-            
+            /*
             echo "<pre>";
             print_r($row);
             echo "</pre>";
-            
+            */
             //validar si ya existen los datos
 
-
             // Datos bancarios
-            $banco = $row[13] ?? null;
-            $rutNum = $row[14] ?? null;
+            $banco = $row[14] ?? null;
+            $rutNum = $row[15] ?? null;
             if ($rutNum !== null) {
                 $rutNum = preg_replace('/[^0-9]/', '', $rutNum);
             }
-            $dv = $row[15] ?? null;
-            $numCta = $row[16] ?? null;
+            echo $rutNum;
+            $dv = $row[16] ?? null;
+            $numCta = $row[17] ?? null;
             if ($numCta !== null) {
                 $numCta = preg_replace('/[^0-9]/', '', $numCta);
             }
@@ -199,12 +199,9 @@ if (isset($_POST['carga'])) {
             //datos instalacion y turno
             $instalacion = $row[2] ?? null;
             $fecha_turno = $row[5]; 
-            $horario_cubierto = $row[6];
             //Obtener hora inicio y termino 
-            $horas = explode("-", $horario_cubierto);
-
-            $hora_inicio = trim($horas[0]);
-            $hora_termino = trim($horas[1]);
+            $hora_inicio = $row[6];
+            $hora_termino = $row[7];
 
 
             $hora_inicio_obj = DateTime::createFromFormat('H:i', $hora_inicio);
@@ -244,16 +241,16 @@ if (isset($_POST['carga'])) {
             }
             */
             $fecha = $fechaTurnoFormateada;  
-            $horas = $row[7];
+            $horas = $row[8];
 
             // Limpiar el monto
-            $monto = floatval(str_replace(['$', ',', '.'], '', $row[8]));
-            $rut = $row[9] . '-' . $row[10];
-            $colaborador = ucwords(strtolower($row[11]));
-            $nacionalidad = ucwords(strtolower($row[12]));
-            $motivo = $row[17];
-            $persona_motivo = $row[18] ? ucwords(strtolower($row[18])) : null;
-            $contratado = ($row[19] == "SI") ? 1 : 0;
+            $monto = floatval(str_replace(['$', ',', '.'], '', $row[9]));
+            $rut = $row[10] . '-' . $row[11];
+            $colaborador = ucwords(strtolower($row[12]));
+            $nacionalidad = ucwords(strtolower($row[13]));
+            $motivo = $row[18];
+            $persona_motivo = $row[19] ? ucwords(strtolower($row[19])) : null;
+            $contratado = ($row[20] == "SI") ? 1 : 0;
             $autorizado = $_SESSION['id'];
 
             
@@ -309,32 +306,63 @@ if (isset($_POST['carga'])) {
                 echo "<script>alert('Error al Insertar el turno de ".$colaborador.", El motivo ".$motivo." no existe en el sistema');</script>";
                 continue; 
             } 
-            // Verificar si los datos bancarios ya existen
-            $stmtCheck->bind_param("sisi", $banco, $rutNum, $dv, $numCta);
+           // Verificar si los datos bancarios ya existen
+            $stmtCheck->bind_param("siss", $banco, $rutNum, $dv, $numCta);
             $stmtCheck->execute();
             $stmtCheck->store_result();
-            $stmtCheck->bind_result($bancoId, $bancoNombre);
-            $stmtCheck->fetch();
-            if (!$stmtCheck->num_rows) {
-                // Insertar datos bancarios si no existen
-                //obtengo el id del banco
+
+            if ($stmtCheck->num_rows > 0) {
+                // Recuperar el ID existente
+                $stmtCheck->bind_result($existingId);
+                $stmtCheck->fetch();
+                $bancoId = $existingId; 
+                $stmtCheck->free_result();
+            } else {
+                // Obtener ID del banco
                 $stmtBanco->bind_param("s", $banco);
                 $stmtBanco->execute();
                 $stmtBanco->bind_result($idBanco);
                 $stmtBanco->fetch();
                 $stmtBanco->free_result();
-                
+
                 if (!$idBanco) {
-                    // Banco no encontrado, manejar error
-                    $bancoscount += 1;
+                    $bancoscount++;
                     $bancosInvalidos = $banco;
-                    continue;
+                    continue; 
                 }
-                $stmtDatosPago->bind_param("iisi", $idBanco, $rutNum, $dv, $numCta);
-                $stmtDatosPago->execute();
-                $bancoId = $stmtDatosPago->insert_id;
+
+                try {
+                    $stmtDatosPago->bind_param("iiss", $idBanco, $rutNum, $dv, $numCta);
+                    if ($stmtDatosPago->execute()) {
+                        $bancoId = $stmtDatosPago->insert_id;
+                    } else {
+                        if ($con->errno == 1062) {
+                            $queryGetExisting = "SELECT id FROM datos_pago WHERE rut_cta = ? AND numero_cuenta = ?";
+                            $stmtGet = $con->prepare($queryGetExisting);
+                            $stmtGet->bind_param("ss", $rutNum, $numCta);
+                            $stmtGet->execute();
+                            $stmtGet->bind_result($bancoId);
+                            $stmtGet->fetch();
+                            $stmtGet->close();
+                        } else {
+                            throw new Exception("Error bancario: " . $stmtDatosPago->error);
+                        }
+                    }
+                } catch (mysqli_sql_exception $e) {
+                    if ($e->getCode() == 1062) {
+                        // Manejar duplicado recuperando el ID existente
+                        $queryGetExisting = "SELECT id FROM datos_pago WHERE rut_cta = ? AND numero_cuenta = ? LIMIT 1";
+                        $stmtGet = $con->prepare($queryGetExisting);
+                        $stmtGet->bind_param("ss", $rutNum, $numCta);
+                        $stmtGet->execute();
+                        $stmtGet->bind_result($bancoId);
+                        $stmtGet->fetch();
+                        $stmtGet->close();
+                    } else {
+                        throw $e; // Relanzar otros errores
+                    }
+                }
             }
-            $stmtCheck->free_result(); 
         
             if($count > 0 ){
                  echo "<script>alert('Error al Insertar turno con fecha la fecha '.$fechasInvalidas.', no corresponde al dia de hoy');</script>";
