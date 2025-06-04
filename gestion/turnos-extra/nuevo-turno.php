@@ -26,9 +26,10 @@ check_login();
 <link href="../../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
 <link href="../../projects/assets/css/create-project.css" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" href="../assets/css/nuevo-turno.css">
-
 <!-- Toast notificaciones -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<!-- sweetalert -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 
 <body class="test" >
@@ -49,154 +50,123 @@ check_login();
                     <i class="bi bi-arrow-left" ></i>
                 </button>
             </div>
-            <div class="main-div col-xl-8 col-sm-12">
+            <div class="main-div col-xl-12 col-sm-12">
                 <div class="extra-title">
-                    <h3>Crear turno</h3>
+                    <h3>Crear turnos</h3>
                     <div class="excel">
                         <button class="btn btn-updt" data-bs-toggle="modal" data-bs-target="#newSuper">Importar Turnos extra</button>
-                    </div>                
+                    </div>
                 </div>
                 <!-- Formulario nuevos turnos -->
-
-                <form class="form-horizontal form-div" name="form" method="POST" action="" >
-                    <div id="loading" style="display:none ;">
-                        <div class="loading-spinner"></div>
-                        <p>Procesando...</p>
-                    </div>  
-                    <br>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label class="form-label">Instalación <span>*</span></label>
-                            <div>
-                                <select name="instalacion" id="instalacion" class="form-select form-select-sm search-form" required>
-                                    <option value="">Seleccionar</option>
-                                    <?php
-                                    foreach ($inst AS $row) {
-                                        echo "<option value='".$row['id']."'>".$row['nombre']."</option>";
-                                    };
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="fecha_turno" class="form-label">Fecha del Turno <span>*</span></label>
-                            <input type="date" name="fecha_turno" id="fecha_turno" class="form-control form-control-sm" 
-                            required 
-                            min="<?php 
-                                $horaActual = (int)date('H');
-                                echo ($horaActual < 10) ? date('Y-m-d', strtotime('-1 day')) : date('Y-m-d');
-                            ?>" 
-                            max="<?php echo date('Y-m-d'); ?>"
-                            value="<?php echo date('Y-m-d'); ?>">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="horas_cubiertas" class="form-label">Hora Cubiertas <span>*</span></label>
-                            <input type="number" name="horas_cubiertas" id="horas_cubiertas" class="form-control form-control-sm" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="monto" class="form-label">Monto <span>*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text" id="montoP">$</span>
-                                <input type="number" name="monto" id="monto" class="form-control form-control-sm" required>
-                            </div>
-                        </div>
-                    </div>
-                
-                    <div class="form-row mb-3">
-                    <h4>Datos del Colaborador</h4>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="nombre_colaborador" class="form-label">Nombre del Colaborador <span>*</span></label>
-                            <input type="text" name="nombre_colaborador" id="nombre_colaborador" class="form-control form-control-sm" required>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="rut" class="form-label">RUT <span>*</span></label>
-                            <input type="text" name="rut" id="rut" class="form-control form-control-sm" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="contratado" class="form-label">Colaborador Contratado? <span>*</span></label>
-                            <select name="contratado" id="contratado" class="form-select form-select-sm" required>
-                                <option value="">Seleccionar</option>
-                                <option value="1">Si</option>
-                                <option value="0">No</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="nacionalidad" class="form-label">Nacionalidad <span>*</span></label>
-                            <select name="nacionalidad" id="nacionalidad" class="form-select form-select-sm" required>
-                                <option value="">Seleccionar</option>
-                                <option value="chileno">Chileno</option>
-                                <option value="extranjero">Extranjero</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="motivo_turno" class="form-label">Motivo del Turno <span>*</span></label>
-                            <select name="motivo_turno" id="motivo_turno" class="form-select form-select-sm" required>
-                                <option value="">Seleccione un motivo</option>
-                                <?php
-                                foreach ($motivo AS $row) {
-                                    echo "<option value=".$row['id'].">".$row['motivo'] ."</option>";
-                                };
-                                ?>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="persona_motivo" class="form-label">Persona del Motivo <span>*</span></label>
-                            <input type="text" class="form-control form-control-sm"  name="persona_motivo" >
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="autorizado_por" class="form-label">Autorizado por <span>*</span></label>
-                            <input type="text" class="form-control form-control-sm"  name="autorizado_por" value="<?php echo $_SESSION['name'];?>" readonly>
-                        </div>
-                    </div>
-
-                    <!-- Datos bancarios -->
-                    <div class="form-row mb-3">
-                    <h4>Datos bancarios</h4>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="banco" class="form-label">Banco<span>*</span></label>
-                            <select name="banco" id="banco" class="form-select form-select-sm" required>
-                                <option value="">Seleccione un Banco</option>
-                                <?php
-                                foreach ($bancos AS $row) {
-                                    echo "<option value=".$row['id'].">".$row['nombre_banco'] ."</option>";
-                                };
-                                ?>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <div class="d-flex msg">
-                                <label for="rut" class="form-label">RUT Cta <span>*</span></label>
-                                <p> (Sin puntos)</p>
-                            </div>
-                            <input type="text" class="form-control form-control-sm" id="rut" name="rutCta" maxlength="12" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="numCta" class="form-label">Numero de Cuenta <span>*</span></label>
-                            <input type="number" name="numCta" id="numCta" class="form-control form-control-sm" required>   
-                        </div>
-                    </div>
-                    <br>
-                    <div class="footer">
+                <form class="form-horizontal form-div p-3" name="form" method="POST" action="" >
+                    <table class="table table-hover" id="tabla-turnos">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="align-middle text-center">Motivo</th>
+                                <th scope="col" class="align-middle text-center">Instalacion</th>
+                                <th scope="col" class="align-middle text-center">Fecha del Turno</th>
+                                <th scope="col" class="align-middle text-center">Hora entrada</th>
+                                <th scope="col" class="align-middle text-center">Hora salida</th>
+                                <th scope="col" class="align-middle text-center">Monto</th>
+                                <th scope="col" class="align-middle text-center">RUT</th>
+                                <th scope="col" class="align-middle text-center">Nombre Completo</th>
+                                <th scope="col" class="align-middle text-center">Nacionalidad</th>
+                                <th scope="col" class="align-middle text-center">Banco</th>
+                                <th scope="col" class="align-middle text-center">RUT Cuenta</th>
+                                <th scope="col" class="align-middle text-center">Numero de Cuenta</th>
+                                <th scope="col" class="align-middle text-center">Persona del Motivo</th>
+                                <th scope="col" class="align-middle text-center">Contratado</th>
+                                <th scope="col" class="align-middle text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla">
+                            <tr>
+                                <td class="align-middle text-center">
+                                    <select name="nuevos_turnos[][motivo]" class="form-control form-control-sm" required>
+                                        <option value="">Motivos</option>
+                                        <?php
+                                        foreach ($motivo AS $row) {
+                                            echo '<option value="'.htmlspecialchars($row['id']).'">'
+                                                .htmlspecialchars($row['motivo'])
+                                                .'</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <select name="nuevos_turnos[][instalacion]" class="form-control form-control-sm">
+                                        <option value="">Instalaciones</option>
+                                        <?php
+                                        foreach ($inst AS $row) {
+                                            echo '<option value="'.htmlspecialchars($row['id']).'">'
+                                                .htmlspecialchars($row['nombre'])
+                                                .'</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <input type="date" name="nuevos_turnos[][fecha]" class="form-control form-control-sm" required>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <input type="time" name="nuevos_turnos[][hora_entrada]" class="form-control form-control-sm" required>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <input type="time" name="nuevos_turnos[][hora_salida]" class="form-control form-control-sm" required>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <input type="text" name="nuevos_turnos[][monto]" class="form-control form-control-sm" required>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <input type="text" name="nuevos_turnos[][rut]" class="form-control form-control-sm" required>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <input type="text" name="nuevos_turnos[][nombre]" class="form-control form-control-sm" required>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <select name="nuevos_turnos[][nacionalidad]" class="form-control form-control-sm" required>
+                                        <option value="">Nacionalidad</option>
+                                        <option value="Chileno">Chileno</option>
+                                        <option value="Extranjero">Extranjero</option>
+                                    </select>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <select name="nuevos_turnos[][banco]" class="form-control form-control-sm" required>
+                                        <option value="">Bancos</option>
+                                        <?php
+                                        foreach ($bancos AS $row) {
+                                            echo '<option value="'.htmlspecialchars($row['id']).'">'
+                                                .htmlspecialchars($row['nombre_banco'])
+                                                .'</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <input type="text" name="nuevos_turnos[][rut_cuenta]" class="form-control form-control-sm" required>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <input type="text" name="nuevos_turnos[][numero_cuenta]" class="form-control form-control-sm" required>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <input type="text" name="nuevos_turnos[][persona_motivo]" class="form-control form-control-sm">
+                                </td>
+                                <td class="align-middle text-center">
+                                    <select name="nuevos_turnos[][contratado]" class="form-control form-control-sm" required>
+                                        <option value="Si">Si</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <button type="button" class="btn btn-danger eliminar-fila">X</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" id="agregar-fila" class="btn btn-default">Agregar otro turno</button>
                         <button type="submit" name="newExtra" class="btn btn-updt">Enviar</button>
+                    </div>
                     </div>
                 </form>
             </div>
@@ -231,6 +201,61 @@ check_login();
   </div>
 </div>
 
+<?php if (isset($_SESSION['alert'])): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    Swal.fire({
+        icon: '<?= $_SESSION['alert']['type'] ?>',
+        title: '<?= $_SESSION['alert']['title'] ?>',
+        html: '<?= $_SESSION['alert']['message'] ?>',
+        confirmButtonText: 'Aceptar',
+        customClass: {
+            popup: 'animated bounceIn'
+        }
+    });
+    <?php unset($_SESSION['alert']); ?>
+});
+</script>
+<?php endif; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Agregar nueva fila
+    document.getElementById('agregar-fila').addEventListener('click', function() {
+        agregarFilaTurno();
+    });
+    
+    // Eliminar fila
+    document.getElementById('cuerpo-tabla').addEventListener('click', function(e) {
+        if (e.target.classList.contains('eliminar-fila')) {
+            e.target.closest('tr').remove();
+        }
+    });
+});
+
+function agregarFilaTurno() {
+    const cuerpoTabla = document.getElementById('cuerpo-tabla');
+    const primeraFila = cuerpoTabla.querySelector('tr');
+    
+    if (!primeraFila) return;
+    
+    // Clonar la primera fila
+    const nuevaFila = primeraFila.cloneNode(true);
+    
+    // Limpiar valores de los inputs
+    nuevaFila.querySelectorAll('input').forEach(input => {
+        if (input.type !== 'button') input.value = '';
+    });
+    
+    // Limpiar selects
+    nuevaFila.querySelectorAll('select').forEach(select => {
+        select.selectedIndex = 0;
+    });
+    
+    cuerpoTabla.appendChild(nuevaFila);
+}
+</script>
+<!-- sweetalert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- JS de Choices.js -->
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 <!-- Popper.js (para tooltips y otros componentes) -->

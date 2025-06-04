@@ -1,7 +1,10 @@
 <?php
 require '../../vendor/autoload.php';
 date_default_timezone_set('America/Santiago'); 
-$query = "SELECT * FROM sucursales";
+//obtener sucursales
+$query = "SELECT * 
+            FROM sucursales
+            ORDER BY nombre ASC";
 $sucursalesData = $con->prepare($query);
 $sucursalesData->execute();
 $sucursalData = $sucursalesData->get_result();
@@ -28,57 +31,191 @@ $motivoData = $motivosData->get_result();
 while ($row = mysqli_fetch_assoc($motivoData)) {
     $motivo[] = $row; 
 }
-if(isset($_POST['newExtra'])){
-    //Insertar datos bancarios
-    $banco = $_POST['banco'];
-    $rutBanco = $_POST['rut'];
-    $partes = explode('-', $rutBanco);
-    $rutNum = $partes[0];
-    $dv = end($partes); 
-    $numCta = $_POST['numCta'];
 
-    // Verificar si ya existe
-    $queryCheck = "SELECT id FROM datos_pago WHERE banco = ? AND rut_cta = ? AND digito_verificador = ? AND numero_cuenta = ?";
-    $stmtCheck = $con->prepare($queryCheck);
-    $stmtCheck->bind_param("iisi", $banco, $rutNum, $dv, $numCta);
-    $stmtCheck->execute();
-    $stmtCheck->bind_result($bancoID);
-    $stmtCheck->fetch();
-    $stmtCheck->close();
-    if (!$bancoID) {
-        //Insertar datos bancarios
-        $queryInsert = "INSERT INTO datos_pago (banco, rut_cta, digito_verificador, numero_cuenta) VALUES (?, ?, ?, ?)";
-        $stmtInsert = $con->prepare($queryInsert);
-        $stmtInsert->bind_param("iisi", $banco, $rutNum, $dv, $numCta);
-        $stmtInsert->execute();
-        $bancoID = $stmtInsert->insert_id; // Obtener el ID recién insertado
-        $stmtInsert->close();
+
+if (isset($_POST['newExtra'])) {
+    $turnos = $_POST['nuevos_turnos'];
+    $errores = [];
+    $exitos = 0;
+    $usuario_id = $_SESSION['id']; 
+
+    $turnosValidos = array_filter($turnos, function($t) {
+        return !empty($t['motivo']) || !empty($t['rut']) || !empty($t['fecha']);
+    });
+
+    if (empty($turnosValidos)) {
+        $_SESSION['alert'] = [
+            'type' => 'error',
+            'title' => 'Error',
+            'message' => 'No se recibieron datos de turnos válidos'
+        ];
+        header("Location: ".$_SERVER['HTTP_REFERER']);
+        exit;
     }
-    //Insertar Turno
-    $instalacion = $_POST['instalacion'];
-    $fecha_turno = $_POST['fecha_turno'];
-    $horas = $_POST['horas_cubiertas'];
-    $monto = $_POST['monto'];
-    $colaborador = ucwords(strtolower($_POST['nombre_colaborador']));
-    $rut = $_POST['rutCta'];
-    $motivo = $_POST['motivo_turno'];
-    $autorizado = $_SESSION['id'];
-    $persona_motivo = $_POST['persona_motivo'];
-    $contratado = $_POST['contratado'];
-    $nacionalidad = $_POST['nacionalidad'];
 
-    $query = "INSERT INTO turnos_extra (sucursal_id, fecha_turno, horas_cubiertas, monto, nombre_colaborador, rut, datos_bancarios_id,
-                                        motivo_turno_id, autorizado_por, persona_motivo, contratado, nacionalidad)
-                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $con->prepare($query);
-    $stmt->bind_param("isiissiiisis", $instalacion, $fecha_turno, $horas, $monto, $colaborador, $rut, $bancoID, $motivo, 
-                        $autorizado, $persona_motivo, $contratado, $nacionalidad);
-    $stmt->execute();
-    $bancoID = $stmt->insert_id;
-    $stmt->close();
+    // Iniciar transacción
+    $con->begin_transaction();
 
-    echo "<script>alert('Turno Agregado Correctamente.'); location.href='nuevo-turno.php';</script>";
+    try {
+        $queryCheckBanco = "SELECT id FROM datos_pago WHERE banco = ? AND rut_cta = ? AND numero_cuenta = ? LIMIT 1";
+        $stmtCheckBanco = $con->prepare($queryCheckBanco);
+        
+        $queryInsertBanco = "INSERT INTO datos_pago (banco, rut_cta, digito_verificador, numero_cuenta) 
+                           VALUES (?, ?, ?, ?)";
+        $stmtInsertBanco = $con->prepare($queryInsertBanco);
+        
+        $queryInsertTurno = "INSERT INTO turnos_extra 
+                           (sucursal_id, fecha_turno, horas_cubiertas, monto, nombre_colaborador, 
+                            rut, datos_bancarios_id, motivo_turno_id, autorizado_por, persona_motivo, 
+                            contratado, nacionalidad, hora_inicio, hora_termino) 
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmtInsertTurno = $con->prepare($queryInsertTurno);
+
+        foreach ($turnosValidos as $turno) {
+          
+            if (empty($turno['motivo'])) {
+                $errores[] = "Debe seleccionar un motivo para el turno";
+                continue;
+            }
+
+            if (empty($turno['instalacion'])) {
+                $errores[] = "Debe seleccionar una instalación";
+                continue;
+            }
+
+            if (empty($turno['fecha'])) {
+                $errores[] = "La fecha del turno es requerida";
+                continue;
+            }
+
+            if (empty($turno['hora_entrada']) || empty($turno['hora_salida'])) {
+                $errores[] = "Las horas de entrada y salida son requeridas";
+                continue;
+            }
+
+            if (empty($turno['rut'])) {
+                $errores[] = "El RUT del colaborador es requerido";
+                continue;
+            }
+
+            // Validar formato de horas
+            $horaInicio = DateTime::createFromFormat('H:i', $turno['hora_entrada']);
+            $horaTermino = DateTime::createFromFormat('H:i', $turno['hora_salida']);
+
+            if (!$horaInicio || !$horaTermino) {
+                $errores[] = "Formato de hora inválido. Use formato HH:MM (24 horas)";
+                continue;
+            }
+
+            // Calcular horas trabajadas
+            $intervalo = $horaInicio->diff($horaTermino);
+            $horasCubiertas = $intervalo->h + ($intervalo->i / 60);
+
+            // Procesar RUT (limpieza básica)
+            $rut = strtoupper(preg_replace('/[^0-9kK]/', '', $turno['rut']));
+
+            // Manejar datos bancarios (si existen)
+            $bancoId = null;
+            if (!empty($turno['banco']) && !empty($turno['rut_cuenta']) && !empty($turno['numero_cuenta'])) {
+                $rutCuenta = strtoupper(preg_replace('/[^0-9kK]/', '', $turno['rut_cuenta']));
+                $rutCuentaNum = substr($rutCuenta, 0, -1);
+                $rutCuentaDv = substr($rutCuenta, -1);
+
+                // Verificar si ya existe
+                $stmtCheckBanco->bind_param("iis", $turno['banco'], $rutCuentaNum, $turno['numero_cuenta']);
+                $stmtCheckBanco->execute();
+                $stmtCheckBanco->store_result();
+
+                if ($stmtCheckBanco->num_rows > 0) {
+                    $stmtCheckBanco->bind_result($bancoId);
+                    $stmtCheckBanco->fetch();
+                } else {
+                    // Insertar nuevos datos bancarios
+                    $stmtInsertBanco->bind_param("iiss", 
+                        $turno['banco'], 
+                        $rutCuentaNum, 
+                        $rutCuentaDv, 
+                        $turno['numero_cuenta']
+                    );
+                    
+                    if ($stmtInsertBanco->execute()) {
+                        $bancoId = $stmtInsertBanco->insert_id;
+                    } else {
+                        // Si falla por duplicado, obtener el ID existente
+                        if ($con->errno == 1062) {
+                            $stmtCheckBanco->execute();
+                            $stmtCheckBanco->bind_result($bancoId);
+                            $stmtCheckBanco->fetch();
+                        } else {
+                            throw new Exception("Error al insertar datos bancarios: ".$stmtInsertBanco->error);
+                        }
+                    }
+                }
+                $stmtCheckBanco->free_result();
+            }
+
+            // Insertar turno
+            $stmtInsertTurno->bind_param(
+                "isiissiiisisss",
+                $turno['instalacion'],
+                $turno['fecha'],
+                $horasCubiertas,
+                $turno['monto'],
+                $turno['nombre'],
+                $rut,
+                $bancoId,
+                $turno['motivo'],
+                $usuario_id,
+                $turno['persona_motivo'],
+                $turno['contratado'],
+                $turno['nacionalidad'],
+                $turno['hora_entrada'],
+                $turno['hora_salida']
+            );
+            
+            if ($stmtInsertTurno->execute()) {
+                $exitos++;
+            } else {
+                $errores[] = "Error al insertar turno: ".$stmtInsertTurno->error;
+            }
+        }
+
+        // Confirmar o cancelar transacción
+        if (empty($errores)) {
+            $con->commit();
+            $_SESSION['alert'] = [
+                'type' => 'success',
+                'title' => 'Éxito',
+                'message' => $exitos > 1 ? 
+                    "Se registraron $exitos turnos correctamente" :
+                    "Turno registrado correctamente",
+                'footer' => 'Fecha: '.date('d/m/Y H:i')
+            ];
+        } else {
+            $con->rollback();
+            $_SESSION['alert'] = [
+                'type' => 'error',
+                'title' => 'Error al procesar',
+                'message' => implode('<br>', array_unique($errores)),
+                'footer' => 'Corrija los errores e intente nuevamente'
+            ];
+        }
+
+    } catch (Exception $e) {
+        $con->rollback();
+        $_SESSION['alert'] = [
+            'type' => 'error',
+            'title' => 'Error del sistema',
+            'message' => "Ocurrió un error inesperado: ".$e->getMessage(),
+            'footer' => 'Contacte al administrador'
+        ];
+    }
+
+    // Redireccionar
+    header("Location: ".$_SERVER['HTTP_REFERER']);
+    exit;
 }
+
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 function is_empty($value) {
@@ -374,7 +511,7 @@ if (isset($_POST['carga'])) {
                 echo "<script>alert('Error al Insertar turno con el banco'.$bancosInvalidos.', el Banco esta mal escrito o no esta registrado');</script>";
             }
 
-            // Insertar en turnos_extra-
+            // Insertar en turnos_extra
             $stmt->bind_param("isiissiiisisss", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, 
                                 $autorizado, $persona_motivo, $contratado, $nacionalidad, $hora_inicio_str, $hora_termino_str);
             if (!$stmt->execute()) {
