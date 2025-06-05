@@ -280,7 +280,7 @@ if (isset($_POST['carga'])) {
 
         $checkTurnos = "SELECT id
                         FROM turnos_extra
-                        WHERE sucursal_id = ? 
+                        WHERE (sucursal_id IS NULL OR sucursal_id  = ? )
                         AND fecha_turno = ?
                         AND horas_cubiertas = ? 
                         AND monto = ? 
