@@ -69,7 +69,7 @@ check_login();
                                 <th scope="col" class="align-middle text-center">Hora salida</th>
                                 <th scope="col" class="align-middle text-center">Monto</th>
                                 <th scope="col" class="align-middle text-center">RUT</th>
-                                <th scope="col" class="align-middle text-center">Nombre Completo</th>
+                                <th scope="col" class="align-middle text-center">Colaborador</th>
                                 <th scope="col" class="align-middle text-center">Nacionalidad</th>
                                 <th scope="col" class="align-middle text-center">Banco</th>
                                 <th scope="col" class="align-middle text-center">RUT Cuenta</th>
@@ -82,7 +82,7 @@ check_login();
                         <tbody id="cuerpo-tabla">
                             <tr>
                                 <td class="align-middle text-center">
-                                    <select name="nuevos_turnos[][motivo]" class="form-control form-control-sm" required>
+                                    <select name="nuevos_turnos[0][motivo]" class="form-control form-control-sm" required>
                                         <option value="">Motivos</option>
                                         <?php
                                         foreach ($motivo AS $row) {
@@ -94,7 +94,7 @@ check_login();
                                     </select>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <select name="nuevos_turnos[][instalacion]" class="form-control form-control-sm">
+                                    <select name="nuevos_turnos[0][instalacion]" class="form-control form-control-sm">
                                         <option value="">Instalaciones</option>
                                         <?php
                                         foreach ($inst AS $row) {
@@ -106,32 +106,32 @@ check_login();
                                     </select>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <input type="date" name="nuevos_turnos[][fecha]" class="form-control form-control-sm" required>
+                                    <input type="date" name="nuevos_turnos[0][fecha]" class="form-control form-control-sm" required>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <input type="time" name="nuevos_turnos[][hora_entrada]" class="form-control form-control-sm" required>
+                                    <input type="time" name="nuevos_turnos[0][hora_entrada]" class="form-control form-control-sm" required>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <input type="time" name="nuevos_turnos[][hora_salida]" class="form-control form-control-sm" required>
+                                    <input type="time" name="nuevos_turnos[0][hora_salida]" class="form-control form-control-sm" required>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <input type="text" name="nuevos_turnos[][monto]" class="form-control form-control-sm" required>
+                                    <input type="text" name="nuevos_turnos[0][monto]" class="form-control form-control-sm" required>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <input type="text" name="nuevos_turnos[][rut]" class="form-control form-control-sm" required>
+                                    <input type="text" name="nuevos_turnos[0][rut]" id='rut' class="form-control form-control-sm" required>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <input type="text" name="nuevos_turnos[][nombre]" class="form-control form-control-sm" required>
+                                    <input type="text" name="nuevos_turnos[0][nombre]" class="form-control form-control-sm" required>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <select name="nuevos_turnos[][nacionalidad]" class="form-control form-control-sm" required>
+                                    <select name="nuevos_turnos[0][nacionalidad]" class="form-control form-control-sm" required>
                                         <option value="">Nacionalidad</option>
                                         <option value="Chileno">Chileno</option>
                                         <option value="Extranjero">Extranjero</option>
                                     </select>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <select name="nuevos_turnos[][banco]" class="form-control form-control-sm" required>
+                                    <select name="nuevos_turnos[0][banco]" class="form-control form-control-sm" required>
                                         <option value="">Bancos</option>
                                         <?php
                                         foreach ($bancos AS $row) {
@@ -143,18 +143,18 @@ check_login();
                                     </select>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <input type="text" name="nuevos_turnos[][rut_cuenta]" class="form-control form-control-sm" required>
+                                    <input type="text" name="nuevos_turnos[0][rut_cuenta]" id='rut' class="form-control form-control-sm" required>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <input type="text" name="nuevos_turnos[][numero_cuenta]" class="form-control form-control-sm" required>
+                                    <input type="text" name="nuevos_turnos[0][numero_cuenta]" class="form-control form-control-sm" required>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <input type="text" name="nuevos_turnos[][persona_motivo]" class="form-control form-control-sm">
+                                    <input type="text" name="nuevos_turnos[0][persona_motivo]" class="form-control form-control-sm">
                                 </td>
                                 <td class="align-middle text-center">
-                                    <select name="nuevos_turnos[][contratado]" class="form-control form-control-sm" required>
-                                        <option value="Si">Si</option>
-                                        <option value="No">No</option>
+                                    <select name="nuevos_turnos[0][contratado]" class="form-control form-control-sm" required>
+                                        <option value="1">Si</option>
+                                        <option value="0">No</option>
                                     </select>
                                 </td>
                                 <td class="align-middle text-center">
@@ -175,7 +175,7 @@ check_login();
     </div>
   </div>
 <!-- Modal new -->
-<div class="modal fade" id="newSuper" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="newSuperLabel" aria-hidden="true">>
+<div class="modal fade" id="newSuper" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="newSuperLabel" aria-hidden="true">
   <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -217,7 +217,25 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <?php endif; ?>
+
 <script>
+document.addEventListener("input", function(e){
+    if (e.target.matches("input[id='rut']")) {
+        let input = e.target; 
+        let rut = input.value.toUpperCase().replace(/[^0-9K]/g, ''); 
+        
+        if (rut.length > 9) rut = rut.slice(0, 9);
+
+        let cuerpo = rut.slice(0, -1);
+        let dv = rut.slice(-1); 
+
+        if (cuerpo.length > 0) {
+            cuerpo = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, "");
+            rut = cuerpo + (dv ? "-" + dv : "");
+        }
+        input.value = rut; 
+    }
+});
 document.addEventListener('DOMContentLoaded', function() {
     // Agregar nueva fila
     document.getElementById('agregar-fila').addEventListener('click', function() {
@@ -232,26 +250,32 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+let contadorTurnos = 1;
+
 function agregarFilaTurno() {
     const cuerpoTabla = document.getElementById('cuerpo-tabla');
     const primeraFila = cuerpoTabla.querySelector('tr');
     
     if (!primeraFila) return;
     
-    // Clonar la primera fila
     const nuevaFila = primeraFila.cloneNode(true);
     
-    // Limpiar valores de los inputs
+    nuevaFila.querySelectorAll('[name^="nuevos_turnos["]').forEach(elemento => {
+        const nameOriginal = elemento.getAttribute('name');
+        const nuevoName = nameOriginal.replace(/nuevos_turnos\[\d+\]/, `nuevos_turnos[${contadorTurnos}]`);
+        elemento.setAttribute('name', nuevoName);
+    });
+    
     nuevaFila.querySelectorAll('input').forEach(input => {
         if (input.type !== 'button') input.value = '';
     });
     
-    // Limpiar selects
     nuevaFila.querySelectorAll('select').forEach(select => {
         select.selectedIndex = 0;
     });
     
     cuerpoTabla.appendChild(nuevaFila);
+    contadorTurnos++;
 }
 </script>
 <!-- sweetalert -->

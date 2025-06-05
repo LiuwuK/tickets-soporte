@@ -39,6 +39,10 @@ if (isset($_POST['newExtra'])) {
     $exitos = 0;
     $usuario_id = $_SESSION['id']; 
 
+    echo '<pre>Datos recibidos:';
+    print_r($_POST);
+    echo '</pre>';
+
     $turnosValidos = array_filter($turnos, function($t) {
         return !empty($t['motivo']) || !empty($t['rut']) || !empty($t['fecha']);
     });
@@ -75,11 +79,6 @@ if (isset($_POST['newExtra'])) {
           
             if (empty($turno['motivo'])) {
                 $errores[] = "Debe seleccionar un motivo para el turno";
-                continue;
-            }
-
-            if (empty($turno['instalacion'])) {
-                $errores[] = "Debe seleccionar una instalación";
                 continue;
             }
 
@@ -300,14 +299,15 @@ if (isset($_POST['carga'])) {
         if (!$stmt) {
             die("Error al preparar la consulta de inserción de turnos: " . $con->error);
         }
-        //info fechas no validas
-        $count = 0;
-        $turnos = 0;
-        $bancoscount = 0;
-        
-        $bancosInvalidos = '';
-        $fechasInvalidas = '';
-        $colaboradorTurno = '';
+
+        $totalRegistros = 0; 
+        $registrosInsertados = 0;
+        $errores = [
+            'fechasInvalidas' => [],
+            'turnosDuplicados' => [],
+            'bancosInvalidos' => [],
+            'motivosInvalidos' => []
+        ];
         foreach ($data as $index => $row) {
             if ($index < 2) continue; // Saltar las dos primeras filas
             /*
@@ -333,6 +333,7 @@ if (isset($_POST['carga'])) {
             if (is_empty($banco) || is_empty($rutNum) || is_empty($dv) || is_empty($numCta)) {
                 continue;
             }
+            $totalRegistros++;
             //datos instalacion y turno
             $instalacion = $row[2] ?? null;
             $fecha_turno = $row[5]; 
@@ -351,9 +352,9 @@ if (isset($_POST['carga'])) {
                         DateTime::createFromFormat('Y-m-d', $fecha_turno) ?: 
                         new DateTime($fecha_turno);
 
-            if (!$fecha_obj) {
-                echo 'Sin fecha SALTANDO REGISTRO';   
-                continue; 
+            if ($fecha_obj === false) {
+                $errores['fechasInvalidas'][] = "Fila $index: Formato de fecha inválido";
+                continue;
             }
 
             $fechaTurnoFormateada = $fecha_obj->format('Y-m-d');
@@ -414,6 +415,10 @@ if (isset($_POST['carga'])) {
             if (!$stmt_m->num_rows) $motivo_id = null;
             $stmt_m->free_result();
 
+            if($motivo_id == null) {
+                $errores['motivosInvalidos'][] = "Fila $index: $colaborador - Motivo '$motivo' no existe";
+                continue;
+            }
             /*
             echo   'INSTALACION ID '.$instalacion_id;
             echo   '<br>fecha turno'.$fecha;
@@ -432,17 +437,11 @@ if (isset($_POST['carga'])) {
             $stmtTurnos->execute();
             $stmtTurnos->store_result();    
             if ($stmtTurnos->num_rows > 0) {
-                echo "SI EXISTE";
-                $turnos += 1;
-                $colaboradorTurno = $colaborador;
+                $errores['turnosDuplicados'][] = "Fila $index: $colaborador (RUT: $rut)";
                 continue;
             }
             $stmtTurnos->free_result();
         
-            if($motivo_id == null){
-                echo "<script>alert('Error al Insertar el turno de ".$colaborador.", El motivo ".$motivo." no existe en el sistema');</script>";
-                continue; 
-            } 
            // Verificar si los datos bancarios ya existen
             $stmtCheck->bind_param("siss", $banco, $rutNum, $dv, $numCta);
             $stmtCheck->execute();
@@ -450,11 +449,11 @@ if (isset($_POST['carga'])) {
 
             if ($stmtCheck->num_rows > 0) {
                 // Recuperar el ID existente
-                $stmtCheck->bind_result($existingId);
+                $stmtCheck->bind_result($existingId, $nombreBanco); 
                 $stmtCheck->fetch();
                 $bancoId = $existingId; 
                 $stmtCheck->free_result();
-            } else {
+            }else {
                 // Obtener ID del banco
                 $stmtBanco->bind_param("s", $banco);
                 $stmtBanco->execute();
@@ -463,9 +462,8 @@ if (isset($_POST['carga'])) {
                 $stmtBanco->free_result();
 
                 if (!$idBanco) {
-                    $bancoscount++;
-                    $bancosInvalidos = $banco;
-                    continue; 
+                    $errores['bancosInvalidos'][] = "Fila $index: Banco '$banco' no existe";
+                    continue;
                 }
 
                 try {
@@ -500,31 +498,52 @@ if (isset($_POST['carga'])) {
                     }
                 }
             }
-        
-            if($count > 0 ){
-                 echo "<script>alert('Error al Insertar turno con fecha la fecha '.$fechasInvalidas.', no corresponde al dia de hoy');</script>";
-            }
-            if ($turnos > 0){
-                echo "<script>alert('Error al Insertar turno del colaborador ".$colaboradorTurno.", su turno esta duplicado');</script>";
-            }
-            if ($bancoscount > 0){
-                echo "<script>alert('Error al Insertar turno con el banco'.$bancosInvalidos.', el Banco esta mal escrito o no esta registrado');</script>";
-            }
-
+    
             // Insertar en turnos_extra
             $stmt->bind_param("isiissiiisisss", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, 
                                 $autorizado, $persona_motivo, $contratado, $nacionalidad, $hora_inicio_str, $hora_termino_str);
             if (!$stmt->execute()) {
                 die("ERROR AL INSERTAR". $stmt->error);
             }
+            $registrosInsertados++;
         }
-        if($count > 0){
-            echo "<script>alert('Error al insertar turnos') location.href='nuevo-turno.php' ;</script>";
-        }else{
-            echo "<script>alert('Turnos insertados correctamente') location.href='nuevo-turno.php' ;</script>";
+        //mensajes para sweetalert
+        $mensajeExito = "<b>$registrosInsertados de $totalRegistros turnos procesados correctamente.</b>";
+        
+        $mensajeErrores = "";
+        if (!empty($errores['fechasInvalidas'])) {
+            $mensajeErrores .= "<br><b>Fechas inválidas:</b> ".count($errores['fechasInvalidas']);
         }
+        if (!empty($errores['turnosDuplicados'])) {
+            $mensajeErrores .= "<br><b>Turnos duplicados:</b> ".count($errores['turnosDuplicados']);
+        }
+        if (!empty($errores['bancosInvalidos'])) {
+            $mensajeErrores .= "<br><b>Bancos no registrados:</b> ".count($errores['bancosInvalidos']);
+        }
+        if (!empty($errores['motivosInvalidos'])) {
+            $mensajeErrores .= "<br><b>Motivos no existentes:</b> ".count($errores['motivosInvalidos']);
+        }
+        
+        // Determinar el tipo de alerta
+        $alertType = ($registrosInsertados == $totalRegistros) ? 'success' : 'warning';
+        if ($registrosInsertados == 0) {
+            $alertType = 'error';
+        }
+        
+        // Mostrar SweetAlert
+        $_SESSION['alert'] = [
+            'type' => 'success',
+            'title' => 'Éxito',
+            'message' => "$mensajeExito $mensajeErrores",
+            'footer' => 'Fecha: '.date('d/m/Y H:i')
+        ];
     } else {
-        echo "Error al subir el archivo.";
+        $_SESSION['alert'] = [
+            'type' => 'error',
+            'title' => 'Error del sistema',
+            'message' => "Ocurrió un error inesperado",
+            'footer' => 'Contacte al administrador'
+        ];
     }
 }
 
