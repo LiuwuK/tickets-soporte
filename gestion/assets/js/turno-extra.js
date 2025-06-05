@@ -6,6 +6,18 @@ document.addEventListener("DOMContentLoaded", function() {
             placeholder: true
         });
     });
+
+    // Agregar nueva fila
+    document.getElementById('agregar-fila').addEventListener('click', function() {
+        agregarFilaTurno();
+    });
+    
+    // Eliminar fila
+    document.getElementById('cuerpo-tabla').addEventListener('click', function(e) {
+        if (e.target.classList.contains('eliminar-fila')) {
+            e.target.closest('tr').remove();
+        }
+    });
 });
 
 document.addEventListener("input", function(e){
@@ -25,3 +37,30 @@ document.addEventListener("input", function(e){
         input.value = rut; 
     }
 });
+
+let contadorTurnos = 1;
+function agregarFilaTurno() {
+    const cuerpoTabla = document.getElementById('cuerpo-tabla');
+    const primeraFila = cuerpoTabla.querySelector('tr');
+    
+    if (!primeraFila) return;
+    
+    const nuevaFila = primeraFila.cloneNode(true);
+    
+    nuevaFila.querySelectorAll('[name^="nuevos_turnos["]').forEach(elemento => {
+        const nameOriginal = elemento.getAttribute('name');
+        const nuevoName = nameOriginal.replace(/nuevos_turnos\[\d+\]/, `nuevos_turnos[${contadorTurnos}]`);
+        elemento.setAttribute('name', nuevoName);
+    });
+    
+    nuevaFila.querySelectorAll('input').forEach(input => {
+        if (input.type !== 'button') input.value = '';
+    });
+    
+    nuevaFila.querySelectorAll('select').forEach(select => {
+        select.selectedIndex = 0;
+    });
+    
+    cuerpoTabla.appendChild(nuevaFila);
+    contadorTurnos++;
+}

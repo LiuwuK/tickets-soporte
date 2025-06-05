@@ -306,10 +306,12 @@ if (isset($_POST['carga'])) {
             'fechasInvalidas' => [],
             'turnosDuplicados' => [],
             'bancosInvalidos' => [],
-            'motivosInvalidos' => []
+            'motivosInvalidos' => [],
+            'instalacionesInvalidas' => []
         ];
         foreach ($data as $index => $row) {
             if ($index < 2) continue; // Saltar las dos primeras filas
+            $nErrores = 0;
             /*
             echo "<pre>";
             print_r($row);
@@ -354,7 +356,7 @@ if (isset($_POST['carga'])) {
 
             if ($fecha_obj === false) {
                 $errores['fechasInvalidas'][] = "Fila $index: Formato de fecha inválido";
-                continue;
+                $nErrores++;
             }
 
             $fechaTurnoFormateada = $fecha_obj->format('Y-m-d');
@@ -391,7 +393,6 @@ if (isset($_POST['carga'])) {
             $contratado = ($row[20] == "SI") ? 1 : 0;
             $autorizado = $_SESSION['id'];
 
-            
             // Obtener instalación
             if($instalacion != null){
                 $stmt_s->bind_param("s", $instalacion);
@@ -399,7 +400,11 @@ if (isset($_POST['carga'])) {
                 $stmt_s->store_result();
                 $stmt_s->bind_result($instalacion_id);
                 $stmt_s->fetch();
-                if (!$stmt_s->num_rows) $instalacion_id = null;
+                if (!$stmt_s->num_rows){
+                    $errores['instalacionesInvalidas'][] = "Fila $index: Instalacion '$instalacion' no existe en el sistema";
+                    $nErrores++;
+                };
+
                 $stmt_s->free_result(); 
                 //echo  'INSTALACION ID :'.$instalacion_id;    
             }else{
@@ -417,7 +422,7 @@ if (isset($_POST['carga'])) {
 
             if($motivo_id == null) {
                 $errores['motivosInvalidos'][] = "Fila $index: $colaborador - Motivo '$motivo' no existe";
-                continue;
+                $nErrores++;
             }
             /*
             echo   'INSTALACION ID '.$instalacion_id;
@@ -438,7 +443,7 @@ if (isset($_POST['carga'])) {
             $stmtTurnos->store_result();    
             if ($stmtTurnos->num_rows > 0) {
                 $errores['turnosDuplicados'][] = "Fila $index: $colaborador (RUT: $rut)";
-                continue;
+                $nErrores++;
             }
             $stmtTurnos->free_result();
         
@@ -494,34 +499,75 @@ if (isset($_POST['carga'])) {
                         $stmtGet->fetch();
                         $stmtGet->close();
                     } else {
-                        throw $e; // Relanzar otros errores
+                        throw $e;
                     }
                 }
             }
     
-            // Insertar en turnos_extra
-            $stmt->bind_param("isiissiiisisss", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, 
+            if($nErrores > 0){
+                continue;
+            }else{
+                $stmt->bind_param("isiissiiisisss", $instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $bancoId, $motivo_id, 
                                 $autorizado, $persona_motivo, $contratado, $nacionalidad, $hora_inicio_str, $hora_termino_str);
-            if (!$stmt->execute()) {
-                die("ERROR AL INSERTAR". $stmt->error);
+                if (!$stmt->execute()) {
+                    die("ERROR AL INSERTAR". $stmt->error);
+                }
+                $registrosInsertados++;
             }
-            $registrosInsertados++;
+            
         }
         //mensajes para sweetalert
         $mensajeExito = "<b>$registrosInsertados de $totalRegistros turnos procesados correctamente.</b>";
         
         $mensajeErrores = "";
+        $detallesErrores = "";
+
         if (!empty($errores['fechasInvalidas'])) {
-            $mensajeErrores .= "<br><b>Fechas inválidas:</b> ".count($errores['fechasInvalidas']);
+            $count = count($errores['fechasInvalidas']);
+            $mensajeErrores .= "<br><b>Fechas inválidas:</b> $count";
+            $detallesErrores .= "<b>Fechas inválidas:</b><ul>";
+            foreach($errores['fechasInvalidas'] as $error) {
+                $detallesErrores .= "<li>$error</li>";
+            }
+            $detallesErrores .= "</ul>";
         }
+
         if (!empty($errores['turnosDuplicados'])) {
-            $mensajeErrores .= "<br><b>Turnos duplicados:</b> ".count($errores['turnosDuplicados']);
+            $count = count($errores['turnosDuplicados']);
+            $mensajeErrores .= "<br><b>Turnos Duplicados:</b> $count";
+            $detallesErrores .= "<b>Turnos Duplicados:</b><ul>";
+            foreach($errores['turnosDuplicados'] as $error) {
+                $detallesErrores .= "<li>$error</li>";
+            }
+            $detallesErrores .= "</ul>";
         }
         if (!empty($errores['bancosInvalidos'])) {
-            $mensajeErrores .= "<br><b>Bancos no registrados:</b> ".count($errores['bancosInvalidos']);
+            $count = count($errores['bancosInvalidos']);
+            $mensajeErrores .= "<br><b>Bancos no registrados:</b> $count";
+            $detallesErrores .= "<b>Bancos no registrados:</b><ul>";
+            foreach($errores['bancosInvalidos'] as $error) {
+                $detallesErrores .= "<li>$error</li>";
+            }
+            $detallesErrores .= "</ul>";
         }
         if (!empty($errores['motivosInvalidos'])) {
-            $mensajeErrores .= "<br><b>Motivos no existentes:</b> ".count($errores['motivosInvalidos']);
+            $count = count($errores['motivosInvalidos']);
+            $mensajeErrores .= "<br><b>Motivos no existentes:</b> $count";
+            $detallesErrores .= "<b>Motivos no existentes:</b><ul>";
+            foreach($errores['motivosInvalidos'] as $error) {
+                $detallesErrores .= "<li>$error</li>";
+            }
+            $detallesErrores .= "</ul>";
+        }
+
+        if (!empty($errores['instalacionesInvalidas'])) {
+            $count = count($errores['instalacionesInvalidas']);
+            $mensajeErrores .= "<br><b>Instalaciones no existentes:</b> $count";
+            $detallesErrores .= "<b>Instalaciones no existentes:</b><ul>";
+            foreach($errores['instalacionesInvalidas'] as $error) {
+                $detallesErrores .= "<li>$error</li>";
+            }
+            $detallesErrores .= "</ul>";
         }
         
         // Determinar el tipo de alerta
@@ -531,12 +577,18 @@ if (isset($_POST['carga'])) {
         }
         
         // Mostrar SweetAlert
-        $_SESSION['alert'] = [
-            'type' => 'success',
-            'title' => 'Éxito',
-            'message' => "$mensajeExito $mensajeErrores",
-            'footer' => 'Fecha: '.date('d/m/Y H:i')
+        $_SESSION['swal'] = [
+            'title' => 'Resultado de la carga',
+            'html' => $mensajeExito . $mensajeErrores,
+            'icon' => $alertType,
+            'showCancelButton' => !empty($detallesErrores),
+            'confirmButtonText' => 'Aceptar',
+            'cancelButtonText' => 'Ver detalles',
+            'footer' => '<a href="nuevo-turno.php">Volver al formulario</a>',
+            'details' => $detallesErrores
         ];
+
+
     } else {
         $_SESSION['alert'] = [
             'type' => 'error',
