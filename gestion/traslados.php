@@ -187,14 +187,14 @@ $usRol = $_SESSION['cargo'];
                   <!-- Si la instalacion es "otra", dar la opcion de escribir el nombre de la instalacion -->
                   <label class="form-label">Instalacion de Destino <span>*</span></label>
                   <div >
-                      <select name="inDestino" id="inDestino" class="form-select form-select-sm search-form" required>
-                        <option value="">Seleccionar</option>
-                        <?php
-                        foreach ($inst AS $row) {
-                          echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
-                        };
-                        ?>
-                      </select>
+                    <select name="inDestino" id="inDestino" class="form-select form-select-sm search-form" required>
+                      <option value="">Seleccionar</option>
+                      <?php
+                      foreach ($inst AS $row) {
+                        echo "<option value=".$row['id'].">".$row['nombre'] ."</option>";
+                      };
+                      ?>
+                    </select>
                   </div>
                 </div>
                 <div class ="form-group">

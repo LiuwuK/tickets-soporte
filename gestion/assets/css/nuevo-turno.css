@@ -50,12 +50,35 @@ p{
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    width: 100%;
 }
 .extra-title{
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    width: 80%;
     margin: 0 auto;
+}
+.table-responsive-container {
+    width: 100%;
+    max-width: 100%; 
+    border: 1px solid #dee2e6; 
+    border-radius: 5px; 
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; 
+}
+
+#tabla-turnos {
+    width: 100%;
+    margin-bottom: 0; 
+    white-space: nowrap; 
+}
+
+#tabla-turnos th, 
+#tabla-turnos td {
+    min-width: 120px; 
+    vertical-align: middle;
 }

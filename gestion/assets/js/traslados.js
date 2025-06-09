@@ -41,21 +41,9 @@ document.querySelectorAll('.del-btn').forEach(function(btn) {
     });
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-    let fechaInput = document.getElementById("fechaSoli");
-    let hoy = new Date().toISOString().split("T")[0]; 
-    fechaInput.value = hoy;
-
-    document.querySelectorAll("select.search-form").forEach(selectElement => {
-        const choices = new Choices(selectElement, {
-            searchEnabled: true,
-            itemSelectText: "",
-            placeholder: true
-        });
-    });
-});
 
 document.addEventListener('DOMContentLoaded', function() {
+
     const selectElement = document.getElementById('instalacionSelect');
     const selectOrigen = document.getElementById('instalacion');
     const selectDestino = document.getElementById('inDestino');
@@ -67,6 +55,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const nombreInput = document.getElementById('inNombre');
     const origeninput = document.getElementById('inOrigen');
     const destinoInput = document.getElementById('iDestino');
+
+    let fechaInput = document.getElementById("fechaSoli");
+    let hoy = new Date().toISOString().split("T")[0]; 
+    fechaInput.value = hoy;
+
+    document.querySelectorAll("select.search-form").forEach(selectElement => {
+        const choices = new Choices(selectElement, {
+            searchEnabled: true,
+            itemSelectText: "",
+            placeholder: true
+        });
+    });
     
     // Función para mostrar/ocultar
     function toggleOrigenField() {

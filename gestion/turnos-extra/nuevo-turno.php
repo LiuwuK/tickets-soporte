@@ -60,113 +60,116 @@ check_login();
                 </div>
                 <!-- Formulario nuevos turnos -->
                 <form class="form-horizontal form-div p-3" name="form" method="POST" action="" >
-                    <table class="table table-hover" id="tabla-turnos">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="align-middle text-center">Motivo</th>
-                                <th scope="col" class="align-middle text-center">Instalacion</th>
-                                <th scope="col" class="align-middle text-center">Fecha del Turno</th>
-                                <th scope="col" class="align-middle text-center">Hora entrada</th>
-                                <th scope="col" class="align-middle text-center">Hora salida</th>
-                                <th scope="col" class="align-middle text-center">Monto</th>
-                                <th scope="col" class="align-middle text-center">RUT</th>
-                                <th scope="col" class="align-middle text-center">Colaborador</th>
-                                <th scope="col" class="align-middle text-center">Nacionalidad</th>
-                                <th scope="col" class="align-middle text-center">Banco</th>
-                                <th scope="col" class="align-middle text-center">RUT Cuenta</th>
-                                <th scope="col" class="align-middle text-center">Numero de Cuenta</th>
-                                <th scope="col" class="align-middle text-center">Persona del Motivo</th>
-                                <th scope="col" class="align-middle text-center">Contratado</th>
-                                <th scope="col" class="align-middle text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cuerpo-tabla">
-                            <tr>
-                                <td class="align-middle text-center">
-                                    <select name="nuevos_turnos[0][motivo]" class="form-control form-control-sm" required>
-                                        <option value="">Motivos</option>
-                                        <?php
-                                        foreach ($motivo AS $row) {
-                                            echo '<option value="'.htmlspecialchars($row['id']).'">'
-                                                .htmlspecialchars($row['motivo'])
-                                                .'</option>';
-                                        }
-                                        ?>
-                                    </select>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <select name="nuevos_turnos[0][instalacion]" class="form-control form-control-sm">
-                                        <option value="">Instalaciones</option>
-                                        <?php
-                                        foreach ($inst AS $row) {
-                                            echo '<option value="'.htmlspecialchars($row['id']).'">'
-                                                .htmlspecialchars($row['nombre'])
-                                                .'</option>';
-                                        }
-                                        ?>
-                                    </select>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <input type="date" name="nuevos_turnos[0][fecha]" class="form-control form-control-sm" required>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <input type="time" name="nuevos_turnos[0][hora_entrada]" class="form-control form-control-sm" required>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <input type="time" name="nuevos_turnos[0][hora_salida]" class="form-control form-control-sm" required>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <input type="text" name="nuevos_turnos[0][monto]" class="form-control form-control-sm" required>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <input type="text" name="nuevos_turnos[0][rut]" id='rut' class="form-control form-control-sm" required>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <input type="text" name="nuevos_turnos[0][nombre]" class="form-control form-control-sm" required>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <select name="nuevos_turnos[0][nacionalidad]" class="form-control form-control-sm" required>
-                                        <option value="">Nacionalidad</option>
-                                        <option value="Chileno">Chileno</option>
-                                        <option value="Extranjero">Extranjero</option>
-                                    </select>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <select name="nuevos_turnos[0][banco]" class="form-control form-control-sm" required>
-                                        <option value="">Bancos</option>
-                                        <?php
-                                        foreach ($bancos AS $row) {
-                                            echo '<option value="'.htmlspecialchars($row['id']).'">'
-                                                .htmlspecialchars($row['nombre_banco'])
-                                                .'</option>';
-                                        }
-                                        ?>
-                                    </select>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <input type="text" name="nuevos_turnos[0][rut_cuenta]" id='rut' class="form-control form-control-sm" required>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <input type="text" name="nuevos_turnos[0][numero_cuenta]" class="form-control form-control-sm" required>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <input type="text" name="nuevos_turnos[0][persona_motivo]" class="form-control form-control-sm">
-                                </td>
-                                <td class="align-middle text-center">
-                                    <select name="nuevos_turnos[0][contratado]" class="form-control form-control-sm" required>
-                                        <option value="1">Si</option>
-                                        <option value="0">No</option>
-                                    </select>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <button type="button" class="btn btn-danger eliminar-fila">X</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="d-flex justify-content-end">
-                        <button type="button" id="agregar-fila" class="btn btn-default">Agregar otro turno</button>
-                        <button type="submit" name="newExtra" class="btn btn-updt">Enviar</button>
+                    <div class="table-responsive-container"> 
+                    <div class="table-responsive">
+                        <table class="table table-hover main-table" id="tabla-turnos">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="align-middle text-center">Motivo</th>
+                                    <th scope="col" class="align-middle text-center">Instalacion</th>
+                                    <th scope="col" class="align-middle text-center">Fecha del Turno</th>
+                                    <th scope="col" class="align-middle text-center">Hora entrada</th>
+                                    <th scope="col" class="align-middle text-center">Hora salida</th>
+                                    <th scope="col" class="align-middle text-center">Monto</th>
+                                    <th scope="col" class="align-middle text-center">RUT</th>
+                                    <th scope="col" class="align-middle text-center">Colaborador</th>
+                                    <th scope="col" class="align-middle text-center">Nacionalidad</th>
+                                    <th scope="col" class="align-middle text-center">Banco</th>
+                                    <th scope="col" class="align-middle text-center">RUT Cuenta</th>
+                                    <th scope="col" class="align-middle text-center">Numero de Cuenta</th>
+                                    <th scope="col" class="align-middle text-center">Persona del Motivo</th>
+                                    <th scope="col" class="align-middle text-center">Contratado</th>
+                                    <th scope="col" class="align-middle text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpo-tabla">
+                                <tr>
+                                    <td class="align-middle text-center">
+                                        <select name="nuevos_turnos[0][motivo]" class="form-control form-control-sm" required>
+                                            <option value="">Motivos</option>
+                                            <?php
+                                            foreach ($motivo AS $row) {
+                                                echo '<option value="'.htmlspecialchars($row['id']).'">'
+                                                    .htmlspecialchars($row['motivo'])
+                                                    .'</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <select name="nuevos_turnos[0][instalacion]" class="form-control form-control-sm search-form">
+                                            <option value="">Instalaciones</option>
+                                            <?php
+                                            foreach ($inst AS $row) {
+                                                echo '<option value="'.htmlspecialchars($row['id']).'">'
+                                                    .htmlspecialchars($row['nombre'])
+                                                    .'</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <input type="date" name="nuevos_turnos[0][fecha]" class="form-control form-control-sm" required>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <input type="time" name="nuevos_turnos[0][hora_entrada]" class="form-control form-control-sm" required>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <input type="time" name="nuevos_turnos[0][hora_salida]" class="form-control form-control-sm" required>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <input type="text" name="nuevos_turnos[0][monto]" class="form-control form-control-sm" required>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <input type="text" name="nuevos_turnos[0][rut]" id='rut' class="form-control form-control-sm" required>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <input type="text" name="nuevos_turnos[0][nombre]" class="form-control form-control-sm" required>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <select name="nuevos_turnos[0][nacionalidad]" class="form-control form-control-sm" required>
+                                            <option value="">Nacionalidad</option>
+                                            <option value="Chileno">Chileno</option>
+                                            <option value="Extranjero">Extranjero</option>
+                                        </select>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <select name="nuevos_turnos[0][banco]" class="form-control form-control-sm" required>
+                                            <option value="">Bancos</option>
+                                            <?php
+                                            foreach ($bancos AS $row) {
+                                                echo '<option value="'.htmlspecialchars($row['id']).'">'
+                                                    .htmlspecialchars($row['nombre_banco'])
+                                                    .'</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <input type="text" name="nuevos_turnos[0][rut_cuenta]" id='rut' class="form-control form-control-sm" required>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <input type="text" name="nuevos_turnos[0][numero_cuenta]" class="form-control form-control-sm" required>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <input type="text" name="nuevos_turnos[0][persona_motivo]" class="form-control form-control-sm">
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <select name="nuevos_turnos[0][contratado]" class="form-control form-control-sm" required>
+                                            <option value="1">Si</option>
+                                            <option value="0">No</option>
+                                        </select>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <button type="button" class="btn btn-danger eliminar-fila">X</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="m-3">
+                            <button type="button" id="agregar-fila" class="btn btn-default">Agregar otro turno</button>
+                            <button type="submit" name="newExtra" class="btn btn-updt">Enviar</button>
+                        </div>
                     </div>
                     </div>
                 </form>
@@ -243,6 +246,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 </script>
 <?php unset($_SESSION['swal']); endif; ?>
+
+
 
 <!-- JS de Choices.js -->
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>

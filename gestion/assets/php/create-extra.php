@@ -490,7 +490,6 @@ if (isset($_POST['carga'])) {
                     }
                 } catch (mysqli_sql_exception $e) {
                     if ($e->getCode() == 1062) {
-                        // Manejar duplicado recuperando el ID existente
                         $queryGetExisting = "SELECT id FROM datos_pago WHERE rut_cta = ? AND numero_cuenta = ? LIMIT 1";
                         $stmtGet = $con->prepare($queryGetExisting);
                         $stmtGet->bind_param("ss", $rutNum, $numCta);

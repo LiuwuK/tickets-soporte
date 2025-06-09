@@ -1,24 +1,5 @@
-document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll("select.search-form").forEach(selectElement => {
-        const choices = new Choices(selectElement, {
-            searchEnabled: true,
-            itemSelectText: "",
-            placeholder: true
-        });
-    });
-
-    // Agregar nueva fila
-    document.getElementById('agregar-fila').addEventListener('click', function() {
-        agregarFilaTurno();
-    });
-    
-    // Eliminar fila
-    document.getElementById('cuerpo-tabla').addEventListener('click', function(e) {
-        if (e.target.classList.contains('eliminar-fila')) {
-            e.target.closest('tr').remove();
-        }
-    });
-});
+let contadorTurnos = 1;
+let filaBaseHTML = '';
 
 document.addEventListener("input", function(e){
     if (e.target.matches("input[id='rut']")) {
@@ -38,29 +19,71 @@ document.addEventListener("input", function(e){
     }
 });
 
-let contadorTurnos = 1;
+document.addEventListener("DOMContentLoaded", function () {
+    const primeraFila = document.querySelector('#cuerpo-tabla tr');
+    if (primeraFila) {
+        // Guardar copia limpia del HTML sin Choices aplicado
+        filaBaseHTML = primeraFila.outerHTML;
+
+        // Inicializar Choices en la fila original
+        const selectInstalacion = primeraFila.querySelector('select[name="nuevos_turnos[0][instalacion]"]');
+        if (selectInstalacion) {
+            new Choices(selectInstalacion, {
+                shouldSort: false,
+                searchEnabled: true,
+                itemSelectText: ''
+            });
+        }
+    }
+
+    // Botón agregar fila
+    document.getElementById('agregar-fila').addEventListener('click', function () {
+        agregarFilaTurno();
+    });
+
+    // Botón eliminar fila
+    document.getElementById('cuerpo-tabla').addEventListener('click', function (e) {
+        if (e.target.classList.contains('eliminar-fila')) {
+            e.target.closest('tr').remove();
+        }
+    });
+});
+
 function agregarFilaTurno() {
     const cuerpoTabla = document.getElementById('cuerpo-tabla');
-    const primeraFila = cuerpoTabla.querySelector('tr');
-    
-    if (!primeraFila) return;
-    
-    const nuevaFila = primeraFila.cloneNode(true);
-    
-    nuevaFila.querySelectorAll('[name^="nuevos_turnos["]').forEach(elemento => {
-        const nameOriginal = elemento.getAttribute('name');
-        const nuevoName = nameOriginal.replace(/nuevos_turnos\[\d+\]/, `nuevos_turnos[${contadorTurnos}]`);
-        elemento.setAttribute('name', nuevoName);
+    if (!filaBaseHTML) return;
+
+    // Convertimos string HTML a nodo
+    const tempDiv = document.createElement('tbody');
+    tempDiv.innerHTML = filaBaseHTML;
+
+    const nuevaFila = tempDiv.querySelector('tr');
+
+    // Actualizar los nombres
+    nuevaFila.querySelectorAll('[name^="nuevos_turnos["]').forEach(el => {
+        const name = el.getAttribute('name');
+        const nuevoName = name.replace(/nuevos_turnos\[\d+\]/, `nuevos_turnos[${contadorTurnos}]`);
+        el.setAttribute('name', nuevoName);
     });
-    
+
+    // Limpiar valores
     nuevaFila.querySelectorAll('input').forEach(input => {
         if (input.type !== 'button') input.value = '';
     });
-    
     nuevaFila.querySelectorAll('select').forEach(select => {
         select.selectedIndex = 0;
     });
-    
+
+    // Inicializar Choices en el nuevo select de instalación
+    const nuevoSelectInstalacion = nuevaFila.querySelector(`select[name="nuevos_turnos[${contadorTurnos}][instalacion]"]`);
+    if (nuevoSelectInstalacion) {
+        new Choices(nuevoSelectInstalacion, {
+            shouldSort: false,
+            searchEnabled: true,
+            itemSelectText: ''
+        });
+    }
+
     cuerpoTabla.appendChild(nuevaFila);
     contadorTurnos++;
 }
