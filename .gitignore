@@ -4,3 +4,5 @@ assets/js/json/credentials.json
 /tickets/assets/uploads
 /vendor
 /vendor
+composer.json
+composer.lock
