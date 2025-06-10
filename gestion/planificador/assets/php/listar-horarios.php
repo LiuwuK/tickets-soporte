@@ -15,8 +15,8 @@ if (!isset($_GET['sucursal_id']) || !is_numeric($_GET['sucursal_id'])) {
 }
 
 $sucursal_id = (int)$_GET['sucursal_id'];
+$colaborador_id = isset($_GET['colaborador_id']) ? (int)$_GET['colaborador_id'] : null;
 
-// Consulta optimizada para obtener múltiples colaboradores por turno
 $query = "SELECT 
             hc.id AS horario_id,
             hc.fecha, 
@@ -31,8 +31,13 @@ $query = "SELECT
           LEFT JOIN colaborador_turno ct ON hc.turno_id = ct.turno_id 
             AND hc.fecha BETWEEN ct.fecha_inicio AND ct.fecha_fin
           LEFT JOIN colaboradores c ON ct.colaborador_id = c.id
-          WHERE hc.sucursal_id = ?
-          ORDER BY hc.fecha, hc.hora_entrada, ti.codigo";
+          WHERE hc.sucursal_id = ?";
+          
+if ($colaborador_id) {
+    $query .= " AND c.id = ?";
+}
+
+$query .= " ORDER BY hc.fecha, hc.hora_entrada, ti.codigo";
 
 $stmt = $con->prepare($query);
 if (!$stmt) {
@@ -41,7 +46,12 @@ if (!$stmt) {
     exit;
 }
 
-$stmt->bind_param("i", $sucursal_id);
+// Bind parameters según si hay filtro de colaborador
+if ($colaborador_id) {
+    $stmt->bind_param("ii", $sucursal_id, $colaborador_id);
+} else {
+    $stmt->bind_param("i", $sucursal_id);
+}
 $stmt->execute();
 $result = $stmt->get_result();
 

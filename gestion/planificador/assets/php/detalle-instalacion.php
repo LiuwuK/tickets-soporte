@@ -78,13 +78,16 @@ if (isset($_GET['id'])) {
         $turnosExistentes[] = $fila;
     }
     mysqli_stmt_close($stmt);
-
-    // Colaboradores asociados con sus codigos
-    $query = "SELECT c.*
-            FROM `colaboradores` c
-            WHERE c.vigente = 1 
-            AND c.facility = ?
-            GROUP BY c.id";
+    // Consulta modificada con LEFT JOIN
+    $query = "SELECT c.*, GROUP_CONCAT(DISTINCT ti.codigo SEPARATOR ', ') AS codigos_turnos
+                FROM colaboradores c
+                LEFT JOIN colaborador_turno ct ON c.id = ct.colaborador_id 
+                    AND ct.fecha_fin >= CURDATE()
+                LEFT JOIN turnos_instalacion ti ON ct.turno_id = ti.id
+                WHERE c.vigente = 1 
+                AND c.facility = ?
+                GROUP BY c.id
+                ORDER BY c.name"; 
 
     $stmt = mysqli_prepare($con, $query);
     if (!$stmt) {
@@ -97,10 +100,11 @@ if (isset($_GET['id'])) {
     $result = mysqli_stmt_get_result($stmt);
     $colaboradorAsociado = [];
     while ($fila = mysqli_fetch_assoc($result)) {
+        // Si no tiene turnos, codigos_turnos será NULL
+        $fila['codigos_turnos'] = $fila['codigos_turnos'] ?? 'Sin turnos asignados';
         $colaboradorAsociado[] = $fila;
     }
     mysqli_stmt_close($stmt);
-    
 
 } else {
     die("No se proporcionó ID de turno");

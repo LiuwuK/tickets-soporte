@@ -80,4 +80,54 @@ document.getElementById('formTurnos').addEventListener('submit', function(e) {
     // Enviar formulario
     this.submit();
 });
+
+
 //FIN TURNOS------------------------------------------------------------------------------------------------------------------
+//CALENDARIO
+document.addEventListener('DOMContentLoaded', function() {
+  const sucursalId = document.getElementById('sucursalId').value;
+  const calendarEl = document.getElementById('calendar');
+  const filtroColaborador = document.getElementById('filtroColaborador');
+  
+  calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    locale: 'es',
+    headerToolbar: {
+        left: 'prev,next',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    },
+    buttonText: { 
+      month: 'Mes',
+      week: 'Semana',
+      day: 'Día'
+    },
+    displayEventTime: false,
+    events: function(fetchInfo, successCallback, failureCallback) {
+      let url = `assets/php/listar-horarios.php?sucursal_id=${sucursalId}`;
+      
+      if (filtroColaborador.value) {
+        url += `&colaborador_id=${filtroColaborador.value}`;
+      }
+      
+      fetch(url)
+        .then(response => response.json())
+        .then(data => successCallback(data))
+        .catch(error => failureCallback(error));
+    },
+    dateClick: function(info) {
+        alert('Fecha clickeada: ' + info.dateStr);
+    },
+    eventClick: function(info) {
+        const colaboradores = info.event.extendedProps.colaboradores || 'Sin asignar';
+        const titulo = info.event.title;
+        alert(`Turno: ${titulo}\nColaboradores: ${colaboradores}`);
+    },
+    eventDisplay: 'block',
+    eventOrder: 'groupId'
+  });
+  calendar.render();
+   filtroColaborador.addEventListener('change', function() {
+    calendar.refetchEvents();
+  });
+});

@@ -185,14 +185,9 @@ if (isset($_SESSION['error_message'])) {
             </div>
           </form>
           </div>
-
-          <div class="d-container col-md-5">
-          </div>
-        </div>
-        
-        <!-- COLABORADORES -->
-        <div class="main-colab col-md-11 d-flex justify-content-between align-items-start">
-          <div class="d-container col-md-6 h-auto">
+          <!-- COLABORADORES -->
+          <div class="col-md-6">
+           <div class="d-container h-auto tt">
             <table class="table table-hover" id="tabla-colab">
               <thead>
                 <tr>
@@ -211,7 +206,7 @@ if (isset($_SESSION['error_message'])) {
                     foreach ($colaboradorAsociado as $index => $colab): ?>
                     <tr data-id="<?= $colab['id'] ?>" data-sucursal-id="<?= $_GET['id'] ?>">
                       <td class="align-middle text-center">
-                        <?= 'Por definir' ?>
+                        <?= $colab['codigos_turnos'] ?>
                       </td>
                       <td class="align-middle text-center">
                         <?= $colab['rut'] ?>
@@ -236,8 +231,36 @@ if (isset($_SESSION['error_message'])) {
               </tbody>
             </table>
           </div>
-          <div class="d-container col-md-5 calendario" id="calendar"></div>
-        </div>                  
+         </div>
+        </div>
+        
+        <!-- Calendario -->
+        <div class="main-colab col-md-9 d-flex flex-column d-container"> 
+          <div class="mb-3 d-flex justify-content-between"> 
+            <div class="select col-md-5">
+              <label class="form-label" for="colaborador">Filtrar por Colaborador</label>
+              <select class="form-select form-select-sm" name="colaborador" id="filtroColaborador">
+                  <option value="">Todos los turnos</option>
+                <?php foreach ($colaboradorAsociado as $index => $colab): ?>
+                  <option value="<?= $colab['id'] ?>">
+                    <?= $colab['name'].' '.$colab['fname'].' '.$colab['mname'] ?>
+                  </option>
+                <?php endforeach;?> 
+
+              </select>
+            </div>
+            <div class="btns col-md-5 d-flex justify-content-end p-3">
+              <button type="button" class="excel-btn btn ">
+                <i class="bi bi-file-earmark-excel"></i>
+              </button>
+              <button type="button" class="pdf-btn btn">
+                <i class="bi bi-file-earmark-pdf"></i>
+              </button>
+            </div>
+          </div>
+          <div class="col-md-12 calendario" id="calendar">
+          </div>
+        </div>           
     </div>
   </div>
 
@@ -309,12 +332,10 @@ if (isset($_SESSION['error_message'])) {
             <label class="form-label">Seleccionar turno *</label>
             <select class="form-select" id="turnoUnicoSelect" name="turnoUnico" disabled>
               <option value="">Seleccionar...</option>
-              <!-- Se llenará dinámicamente -->
             </select>
           </div>
           
           <div id="contenedorSemanas" class="table-responsive">
-            <!-- Se generará dinámicamente -->
           </div>
         </form>
       </div>
@@ -329,7 +350,6 @@ if (isset($_SESSION['error_message'])) {
   </div>
 </div>
 <script>
-
 document.addEventListener('DOMContentLoaded', function() {
     const fechaInicioInput = document.getElementById('fechaInicioAsignacion');
     const fechaFinInput = document.getElementById('fechaFinAsignacion');
@@ -638,8 +658,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-
 // Asignar evento a los botones "Asignar fecha"
 document.querySelectorAll('.btn-dates').forEach(btn => {
   btn.addEventListener('click', function() {
@@ -662,7 +680,6 @@ document.querySelectorAll('.btn-dates').forEach(btn => {
     modal.show();
   });
 });
-
 
 let calendar; 
 // Guardar horario
@@ -730,35 +747,43 @@ document.getElementById('guardarHorario').addEventListener('click', async functi
   }
 });
 
-// CALENDARIO
-document.addEventListener('DOMContentLoaded', function() {
-  const sucursalId = document.getElementById('sucursalId').value;
-  const calendarEl = document.getElementById('calendar');
-  
-  calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    locale: 'es',
-    headerToolbar: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-    },
-    displayEventTime: false,
-    events: `assets/php/listar-horarios.php?sucursal_id=${sucursalId}`,
-    dateClick: function(info) {
-        alert('Fecha clickeada: ' + info.dateStr);
-    },
-    eventClick: function(info) {
-        const colaboradores = info.event.extendedProps.colaboradores || 'Sin asignar';
-        const titulo = info.event.title;
-        alert(`Turno: ${titulo}\nColaboradores: ${colaboradores}`);
-    },
-    eventDisplay: 'block',
-    eventOrder: 'groupId',
-    
-  });
-  calendar.render();
+
+
+//descargas
+document.querySelector('.excel-btn').addEventListener('click', function () {
+    descargarCalendario('excel');
 });
+
+document.querySelector('.pdf-btn').addEventListener('click', function () {
+    descargarCalendario('pdf');
+});
+
+function descargarCalendario(formato) {
+    const sucursalId = document.getElementById('sucursalId').value; 
+    const colaboradorId = null;
+    const mes = new Date().getMonth() + 1;
+    const anio = new Date().getFullYear();
+
+    const params = new URLSearchParams({
+        formato,
+        sucursal_id: sucursalId,
+        colaborador_id: colaboradorId,
+        mes,
+        anio
+    });
+
+    fetch('assets/php/descargar-calendario.php?' + params.toString())
+        .then(res => res.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `calendario_${mes}_${anio}.${formato === 'excel' ? 'xlsx' : 'pdf'}`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        });
+}
 // Contador para nuevos turnos
 let contadorNuevos = <?= !empty($turnosExistentes) ? count($turnosExistentes) : 0 ?>;
 </script>

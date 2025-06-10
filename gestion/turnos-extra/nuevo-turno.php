@@ -85,7 +85,7 @@ check_login();
                             <tbody id="cuerpo-tabla">
                                 <tr>
                                     <td class="align-middle text-center">
-                                        <select name="nuevos_turnos[0][motivo]" class="form-control form-control-sm" required>
+                                        <select name="nuevos_turnos[0][motivo]" class="form-control form-control-sm search-form" required>
                                             <option value="">Motivos</option>
                                             <?php
                                             foreach ($motivo AS $row) {

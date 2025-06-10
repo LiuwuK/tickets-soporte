@@ -38,3 +38,28 @@
     opacity: 1;
     z-index: 100 !important;
 }
+.tt{
+    width: 95%;
+    margin: 0% auto;
+}
+.calendario{
+    margin: 0% auto;
+}
+.excel-btn, .pdf-btn{
+    color: #fff;
+    margin-left: 10px;
+}
+.excel-btn{
+    background-color: #4fa04e;
+}
+.excel-btn:hover{
+    color: #fff;
+    background-color: #4fa04e;
+}
+.pdf-btn{
+    background-color: #dc3545;
+}
+.pdf-btn:hover{
+    color: #fff;
+    background-color: #dc3545;
+}
