@@ -150,7 +150,7 @@ if(isset($_POST['delSup'])){
     $stmt = $con->prepare($query);
     $stmt->bind_param("i", $id);
     if ($stmt->execute()) {
-        echo "<script>alert('Sucursal eliminada correctamente');</script>";
+        echo "<script>alert('Sucursal eliminada correctamente'); location.href='instalaciones.php';</script>";
 
     } else {
         echo "<script>alert('Error al eliminar la sucursal');</script>";
