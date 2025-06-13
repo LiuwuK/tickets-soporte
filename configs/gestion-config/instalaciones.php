@@ -22,9 +22,8 @@ check_login();
 <!-- CSS personalizados -->
 <link href="../../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
 <link href="../assets/css/general-crud.css" rel="stylesheet" type="text/css"/>
-
-<!-- Toast notificaciones -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<!-- sweetalert -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 
 <body class="test" >
@@ -139,7 +138,7 @@ check_login();
                                         </select>
                                     </td>
                                     <td>
-                                        <button type="button" style="width: 100%;" class="btn btn-del del-btn" data-bs-toggle="modal" data-bs-target="#delSuper" data-sup-id="<?php echo $row['id']; ?>">Eliminar</button>
+                                        <button type="button" style="width: 100%;" class="btn btn-del del-btn" data-bs-toggle="modal" data-bs-target="#delSuper" data-sup-id="<?php echo $row_s['id']; ?>">Eliminar</button>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -289,7 +288,8 @@ check_login();
       </div>
   </div>
 </div>
-
+<!-- sweetalert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <!-- Bootstrap Bundle (con Popper.js) -->

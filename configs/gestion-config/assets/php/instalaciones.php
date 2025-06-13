@@ -150,7 +150,8 @@ if(isset($_POST['delSup'])){
     $stmt = $con->prepare($query);
     $stmt->bind_param("i", $id);
     if ($stmt->execute()) {
-        echo "<script>alert('sucursal eliminada correctamente.'); location.href='instalaciones.php';</script>";
+        echo $query.$id;
+        die();
     } else {
         echo "<script>alert('Error al eliminar la sucursal');</script>";
     }
@@ -159,27 +160,45 @@ if(isset($_POST['delSup'])){
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 if(isset($_POST['carga'])){
-    if ($_FILES['file']['error'] == UPLOAD_ERR_OK) {
+     if ($_FILES['file']['error'] == UPLOAD_ERR_OK) {
         $filePath = $_FILES['file']['tmp_name'];
         $spreadsheet = IOFactory::load($filePath);
         $worksheet = $spreadsheet->getActiveSheet();
         $data = $worksheet->toArray();
-        $query_main = "INSERT INTO sucursales(nombre, direccion_calle, comuna, ciudad_id, departamento_id, supervisor_id, estado)
+        
+        // Preparamos ambas consultas (INSERT y UPDATE)
+        $query_insert = "INSERT INTO sucursales(nombre, direccion_calle, comuna, ciudad_id, departamento_id, supervisor_id, estado)
                 VALUES (?,?,?,?,?,?,?)";
         
-        $stmt = $con->prepare($query_main);
-    
+        $query_update = "UPDATE sucursales SET 
+                        direccion_calle = ?, 
+                        comuna = ?, 
+                        ciudad_id = ?, 
+                        departamento_id = ?, 
+                        supervisor_id = ?, 
+                        estado = ?
+                        WHERE nombre = ?";
+        
+        $stmt_insert = $con->prepare($query_insert);
+        $stmt_update = $con->prepare($query_update);
+        
+        $successCount = 0;
+        $updateCount = 0;
+        $errorCount = 0;
+        $errorsDetails = []; // Para almacenar detalles de errores
+        
         foreach ($data as $index => $row) {
-            if ($index == 0) continue;
+            if ($index == 0) continue; // Saltar encabezados
+            
             $nombre = $row[0];
-            $ciudad = strtolower($row[1]);
+            $ciudad = strtolower($row[3]);
             $comuna = $row[2];
-            $calle =  $row[3];
-            $supervisor  = $row[4];
-            $depto = $row[5];
-            $estado = strtolower($row[6]);
+            $calle = $row[5];
+            $supervisor = $row[4];
+            $depto = $row[6];
+            $estado = strtolower($row[7]);
 
-            //Obtener departamento
+            // Obtener departamento
             $query_d = "SELECT id FROM departamentos WHERE depto_id = ?";
             $stmt_d = $con->prepare($query_d);
             $stmt_d->bind_param("s", $depto); 
@@ -187,10 +206,10 @@ if(isset($_POST['carga'])){
             $stmt_d->bind_result($depto_id);
             $stmt_d->fetch();
             $stmt_d->close();
+            
             $supervisor = formatRut($supervisor);
             
-            //echo $supervisor;
-            //obtener supervisor 
+            // Obtener supervisor 
             $query_s = "SELECT id FROM supervisores WHERE rut = ?";
             $stmt_s = $con->prepare($query_s);
             $stmt_s->bind_param("s", $supervisor); 
@@ -198,7 +217,8 @@ if(isset($_POST['carga'])){
             $stmt_s->bind_result($supervisor_id);
             $stmt_s->fetch();
             $stmt_s->close();
-            //obtener ciudad
+            
+            // Obtener ciudad
             $query_c = "SELECT id FROM ciudades WHERE LOWER(nombre_ciudad) = ?";
             $stmt_c = $con->prepare($query_c);
             $stmt_c->bind_param("s", $ciudad); 
@@ -207,14 +227,82 @@ if(isset($_POST['carga'])){
             $stmt_c->fetch();
             $stmt_c->close();
 
-
-            $stmt->bind_param("sssiiis", $nombre,$calle, $comuna, $ciudad_id, $depto_id, $supervisor_id,$estado);
-            $stmt->execute();
+            // Verificar si la sucursal ya existe
+            $query_check = "SELECT id FROM sucursales WHERE nombre = ?";
+            $stmt_check = $con->prepare($query_check);
+            $stmt_check->bind_param("s", $nombre);
+            $stmt_check->execute();
+            $stmt_check->store_result();
+            
+            if ($stmt_check->num_rows > 0) {
+                // Sucursal existe - actualizar
+                $stmt_update->bind_param("ssiiiss", $calle, $comuna, $ciudad_id, $depto_id, $supervisor_id, $estado, $nombre);
+                if ($stmt_update->execute()) {
+                    $updateCount++;
+                } else {
+                    $errorCount++;
+                    $errorsDetails[] = "Error actualizando $nombre: " . $stmt_update->error;
+                }
+            } else {
+                // Sucursal no existe - insertar
+                $stmt_insert->bind_param("sssiiis", $nombre, $calle, $comuna, $ciudad_id, $depto_id, $supervisor_id, $estado);
+                if ($stmt_insert->execute()) {
+                    $successCount++;
+                } else {
+                    $errorCount++;
+                    $errorsDetails[] = "Error insertando $nombre: " . $stmt_insert->error;
+                }
+            }
+            $stmt_check->close();
         }
-    
-        echo "<script>alert('Sucursales registrados correctamente'); location.href='instalaciones.php';</script>";
+        
+        // Preparar el mensaje para SweetAlert
+        $swalTitle = "Proceso completado";
+        $swalHtml = "<div style='text-align: left;'>";
+        $swalHtml .= "<p><b>Sucursales nuevas:</b> $successCount</p>";
+        $swalHtml .= "<p><b>Sucursales actualizadas:</b> $updateCount</p>";
+        $swalHtml .= "<p><b>Errores:</b> $errorCount</p>";
+        
+        if ($errorCount > 0) {
+            $swalHtml .= "<details><summary>Detalles de errores</summary><ul>";
+            foreach ($errorsDetails as $error) {
+                $swalHtml .= "<li>$error</li>";
+            }
+            $swalHtml .= "</ul></details>";
+        }
+        $swalHtml .= "</div>";
+        
+        // Determinar el tipo de alerta según resultados
+        $swalType = ($errorCount > 0) ? 'warning' : 'success';
+        
+        // JavaScript para mostrar SweetAlert
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: '$swalTitle',
+                    html: `$swalHtml`,
+                    icon: '$swalType',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    window.location.href = 'instalaciones.php';
+                });
+            });
+        </script>";
+        
     } else {
-        echo "Error al subir el archivo.";
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Error al subir el archivo',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    window.location.href = 'instalaciones.php';
+                });
+            });
+        </script>";
     }
 }
 ?>
