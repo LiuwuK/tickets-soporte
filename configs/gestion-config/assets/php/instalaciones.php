@@ -150,8 +150,8 @@ if(isset($_POST['delSup'])){
     $stmt = $con->prepare($query);
     $stmt->bind_param("i", $id);
     if ($stmt->execute()) {
-        echo $query.$id;
-        die();
+        echo "<script>alert('Sucursal eliminada correctamente');</script>";
+
     } else {
         echo "<script>alert('Error al eliminar la sucursal');</script>";
     }
@@ -190,7 +190,10 @@ if(isset($_POST['carga'])){
         foreach ($data as $index => $row) {
             if ($index == 0) continue; // Saltar encabezados
             
-            $nombre = $row[0];
+            // Normalizar nombre
+            $nombre = preg_replace('/\s+/', ' ', trim($row[0]));
+            $nombre = str_replace([' .', '. '], '.', $nombre);
+            
             $ciudad = strtolower($row[3]);
             $comuna = $row[2];
             $calle = $row[5];
@@ -226,17 +229,29 @@ if(isset($_POST['carga'])){
             $stmt_c->bind_result($ciudad_id);
             $stmt_c->fetch();
             $stmt_c->close();
-
-            // Verificar si la sucursal ya existe
-            $query_check = "SELECT id FROM sucursales WHERE nombre = ?";
+            // Verificar si la sucursal ya existe con comparación flexible
+            $query_check = "SELECT id, nombre FROM sucursales WHERE 
+                           REPLACE(REPLACE(nombre, ' ', ''), '.', '') = 
+                           REPLACE(REPLACE(?, ' ', ''), '.', '')";
+            
             $stmt_check = $con->prepare($query_check);
-            $stmt_check->bind_param("s", $nombre);
+            $originalForComparison = str_replace([' ', '.'], '', $nombre);
+            $stmt_check->bind_param("s", $originalForComparison);
             $stmt_check->execute();
             $stmt_check->store_result();
+            $stmt_check->bind_result($existing_id, $existing_name);
+            $stmt_check->fetch();
             
             if ($stmt_check->num_rows > 0) {
-                // Sucursal existe - actualizar
-                $stmt_update->bind_param("ssiiiss", $calle, $comuna, $ciudad_id, $depto_id, $supervisor_id, $estado, $nombre);
+                // Registrar discrepancias en los nombres
+                if ($existing_name !== $nombre) {
+                    $errorsDetails[] = "Nombre normalizado: '$nombre' difiere del existente: '$existing_name'";
+                    $nombre = $existing_name; // Usar el nombre exacto que está en la base de datos
+                }
+                
+                // Proceder con el update usando el nombre exacto
+                $stmt_update->bind_param("ssiiiss", $calle, $comuna, $ciudad_id, $depto_id, $supervisor_id, $estado, $existing_name);
+            
                 if ($stmt_update->execute()) {
                     $updateCount++;
                 } else {
