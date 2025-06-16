@@ -6,3 +6,10 @@ assets/js/json/credentials.json
 /vendor
 composer.json
 composer.lock
+vendor/composer/installed.php
+vendor/composer/autoload_static.php
+vendor/composer/autoload_classmap.php
+vendor/autoload.php
+composer.lock
+composer.json
+vendor/composer/InstalledVersions.php
