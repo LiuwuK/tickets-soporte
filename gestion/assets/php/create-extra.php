@@ -360,13 +360,13 @@ if (isset($_POST['carga'])) {
             }
 
             $fechaTurnoFormateada = $fecha_obj->format('Y-m-d');
-            // validar fecha turno (SOLO DIA ACTUAL HASTA LAS 10:00 DEL DIA SIGUIENTE)
+            // validar fecha turno (SOLO DIA ACTUAL HASTA LAS 12:00 DEL DIA SIGUIENTE)
             $horaActual = (int)date('H');
             $fechaHoy = date('Y-m-d');
             $fechaAyer = date('Y-m-d', strtotime('-1 day'));
             
-            /*
-            if ($horaActual < 10) {
+            
+            if ($horaActual < 12) {
                 if ($fechaTurnoFormateada != $fechaAyer && $fechaTurnoFormateada != $fechaHoy) {
                     $count = $count + 1;
                     $fechasInvalidas = $fechaTurnoFormateada;
@@ -379,7 +379,7 @@ if (isset($_POST['carga'])) {
                     continue;
                 }
             }
-            */
+            
             $fecha = $fechaTurnoFormateada;  
             $horas = $row[8];
 
