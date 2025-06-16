@@ -61,7 +61,7 @@ $styleColor3 = [
 // Encabezados de la tabla
 $headers = [
     'Turno ID', 'Fecha de Subida', 'Estado', 'Autorizado Por', 'Instalación','Supervisor',
-    'Fecha del Turno (DIA-MES-AÑO)','Horario Cubierto por GGSS', 'Horas cubiertas', 'Monto',
+    'Fecha del Turno (DIA-MES-AÑO)','Hora Entrada', 'Hora Salida', 'Horas cubiertas', 'Monto',
     'Nombre y Apellido', 'RUT', 'Nacionalidad',
     'Banco', 'RUT Cuenta', 'Número de cuenta',
     'Motivo', 'Persona del Motivo', 'Motivo Rechazo', 'Justificación',
@@ -70,10 +70,10 @@ $headers = [
 
 // Aplicar estilos a los encabezados
 $sheet->fromArray([$headers], NULL, 'A1'); 
-$sheet->getStyle('A1:J1')->applyFromArray($styleColor1);
-$sheet->getStyle('K1:M1')->applyFromArray($styleColor2);
-$sheet->getStyle('N1:P1')->applyFromArray($styleColor3); 
-$sheet->getStyle('Q1:U1')->applyFromArray($styleColor1);
+$sheet->getStyle('A1:K1')->applyFromArray($styleColor1);
+$sheet->getStyle('L1:N1')->applyFromArray($styleColor2);
+$sheet->getStyle('O1:Q1')->applyFromArray($styleColor3); 
+$sheet->getStyle('R1:V1')->applyFromArray($styleColor1);
 
 // Capturar filtros
 $fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : '';
@@ -113,7 +113,8 @@ $query = "
         CASE WHEN su.id IS NULL THEN 'Sin sucursal' ELSE su.nombre END AS instalacion,
         sup.nombre_supervisor AS supervisor,
         te.fecha_turno AS fechaTurno,
-        CONCAT(TIME_FORMAT(te.hora_inicio, '%H:%i'), ' - ', TIME_FORMAT(te.hora_termino, '%H:%i')) AS horario,
+        TIME_FORMAT(te.hora_inicio, '%H:%i') AS hora_entrada, 
+        TIME_FORMAT(te.hora_termino, '%H:%i') AS hora_salida,
         te.horas_cubiertas AS horas, 
         te.monto AS monto,
         te.nombre_colaborador AS colaborador, 
@@ -164,9 +165,9 @@ while ($row = mysqli_fetch_assoc($result)) {
 // Definir anchos de columna
 $columnWidths = [
     'A' => 15, 'B' => 20, 'C' => 25, 'D' => 20, 'E' => 30, 'F' => 20,
-    'G' => 15, 'H' => 15, 'I' => 25, 'J' => 15, 'K' => 15, 'L' => 20,
+    'G' => 15, 'H' => 15, 'I' => 15, 'J' => 15, 'K' => 15, 'L' => 20,
     'M' => 20, 'N' => 20, 'O' => 25, 'P' => 30, 'Q' => 20, 'R' => 30,
-    'S' => 20, 'T' => 20, 'U' => 20
+    'S' => 20, 'T' => 20, 'U' => 20, 'V' => 20, 
 ];
 
 // Aplicar anchos
