@@ -62,8 +62,8 @@ $styleColor3 = [
 $headers = [
     'Turno ID', 'Fecha de Subida', 'Estado', 'Autorizado Por', 'Instalación','Supervisor',
     'Fecha del Turno (DIA-MES-AÑO)','Hora Entrada', 'Hora Salida', 'Horas cubiertas', 'Monto',
-    'Nombre y Apellido', 'RUT', 'Nacionalidad',
-    'Banco', 'RUT Cuenta', 'Número de cuenta',
+    'Nombre y Apellido', 'RUT', 'DV', 'Nacionalidad',
+    'Banco', 'RUT Cuenta', 'DV Cuenta', 'Número de cuenta',
     'Motivo', 'Persona del Motivo', 'Motivo Rechazo', 'Justificación',
     'Contratado'
 ];
@@ -71,9 +71,9 @@ $headers = [
 // Aplicar estilos a los encabezados
 $sheet->fromArray([$headers], NULL, 'A1'); 
 $sheet->getStyle('A1:K1')->applyFromArray($styleColor1);
-$sheet->getStyle('L1:N1')->applyFromArray($styleColor2);
-$sheet->getStyle('O1:Q1')->applyFromArray($styleColor3); 
-$sheet->getStyle('R1:V1')->applyFromArray($styleColor1);
+$sheet->getStyle('L1:O1')->applyFromArray($styleColor2);
+$sheet->getStyle('P1:S1')->applyFromArray($styleColor3); 
+$sheet->getStyle('T1:X1')->applyFromArray($styleColor1);
 
 // Capturar filtros
 $fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : '';
@@ -118,10 +118,12 @@ $query = "
         te.horas_cubiertas AS horas, 
         te.monto AS monto,
         te.nombre_colaborador AS colaborador, 
-        te.rut AS rut,
+        SUBSTRING_INDEX(te.rut, '-', 1) AS rut,
+        SUBSTRING_INDEX(te.rut, '-', -1) AS digito_verificador,
         te.nacionalidad AS nacionalidad,  
         bc.nombre_banco AS banco, 
-        CONCAT(IFNULL(dp.rut_cta, ''), '-', IFNULL(dp.digito_verificador, '')) AS RUTcta, 
+        IFNULL(dp.rut_cta, '') AS rutcta, 
+        IFNULL(dp.digito_verificador, '') AS dvcuenta, 
         dp.numero_cuenta AS numCuenta,
         mg.motivo AS motivo,
         te.persona_motivo AS persona_motivo,
@@ -167,7 +169,7 @@ $columnWidths = [
     'A' => 15, 'B' => 20, 'C' => 25, 'D' => 20, 'E' => 30, 'F' => 20,
     'G' => 15, 'H' => 15, 'I' => 15, 'J' => 15, 'K' => 15, 'L' => 20,
     'M' => 20, 'N' => 20, 'O' => 25, 'P' => 30, 'Q' => 20, 'R' => 30,
-    'S' => 20, 'T' => 20, 'U' => 20, 'V' => 20, 
+    'S' => 20, 'T' => 20, 'U' => 20, 'V' => 20, 'W' => 20, 
 ];
 
 // Aplicar anchos
