@@ -65,7 +65,7 @@ check_login();
                             <table class="table table-hover main-table" id="tabla-turnos">
                                 <thead>
                                     <tr>
-                                        <th scope="col" class="align-middle text-center">Motivo</th>
+                                        <th scope="col" class="align-middle text-center w-40">Motivo</th>
                                         <th scope="col" class="align-middle text-center">Instalacion</th>
                                         <th scope="col" class="align-middle text-center">Fecha del Turno</th>
                                         <th scope="col" class="align-middle text-center">Hora entrada</th>
@@ -99,6 +99,7 @@ check_login();
                                         <td class="align-middle text-center">
                                             <select name="nuevos_turnos[0][instalacion]" class="form-control form-control-sm search-form">
                                                 <option value="">Instalaciones</option>
+                                                <option value="">SPOT</option>
                                                 <?php
                                                 foreach ($inst AS $row) {
                                                     echo '<option value="'.htmlspecialchars($row['id']).'">'
@@ -118,7 +119,7 @@ check_login();
                                             <input type="time" name="nuevos_turnos[0][hora_salida]" class="form-control form-control-sm" required>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" name="nuevos_turnos[0][monto]" class="form-control form-control-sm" required>
+                                            <input type="number" name="nuevos_turnos[0][monto]" class="form-control form-control-sm" required>
                                         </td>
                                         <td class="align-middle text-center">
                                             <input type="text" name="nuevos_turnos[0][rut]" id='rut' class="form-control form-control-sm" required>

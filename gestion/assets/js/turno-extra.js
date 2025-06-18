@@ -34,6 +34,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 itemSelectText: ''
             });
         }
+
+        const selectMotivo = primeraFila.querySelector('select[name="nuevos_turnos[0][motivo]"]');
+        if (selectMotivo) {
+            new Choices(selectMotivo, {
+                shouldSort: false,
+                searchEnabled: true,
+                itemSelectText: ''
+            });
+        }
     }
 
     // Botón agregar fila
@@ -78,6 +87,15 @@ function agregarFilaTurno() {
     const nuevoSelectInstalacion = nuevaFila.querySelector(`select[name="nuevos_turnos[${contadorTurnos}][instalacion]"]`);
     if (nuevoSelectInstalacion) {
         new Choices(nuevoSelectInstalacion, {
+            shouldSort: false,
+            searchEnabled: true,
+            itemSelectText: ''
+        });
+    }
+     // Inicializar Choices en el nuevo select de instalación
+    const nuevoSelectMotivo = nuevaFila.querySelector(`select[name="nuevos_turnos[${contadorTurnos}][motivo]"]`);
+    if (nuevoSelectMotivo) {
+        new Choices(nuevoSelectMotivo, {
             shouldSort: false,
             searchEnabled: true,
             itemSelectText: ''
