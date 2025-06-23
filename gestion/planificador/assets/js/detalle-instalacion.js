@@ -1,48 +1,54 @@
 //TURNOS---------------------------------------------------------------------------------------------------------------
-document.getElementById('formTurnos').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    try {
-        const formData = new FormData(this);
-        const response = await fetch(this.action, {
-            method: 'POST',
-            body: formData
-        });
-        
-        if (response.redirected) {
-            window.location.href = response.url;
-        } else {
-            const data = await response.json();
-            if(data.success) {
-                alert('Turnos guardados correctamente');
-                location.reload();
-            } else {
-                alert('Error: ' + data.message);
-            }
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Ocurrió un error al guardar los turnos');
-    }
-});
-function agregarTurno() {
-    const tbody = document.getElementById('cuerpo-tabla');
-    const plantilla = document.getElementById('plantilla-fila');
-    const nuevaFila = plantilla.cloneNode(true);
-    nuevaFila.style.display = '';
-    nuevaFila.removeAttribute('id');
+document.getElementById('formTurnos')?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  console.log('SUBMIT ejecutado');
+  if (this.dataset.submitting === "true") return;
+  this.dataset.submitting = "true";
 
-    const inputs = nuevaFila.querySelectorAll('[name]');
-    inputs.forEach(input => {
-        const originalName = input.name;
-        const newName = originalName.replace('nuevos_turnos[]', `turnos[${contadorNuevos}]`);
-        input.name = newName;
-        input.required = false; 
+  try {
+    const formData = new FormData(this);
+    const response = await fetch(this.action, {
+      method: 'POST',
+      body: formData
     });
 
-    tbody.insertBefore(nuevaFila, plantilla);
-    contadorNuevos++;
-    actualizarBotonesEliminar();
+    if (response.redirected) {
+      window.location.href = response.url;
+    } else {
+      const data = await response.json();
+      if (data.success) {
+        alert('Turnos guardados correctamente');
+        location.reload();
+      } else {
+        alert('Error: ' + data.message);
+      }
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Ocurrió un error al guardar los turnos');
+  } finally {
+    this.dataset.submitting = "false";
+  }
+});
+
+function agregarTurno() {
+  const tbody = document.getElementById('cuerpo-tabla');
+  const plantilla = document.getElementById('plantilla-fila');
+  const nuevaFila = plantilla.cloneNode(true);
+  nuevaFila.style.display = '';
+  nuevaFila.removeAttribute('id');
+
+  const inputs = nuevaFila.querySelectorAll('[name]');
+  inputs.forEach(input => {
+    const originalName = input.name;
+    const newName = originalName.replace('nuevos_turnos[]', `turnos[${contadorNuevos}]`);
+    input.name = newName;
+    input.required = false; 
+  });
+
+  tbody.insertBefore(nuevaFila, plantilla);
+  contadorNuevos++;
+  actualizarBotonesEliminar();
 }
 function eliminarTurno(boton) {
     const fila = boton.closest('tr');
@@ -64,19 +70,7 @@ function actualizarBotonesEliminar() {
         boton.disabled = filasVisibles <= 1;
     });
 }
-// Manejo del formulario
-document.getElementById('formTurnos').addEventListener('submit', function(e) {
-    e.preventDefault();
 
-    const turnos = document.querySelectorAll('input[name^="turnos["]');
-    if (turnos.length === 0) {
-        alert('Debe agregar al menos un turno');
-        return;
-    }
-    
-    // Enviar formulario
-    this.submit();
-});
 //ASIGNAR FECHAS PARA EL TURNO 
 /// Asignar evento a los botones "Asignar fecha"
 document.querySelectorAll('.btn-dates').forEach(btn => {
