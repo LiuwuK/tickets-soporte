@@ -18,10 +18,10 @@ try {
                              t.id,
                              t.codigo,
                              t.nombre_turno,
-                             t.hora_entrada,
-                             t.hora_salida
+                             j.tipo_jornada
                            FROM turnos_instalacion t
                            JOIN horarios_sucursal hs ON t.id = hs.turno_id
+                           JOIN jornadas j ON j.id = t.jornada_id
                            WHERE hs.sucursal_id = ?
                            GROUP BY t.id");
     $stmt->bind_param("i", $sucursalId);

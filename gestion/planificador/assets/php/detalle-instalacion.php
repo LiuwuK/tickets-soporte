@@ -59,23 +59,33 @@ if (isset($_GET['id'])) {
     mysqli_stmt_close($stmt_dtc); 
     
     //turnos
-    $query = "SELECT ti.*, jo.tipo_jornada AS 'nJo' 
-              FROM turnos_instalacion ti
-              JOIN jornadas jo ON (jo.id = ti.jornada_id)
-              WHERE sucursal_id = ?";
-    
-    $stmt = mysqli_prepare($con, $query);
-    if (!$stmt) {
-        die("Error al preparar la consulta de turnos: " . mysqli_error($con));
-    }
-    mysqli_stmt_bind_param($stmt, 'i', $id);
-    if (!mysqli_stmt_execute($stmt)) {
-        die("Error al ejecutar consulta de turnos: " . mysqli_stmt_error($stmt));
-    }
-    $result = mysqli_stmt_get_result($stmt);
-    $turnosExxistentes = [];
-    while ($fila = mysqli_fetch_assoc($result)) {
-        $turnosExistentes[] = $fila;
+    $turnosExistentes = [];
+    $query = "SELECT t.*, j.tipo_jornada AS nJo FROM turnos_instalacion t 
+            LEFT JOIN jornadas j ON t.jornada_id = j.id 
+            WHERE t.sucursal_id = ?";
+    $stmt = $con->prepare($query);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    while ($turno = $result->fetch_assoc()) {
+        // Obtener horarios por día para este turno
+        $queryDias = "SELECT dia_semana, hora_entrada, hora_salida 
+                    FROM turno_dias WHERE turno_id = ?";
+        $stmtDias = $con->prepare($queryDias);
+        $stmtDias->bind_param("i", $turno['id']);
+        $stmtDias->execute();
+        $resultDias = $stmtDias->get_result();
+        
+        $dias = [];
+        while ($dia = $resultDias->fetch_assoc()) {
+            $dias[$dia['dia_semana']] = [
+                'entrada' => $dia['hora_entrada'],
+                'salida' => $dia['hora_salida']
+            ];
+        }
+        $turno['dias'] = $dias;
+        $turnosExistentes[] = $turno;
     }
     mysqli_stmt_close($stmt);
     // Consulta modificada con LEFT JOIN

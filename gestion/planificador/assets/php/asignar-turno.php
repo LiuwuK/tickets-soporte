@@ -1,15 +1,23 @@
 <?php
+ob_start();
 session_start();
 require_once '../../../../dbconnection.php';
 require_once '../../../../checklogin.php';
+
+if (!$con) {
+    header('Content-Type: application/json');
+    die(json_encode([
+        'success' => false,
+        'message' => 'Error de conexión a la base de datos'
+    ]));
+}
+
 check_login();
 
-// Establecer el tipo de contenido como JSON
-header('Content-Type: application/json');
-
-// Función para enviar respuestas JSON consistentes
 function sendJsonResponse($success, $message, $data = [], $statusCode = 200) {
+    if (ob_get_length()) ob_clean();
     http_response_code($statusCode);
+    header('Content-Type: application/json');
     echo json_encode([
         'success' => $success,
         'message' => $message,
@@ -19,15 +27,13 @@ function sendJsonResponse($success, $message, $data = [], $statusCode = 200) {
 }
 
 try {
-    // Verificar método HTTP
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         sendJsonResponse(false, 'Método no permitido', [], 405);
     }
 
-    // Obtener y validar JSON
     $json = file_get_contents('php://input');
     if (empty($json)) {
-        sendJsonResponse(false, 'Datos JSON no proporcionados', [], 400);
+        sendJsonResponse(false, 'Datos no recibidos', [], 400);
     }
 
     $data = json_decode($json, true);
@@ -35,45 +41,53 @@ try {
         sendJsonResponse(false, 'JSON inválido: ' . json_last_error_msg(), [], 400);
     }
 
-    // Validación de campos requeridos
-    $required = ['colaborador_id', 'sucursal_id', 'fecha_inicio', 'fecha_fin'];
-    $missing = array_diff($required, array_keys($data));
-    if (!empty($missing)) {
-        sendJsonResponse(false, 'Faltan campos requeridos: ' . implode(', ', $missing), [], 400);
+    // Validar campos requeridos (eliminamos sucursal_id de los requeridos)
+    $required = ['colaborador_id', 'fecha_inicio', 'fecha_fin'];
+    foreach ($required as $field) {
+        if (empty($data[$field])) {
+            sendJsonResponse(false, "Campo requerido faltante: $field", [], 400);
+        }
     }
 
-    // Convertir y validar datos
-    $colaboradorId = (int)$data['colaborador_id'];
-    $sucursalId = (int)$data['sucursal_id'];
-    $fechaInicio = $data['fecha_inicio'];
-    $fechaFin = $data['fecha_fin'];
-    $esRecurrente = !empty($data['es_recurrente']);
-
-    // Validar fechas
-    if (strtotime($fechaFin) < strtotime($fechaInicio)) {
+    $fechaInicio = new DateTime($data['fecha_inicio']);
+    $fechaFin = new DateTime($data['fecha_fin']);
+    
+    if ($fechaFin < $fechaInicio) {
         sendJsonResponse(false, 'La fecha final no puede ser anterior a la inicial', [], 400);
     }
 
-    // Verificar conexión a base de datos
-    if (!$con) {
-        sendJsonResponse(false, 'Error de conexión a la base de datos', [], 500);
-    }
-
-    // Iniciar transacción
     $con->begin_transaction();
 
+    $colaboradorId = (int)$data['colaborador_id'];
+    $esRecurrente = !empty($data['es_recurrente']);
+    $asignacionesCreadas = 0;
+
+    // Modificamos la consulta para eliminar sucursal_id
+    $stmtAsignar = $con->prepare("INSERT INTO colaborador_turno 
+                                (colaborador_id, turno_id, fecha_inicio, fecha_fin, estado) 
+                                VALUES (?, ?, ?, ?, 'ACTIVO')
+                                ON DUPLICATE KEY UPDATE 
+                                turno_id = VALUES(turno_id),
+                                estado = 'ACTIVO',
+                                fecha_fin = VALUES(fecha_fin)");
+
     if ($esRecurrente) {
-        // Asignación recurrente con mismo turno
         if (empty($data['turno_id'])) {
-            sendJsonResponse(false, 'Debe seleccionar un turno para la asignación recurrente', [], 400);
+            sendJsonResponse(false, 'Falta el ID del turno para asignación recurrente', [], 400);
         }
 
         $turnoId = (int)$data['turno_id'];
         
-        // Verificar que el turno existe
-        $stmtTurno = $con->prepare("SELECT codigo, hora_entrada, hora_salida FROM turnos_instalacion WHERE id = ?");
+        $stmtTurno = $con->prepare("SELECT id, codigo FROM turnos_instalacion WHERE id = ?");
+        if (!$stmtTurno) {
+            throw new Exception("Error al preparar consulta: " . $con->error);
+        }
+        
         $stmtTurno->bind_param("i", $turnoId);
-        $stmtTurno->execute();
+        if (!$stmtTurno->execute()) {
+            throw new Exception("Error al ejecutar consulta: " . $stmtTurno->error);
+        }
+        
         $resultTurno = $stmtTurno->get_result();
         $turno = $resultTurno->fetch_assoc();
 
@@ -81,112 +95,148 @@ try {
             sendJsonResponse(false, 'El turno seleccionado no existe', [], 404);
         }
 
-        // Obtener el día de la semana del turno base (0=domingo, 6=sábado)
-        $stmtDia = $con->prepare("SELECT DAYOFWEEK(fecha)-1 FROM horarios_sucursal WHERE turno_id = ? LIMIT 1");
-        $stmtDia->bind_param("i", $turnoId);
-        $stmtDia->execute();
-        $resultDia = $stmtDia->get_result();
-        $diaSemanaTurno = $resultDia->fetch_row()[0];
-
-        // Generar asignaciones recurrentes
-        $fechaActual = $fechaInicio;
-        $asignacionesCreadas = 0;
-        $stmtAsignar = $con->prepare("INSERT INTO colaborador_turno 
-                                    (colaborador_id, turno_id, fecha_inicio, fecha_fin, estado) 
-                                    VALUES (?, ?, ?, ?, 'ACTIVO')
-                                    ON DUPLICATE KEY UPDATE 
-                                    turno_id = VALUES(turno_id),
-                                    estado = 'ACTIVO',
-                                    fecha_fin = VALUES(fecha_fin)");
-
-        while (strtotime($fechaActual) <= strtotime($fechaFin)) {
-            // Calcular fecha objetivo 
-            $diasDiferencia = ($diaSemanaTurno - date('w', strtotime($fechaActual)) + 7) % 7;
-            $fechaAsignar = date('Y-m-d', strtotime("$fechaActual +$diasDiferencia days"));
-
-            if (strtotime($fechaAsignar) > strtotime($fechaFin)) break;
-
-            // Calcular fecha fin de esta semana
-            $fechaFinSemana = date('Y-m-d', strtotime("$fechaAsignar +6 days"));
-            if (strtotime($fechaFinSemana) > strtotime($fechaFin)) {
-                $fechaFinSemana = $fechaFin;
+        $fechaActual = clone $fechaInicio;
+        
+        while ($fechaActual <= $fechaFin) {
+            $fechaInicioSemana = $fechaActual->format('Y-m-d');
+            $fechaFinSemana = clone $fechaActual;
+            $fechaFinSemana->modify('+6 days');
+            
+            if ($fechaFinSemana > $fechaFin) {
+                $fechaFinSemana = clone $fechaFin;
             }
+            
+            $fechaFinSemanaStr = $fechaFinSemana->format('Y-m-d');
 
-            // Buscar horario existente para esta fecha
-            $stmtHorario = $con->prepare("SELECT id FROM horarios_sucursal WHERE sucursal_id = ? AND fecha = ?");
-            $stmtHorario->bind_param("is", $sucursalId, $fechaAsignar);
-            $stmtHorario->execute();
-            $resultHorario = $stmtHorario->get_result();
-            $horarioId = $resultHorario->fetch_row()[0];
+            // Verificamos disponibilidad del turno (sin sucursal_id)
+            $stmtHorarios = $con->prepare("SELECT COUNT(*) FROM horarios_sucursal 
+                                         WHERE turno_id = ? AND fecha BETWEEN ? AND ?");
+            if (!$stmtHorarios) {
+                throw new Exception("Error al preparar consulta: " . $con->error);
+            }
+            
+            $stmtHorarios->bind_param("iss", $turnoId, $fechaInicioSemana, $fechaFinSemanaStr);
+            if (!$stmtHorarios->execute()) {
+                throw new Exception("Error al ejecutar consulta: " . $stmtHorarios->error);
+            }
+            
+            $count = $stmtHorarios->get_result()->fetch_row()[0];
 
-            if ($horarioId) {
-                $stmtAsignar->bind_param("iiss", $colaboradorId, $turnoId, $fechaAsignar, $fechaFinSemana);
-                $stmtAsignar->execute();
+            if ($count > 0) {
+                // Asignamos turno (sin sucursal_id)
+                if (!$stmtAsignar->bind_param("iiss", 
+                    $colaboradorId, 
+                    $turnoId, 
+                    $fechaInicioSemana, 
+                    $fechaFinSemanaStr
+                )) {
+                    throw new Exception("Error al bindear parámetros: " . $stmtAsignar->error);
+                }
+                
+                if (!$stmtAsignar->execute()) {
+                    throw new Exception("Error al asignar turno: " . $stmtAsignar->error);
+                }
+                
                 $asignacionesCreadas++;
             }
 
-            $fechaActual = date('Y-m-d', strtotime("$fechaActual +1 week"));
+            $fechaActual->modify('+7 days');
         }
-
-        if ($asignacionesCreadas === 0) {
-            sendJsonResponse(false, 'No se encontraron turnos para asignar en el período especificado', [], 404);
-        }
-
-        $mensaje = "Se asignó el turno {$turno['codigo']} semanalmente ($asignacionesCreadas veces)";
+        
+        $mensaje = "Se asignó el turno {$turno['codigo']} semanalmente ($asignacionesCreadas semanas)";
     } else {
-        // Asignación por semana con diferentes turnos
         if (empty($data['turnos_semanas']) || !is_array($data['turnos_semanas'])) {
-            sendJsonResponse(false, 'Debe seleccionar turnos para cada semana', [], 400);
+            sendJsonResponse(false, 'Faltan los turnos por semana', [], 400);
         }
 
-        $fechaActual = $fechaInicio;
+        $fechaActual = clone $fechaInicio;
         $semanaIndex = 0;
-        $asignacionesCreadas = 0;
-        $stmtAsignar = $con->prepare("INSERT INTO colaborador_turno 
-                                    (colaborador_id, turno_id, fecha_inicio, fecha_fin, estado) 
-                                    VALUES (?, ?, ?, ?, 'ACTIVO')
-                                    ON DUPLICATE KEY UPDATE 
-                                    turno_id = VALUES(turno_id),
-                                    estado = 'ACTIVO',
-                                    fecha_fin = VALUES(fecha_fin)");
-
-        while (strtotime($fechaActual) <= strtotime($fechaFin) && $semanaIndex < count($data['turnos_semanas'])) {
-            $turnoId = (int)$data['turnos_semanas'][$semanaIndex];
-            if ($turnoId <= 0) {
+        
+        foreach ($data['turnos_semanas'] as $turnoId) {
+            if (empty($turnoId)) {
                 $semanaIndex++;
-                $fechaActual = date('Y-m-d', strtotime("$fechaActual +1 week"));
+                $fechaActual->modify('+7 days');
                 continue;
             }
 
-            // Calcular fecha fin de esta semana (6 días después del inicio)
-            $fechaFinSemana = date('Y-m-d', strtotime("$fechaActual +6 days"));
-            // Asegurarnos de no pasarnos de la fecha fin global
-            if (strtotime($fechaFinSemana) > strtotime($fechaFin)) {
-                $fechaFinSemana = $fechaFin;
+            $turnoId = (int)$turnoId;
+            $fechaInicioSemana = $fechaActual->format('Y-m-d');
+            $fechaFinSemana = clone $fechaActual;
+            $fechaFinSemana->modify('+6 days');
+            
+            if ($fechaFinSemana > $fechaFin) {
+                $fechaFinSemana = clone $fechaFin;
+            }
+            
+            $fechaFinSemanaStr = $fechaFinSemana->format('Y-m-d');
+
+            $stmtTurno = $con->prepare("SELECT id, codigo FROM turnos_instalacion WHERE id = ?");
+            if (!$stmtTurno) {
+                throw new Exception("Error al preparar consulta: " . $con->error);
+            }
+            
+            $stmtTurno->bind_param("i", $turnoId);
+            if (!$stmtTurno->execute()) {
+                throw new Exception("Error al ejecutar consulta: " . $stmtTurno->error);
+            }
+            
+            $turno = $stmtTurno->get_result()->fetch_assoc();
+
+            if (!$turno) {
+                $semanaIndex++;
+                $fechaActual->modify('+7 days');
+                continue;
             }
 
-            // ... (resto del código para verificar turno y horario)
+            $stmtHorarios = $con->prepare("SELECT COUNT(*) FROM horarios_sucursal 
+                                         WHERE turno_id = ? AND fecha BETWEEN ? AND ?");
+            if (!$stmtHorarios) {
+                throw new Exception("Error al preparar consulta: " . $con->error);
+            }
             
-            if ($horarioId) {
-                // Usar fechaFinSemana en lugar de fechaActual
-                $stmtAsignar->bind_param("iiss", $colaboradorId, $turnoId, $fechaActual, $fechaFinSemana);
-                $stmtAsignar->execute();
+            $stmtHorarios->bind_param("iss", $turnoId, $fechaInicioSemana, $fechaFinSemanaStr);
+            if (!$stmtHorarios->execute()) {
+                throw new Exception("Error al ejecutar consulta: " . $stmtHorarios->error);
+            }
+            
+            $count = $stmtHorarios->get_result()->fetch_row()[0];
+
+            if ($count > 0) {
+                if (!$stmtAsignar->bind_param("iiss", 
+                    $colaboradorId, 
+                    $turnoId, 
+                    $fechaInicioSemana, 
+                    $fechaFinSemanaStr
+                )) {
+                    throw new Exception("Error al bindear parámetros: " . $stmtAsignar->error);
+                }
+                
+                if (!$stmtAsignar->execute()) {
+                    throw new Exception("Error al asignar turno: " . $stmtAsignar->error);
+                }
+                
                 $asignacionesCreadas++;
             }
 
-            $fechaActual = date('Y-m-d', strtotime("$fechaActual +1 week"));
             $semanaIndex++;
+            $fechaActual->modify('+7 days');
         }
-
+        
         $mensaje = "Se asignaron $asignacionesCreadas turnos semanales";
     }
 
+    if ($asignacionesCreadas === 0) {
+        sendJsonResponse(false, 'No se crearon asignaciones. Verifique que existan horarios para los turnos seleccionados', [], 404);
+    }
+
     $con->commit();
-    sendJsonResponse(true, $mensaje, ['total_asignaciones' => $asignacionesCreadas]);
+    sendJsonResponse(true, $mensaje, ['asignaciones' => $asignacionesCreadas]);
 
 } catch (Exception $e) {
     if (isset($con) && $con->errno) {
         $con->rollback();
     }
     sendJsonResponse(false, $e->getMessage(), [], $e->getCode() ?: 500);
+} finally {
+    if (ob_get_length()) ob_end_clean();
 }

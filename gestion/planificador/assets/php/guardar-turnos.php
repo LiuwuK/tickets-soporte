@@ -43,29 +43,23 @@ if (isset($_POST['turnos']) && is_array($_POST['turnos'])) {
     
     $currentNumber = $initialNumber;
     foreach ($_POST['turnos'] as $turno) {
-        if (empty($turno['nombre']) || empty($turno['jornada_id']) || 
-            empty($turno['hora_entrada']) || empty($turno['hora_salida'])) {
-            continue;
-        }
-        
-        $codigo = 'M' . $currentNumber;
-        $currentNumber++;
-        
-        $stmt->bind_param(
-            "isssss",
-            $sucursal_id,
-            $turno['nombre'],
-            $turno['jornada_id'],
-            $turno['hora_entrada'],
-            $turno['hora_salida'],
-            $codigo
-        );
-        
-        if ($stmt->execute()) {
-            $_SESSION['success_message'] = 'Los turnos se han guardado correctamente';
-        } else {
-            $_SESSION['error_message'] = 'Error al guardar los turnos: '.$con->error;
-            break; // salir si hay errores
+        // Guarda turno base
+        $stmt = $con->prepare("INSERT INTO turnos_instalacion (sucursal_id, nombre_turno, jornada_id, codigo) VALUES (?, ?, ?, ?)");
+        $codigo = 'M' . $currentNumber++;
+        $stmt->bind_param("isss", $sucursal_id, $turno['nombre'], $turno['jornada_id'], $codigo);
+        $stmt->execute();
+        $turno_id = $stmt->insert_id;
+
+        // Guarda horarios por día
+        foreach ($turno['dias'] as $dia => $horarios) {
+            $entrada = $horarios['entrada'] ?? null;
+            $salida = $horarios['salida'] ?? null;
+
+            if ($entrada && $salida) {
+                $stmtDia = $con->prepare("INSERT INTO turno_dias (turno_id, dia_semana, hora_entrada, hora_salida) VALUES (?, ?, ?, ?)");
+                $stmtDia->bind_param("isss", $turno_id, $dia, $entrada, $salida);
+                $stmtDia->execute();
+            }
         }
     }
 

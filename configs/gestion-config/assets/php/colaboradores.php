@@ -19,7 +19,7 @@ $offset = ($page - 1) * $perPage;
 $query = "SELECT * FROM colaboradores";
 //agregar el filtro
 if (!empty($search)) {
-    $query .= " WHERE nombre LIKE ?";
+    $query .= " WHERE name LIKE ?";
     $searchTerm = "%$search%"; // Búsqueda parcial
 }
 // Agregar paginación
@@ -39,7 +39,7 @@ $totalQuery = "SELECT COUNT(*) as total FROM colaboradores";
 
 // Si hay un valor de búsqueda, agregar el filtro
 if (!empty($search)) {
-    $totalQuery .= " WHERE nombre LIKE ?";
+    $totalQuery .= " WHERE name LIKE ?";
 }
 
 // Preparar y ejecutar la consulta para contar

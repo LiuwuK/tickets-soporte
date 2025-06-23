@@ -18,11 +18,16 @@ try {
     $data = json_decode($json, true);
 
     // Validación
-    $required = ['sucursal_id', 'fecha_inicio', 'fecha_fin', 'turno_id', 'hora_entrada', 'hora_salida', 'patron_jornada'];
+    $required = ['sucursal_id', 'fecha_inicio', 'fecha_fin', 'turno_id', 'patron_jornada', 'horarios'];
     foreach ($required as $field) {
         if (empty($data[$field])) {
             throw new Exception("Falta el campo obligatorio: $field", 400);
         }
+    }
+
+    // Validar que hay al menos un día con horario
+    if (count($data['horarios']) === 0) {
+        throw new Exception("Debe proporcionar al menos un día con horario", 400);
     }
 
     // Procesamiento de fechas
@@ -36,8 +41,7 @@ try {
     // Datos del turno
     $sucursalId = (int)$data['sucursal_id'];
     $turnoId = (int)$data['turno_id'];
-    $horaEntrada = $data['hora_entrada'];
-    $horaSalida = $data['hora_salida'];
+    $horarios = $data['horarios'];
     
     // Procesar patrón de jornada
     $patron = $data['patron_jornada'];
@@ -58,6 +62,16 @@ try {
     $stmt = $con->prepare("INSERT INTO horarios_sucursal 
                           (sucursal_id, fecha, turno_id, hora_entrada, hora_salida, tipo) 
                           VALUES (?, ?, ?, ?, ?, ?)");
+ 
+    $diasMap = [
+        'lunes' => 1,
+        'martes' => 2,
+        'miércoles' => 3,
+        'jueves' => 4,
+        'viernes' => 5,
+        'sábado' => 6,
+        'domingo' => 0
+    ];
 
     // Generación de días
     $con->begin_transaction();
@@ -66,25 +80,35 @@ try {
     $contadorDiasPatron = 0;
     $totalTurnosGenerados = 0;
 
-
     while ($fechaActual <= $fechaFin) {
         if ($esDiaTrabajo) {
-            $fechaStr = $fechaActual->format('Y-m-d');
-            $tipo = 'TRABAJO';
-            $stmt->bind_param(
-                "isisss",
-                $sucursalId,
-                $fechaStr,
-                $turnoId,
-                $horaEntrada,
-                $horaSalida,
-                $tipo
-            );
+            // Verificar si este día de la semana tiene horario definido
+            $nombreDia = strtolower($fechaActual->format('l')); // 'Monday', 'Tuesday', etc.
+            $nombreDiaEsp = array_search($fechaActual->format('w'), $diasMap);
             
-            if (!$stmt->execute()) {
-                throw new Exception("Error al generar turno: " . $stmt->error, 500);
+            // Buscar horario para este día
+            foreach ($horarios as $diaEsp => $horario) {
+                if ($diasMap[$diaEsp] == $fechaActual->format('w')) {
+                    $fechaStr = $fechaActual->format('Y-m-d');
+                    $tipo = 'TRABAJO';
+                    
+                    $stmt->bind_param(
+                        "isisss",
+                        $sucursalId,
+                        $fechaStr,
+                        $turnoId,
+                        $horario['entrada'],
+                        $horario['salida'],
+                        $tipo
+                    );
+                    
+                    if (!$stmt->execute()) {
+                        throw new Exception("Error al generar turno: " . $stmt->error, 500);
+                    }
+                    $totalTurnosGenerados++;
+                    break;
+                }
             }
-            $totalTurnosGenerados++;
         }
 
         // Avanzar en el patrón
@@ -104,7 +128,7 @@ try {
 
     echo json_encode([
         'success' => true,
-        'message' => "Turnos base generados correctamente",
+        'message' => "Turnos generados correctamente",
         'total_dias' => $fechaInicio->diff($fechaFin)->days + 1,
         'turnos_generados' => $totalTurnosGenerados,
         'fecha_inicio' => $fechaInicio->format('Y-m-d'),
