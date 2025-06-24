@@ -358,7 +358,7 @@ if (isset($_POST['carga'])) {
             foreach ($formatos as $formato) {
                 $fecha_obj = DateTime::createFromFormat($formato, $fecha_turno);
                 if ($fecha_obj !== false) {
-                    echo "Formato detectado: ".$formato."\n";
+                    //echo "Formato detectado: ".$formato."\n";
                     break;
                 }
             }
