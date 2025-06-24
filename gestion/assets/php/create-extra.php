@@ -350,14 +350,27 @@ if (isset($_POST['carga'])) {
             $hora_inicio_str = $hora_inicio_obj->format('H:i:s');
             $hora_termino_str = $hora_termino_obj->format('H:i:s');
             // Convertir fecha a Y-m-d 
-            $fecha_obj = DateTime::createFromFormat('m/d/Y', $fecha_turno) ?: 
-                        DateTime::createFromFormat('Y-m-d', $fecha_turno) ?: 
-                        new DateTime($fecha_turno);
+            echo "Fecha original: ".$fecha_turno."\n";
+
+            $formatos = ['d/m/Y', 'm/d/Y', 'Y-m-d']; // Orden modificado
+            $fecha_obj = null;
+
+            foreach ($formatos as $formato) {
+                $fecha_obj = DateTime::createFromFormat($formato, $fecha_turno);
+                if ($fecha_obj !== false) {
+                    echo "Formato detectado: ".$formato."\n";
+                    break;
+                }
+            }
 
             if ($fecha_obj === false) {
-                $errores['fechasInvalidas'][] = "Fila $index: Formato de fecha inválido";
-                $nErrores++;
+                $fecha_obj = new DateTime($fecha_turno);
+                if ($fecha_obj === false) {
+                    $errores['fechasInvalidas'][] = "Fila $index: Formato de fecha inválido";
+                    $nErrores++;
+                }
             }
+            echo "Fecha parseada: " . $fecha_obj->format('Y-m-d')."\n";
             
             $fechaTurnoFormateada = $fecha_obj->format('Y-m-d');
             // validar fecha turno (SOLO DIA ACTUAL HASTA LAS 12:00 DEL DIA SIGUIENTE)
