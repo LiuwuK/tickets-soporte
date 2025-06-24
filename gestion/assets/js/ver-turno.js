@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         console.log(supervisor)
         const resultados = turnosData.filter(item => {
-            const itemFecha = Date.parse(item.fechaCreacion);
+            const itemFecha = Date.parse(item.fechaTurno);
 
             // filtro texto coincide con algún campo
             const coincideTexto = (
