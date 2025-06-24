@@ -32,7 +32,6 @@ $query = 'SELECT su.nombre AS "instalacion",
             mg.motivo AS "motivo", 
             te.estado AS "estado", 
             te.created_at AS "fechaCreacion",
-            te.fecha_turno AS "fechaTurno",
             us.name AS "autorizadoPor",
             te.id  AS "id",
             te.autorizado_por AS "supID"
