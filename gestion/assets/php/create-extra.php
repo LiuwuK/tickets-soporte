@@ -350,28 +350,34 @@ if (isset($_POST['carga'])) {
             $hora_inicio_str = $hora_inicio_obj->format('H:i:s');
             $hora_termino_str = $hora_termino_obj->format('H:i:s');
             // Convertir fecha a Y-m-d 
-            //echo "Fecha original: ".$fecha_turno."\n";
+            echo "Fecha original: ".$fecha_turno."\n";
 
-            $formatos = ['d/m/Y', 'm/d/Y', 'Y-m-d']; // Orden modificado
+            $formatos = ['d/m/Y', 'm/d/Y', 'Y-m-d'];
             $fecha_obj = null;
 
             foreach ($formatos as $formato) {
-                $fecha_obj = DateTime::createFromFormat($formato, $fecha_turno);
+                $fecha_obj = DateTime::createFromFormat($formato, $fecha_turno, new DateTimeZone('UTC'));
                 if ($fecha_obj !== false) {
-                    //echo "Formato detectado: ".$formato."\n";
-                    break;
+                    $errors = DateTime::getLastErrors();
+                    if ($errors === false || ($errors['warning_count'] === 0 && $errors['error_count'] === 0)) {
+                        echo "Formato detectado: ".$formato."\n";
+                        break;
+                    }
                 }
             }
 
             if ($fecha_obj === false) {
-                $fecha_obj = new DateTime($fecha_turno);
-                if ($fecha_obj === false) {
-                    $errores['fechasInvalidas'][] = "Fila $index: Formato de fecha inválido";
+                try {
+                    $fecha_obj = new DateTime($fecha_turno);
+                    echo "Fecha interpretada (formato flexible): " . $fecha_obj->format('Y-m-d')."\n";
+                } catch (Exception $e) {
+                    $errores['fechasInvalidas'][] = "Fila $index: Formato de fecha inválido - ".$e->getMessage();
                     $nErrores++;
+                    echo "Error al parsear fecha: ".$e->getMessage()."\n";
                 }
+            } else {
+                echo "Fecha parseada: " . $fecha_obj->format('Y-m-d')."\n";
             }
-            //echo "Fecha parseada: " . $fecha_obj->format('Y-m-d')."\n";
-            
             $fechaTurnoFormateada = $fecha_obj->format('Y-m-d');
             // validar fecha turno (SOLO DIA ACTUAL HASTA LAS 12:00 DEL DIA SIGUIENTE)
             $horaActual = (int)date('H');
