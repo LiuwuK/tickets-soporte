@@ -350,7 +350,7 @@ if (isset($_POST['carga'])) {
             $hora_inicio_str = $hora_inicio_obj->format('H:i:s');
             $hora_termino_str = $hora_termino_obj->format('H:i:s');
             // Convertir fecha a Y-m-d 
-            echo "Fecha original: ".$fecha_turno."\n";
+            //echo "Fecha original: ".$fecha_turno."\n";
 
             $formatos = ['d/m/Y', 'm/d/Y', 'Y-m-d']; // Orden modificado
             $fecha_obj = null;
@@ -370,7 +370,7 @@ if (isset($_POST['carga'])) {
                     $nErrores++;
                 }
             }
-            echo "Fecha parseada: " . $fecha_obj->format('Y-m-d')."\n";
+            //echo "Fecha parseada: " . $fecha_obj->format('Y-m-d')."\n";
             
             $fechaTurnoFormateada = $fecha_obj->format('Y-m-d');
             // validar fecha turno (SOLO DIA ACTUAL HASTA LAS 12:00 DEL DIA SIGUIENTE)
