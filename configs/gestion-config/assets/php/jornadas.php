@@ -25,9 +25,6 @@ if(isset($_POST['newSup'])){
 if(isset($_POST['btnUpdt'])){
     $ids = $_POST['id'];
     $tipos = $_POST['name'];
-    $entradas = $_POST['entrada'];
-    $salidas = $_POST['salida'];
-    
 
     foreach ($ids as $index => $id) {
         $tipo = $tipos[$index];
