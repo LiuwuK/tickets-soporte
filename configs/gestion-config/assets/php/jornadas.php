@@ -30,7 +30,7 @@ if(isset($_POST['btnUpdt'])){
         $tipo = $tipos[$index];
 
         $query = "UPDATE jornadas 
-                    SET tipo_jornada = ?, 
+                    SET tipo_jornada = ?
                     WHERE id = ? 
                     AND (tipo_jornada <> ?)";
         $stmt = $con->prepare($query);
