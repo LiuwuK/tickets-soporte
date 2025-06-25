@@ -63,6 +63,7 @@ if(!empty($desvinculaciones)){
             'dvegas@gruposafeteck.com' => 'Usuario',
             'asistencia@gruposafeteck.com' => 'Usuario',
             'mpacheco@gruposafeteck.com' => 'Usuario',
+            'MVERGARA@gruposafeteck.com' => 'Usuario',
         ];
 
         foreach ($destinatarios as $email => $nombre) {
