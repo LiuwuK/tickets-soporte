@@ -445,21 +445,24 @@ if (isset($_POST['carga'])) {
             $autorizado = $_SESSION['id'];
 
             // Obtener instalación
-            if($instalacion != null){
-                $stmt_s->bind_param("s", $instalacion);
+           if ($instalacion != null) {
+                $instalacion_normalizada = preg_replace('/\s+/', '', strtolower($instalacion));
+                
+                $query = "SELECT id FROM instalaciones 
+                        WHERE REPLACE(LOWER(nombre), ' ', '') = ?";
+                $stmt_s = $con->prepare($query);
+                $stmt_s->bind_param("s", $instalacion_normalizada);
                 $stmt_s->execute();
                 $stmt_s->store_result();
                 $stmt_s->bind_result($instalacion_id);
                 $stmt_s->fetch();
-                if (!$stmt_s->num_rows){
-                    $errores['instalacionesInvalidas'][] = "Fila $index: Instalacion '$instalacion' no existe en el sistema";
-                    $nErrores++;
-                };
 
-                $stmt_s->free_result(); 
-                //echo  'INSTALACION ID :'.$instalacion_id;    
-            }else{
-                echo "no tiene instalacion";
+                if (!$stmt_s->num_rows) {
+                    $errores['instalacionesInvalidas'][] = "Fila $index: Instalación '$instalacion' no existe";
+                    $nErrores++;
+                }
+                $stmt_s->free_result();
+            } else {
                 $instalacion_id = null;
             }
             // Obtener Motivo
