@@ -119,8 +119,13 @@ $query = "
         te.horas_cubiertas AS horas, 
         te.monto AS monto,
         te.nombre_colaborador AS colaborador, 
-        SUBSTRING_INDEX(te.rut, '-', 1) AS rut,
-        SUBSTRING_INDEX(te.rut, '-', -1) AS digito_verificador,
+        REGEXP_REPLACE(
+        IF(te.rut LIKE '%-%', 
+            SUBSTRING_INDEX(te.rut, '-', 1), 
+            LEFT(te.rut, LENGTH(te.rut) - 1)
+            ),
+        '[^0-9]', '') AS rut_numero
+        RIGHT(te.rut, 1)  AS digito_verificador,
         te.nacionalidad AS nacionalidad,  
         bc.nombre_banco AS banco, 
         IFNULL(dp.rut_cta, '') AS rutcta, 

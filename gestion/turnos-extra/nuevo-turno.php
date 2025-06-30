@@ -1,11 +1,11 @@
 <?php
 session_start();
 include("../../checklogin.php");
+check_login();
 include BASE_PATH . 'dbconnection.php';
 include("../assets/php/create-extra.php");
-
 date_default_timezone_set('America/Santiago'); 
-check_login();
+
 ?>
 <!DOCTYPE html>
 <html>

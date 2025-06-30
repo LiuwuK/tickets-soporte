@@ -2,9 +2,10 @@
 session_start();
 include("../checklogin.php");
 include("../dbconnection.php");
+check_login();
 include("assets/php/manage-dist.php");
 
-check_login();
+
 ?>
 <!DOCTYPE html>
 <html>
