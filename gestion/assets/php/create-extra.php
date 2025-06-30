@@ -86,6 +86,32 @@ if (isset($_POST['newExtra'])) {
                 $errores[] = "La fecha del turno es requerida";
                 continue;
             }
+            // validar fecha turno (SOLO DIA ACTUAL HASTA LAS 12:00 DEL DIA SIGUIENTE)
+            $fechaTurno = $turno['fecha'];
+            $horaActual = (int)date('H');
+            $horaMinuto = date('H:i');
+            $fechaHoy = date('Y-m-d');
+            $fechaAyer = date('Y-m-d', strtotime('-1 day'));
+            /* 
+            echo $fechaTurnoFormateada;
+            echo 'hora'.$horaActual;
+            echo 'fecha hoy'.$fechaHoy;
+            echo 'fecha ayer'.$fechaAyer;
+            */
+            if ($horaActual < 12) {
+                if ($fechaTurno != $fechaAyer && $fechaTurno != $fechaHoy) {
+                    $fechasInvalidas = $fechaTurno;
+                    $errores['fechasInvalidas'][] = "Fila $index: La fecha/hora de carga: '$fechasInvalidas $horaMinuto' Estan fuera de lo permitido";
+                    $nErrores++;
+                }
+            } else {
+                if ($fechaTurno != $fechaHoy) {
+                    $fechasInvalidas = $fechaTurno;
+                    $errores['fechasInvalidas'][] = "Fila $index: La fecha/hora de carga: '$fechasInvalidas $horaMinuto' Estan fuera de lo permitido";
+                    $nErrores++;
+                }
+            }
+            
 
             if (empty($turno['hora_entrada']) || empty($turno['hora_salida'])) {
                 $errores[] = "Las horas de entrada y salida son requeridas";
@@ -102,7 +128,7 @@ if (isset($_POST['newExtra'])) {
             $horaTermino = DateTime::createFromFormat('H:i', $turno['hora_salida']);
 
             if (!$horaInicio || !$horaTermino) {
-                $errores[] = "Formato de hora inválido. Use formato HH:MM (24 horas)";
+                $errores[] = "Formato de hora inválido.";
                 continue;
             }
 
@@ -379,7 +405,31 @@ if (isset($_POST['carga'])) {
                 //echo "Fecha parseada: " . $fecha_obj->format('Y-m-d')."\n";
             }
             $fechaTurnoFormateada = $fecha_obj->format('Y-m-d');
-          
+            // validar fecha turno (SOLO DIA ACTUAL HASTA LAS 12:00 DEL DIA SIGUIENTE)
+            $horaActual = (int)date('H');
+            $horaMinuto = date('H:i');
+            $fechaHoy = date('Y-m-d');
+            $fechaAyer = date('Y-m-d', strtotime('-1 day'));
+            /* 
+            echo $fechaTurnoFormateada;
+            echo 'hora'.$horaActual;
+            echo 'fecha hoy'.$fechaHoy;
+            echo 'fecha ayet'.$fechaAyer;
+            */
+            if ($horaActual < 12) {
+                if ($fechaTurnoFormateada != $fechaAyer && $fechaTurnoFormateada != $fechaHoy) {
+                    $fechasInvalidas = $fechaTurnoFormateada;
+                    $errores['fechasInvalidas'][] = "Fila $index: La fecha/hora de carga: '$fechasInvalidas $horaMinuto' Estan fuera de lo permitido";
+                    $nErrores++;
+                }
+            } else {
+                if ($fechaTurnoFormateada != $fechaHoy) {
+                    $fechasInvalidas = $fechaTurnoFormateada;
+                    $errores['fechasInvalidas'][] = "Fila $index: La fecha/hora de carga: '$fechasInvalidas $horaMinuto' Estan fuera de lo permitido";
+                    $nErrores++;
+                }
+            }
+            
             $fecha = $fechaTurnoFormateada;  
             $horas = $row[8];
 
