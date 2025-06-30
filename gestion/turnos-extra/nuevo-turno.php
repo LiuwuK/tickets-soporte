@@ -65,7 +65,7 @@ date_default_timezone_set('America/Santiago');
                             <table class="table table-hover main-table" id="tabla-turnos">
                                 <thead>
                                     <tr>
-                                        <th scope="col" class="align-middle text-center w-40">Motivo</th>
+                                        <th scope="col" class="align-middle text-center">Motivo</th>
                                         <th scope="col" class="align-middle text-center">Instalacion</th>
                                         <th scope="col" class="align-middle text-center">Fecha del Turno</th>
                                         <th scope="col" class="align-middle text-center">Hora entrada</th>
@@ -85,8 +85,8 @@ date_default_timezone_set('America/Santiago');
                                 <tbody id="cuerpo-tabla">
                                     <tr>
                                         <td class="align-middle text-center">
-                                            <select name="nuevos_turnos[0][motivo]" class="form-control form-control-sm search-form" required>
-                                                <option value="">Motivos</option>
+                                            <select name="nuevos_turnos[0][motivo]" class="form-control search-form" required>
+                                                <option value="">--- Seleccione un Motivo ---</option>
                                                 <?php
                                                 foreach ($motivo AS $row) {
                                                     echo '<option value="'.htmlspecialchars($row['id']).'">'
@@ -97,8 +97,8 @@ date_default_timezone_set('America/Santiago');
                                             </select>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <select name="nuevos_turnos[0][instalacion]" class="form-control form-control-sm search-form">
-                                                <option value="">Instalaciones</option>
+                                            <select name="nuevos_turnos[0][instalacion]" class="form-control search-form">
+                                                <option value="">--- Seleccione una Instalacion ---</option>
                                                 <option value="">SPOT</option>
                                                 <?php
                                                 foreach ($inst AS $row) {
@@ -110,32 +110,32 @@ date_default_timezone_set('America/Santiago');
                                             </select>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="date" name="nuevos_turnos[0][fecha]" class="form-control form-control-sm" required>
+                                            <input type="date" name="nuevos_turnos[0][fecha]" class="form-control" required>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="time" name="nuevos_turnos[0][hora_entrada]" class="form-control form-control-sm" required>
+                                            <input type="time" name="nuevos_turnos[0][hora_entrada]" class="form-control" required>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="time" name="nuevos_turnos[0][hora_salida]" class="form-control form-control-sm" required>
+                                            <input type="time" name="nuevos_turnos[0][hora_salida]" class="form-control" required>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="number" name="nuevos_turnos[0][monto]" class="form-control form-control-sm" required>
+                                            <input type="number" name="nuevos_turnos[0][monto]" class="form-control" required>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" name="nuevos_turnos[0][rut]" id='rut' class="form-control form-control-sm" required>
+                                            <input type="text" name="nuevos_turnos[0][rut]" id='rut' class="form-control" required>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" name="nuevos_turnos[0][nombre]" class="form-control form-control-sm" required>
+                                            <input type="text" name="nuevos_turnos[0][nombre]" class="form-control" required>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <select name="nuevos_turnos[0][nacionalidad]" class="form-control form-control-sm" required>
+                                            <select name="nuevos_turnos[0][nacionalidad]" class="form-control" required>
                                                 <option value="">Nacionalidad</option>
                                                 <option value="Chileno">Chileno</option>
                                                 <option value="Extranjero">Extranjero</option>
                                             </select>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <select name="nuevos_turnos[0][banco]" class="form-control form-control-sm" required>
+                                            <select name="nuevos_turnos[0][banco]" class="form-control" required>
                                                 <option value="">Bancos</option>
                                                 <?php
                                                 foreach ($bancos AS $row) {
@@ -147,16 +147,16 @@ date_default_timezone_set('America/Santiago');
                                             </select>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" name="nuevos_turnos[0][rut_cuenta]" id='rut' class="form-control form-control-sm" required>
+                                            <input type="text" name="nuevos_turnos[0][rut_cuenta]" id='rut' class="form-control" required>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" name="nuevos_turnos[0][numero_cuenta]" class="form-control form-control-sm" required>
+                                            <input type="text" name="nuevos_turnos[0][numero_cuenta]" class="form-control" required>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" name="nuevos_turnos[0][persona_motivo]" class="form-control form-control-sm">
+                                            <input type="text" name="nuevos_turnos[0][persona_motivo]" class="form-control">
                                         </td>
                                         <td class="align-middle text-center">
-                                            <select name="nuevos_turnos[0][contratado]" class="form-control form-control-sm" required>
+                                            <select name="nuevos_turnos[0][contratado]" class="form-control" required>
                                                 <option value="1">Si</option>
                                                 <option value="0">No</option>
                                             </select>

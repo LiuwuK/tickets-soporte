@@ -31,7 +31,8 @@ document.addEventListener("DOMContentLoaded", function () {
             new Choices(selectInstalacion, {
                 shouldSort: false,
                 searchEnabled: true,
-                itemSelectText: ''
+                itemSelectText: '',
+                position: 'bottom'
             });
         }
 
@@ -40,7 +41,8 @@ document.addEventListener("DOMContentLoaded", function () {
             new Choices(selectMotivo, {
                 shouldSort: false,
                 searchEnabled: true,
-                itemSelectText: ''
+                itemSelectText: '',
+                position: 'bottom'
             });
         }
     }
@@ -89,7 +91,8 @@ function agregarFilaTurno() {
         new Choices(nuevoSelectInstalacion, {
             shouldSort: false,
             searchEnabled: true,
-            itemSelectText: ''
+            itemSelectText: '',
+            position: 'bottom'
         });
     }
      // Inicializar Choices en el nuevo select de instalación
@@ -98,7 +101,8 @@ function agregarFilaTurno() {
         new Choices(nuevoSelectMotivo, {
             shouldSort: false,
             searchEnabled: true,
-            itemSelectText: ''
+            itemSelectText: '',
+            position: 'bottom'
         });
     }
 
