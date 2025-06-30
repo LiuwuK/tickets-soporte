@@ -124,7 +124,7 @@ $query = "
             SUBSTRING_INDEX(te.rut, '-', 1), 
             LEFT(te.rut, LENGTH(te.rut) - 1)
             ),
-        '[^0-9]', '') AS rut_numero
+        '[^0-9]', '') AS rut,
         RIGHT(te.rut, 1)  AS digito_verificador,
         te.nacionalidad AS nacionalidad,  
         bc.nombre_banco AS banco, 
