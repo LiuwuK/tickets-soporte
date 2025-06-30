@@ -13,3 +13,4 @@ vendor/autoload.php
 composer.lock
 composer.json
 vendor/composer/InstalledVersions.php
+/vendor
