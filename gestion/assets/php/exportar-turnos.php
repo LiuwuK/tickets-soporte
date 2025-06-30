@@ -139,11 +139,11 @@ $query = "
     FROM turnos_extra te
     LEFT JOIN sucursales su ON te.sucursal_id = su.id
     LEFT JOIN supervisores sup ON su.supervisor_id = sup.id
-    JOIN datos_pago dp ON te.datos_bancarios_id = dp.id
-    JOIN bancos bc ON dp.banco = bc.id
-    JOIN motivos_gestion mg ON te.motivo_turno_id = mg.id
-    JOIN `user` us ON te.autorizado_por = us.id
-    JOIN departamentos dep ON dep.id = su.departamento_id 
+    LEFT JOIN datos_pago dp ON te.datos_bancarios_id = dp.id
+    LEFT JOIN bancos bc ON dp.banco = bc.id
+    LEFT JOIN motivos_gestion mg ON te.motivo_turno_id = mg.id
+    LEFT JOIN `user` us ON te.autorizado_por = us.id
+    LEFT JOIN departamentos dep ON dep.id = su.departamento_id 
     $where
     ORDER BY te.created_at DESC 
 ";
