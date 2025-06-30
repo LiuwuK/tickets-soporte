@@ -178,11 +178,13 @@ if (isset($_POST['newExtra'])) {
                 }
                 $stmtCheckBanco->free_result();
             }
+            $instalacion = !empty($turno['instalacion']) ? $turno['instalacion'] : null;
+            
 
             // Insertar turno
             $stmtInsertTurno->bind_param(
                 "isiissiiisisss",
-                $turno['instalacion'],
+                $instalacion,
                 $turno['fecha'],
                 $horasCubiertas,
                 $turno['monto'],
