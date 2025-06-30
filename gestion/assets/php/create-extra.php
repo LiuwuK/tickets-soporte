@@ -447,8 +447,8 @@ if (isset($_POST['carga'])) {
             // Obtener instalación
            if ($instalacion != null) {
                 $instalacion_normalizada = preg_replace('/\s+/', '', strtolower($instalacion));
-                
-                $query = "SELECT id FROM instalaciones 
+
+                $query = "SELECT id FROM sucursales 
                         WHERE REPLACE(LOWER(nombre), ' ', '') = ?";
                 $stmt_s = $con->prepare($query);
                 $stmt_s->bind_param("s", $instalacion_normalizada);
