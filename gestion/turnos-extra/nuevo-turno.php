@@ -71,7 +71,7 @@ date_default_timezone_set('America/Santiago');
                                         <th scope="col" class="align-middle text-center">Hora entrada</th>
                                         <th scope="col" class="align-middle text-center">Hora salida</th>
                                         <th scope="col" class="align-middle text-center">Monto</th>
-                                        <th scope="col" class="align-middle text-center">RUT</th>
+                                        <th scope="col" class="align-middle text-center">RUT Colaborador</th>
                                         <th scope="col" class="align-middle text-center">Colaborador</th>
                                         <th scope="col" class="align-middle text-center">Nacionalidad</th>
                                         <th scope="col" class="align-middle text-center">Banco</th>
@@ -213,12 +213,10 @@ date_default_timezone_set('America/Santiago');
 document.addEventListener('DOMContentLoaded', function() {
     Swal.fire({
         icon: '<?= $_SESSION['alert']['type'] ?>',
-        title: '<?= $_SESSION['alert']['title'] ?>',
-        html: '<?= $_SESSION['alert']['message'] ?>',
-        confirmButtonText: 'Aceptar',
-        customClass: {
-            popup: 'animated bounceIn'
-        }
+        title: '<?= addslashes($_SESSION['alert']['title']) ?>',
+        html: `<?= addslashes($_SESSION['alert']['message']) ?>`, 
+        footer: '<?= addslashes($_SESSION['alert']['footer']) ?>',
+        confirmButtonText: 'Aceptar'
     });
     <?php unset($_SESSION['alert']); ?>
 });

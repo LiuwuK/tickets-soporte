@@ -75,7 +75,7 @@ if (isset($_POST['newExtra'])) {
                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmtInsertTurno = $con->prepare($queryInsertTurno);
 
-        foreach ($turnosValidos as $turno) {
+        foreach ($turnosValidos as $index => $turno) {
           
             if (empty($turno['motivo'])) {
                 $errores[] = "Debe seleccionar un motivo para el turno";
@@ -86,32 +86,29 @@ if (isset($_POST['newExtra'])) {
                 $errores[] = "La fecha del turno es requerida";
                 continue;
             }
-            // validar fecha turno (SOLO DIA ACTUAL HASTA LAS 12:00 DEL DIA SIGUIENTE)
-            $fechaTurno = $turno['fecha'];
-            $horaActual = (int)date('H');
-            $horaMinuto = date('H:i');
-            $fechaHoy = date('Y-m-d');
-            $fechaAyer = date('Y-m-d', strtotime('-1 day'));
-            /* 
-            echo $fechaTurnoFormateada;
-            echo 'hora'.$horaActual;
-            echo 'fecha hoy'.$fechaHoy;
-            echo 'fecha ayer'.$fechaAyer;
-            */
-            if ($horaActual < 12) {
-                if ($fechaTurno != $fechaAyer && $fechaTurno != $fechaHoy) {
-                    $fechasInvalidas = $fechaTurno;
-                    $errores['fechasInvalidas'][] = "Fila $index: La fecha/hora de carga: '$fechasInvalidas $horaMinuto' Estan fuera de lo permitido";
-                    $nErrores++;
-                }
-            } else {
-                if ($fechaTurno != $fechaHoy) {
-                    $fechasInvalidas = $fechaTurno;
-                    $errores['fechasInvalidas'][] = "Fila $index: La fecha/hora de carga: '$fechasInvalidas $horaMinuto' Estan fuera de lo permitido";
-                    $nErrores++;
+            if($_SESSION['id'] != 38){
+                // validar fecha turno (SOLO DIA ACTUAL HASTA LAS 12:00 DEL DIA SIGUIENTE)
+                $fechaTurno = $turno['fecha'];
+                $horaActual = (int)date('H');
+                $horaMinuto = date('H:i');
+                $fechaHoy = date('Y-m-d');
+                $fechaAyer = date('Y-m-d', strtotime('-1 day'));
+
+                // Convertir fecha recibida a formato Y-m-d para comparación segura
+                $fechaTurnoFormateada = date('Y-m-d', strtotime($fechaTurno));
+
+                if ($horaActual < 12) {
+                    if ($fechaTurnoFormateada != $fechaAyer && $fechaTurnoFormateada != $fechaHoy) {
+                        $errores[] = "Fila " . ($index + 1) . ": La fecha '$fechaTurno' está fuera del plazo permitido";
+                        continue;
+                    }
+                } else {
+                    if ($fechaTurnoFormateada != $fechaHoy) {
+                        $errores[] = "Fila " . ($index + 1) . ": La fecha '$fechaTurno' está fuera del plazo permitido ";
+                        continue;
+                    }
                 }
             }
-            
 
             if (empty($turno['hora_entrada']) || empty($turno['hora_salida'])) {
                 $errores[] = "Las horas de entrada y salida son requeridas";
@@ -207,7 +204,6 @@ if (isset($_POST['newExtra'])) {
             }
         }
 
-        // Confirmar o cancelar transacción
         if (empty($errores)) {
             $con->commit();
             $_SESSION['alert'] = [
