@@ -1,8 +1,8 @@
 <?php 
   include("../../../checklogin.php");
   include('../../../dbconnection.php');
-  die();  
-    $sql = mysqli_query($con, "SELECT id, password FROM user WHERE id = 52");
+   die(); 
+    $sql = mysqli_query($con, "SELECT id, password FROM user WHERE id = 53");
     while ($row = mysqli_fetch_assoc($sql)) {
         $id = $row['id'];
         $plainPassword = $row['password'];
