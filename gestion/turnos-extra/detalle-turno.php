@@ -2,9 +2,13 @@
 session_start();
 include("../../checklogin.php");
 include("../../dbconnection.php");
-include("../assets/php/detalle-turno.php");
 check_login();
+include("../assets/php/detalle-turno.php");
 
+$puede_editar = (
+  ($_SESSION['cargo'] == 11 && $_SESSION['id'] == $row['idAuto'] && $row['estado'] == 'rechazado') || 
+  (array_intersect([6], $_SESSION['deptos']) && $row['estado'] == 'rechazado')
+);
 ?>
 <!DOCTYPE html>
 <html>
@@ -134,7 +138,7 @@ check_login();
             </div>
             <div class="form-group">
                 <label for="rutCta" class="form-label">Rut de la Cuenta</label>
-                <input name="rutCta" type="text" class="form-control form-control-sm" value="<?php echo $row['RUTcta'];?>"  readonly>
+                <input name="rutCta" id="rutCta" type="text" class="form-control form-control-sm" value="<?php echo $row['RUTcta'];?>"  readonly>
             </div>
           </div>
           <div class="form-row">
@@ -154,28 +158,39 @@ check_login();
           <div class="form-row">
             <div class="form-group">
               <label for="motivoN" class="form-label">Motivo del rechazo</labe>
-              <textarea class="form-control form-control-sm" id="" name="motivoN" rows="3" readonly><?php echo $row['motivoN'];?></textarea>     
+              <textarea class="form-control form-control-sm" id="motivoR" name="motivoN" rows="3" readonly><?php echo $row['motivoN'];?></textarea>     
             </div>
           </div>
           <?php
-          if($_SESSION['cargo'] == 11 && is_null($row['justificacion'])){
-          ?>
-          <form method="post" enctype="multipart/form-data">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="justi" class="form-label">Justificación</labe>
-                <textarea class="form-control form-control-sm" id="justi" name="justi" rows="3" required></textarea>     
+          if ($puede_editar){?>
+          <div id="justificacion-container" style="display: none;" width="80%">
+            <form method="post">
+              <input type="hidden" name="id_turno" value="<?= $row['id'] ?>">
+              
+              <input type="hidden" name="colab" id="hidden_colaborador" value="<?= $row['colaborador'] ?>">
+              <input type="hidden" name="rutC" id="hidden_rutC" value="<?= $row['rut'] ?>">
+              <input type="hidden" name="numCta" id="hidden_numCuenta" value="<?= $row['numCuenta'] ?>">
+              <input type="hidden" name="rutCta" id="hidden_rutCta" value="<?= $row['RUTcta'] ?>">
+              <input type="hidden" name="pMotivo" id="hidden_personaMotivo" value="<?= $row['persona_motivo'] ?>">
+              <input type="hidden" name="mt" id="hidden_monto" value="<?= $row['monto'] ?>">
+              <input type="hidden" name="fturno" id="hidden_fechaTurno" value="<?= $row['fechaTurno'] ?>">
+
+              <div class="form-group mb-3">
+                <label>Justificación de los cambios <span class="text-danger">*</span></label>
+                <textarea name="justificacion" class="form-control" required></textarea>
               </div>
-            </div>
-            <div class="form-row">
-              <button class="btn btn-updt ms-auto" name="justificar" >Justificar</button>
-            </div>
-          </form>
+              <button type="submit" name="guardar_cambios" class="btn btn-updt">
+                Guardar Cambios y Justificar
+              </button>
+            </form>
+          </div>
+
+          <button id="btn-editar" class="btn btn-default mb-3" onclick="habilitarEdicion()">Editar Turno</button>
           <?php
           }else{
           ?>
           <div class="form-row">
-            <div class="form-group">
+            <div class="form-group" id="justificacion-container">
               <label for="justi" class="form-label">Justificación</labe>
               <textarea class="form-control form-control-sm" id="justi" name="justi" rows="3" readonly><?php echo $row['justificacion'];?></textarea>     
             </div>
@@ -212,8 +227,7 @@ check_login();
               </div>
             </div>
           <?php  
-          }
-          ?>
+          } ?>
         </div>
     </div>
   </div>
@@ -246,6 +260,53 @@ check_login();
 <!-- Scripts propios -->
 <script src="../../assets/js/sidebar.js"></script>
 <script src="../assets/js/detalle-turno.js"></script>
+<style>
+
+input.editable, textarea.editable {
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+
+#justificacion-container {
+  width: 83%;
+  margin: 0 auto;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+}
+</style>
+<?php
+if($puede_editar){
+?>
+<script>
+  function habilitarEdicion() {
+    const excludedIds = [
+      'motivoR', 'autorizadoPor', 'motivo', 'banco',
+      'contratado', 'horario', 'horas', 'instalacion', 'nacionalidad'
+    ];
+    
+    document.querySelectorAll('input[readonly], textarea[readonly], select[readonly]').forEach(input => {
+      if (!excludedIds.includes(input.id)) {
+        input.removeAttribute('readonly');
+        input.classList.add('editable');
+
+        input.addEventListener('change', function() {
+          document.getElementById('hidden_' + this.id).value = this.value;
+        });
+        
+        if (input.tagName === 'SELECT') {
+          input.disabled = false;
+        }
+      }
+    });
+    
+    document.getElementById('btn-editar').style.display = 'none';
+    document.getElementById('justificacion-container').style.display = 'block';
+}
+</script>
+<?php }; ?>
 </body>
 
 </html>

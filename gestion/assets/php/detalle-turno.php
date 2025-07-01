@@ -1,4 +1,5 @@
 <?php
+
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
@@ -22,6 +23,7 @@ if (isset($_GET['id'])) {
                      te.contratado AS contratado,
                      te.justificacion AS justificacion,
                      te.nacionalidad AS nacionalidad,
+                     te.autorizado_por AS idAuto,
                      CONCAT(TIME_FORMAT(te.hora_inicio, "%H:%i"), " - ", TIME_FORMAT(te.hora_termino, "%H:%i")) AS horario
               FROM turnos_extra te
               LEFT JOIN sucursales su ON te.sucursal_id = su.id
@@ -94,17 +96,179 @@ if(isset($_POST['denTurno'])){
 }
 
 //justificacion del turno
-if(isset($_POST['justificar'])){
-    $id = $_GET['id'];
-    $estado = 'pendiente en operaciones';
-    $justificacion = $_POST['justi'];
-    $query = "UPDATE turnos_extra 
-                SET estado = ? ,
-                    justificacion = ?
-                WHERE id = ?";
-    $stmt = $con->prepare($query);
-    $stmt->bind_param("ssi", $estado, $justificacion, $id);
+if(isset($_POST['guardar_cambios'])) {
+    $id_turno = $_GET['id'];
+    $justificacion = $_POST['justificacion'];
+    
+    // datos actuales del turno
+    $stmt = $con->prepare("SELECT 
+        estado, autorizado_por, datos_bancarios_id,
+        nombre_colaborador, rut, fecha_turno, monto, 
+        persona_motivo, nacionalidad
+        FROM turnos_extra WHERE id = ?");
+    $stmt->bind_param("i", $id_turno);
     $stmt->execute();
-    echo "<script>alert('Turno Justificado'); location.href='detalle-turno.php?id=$id';</script>";
+    $turno_actual = $stmt->get_result()->fetch_assoc();
+    
+    if(!$turno_actual) {
+        die("Turno no encontrado");
+    }
+    
+    // Validar permisos de forma más segura
+    $es_supervisor = ($_SESSION['cargo'] == 11);
+    $es_operador = array_intersect([6], $_SESSION['deptos']);
+    $turno_rechazado = ($turno_actual['estado'] == 'rechazado');
+    $es_autor = ($_SESSION['id'] == $turno_actual['autorizado_por']);
+    
+    $puede_editar = ($turno_rechazado && (
+        ($es_supervisor && $es_autor) || 
+        $es_operador
+    ));
+    
+    if(!$puede_editar) {
+        die("No tienes permisos para editar este turno");
+    }
+
+    $con->begin_transaction();
+    try {
+        // Mapeo de campos (nombre en formulario => nombre en BD)
+        $fieldMap = [
+            'colab' => 'nombre_colaborador',
+            'rutC' => 'rut',
+            'fturno' => 'fecha_turno',
+            'mt' => 'monto',
+            'pMotivo' => 'persona_motivo'
+        ];
+        
+        $cambios = [];
+        $updates = [];
+        $params = [];
+        $types = '';
+        
+        foreach($fieldMap as $formField => $dbField) {
+            if(isset($_POST[$formField])) {
+                $nuevo_valor = $_POST[$formField];
+                $valor_actual = $turno_actual[$dbField] ?? null;
+
+                if($nuevo_valor != $valor_actual) {
+                    $updates[] = "$dbField = ?";
+                    $params[] = $nuevo_valor;
+                    $types .= 's';
+                    $cambios[$dbField] = [
+                        'antes' => $valor_actual,
+                        'despues' => $nuevo_valor
+                    ];
+                }
+            }
+        }
+  
+        // Procesar datos bancarios 
+        $banco_cambiado = false;
+        
+        if(isset($_POST['rutCta']) && isset($_POST['numCta'])) {
+            // Obtener datos actuales
+            $stmt = $con->prepare("SELECT * FROM datos_pago WHERE id = ?");
+            $stmt->bind_param("i", $turno_actual['datos_bancarios_id']);
+            $stmt->execute();
+            $datos_actuales = $stmt->get_result()->fetch_assoc();
+
+            if(!$datos_actuales) {
+                throw new Exception("Datos bancarios no encontrados");
+            }
+
+            // Procesar RUT (formato: 12345678-9)
+            $rutParts = explode('-', $_POST['rutCta']);
+            if(count($rutParts) != 2) {
+                throw new Exception("Formato de RUT inválido. Debe ser 12345678-9");
+            }
+            
+            $rut_cta = $rutParts[0];
+            $digito_verificador = $rutParts[1];
+            
+            // Comparar cambios
+            if($datos_actuales['rut_cta'] != $rut_cta || 
+               $datos_actuales['digito_verificador'] != $digito_verificador ||
+               $datos_actuales['numero_cuenta'] != $_POST['numCta']) {
+                
+                $banco_cambiado = true;
+                
+                // Registrar cambios
+                $cambios['datos_bancarios'] = [
+                    'antes' => [
+                        'rut_cta' => $datos_actuales['rut_cta'],
+                        'digito_verificador' => $datos_actuales['digito_verificador'],
+                        'numero_cuenta' => $datos_actuales['numero_cuenta']
+                    ],
+                    'despues' => [
+                        'rut_cta' => $rut_cta,
+                        'digito_verificador' => $digito_verificador,
+                        'numero_cuenta' => $_POST['numCta']
+                    ]
+                ];
+                
+                // Actualizar datos_pago
+                $query_dp = "UPDATE datos_pago SET 
+                            rut_cta = ?, 
+                            digito_verificador = ?, 
+                            numero_cuenta = ? 
+                            WHERE id = ?";
+                
+                $stmt = $con->prepare($query_dp);
+                $stmt->bind_param("sssi", $rut_cta, $digito_verificador, $_POST['numCta'], $turno_actual['datos_bancarios_id']);
+                if(!$stmt->execute()) {
+                    throw new Exception("Error al actualizar datos bancarios: " . $stmt->error);
+                }
+            }
+        }
+        
+        // Actualizar turno (solo si hay cambios)
+        if(!empty($updates) || $banco_cambiado) {
+            // Agregar campos fijos
+            $updates[] = "justificacion = ?";
+            $updates[] = "estado = 'pendiente en operaciones'";
+            $params[] = $justificacion;
+            $types .= 's';
+            
+            $query = "UPDATE turnos_extra SET ".implode(', ', $updates)." WHERE id = ?";
+            $params[] = $id_turno;
+            $types .= 'i';
+            
+            $stmt = $con->prepare($query);
+            if(!$stmt->bind_param($types, ...$params)) {
+                throw new Exception("Error al vincular parámetros: " . $stmt->error);
+            }
+            
+            if(!$stmt->execute()) {
+                throw new Exception("Error al actualizar turno: " . $stmt->error);
+            }
+            
+            // Registrar histórico
+            $stmt_historico = $con->prepare("INSERT INTO historico_turnos 
+                (turno_id, usuario_id, accion, cambios, justificacion) 
+                VALUES (?, ?, 'editado', ?, ?)");
+            $json_cambios = json_encode($cambios, JSON_UNESCAPED_UNICODE);
+            
+            if(!$stmt_historico->bind_param("iiss", $id_turno, $_SESSION['id'], $json_cambios, $justificacion)) {
+                throw new Exception("Error al vincular histórico: " . $stmt_historico->error);
+            }
+            
+            if(!$stmt_historico->execute()) {
+                throw new Exception("Error al guardar histórico: " . $stmt_historico->error);
+            }
+            
+            $con->commit();
+            $_SESSION['exito'] = 'Cambios guardados correctamente';
+        } else {
+            $con->rollback();
+            $_SESSION['error'] = 'No se realizaron cambios';
+        }
+        
+    } catch (Exception $e) {
+        $con->rollback();
+        $_SESSION['error'] = 'Error: ' . $e->getMessage();
+    }
+    
+    header("Location: detalle-turno.php?id=$id_turno");
+    exit;
 }
 ?>

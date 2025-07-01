@@ -132,7 +132,7 @@ if (isset($_POST['newExtra'])) {
             // Calcular horas trabajadas
             $intervalo = $horaInicio->diff($horaTermino);
             $horasCubiertas = $intervalo->h + ($intervalo->i / 60);
-
+            
             // Procesar RUT (limpieza básica)
             $rut = strtoupper(preg_replace('/[^0-9kK]/', '', $turno['rut']));
 
@@ -177,10 +177,9 @@ if (isset($_POST['newExtra'])) {
             }
             $instalacion = !empty($turno['instalacion']) ? $turno['instalacion'] : null;
             
-
             // Insertar turno
             $stmtInsertTurno->bind_param(
-                "isiissiiisisss",
+                "isdissiiisisss",
                 $instalacion,
                 $turno['fecha'],
                 $horasCubiertas,
