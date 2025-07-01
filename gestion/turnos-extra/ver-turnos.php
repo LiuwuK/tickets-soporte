@@ -1,9 +1,10 @@
 <?php
 session_start();
 include("../../checklogin.php");
+check_login();
 include("../../dbconnection.php");
 include("../assets/php/ver-turnos.php");
-check_login();
+
 
 ?>
 <!DOCTYPE html>
