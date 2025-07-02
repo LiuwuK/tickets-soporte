@@ -24,6 +24,7 @@ if (isset($_GET['id'])) {
                      te.justificacion AS justificacion,
                      te.nacionalidad AS nacionalidad,
                      te.autorizado_por AS idAuto,
+                     EXISTS (SELECT 1 FROM historico_turnos WHERE turno_id = te.id) AS justificado,
                      CONCAT(TIME_FORMAT(te.hora_inicio, "%H:%i"), " - ", TIME_FORMAT(te.hora_termino, "%H:%i")) AS horario
               FROM turnos_extra te
               LEFT JOIN sucursales su ON te.sucursal_id = su.id
@@ -50,6 +51,22 @@ if (isset($_GET['id'])) {
     if (!$row) {
         die("No se encontró ningún turno con el ID proporcionado");
     }
+
+    $query_historico = "SELECT 
+                            h.fecha,
+                            u.name AS usuario,
+                            h.cambios,
+                            h.justificacion
+                        FROM historico_turnos h
+                        JOIN user u ON h.usuario_id = u.id
+                        WHERE h.turno_id = ?
+                        ORDER BY h.fecha DESC";
+
+    $stmt_historico = mysqli_prepare($con, $query_historico);
+    mysqli_stmt_bind_param($stmt_historico, 'i', $id);
+    mysqli_stmt_execute($stmt_historico);
+    $result_historico = mysqli_stmt_get_result($stmt_historico);
+    $historico = mysqli_fetch_all($result_historico, MYSQLI_ASSOC);
 } else {
     die("No se proporcionó ID de turno");
 }
@@ -113,6 +130,7 @@ if(isset($_POST['guardar_cambios'])) {
     if(!$turno_actual) {
         die("Turno no encontrado");
     }
+
     
     // Validar permisos de forma más segura
     $es_supervisor = ($_SESSION['cargo'] == 11);
@@ -148,6 +166,12 @@ if(isset($_POST['guardar_cambios'])) {
         foreach($fieldMap as $formField => $dbField) {
             if(isset($_POST[$formField])) {
                 $nuevo_valor = $_POST[$formField];
+                if($dbField === 'monto') {
+                    $nuevo_valor = str_replace(['$', '.'], '', $nuevo_valor);
+                    if(!is_numeric($nuevo_valor)) {
+                        throw new Exception("El monto debe ser un valor numérico válido");
+                    }
+                }
                 $valor_actual = $turno_actual[$dbField] ?? null;
 
                 if($nuevo_valor != $valor_actual) {
@@ -155,13 +179,12 @@ if(isset($_POST['guardar_cambios'])) {
                     $params[] = $nuevo_valor;
                     $types .= 's';
                     $cambios[$dbField] = [
-                        'antes' => $valor_actual,
-                        'despues' => $nuevo_valor
+                        'antes' => $formField === 'mt' ? '$'.number_format($valor_actual, 0, '', '.') : $valor_actual ,
+                        'despues' => $dbField === 'monto' ? '$'.number_format($nuevo_valor, 0, '', '.') : $nuevo_valor
                     ];
                 }
             }
         }
-  
         // Procesar datos bancarios 
         $banco_cambiado = false;
         

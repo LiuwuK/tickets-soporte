@@ -73,6 +73,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 hour12: false
             });
             const resultadoFinal = `${fechaFormateada} ${horaFormateada}`;
+            const spanHistorico = item.tiene_historico > 0 
+            ? `<span class="label label-rechazo">Justificado</span>` 
+            : '';
 
             const itemHTML = `
                 <div class="h-container" onclick="window.location.href='detalle-turno.php?id=${item.id}';">
@@ -83,6 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                         <div class="estado mt-2">
                             <span class="label label-estado">${item.estado}</span>
+                            ${spanHistorico}
                         </div>
                     </div>
                     <div class="h-body">

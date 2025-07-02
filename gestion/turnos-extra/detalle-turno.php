@@ -53,7 +53,10 @@ $puede_editar = (
           <!-- Datos Colaborador -->
           <div class="d-flex justify-content-between mt-3 mb-2">
             <h4 class="">Datos colaborador</h4>
-            <span class="label label-estado"><?php echo $row['estado']; ?></span>
+            <div class="tags-container">
+              <span class="label label-estado"><?php echo $row['estado']; ?></span>
+              <?php if($row['justificado'] > 0){ echo '<span class="label label-rechazo">Justificado</span>';} ?>
+            </div>
           </div>
           <hr width="90%" class="mx-auto">
           <div class="form-row">
@@ -151,58 +154,122 @@ $puede_editar = (
           <?php 
           if(isset($row['motivoN']) && $row['estado'] != "aprobado"){
           ?>
-          <!-- Datos del pago -->
-          <h4>Informacion General</h4>
-          <hr width="90%" class="mx-auto">
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="motivoN" class="form-label">Motivo del rechazo</labe>
-              <textarea class="form-control form-control-sm" id="motivoR" name="motivoN" rows="3" readonly><?php echo $row['motivoN'];?></textarea>     
-            </div>
-          </div>
-          <?php
-          if ($puede_editar){?>
-          <div id="justificacion-container" style="display: none;" width="80%">
-            <form method="post">
-              <input type="hidden" name="id_turno" value="<?= $row['id'] ?>">
-              
-              <input type="hidden" name="colab" id="hidden_colaborador" value="<?= $row['colaborador'] ?>">
-              <input type="hidden" name="rutC" id="hidden_rutC" value="<?= $row['rut'] ?>">
-              <input type="hidden" name="numCta" id="hidden_numCuenta" value="<?= $row['numCuenta'] ?>">
-              <input type="hidden" name="rutCta" id="hidden_rutCta" value="<?= $row['RUTcta'] ?>">
-              <input type="hidden" name="pMotivo" id="hidden_personaMotivo" value="<?= $row['persona_motivo'] ?>">
-              <input type="hidden" name="mt" id="hidden_monto" value="<?= $row['monto'] ?>">
-              <input type="hidden" name="fturno" id="hidden_fechaTurno" value="<?= $row['fechaTurno'] ?>">
-
-              <div class="form-group mb-3">
-                <label>Justificación de los cambios <span class="text-danger">*</span></label>
-                <textarea name="justificacion" class="form-control" required></textarea>
+            <!-- Informacion General -->
+            <h4>Informacion General</h4>
+            <hr width="90%" class="mx-auto">
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="motivoN" class="form-label">Motivo del rechazo</labe>
+                <textarea class="form-control form-control-sm" id="motivoR" name="motivoN" rows="3" readonly><?php echo $row['motivoN'];?></textarea>     
               </div>
-              <button type="submit" name="guardar_cambios" class="btn btn-updt">
-                Guardar Cambios y Justificar
-              </button>
-            </form>
-          </div>
-
-          <button id="btn-editar" class="btn btn-default mb-3" onclick="habilitarEdicion()">Editar Turno</button>
-          <?php
-          }else{
-          ?>
-          <div class="form-row">
-            <div class="form-group" id="justificacion-container">
-              <label for="justi" class="form-label">Justificación</labe>
-              <textarea class="form-control form-control-sm" id="justi" name="justi" rows="3" readonly><?php echo $row['justificacion'];?></textarea>     
             </div>
-          </div>
+            <?php
+            if ($puede_editar){?>
+            <div id="justificacion-container" style="display: none;" class="form-row">
+              <form method="post">
+                <input type="hidden" name="id_turno" value="<?= $row['id'] ?>">
+                
+                <input type="hidden" name="colab" id="hidden_colaborador" value="<?= $row['colaborador'] ?>">
+                <input type="hidden" name="rutC" id="hidden_rutC" value="<?= $row['rut'] ?>">
+                <input type="hidden" name="numCta" id="hidden_numCuenta" value="<?= $row['numCuenta'] ?>">
+                <input type="hidden" name="rutCta" id="hidden_rutCta" value="<?= $row['RUTcta'] ?>">
+                <input type="hidden" name="pMotivo" id="hidden_personaMotivo" value="<?= $row['persona_motivo'] ?>">
+                <input type="hidden" name="mt" id="hidden_monto" value="<?= $row['monto'] ?>">
+                <input type="hidden" name="fturno" id="hidden_fechaTurno" value="<?= $row['fechaTurno'] ?>">
+
+                <div class="form-group mb-3">
+                  <label>Justificación de los cambios <span class="text-danger">*</span></label>
+                  <textarea name="justificacion" class="form-control" required></textarea>
+                </div>
+                <button type="submit" name="guardar_cambios" class="btn btn-updt">
+                  Guardar Cambios y Justificar
+                </button>
+              </form>
+            </div>
+            <button id="btn-editar" class="btn btn-default mb-3" onclick="habilitarEdicion()">Editar Turno</button>
+            <?php
+            }else{
+            ?>
+            <div class="form-row">
+              <div class="form-group" id="justificacion-container">
+                <label for="justi" class="form-label">Justificación</labe>
+                <textarea class="form-control form-control-sm" id="justi" name="justi" rows="3" readonly><?php echo $row['justificacion'];?></textarea>     
+              </div>
+            </div>
           <?php
             }
           }
+          
+          if((in_array(6, $_SESSION['deptos'], true)) && $row['estado'] != "aprobado" && $row['justificado'] > 0 ){
           ?>
-          <hr>
+            <!-- CAMBIOS REALIZADOS -->
+            <h4>Cambios Realizados</h4>
+            <hr width="90%" class="mx-auto">
+            <div class="form-row">
+              <table class="table table-hover" id="tabla-turnos">
+                  <thead>
+                      <tr>
+                          <th scope="col" class="align-middle text-center" >Fecha</th>
+                          <th scope="col" class="align-middle text-center">Editado Por</th>
+                          <th scope="col" class="align-middle text-center">Cambios Realizados</th>
+                          <th scope="col" class="align-middle text-center">Justificacion</th>
+                      </tr>
+                  </thead>
+                  <tbody id="cuerpo-tabla">
+                   <?php if (!empty($historico)): ?>
+                    <?php foreach ($historico as $registro): ?>
+                        <tr>
+                          <td class="align-middle text-center">
+                            <?= date('d/m/Y H:i', strtotime($registro['fecha'])) ?>
+                          </td>
+                          <td class="align-middle text-center">
+                            <?= htmlspecialchars($registro['usuario']) ?>
+                          </td>
+                          <td class="align-middle text-justify ">
+                            <?php 
+                            $cambios = json_decode($registro['cambios'], true);
+                            if ($cambios) {
+                              foreach ($cambios as $campo => $detalle) {
+                                echo "<strong>" . ucfirst(str_replace('_', ' ', $campo)) . ":</strong> ";
+                                if (is_array($detalle) && $campo !== 'datos_bancarios') {
+                                  echo "De '{$detalle['antes']}' a '{$detalle['despues']}'<br>";
+                                } else if ($campo === 'datos_bancarios'){
+                                  echo '<ul class="list-unstyled">';
+                                    foreach (['rut_cta', 'digito_verificador', 'numero_cuenta'] as $subcampo) {
+                                      if ($detalle['antes'][$subcampo] != $detalle['despues'][$subcampo]) {
+                                        $nombreSubcampo = ucfirst(str_replace('_', ' ', $subcampo));
+                                        echo "<li>{$nombreSubcampo}: De '{$detalle['antes'][$subcampo]}' a '{$detalle['despues'][$subcampo]}'</li>";
+                                      }
+                                    }
+                                  echo '</ul>';
+                                }
+                                else 
+                                {
+                                  echo $detalle."<br>";
+                                }
+                              }
+                            }
+                            ?>
+                          </td>
+                          <td class="align-middle text-center">
+                            <?= nl2br(htmlspecialchars($registro['justificacion'])) ?>
+                          </td>
+                        </tr>
+                    <?php endforeach; ?>
+                  <?php else: ?>
+                    <tr>
+                      <td colspan="4" class="text-center">No hay registros históricos para este turno</td>
+                    </tr>
+                  <?php endif; ?>
+                  </tbody>
+              </table>
+            </div>
           <?php
+          }
           if($_SESSION['cargo'] != 11 && $row['estado'] != "aprobado"){
           ?>
+            <hr>
             <div class="form-row">
               <div class="form-group">
                 <button type="button" class="btn btn-del del-btn den-btn ms-auto" data-bs-toggle="modal" data-bs-target="#denied" data-sup-id="<?php echo $row['id'];?>">Rechazar</button>
@@ -216,6 +283,7 @@ $puede_editar = (
           <?php
           }else if (array_intersect([10], $_SESSION['deptos'])){
           ?>
+            <hr>
             <div class="form-row">
               <div class="form-group">
                 <button type="button" class="btn btn-del del-btn den-btn ms-auto" data-bs-toggle="modal" data-bs-target="#denied" data-sup-id="<?php echo $row['id'];?>">Rechazar</button>

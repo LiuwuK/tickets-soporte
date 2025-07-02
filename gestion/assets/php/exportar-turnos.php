@@ -64,7 +64,7 @@ $headers = [
     'Fecha del Turno (DIA-MES-AÑO)','Hora Entrada', 'Hora Salida', 'Horas cubiertas', 'Monto',
     'Nombre y Apellido', 'RUT', 'DV', 'Nacionalidad',
     'Banco', 'RUT Cuenta', 'DV Cuenta', 'Número de cuenta',
-    'Motivo', 'Persona del Motivo', 'Motivo Rechazo', 'Justificación',
+    'Motivo', 'Persona del Motivo', 'Fue Rechazado?' ,'Motivo Rechazo', 'Justificación', 
     'Contratado'
 ];
 
@@ -73,7 +73,7 @@ $sheet->fromArray([$headers], NULL, 'A1');
 $sheet->getStyle('A1:L1')->applyFromArray($styleColor1);
 $sheet->getStyle('M1:P1')->applyFromArray($styleColor2);
 $sheet->getStyle('Q1:T1')->applyFromArray($styleColor3); 
-$sheet->getStyle('U1:Y1')->applyFromArray($styleColor1);
+$sheet->getStyle('U1:Z1')->applyFromArray($styleColor1);
 
 // Capturar filtros
 $fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : '';
@@ -83,6 +83,14 @@ $supervisor = isset($_GET['supervisor']) ? $_GET['supervisor'] : '';
 
 // Filtros para consulta
 $filtros = [];
+
+//Filtro si el usuario es supervisor o filtra por supervisor en especifico
+if ($_SESSION['cargo'] == 11){
+    $supid = $_SESSION['id'];
+    $filtros[] = "te.autorizado_por = '$supid'";
+}else if (!empty($supervisor)){
+    $filtros[] = "te.autorizado_por = '$supervisor'";
+}
 
 // Filtro por fecha
 if (!empty($fecha_inicio) && !empty($fecha_fin)) {
@@ -97,9 +105,7 @@ if (array_intersect([10], $_SESSION['deptos'])) {
     $filtros[] = "te.estado = '$estado'";
 }
 
-if (!empty($supervisor)){
-    $filtros[] = "te.autorizado_por = '$supervisor'";
-}
+
 
 // Generar condiciones WHERE para consulta
 $where = !empty($filtros) ? "WHERE " . implode(" AND ", $filtros) : "";
@@ -133,6 +139,9 @@ $query = "
         dp.numero_cuenta AS numCuenta,
         mg.motivo AS motivo,
         te.persona_motivo AS persona_motivo,
+        CASE WHEN EXISTS (
+            SELECT 1 FROM historico_turnos WHERE turno_id = te.id
+        ) THEN 'Sí' ELSE 'No' END AS tiene_historico,
         te.motivo_rechazo AS motivoN,
         te.justificacion AS justificacion,
         te.contratado AS contratado
@@ -183,7 +192,8 @@ $columnWidths = [
     'A' => 15, 'B' => 20, 'C' => 25, 'D' => 20, 'E' => 30, 'F' => 20,
     'G' => 15, 'H' => 15, 'I' => 15, 'J' => 15, 'K' => 15, 'L' => 20,
     'M' => 20, 'N' => 20, 'O' => 25, 'P' => 30, 'Q' => 20, 'R' => 30,
-    'S' => 20, 'T' => 20, 'U' => 20, 'V' => 20, 'W' => 20, 
+    'S' => 20, 'T' => 20, 'U' => 20, 'V' => 20, 'W' => 20, 'X' => 30,
+    'Y' => 40, 'Z' => 20, 
 ];
 
 // Aplicar anchos

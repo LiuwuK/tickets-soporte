@@ -35,13 +35,16 @@
     justify-content: space-between;
     color: #33435e;
 }
-.label-estado{
+.label-estado, .label-rechazo{
     background-color: #5f9ea0;
     color: #fff;
     font-size: 11px;
     border-radius: 8px;
     padding:5px;
     height: 25%;
+}
+.label-rechazo{
+    background-color: #f0c51c;
 }
 .fil-estado{ 
     text-transform: capitalize;
