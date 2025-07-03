@@ -129,9 +129,14 @@ if (isset($_POST['newExtra'])) {
                 continue;
             }
 
-            // Calcular horas trabajadas
-            $intervalo = $horaInicio->diff($horaTermino);
-            $horasCubiertas = $intervalo->h + ($intervalo->i / 60);
+            // Si la hora de término es menor que la de inicio, asumimos que es del día siguiente
+            if ($horaTermino < $horaInicio) {
+                $horaTermino->add(new DateInterval('P1D')); // Añade 1 día
+            }
+
+            // Calcular diferencia en segundos y convertir a horas
+            $diferenciaSegundos = $horaTermino->getTimestamp() - $horaInicio->getTimestamp();
+            $horasCubiertas = $diferenciaSegundos / 3600; // 3600 segundos = 1 hora
             
             // Procesar RUT (limpieza básica)
             $rut = strtoupper(preg_replace('/[^0-9kK]/', '', $turno['rut']));
@@ -139,9 +144,13 @@ if (isset($_POST['newExtra'])) {
             // Manejar datos bancarios (si existen)
             $bancoId = null;
             if (!empty($turno['banco']) && !empty($turno['rut_cuenta']) && !empty($turno['numero_cuenta'])) {
+
+                print_r($turno);
+
                 $rutCuenta = strtoupper(preg_replace('/[^0-9kK]/', '', $turno['rut_cuenta']));
                 $rutCuentaNum = substr($rutCuenta, 0, -1);
                 $rutCuentaDv = substr($rutCuenta, -1);
+
 
                 // Verificar si ya existe
                 $stmtCheckBanco->bind_param("iis", $turno['banco'], $rutCuentaNum, $turno['numero_cuenta']);
@@ -163,7 +172,6 @@ if (isset($_POST['newExtra'])) {
                     if ($stmtInsertBanco->execute()) {
                         $bancoId = $stmtInsertBanco->insert_id;
                     } else {
-                        // Si falla por duplicado, obtener el ID existente
                         if ($con->errno == 1062) {
                             $stmtCheckBanco->execute();
                             $stmtCheckBanco->bind_result($bancoId);
@@ -365,7 +373,6 @@ if (isset($_POST['carga'])) {
             //Obtener hora inicio y termino 
             $hora_inicio = $row[6];
             $hora_termino = $row[7];
-
 
             $hora_inicio_obj = DateTime::createFromFormat('H:i', $hora_inicio);
             $hora_termino_obj = DateTime::createFromFormat('H:i', $hora_termino);
