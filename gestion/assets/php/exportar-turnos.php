@@ -80,6 +80,7 @@ $fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : '';
 $fecha_fin = isset($_GET['fecha_fin']) ? $_GET['fecha_fin'] : '';
 $estado = isset($_GET['estado']) ? $_GET['estado'] : '';
 $supervisor = isset($_GET['supervisor']) ? $_GET['supervisor'] : '';
+$texto_busqueda = isset($_GET['texto']) ? $_GET['texto'] : '';
 
 // Filtros para consulta
 $filtros = [];
@@ -104,7 +105,15 @@ if (array_intersect([10], $_SESSION['deptos'])) {
 } elseif (!empty($estado)) {
     $filtros[] = "te.estado = '$estado'";
 }
-
+//filtro texto
+if (!empty($texto_busqueda)) {
+    $filtros[] = "(te.nombre_colaborador LIKE '%$texto_busqueda%' OR 
+                  te.rut LIKE '%$texto_busqueda%' OR 
+                  us.name LIKE '%$texto_busqueda%' OR 
+                  mg.motivo LIKE '%$texto_busqueda%' OR
+                  su.nombre LIKE '%$texto_busqueda%' OR
+                  te.estado LIKE '%$texto_busqueda%' )";
+}
 
 
 // Generar condiciones WHERE para consulta
