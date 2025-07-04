@@ -321,7 +321,9 @@ if (isset($_POST['carga'])) {
                         AND autorizado_por = ? 
                         AND (persona_motivo IS NULL OR persona_motivo = ?)
                         AND contratado = ? 
-                        AND nacionalidad = ?";
+                        AND nacionalidad = ?
+                        AND hora_inicio = ?
+                        AND hora_termino = ?";
         $stmtTurnos = $con->prepare($checkTurnos);
 
         if (!$stmtTurnos) {
@@ -475,7 +477,7 @@ if (isset($_POST['carga'])) {
             echo   '<br>nacionalidad '.$nacionalidad;
             */
             //Verificar si existe los datos 
-            $stmtTurnos->bind_param("isiissiisis",$instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad);
+            $stmtTurnos->bind_param("isiissiisisss",$instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad, $hora_inicio, $hora_termino);
             $stmtTurnos->execute();
             $stmtTurnos->store_result();    
             if ($stmtTurnos->num_rows > 0) {
@@ -683,16 +685,13 @@ function procesarFechaTurno($fecha_str, $index, &$errores) {
             $fecha_obj = DateTime::createFromFormat($formato, $fecha_str);
             if ($fecha_obj !== false) {
                 $errors = DateTime::getLastErrors();
-                if ($errors['warning_count'] === 0 && $errors['error_count'] === 0) {
+                if (is_array($errors) && $errors['warning_count'] === 0 && $errors['error_count'] === 0) {
                     $dia = (int)$fecha_obj->format('d');
                     $mes = (int)$fecha_obj->format('m');
                     $anio = (int)$fecha_obj->format('Y');
 
-                    // Reaplicar lógica flexible de interpretación
                     if ($mes_actual == $mes) {
-                        // asumimos que está bien
                     } elseif ($mes_actual == $dia) {
-                        // Intercambiar día y mes
                         $tmp = $mes;
                         $mes = $dia;
                         $dia = $tmp;
@@ -700,12 +699,9 @@ function procesarFechaTurno($fecha_str, $index, &$errores) {
                         if (!checkdate($mes, $dia, $anio)) {
                             throw new Exception("Fecha ambigua corregida inválida");
                         }
-
                         $fecha_obj = new DateTime(sprintf('%04d-%02d-%02d', $anio, $mes, $dia));
                     } else {
-                        // Si ninguno coincide, mantener como estaba pero advertir
-                        // Puedes lanzar error si quieres
-                        // throw new Exception("Fecha ambigua: día y mes no coinciden con el mes actual");
+                        throw new Exception("Fecha ambigua: día y mes no coinciden con el mes actual");
                     }
 
                     if ($fecha_obj->format('Y') != $anio_actual) {
