@@ -103,37 +103,51 @@ if(isset($_POST['newColab'])){
 //actualizar
 if(isset($_POST['btnUpdt'])){
     $ids = $_POST['id'];
+    $ruts = $_POST['rut'];
     $names = $_POST['name'];
-    $ciudades = $_POST['ciudad'];
-    $calles = $_POST['calle'];
-    $comunas = $_POST['comuna'];
-    $supervisores = $_POST['supervisor'];
-    $depts = $_POST['depto'];
+    $fnames = $_POST['fname'];
+    $mnames = $_POST['mname'];
+    $rsocials = $_POST['rsocial'];
+    $nacionality = $_POST['nacionality'];
+    $entry_dates = $_POST['entry_date'];
+    $phones = $_POST['phone'];
+    $emails = $_POST['email'];
+    $ctypes = $_POST['ctype'];
+    $deptos = $_POST['depto'];
     $estados = $_POST['estado'];
-
-
+    
     foreach ($ids as $index => $id) {
-        $nombre = $names[$index];
-        $ciudad = $ciudades[$index];
-        $calle = $calles[$index];
-        $comuna = $comunas[$index];
-        $supervisor = $supervisores[$index];
-        $dept = $depts[$index];
+        $rut = $ruts[$index];
+        $name = $names[$index];
+        $fnames = $fnames[$index];
+        $mnames =  $mnames[$index];
+        $rsocial = $rsocial[$index];
+        $nct = $nacionality[$index];
+        $entry_date = $entry_dates[$index];
+        $phone = $phones[$index];
+        $email = $emails[$index];
+        $ctype = $ctypes[$index];
+        $depto = $deptos[$index];
         $estado = $estados[$index];
-        $query = "UPDATE sucursales 
-                    SET nombre = ?,
-                        direccion_calle = ?,
-                        comuna = ?, 
-                        ciudad_id = ?,
-                        departamento_id = ?,
-                        supervisor_id = ?, 
-                        estado = ?
+        $query = "UPDATE colaboradores 
+                    SET rut = ?, 
+                        name = ?, 
+                        fname = ?, 
+                        mname = ?, 
+                        rsocial = ?, 
+                        nacionality = ?, 
+                        entry_date = ?, 
+                        phone = ?, 
+                        email = ?, 
+                        contract_type = ?, 
+                        facility = ?, 
+                        vigente = ?
                     WHERE id = ?";
         $stmt = $con->prepare($query);
-        $stmt->bind_param("sssiiisi", $nombre,$calle, $comuna, $ciudad, $dept, $supervisor,$estado, $id);
+        $stmt->bind_param("sssssssissisi",$rut, $name, $fname, $mname, $rsocial, $nct, $entry_date, $phone, $email, $ctype, $depto, $estado, $id);
         $stmt->execute();
     }
-    echo "<script>alert('sucursales actualizados correctamente.'); location.href='instalaciones.php';</script>";
+    echo "<script>alert('colaboradores actualizados correctamente.'); location.href='instalaciones.php';</script>";
 
 }
 //eliminar
