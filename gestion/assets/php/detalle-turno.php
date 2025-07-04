@@ -82,7 +82,12 @@ if(isset($_POST['approved'])){
     $stmt = $con->prepare($query);
     $stmt->bind_param("si", $estado, $id);
     $stmt->execute();
-    echo "<script>alert('Turno Aprobado'); location.href='detalle-turno.php?id=$id';</script>";
+    $_SESSION['aprobarTurno'] = [
+        'title' => 'Éxito',
+        'html' => 'Turno aprobado correctamente',
+        'icon' => 'success',
+        'confirmButtonText' => 'Aceptar'
+    ];
 }
 //aprobar pago del turno
 if(isset($_POST['pago'])){
@@ -94,7 +99,12 @@ if(isset($_POST['pago'])){
     $stmt = $con->prepare($query);
     $stmt->bind_param("si", $estado, $id);
     $stmt->execute();
-    echo "<script>alert('Turno Aprobado'); location.href='detalle-turno.php?id=$id';</script>";
+    $_SESSION['aprobarTurno'] = [
+        'title' => 'Éxito',
+        'html' => 'Pago aprobado correctamente',
+        'icon' => 'success',
+        'confirmButtonText' => 'Aceptar'
+    ];
 }
 
 //rechazar turno
@@ -109,7 +119,13 @@ if(isset($_POST['denTurno'])){
     $stmt = $con->prepare($query);
     $stmt->bind_param("ssi", $estado, $motivo, $id);
     $stmt->execute();
-    echo "<script>alert('Turno Rechazado'); location.href='detalle-turno.php?id=$id';</script>";
+
+    $_SESSION['rechazoTurno'] = [
+        'title' => 'Éxito',
+        'html' => 'Turno rechazado correctamente',
+        'icon' => 'success',
+        'confirmButtonText' => 'Aceptar'
+    ];
 }
 
 //justificacion del turno
@@ -179,7 +195,7 @@ if(isset($_POST['guardar_cambios'])) {
                     $params[] = $nuevo_valor;
                     $types .= 's';
                     $cambios[$dbField] = [
-                        'antes' => $formField === 'mt' ? '$'.number_format($valor_actual, 0, '', '.') : $valor_actual ,
+                        'antes' => $valor_actual,
                         'despues' => $dbField === 'monto' ? '$'.number_format($nuevo_valor, 0, '', '.') : $nuevo_valor
                     ];
                 }
@@ -280,18 +296,35 @@ if(isset($_POST['guardar_cambios'])) {
             }
             
             $con->commit();
-            $_SESSION['exito'] = 'Cambios guardados correctamente';
+            $_SESSION['swal'] = [
+                'title' => 'Éxito',
+                'html' => 'Turno justificado correctamente',
+                'icon' => 'success',
+                'confirmButtonText' => 'Aceptar'
+            ];
+            echo '<script>window.location.href = "detalle-turno.php?id='.$id_turno.'";</script>';  
         } else {
             $con->rollback();
-            $_SESSION['error'] = 'No se realizaron cambios';
+            $_SESSION['swal'] = [
+                'title' => 'Advertencia',
+                'html' => 'No se realizaron cambios',
+                'icon' => 'warning',
+                'confirmButtonText' => 'Aceptar'
+            ];
+            echo '<script>window.location.href = "detalle-turno.php?id='.$id_turno.'";</script>';   
         }
-        
-    } catch (Exception $e) {
-        $con->rollback();
-        $_SESSION['error'] = 'Error: ' . $e->getMessage();
-    }
+        exit;
     
-    header("Location: detalle-turno.php?id=$id_turno");
-    exit;
+    } catch (Exception $e) {
+       $con->rollback();
+        $_SESSION['swal'] = [
+            'title' => 'Error',
+            'html' => 'Error: ' . $e->getMessage(),
+            'icon' => 'error',
+            'confirmButtonText' => 'Aceptar'
+        ];
+        echo '<script>window.location.href = "detalle-turno.php?id='.$id_turno.'";</script>';
+        exit;
+    }
 }
 ?>

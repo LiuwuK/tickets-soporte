@@ -646,7 +646,6 @@ if (isset($_POST['carga'])) {
             'details' => $detallesErrores
         ];
 
-
     } else {
         $_SESSION['alert'] = [
             'type' => 'error',

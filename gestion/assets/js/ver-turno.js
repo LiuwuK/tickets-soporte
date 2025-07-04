@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
         fechaInicio: document.getElementById('filtroFechaInicio'),
         fechaFin: document.getElementById('filtroFechaFin'),
         texto: document.getElementById('filtroTexto'),
-        supervisor: document.getElementById('filtroSupervisor')
+        supervisor: document.getElementById('filtroSupervisor'),
+        semanaActual: document.getElementById('filtroSemanaActual')
     };
 
     Object.values(filtros).forEach(filtro => {
@@ -14,6 +15,37 @@ document.addEventListener('DOMContentLoaded', function () {
     // Escuchar cambios en el campo de búsqueda
     filtros.texto.addEventListener('input', actualizarResultados);
 
+
+    filtros.semanaActual.addEventListener('change', function(e) {
+        if (e.target.checked) {
+            const weekDates = getCurrentWeekDates();
+            filtros.fechaInicio.value = weekDates.start;
+            filtros.fechaFin.value = weekDates.end;
+            filtros.fechaInicio.disabled = true;
+            filtros.fechaFin.disabled = true;
+        } else {
+            filtros.fechaInicio.value = '';
+            filtros.fechaFin.value = '';
+            filtros.fechaInicio.disabled = false;
+            filtros.fechaFin.disabled = false;
+        }
+        actualizarResultados();
+    });
+   
+    function getCurrentWeekDates() {
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+        const startDate = new Date(today);
+        startDate.setDate(today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 6);
+        
+        return {
+            start: startDate.toISOString().split('T')[0],
+            end: endDate.toISOString().split('T')[0]
+        };
+    }
+
     function actualizarResultados() {
         const estado = filtros.estado.value.toLowerCase();
         const fechaInicio = Date.parse(filtros.fechaInicio.value) || null;
@@ -21,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const texto = filtros.texto.value.toLowerCase();
         const supervisor = filtros.supervisor.value.toLowerCase();
 
-        console.log(supervisor)
         const resultados = turnosData.filter(item => {
             const itemFecha = Date.parse(item.fechaTurno);
 
@@ -37,8 +68,8 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
             const coincideFecha = (
-                (fechaInicio === null || itemFecha >= fechaInicio) &&
-                (fechaFin === null || itemFecha <= fechaFin)
+                (filtros.fechaInicio.value === '' || fechaInicio === null || itemFecha >= fechaInicio) &&
+                (filtros.fechaFin.value === '' || fechaFin === null || itemFecha <= fechaFin)
             );
 
             const coincideSupervisor = (
@@ -107,7 +138,6 @@ document.addEventListener('DOMContentLoaded', function () {
             contenedor.insertAdjacentHTML('beforeend', itemHTML);
         });
     }
-    // Ejecutar la función al cargar la página
     actualizarResultados();
 });
 

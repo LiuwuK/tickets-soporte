@@ -9,6 +9,7 @@ $puede_editar = (
   ($_SESSION['cargo'] == 11 && $_SESSION['id'] == $row['idAuto'] && $row['estado'] == 'rechazado') || 
   (array_intersect([6], $_SESSION['deptos']) && $row['estado'] == 'rechazado')
 );
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -28,8 +29,8 @@ $puede_editar = (
 <!-- CSS personalizados -->
 <link href="../../assets/css/sidebar.css" rel="stylesheet" type="text/css"/>
 <link href="../assets/css/historico-TD.css" rel="stylesheet" type="text/css"/>
-<!-- Toast notificaciones -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<!-- sweetalert -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 <!-- Graficos -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -233,7 +234,12 @@ $puede_editar = (
                               foreach ($cambios as $campo => $detalle) {
                                 echo "<strong>" . ucfirst(str_replace('_', ' ', $campo)) . ":</strong> ";
                                 if (is_array($detalle) && $campo !== 'datos_bancarios') {
-                                  echo "De '{$detalle['antes']}' a '{$detalle['despues']}'<br>";
+                                  if( $campo === 'monto'){
+                                    $antes_formateado = '$' . number_format($detalle['antes'], 0, ',', '.');
+                                    echo "De '{$antes_formateado}' a '{$detalle['despues']}'<br>";  
+                                  }else{
+                                    echo "De '{$detalle['antes']}' a '{$detalle['despues']}'<br>";
+                                  }
                                 } else if ($campo === 'datos_bancarios'){
                                   echo '<ul class="list-unstyled">';
                                     foreach (['rut_cta', 'digito_verificador', 'numero_cuenta'] as $subcampo) {
@@ -321,6 +327,53 @@ $puede_editar = (
       </div>
   </div>
 </div>
+<!-- sweetalerts -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<?php if (isset($_SESSION['rechazoTurno'])): ?>
+<script>
+  Swal.fire({
+    title: '<?= addslashes($_SESSION['rechazoTurno']['title']) ?>',
+    html: '<?= addslashes($_SESSION['rechazoTurno']['html']) ?>',
+    icon: '<?= $_SESSION['rechazoTurno']['icon'] ?>',
+    confirmButtonText: '<?= addslashes($_SESSION['rechazoTurno']['confirmButtonText']) ?>'
+  }).then(() => {
+    window.location.href = window.location.href; 
+  });
+</script>
+<?php unset($_SESSION['rechazoTurno']);   endif; ?>
+
+<?php if (isset($_SESSION['aprobarTurno'])): ?>
+<script>
+  Swal.fire({
+    title: '<?= addslashes($_SESSION['aprobarTurno']['title']) ?>',
+    html: '<?= addslashes($_SESSION['aprobarTurno']['html']) ?>',
+    icon: '<?= $_SESSION['aprobarTurno']['icon'] ?>',
+    confirmButtonText: '<?= addslashes($_SESSION['aprobarTurno']['confirmButtonText']) ?>'
+  }).then(() => {
+    window.location.href = window.location.href; 
+  });
+</script>
+<?php unset($_SESSION['aprobarTurno']);   endif; ?>
+
+<?php if(isset($_SESSION['swal'])): ?>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    Swal.fire({
+      title: '<?php echo $_SESSION['swal']['title']; ?>',
+      html: '<?php echo $_SESSION['swal']['html']; ?>',
+      icon: '<?php echo $_SESSION['swal']['icon']; ?>',
+      confirmButtonText: '<?php echo $_SESSION['swal']['confirmButtonText']; ?>'
+    }).then((result) => {
+      <?php if(isset($_SESSION['swal']['redirect'])): ?>
+        window.location.href = '<?php echo $_SESSION['swal']['redirect']; ?>';
+      <?php endif; ?>
+    });
+  });
+  <?php unset($_SESSION['swal']); ?>
+</script>
+<?php endif; ?>
+
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <!-- Bootstrap Bundle (con Popper.js) -->
@@ -328,23 +381,6 @@ $puede_editar = (
 <!-- Scripts propios -->
 <script src="../../assets/js/sidebar.js"></script>
 <script src="../assets/js/detalle-turno.js"></script>
-<style>
-
-input.editable, textarea.editable {
-  background-color: #fff;
-  border: 1px solid #ced4da;
-  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-}
-
-
-#justificacion-container {
-  width: 83%;
-  margin: 0 auto;
-  padding: 15px;
-  background-color: #f8f9fa;
-  border-radius: 5px;
-}
-</style>
 <?php
 if($puede_editar){
 ?>
@@ -375,6 +411,8 @@ if($puede_editar){
 }
 </script>
 <?php }; ?>
+
+
 </body>
 
 </html>

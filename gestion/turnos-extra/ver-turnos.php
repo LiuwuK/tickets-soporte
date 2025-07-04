@@ -87,6 +87,12 @@ include("../assets/php/ver-turnos.php");
                 <label for="filtroFechaInicio">Fecha Fin</label>
                 <input name="fecha_fin" type="date" class="form-control form-control-sm fil" id="filtroFechaFin">
               </div>
+              <div class="all-fill">
+                <label class="form-check-label" for="filtroSemanaActual">Semana en Gestion</label>
+                <div class="form-check form-switch mt-3">
+                  <input class="form-check-input" type="checkbox" id="filtroSemanaActual" name="semana_actual">
+                </div>
+              </div>
             </div>
             <div>
               <button type="submit" class="btn btn-excel">

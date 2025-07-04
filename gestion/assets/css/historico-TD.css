@@ -107,3 +107,30 @@ hr{
 .btn-acpt:hover{
     background-color: #5f9ea0;
 }
+
+input.editable, textarea.editable {
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+#justificacion-container {
+  width: 83%;
+  margin: 0 auto;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+}
+
+.all-fill {
+  text-align: center;
+}
+.form-check-label {
+  display: block;
+}
+.form-check-input{
+  margin: 0px;
+}
+.form-check.form-switch {
+  display: inline-block;
+  margin: 0 auto;
+}
