@@ -150,7 +150,8 @@ $query = "
         te.persona_motivo AS persona_motivo,
         CASE WHEN EXISTS (
             SELECT 1 FROM historico_turnos WHERE turno_id = te.id
-        ) THEN 'Sí' ELSE 'No' END AS tiene_historico,
+        ) OR te.estado = 'rechazado' THEN 'Sí' ELSE 'No'
+        END AS tiene_historico,
         te.motivo_rechazo AS motivoN,
         te.justificacion AS justificacion,
         te.contratado AS contratado
