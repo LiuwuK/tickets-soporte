@@ -1,6 +1,7 @@
 <?php
 //Obtener jornadas
-$query = "SELECT * FROM jornadas";
+$query = "SELECT * FROM jornadas
+          ORDER BY `jornadas`.`tipo_jornada` DESC";
 $jornadas = mysqli_query($con, $query);
 
 if (!$jornadas) {
