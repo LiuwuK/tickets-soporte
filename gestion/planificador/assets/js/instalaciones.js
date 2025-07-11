@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     const filtros = {
-        texto: document.getElementById('filtroTexto') 
+        supervisor: document.getElementById('filtroSupervisor'),
+        texto: document.getElementById('filtroTexto'),
+        cc: document.getElementById('filtroCentro')
     };
 
     Object.values(filtros).forEach(filtro => {
@@ -11,8 +13,9 @@ document.addEventListener('DOMContentLoaded', function () {
     filtros.texto.addEventListener('input', actualizarResultados);
 
     function actualizarResultados() {
-        //const estado = filtros.estado.value.toLowerCase();
         const texto = filtros.texto.value.toLowerCase();
+        const supervisor = filtros.supervisor.value;
+        const cc = filtros.cc.value;
 
         const resultados = sucursalData.filter(item => {
 
@@ -26,16 +29,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 item.cost_center.toLowerCase().includes(texto)
             );
 
-         
-
-            /* filtros de tipo y estado
-            const coincideTipoYEstado = (
-                (tipo === '' || item.tipo.toLowerCase() === tipo) &&
-                (estado === '' || item.estado.toLowerCase() === estado)
+            const coincideSupervisor = (
+                (supervisor === '' || item.supId === supervisor)
             );
-            */
+
+            const coincideCC = (
+                (cc === '' || item.cc === cc)
+            );
+         
             // Aplicar todos los filtros
-            return coincideTexto ;
+            return coincideTexto && coincideSupervisor && coincideCC ;
         });
 
         mostrarResultados(resultados);

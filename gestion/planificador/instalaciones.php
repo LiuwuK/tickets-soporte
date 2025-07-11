@@ -53,6 +53,40 @@ check_login();
                 <label for="filtroTexto">Buscar</label>
                 <input type="text" id="filtroTexto" name="texto" class="form-control form-control-sm fil" placeholder="Buscar por nombre, tipo, etc.">
               </div>
+              <div class="all-fil">  
+                <label for="filtroCentro" >Centro de costos</label>
+                <select id="filtroCentro" name="centro" class="form-select form-select-sm">
+                  <option value="">Todos los Centros</option>
+                  <?php
+                    if ($result_dep->num_rows > 0) {
+                      while ($cc = $result_dep->fetch_assoc()) {
+                          echo '<option value="'.$cc['id'].'">' 
+                            . htmlspecialchars($cc['nombre_departamento'], ENT_QUOTES) . '</option>';
+                      }
+                    } else {
+                      echo '<option value="">No hay supervisores</option>';
+                    }
+                    $stmt_d->close();
+                  ?>
+                </select>
+              </div>
+              <div class="all-fil">  
+                <label for="filtroSupervisor" >Supervisor</label>
+                <select id="filtroSupervisor" name="supervisor" class="form-select form-select-sm">
+                  <option value="">Todos los supervisores</option>
+                  <?php
+                    if ($result_sup->num_rows > 0) {
+                      while ($supervisor = $result_sup->fetch_assoc()) {
+                          echo '<option value="'.$supervisor['id'].'">' 
+                            . htmlspecialchars($supervisor['nombre_supervisor'], ENT_QUOTES) . '</option>';
+                      }
+                    } else {
+                      echo '<option value="">No hay supervisores</option>';
+                    }
+                    $stmt_s->close();
+                  ?>
+                </select>
+              </div>
             </div>
           </div>
       
