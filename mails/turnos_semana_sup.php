@@ -103,11 +103,11 @@ $supervisores = $con->query($querySupervisores)->fetch_all(MYSQLI_ASSOC);
             te.justificacion AS justificacion,
             te.contratado AS contratado
         FROM turnos_extra te
-        JOIN sucursales su ON te.sucursal_id = su.id
-        JOIN datos_pago dp ON te.datos_bancarios_id = dp.id
-        JOIN bancos bc ON dp.banco = bc.id
-        JOIN motivos_gestion mg ON te.motivo_turno_id = mg.id
-        JOIN `user` us ON te.autorizado_por = us.id
+        LEFT JOIN sucursales su ON te.sucursal_id = su.id
+        LEFT JOIN datos_pago dp ON te.datos_bancarios_id = dp.id
+        LEFT JOIN bancos bc ON dp.banco = bc.id
+        LEFT JOIN motivos_gestion mg ON te.motivo_turno_id = mg.id
+        LEFT JOIN `user` us ON te.autorizado_por = us.id
         WHERE te.fecha_turno BETWEEN 
             DATE_SUB(DATE(CURDATE()), INTERVAL (DAYOFWEEK(CURDATE()) - 1 + 7) DAY) 
             AND DATE_SUB(DATE(CURDATE()), INTERVAL (DAYOFWEEK(CURDATE())) DAY)     

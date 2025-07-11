@@ -82,9 +82,11 @@ if (isset($_SESSION['error_message'])) {
               </p>
               <p>
                 <strong>Puestos: </strong>
+                <?php echo $row['puestos']; ?>
               </p>
               <p>
                 <strong>Dotacion Optima: </strong>
+                <?php echo $row['dotacion_optima']; ?>
               </p>
               <p>
                 <strong>Dotacion Real: </strong>
@@ -108,7 +110,7 @@ if (isset($_SESSION['error_message'])) {
         </div>
         <!-- TURNOS -->
         <div class="main-turnos col-md-11 d-flex justify-content-between">          
-          <div class="d-container col-md-6 info-turnos">
+          <div class="d-container col-md-6 info-turnos table-responsive-custom">
             <form id="formTurnos" action="assets/php/guardar-turnos.php" method="post" >
               <table class="table table-hover" id="tabla-turnos">
                   <thead>
@@ -223,51 +225,51 @@ if (isset($_SESSION['error_message'])) {
           </div>
           <!-- COLABORADORES -->
           <div class="col-md-6">
-           <div class="d-container h-auto tt">
-            <table class="table table-hover" id="tabla-colab">
-              <thead>
-                <tr>
-                  <th scope="col" class="align-middle text-center">Rol</th>        
-                  <th scope="col" class="align-middle text-center w-20">Rut</th>
-                  <th scope="col" class="align-middle text-center">Nombre</th>
-                  <th scope="col" class="align-middle text-center">Telefono</th>
-                  <th scope="col" class="align-middle text-center">Fecha Inicio Contrato</th>
-                  <th scope="col" class="align-middle text-center">Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="cuerpo-colab">
-                <!-- Mostrar colaboradores Asociados -->
-                <?php 
-                  if (!empty($colaboradorAsociado)) {
-                    foreach ($colaboradorAsociado as $index => $colab): ?>
-                    <tr data-id="<?= $colab['id'] ?>" data-nombre="<?= $colab['name'].' '.$colab['fname'].' '.$colab['mname'] ?>" data-sucursal-id="<?= $_GET['id'] ?>">
-                      <td class="align-middle text-center">
-                        <?= $colab['codigos_turnos'] ?>
-                      </td>
-                      <td class="align-middle text-center">
-                        <?= $colab['rut'] ?>
-                      </td>
-                      <td class="align-middle text-center">
-                        <?= $colab['name'].' '.$colab['fname'].' '.$colab['mname'] ?>
-                      </td>
-                      <td class="align-middle text-center">
-                        <?= $colab['phone'] ? $colab['phone'] : 'Sin definir'; ?>
-                      </td>
-                      <td class="align-middle text-center">
-                        <?= $colab['entry_date'] ?>
-                      </td>
-                      <td class="align-middle text-center">
-                        <button type="button" class="btn btn-updt btn-rol">Asignar rol</button>
-                      </td>
-                    </tr>
-                    <?php 
-                    endforeach; 
-                  }
-                ?>
-              </tbody>
-            </table>
+            <div class="d-container h-auto tt table-responsive-custom">
+              <table class="table table-hover" id="tabla-colab">
+                <thead>
+                  <tr>
+                    <th scope="col" class="align-middle text-center">Rol</th>        
+                    <th scope="col" class="align-middle text-center w-20">Rut</th>
+                    <th scope="col" class="align-middle text-center">Nombre</th>
+                    <th scope="col" class="align-middle text-center">Telefono</th>
+                    <th scope="col" class="align-middle text-center">Fecha Inicio Contrato</th>
+                    <th scope="col" class="align-middle text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="cuerpo-colab">
+                  <!-- Mostrar colaboradores Asociados -->
+                  <?php 
+                    if (!empty($colaboradorAsociado)) {
+                      foreach ($colaboradorAsociado as $index => $colab): ?>
+                      <tr data-id="<?= $colab['id'] ?>" data-nombre="<?= $colab['name'].' '.$colab['fname'].' '.$colab['mname'] ?>" data-sucursal-id="<?= $_GET['id'] ?>">
+                        <td class="align-middle text-center">
+                          <?= $colab['codigos_turnos'] ?>
+                        </td>
+                        <td class="align-middle text-center">
+                          <?= $colab['rut'] ?>
+                        </td>
+                        <td class="align-middle text-center">
+                          <?= $colab['name'].' '.$colab['fname'].' '.$colab['mname'] ?>
+                        </td>
+                        <td class="align-middle text-center">
+                          <?= $colab['phone'] ? $colab['phone'] : 'Sin definir'; ?>
+                        </td>
+                        <td class="align-middle text-center">
+                          <?= $colab['entry_date'] ?>
+                        </td>
+                        <td class="align-middle text-center">
+                          <button type="button" class="btn btn-updt btn-rol">Asignar rol</button>
+                        </td>
+                      </tr>
+                      <?php 
+                      endforeach; 
+                    }
+                  ?>
+                </tbody>
+              </table>
+            </div>
           </div>
-         </div>
         </div>
         
         <!-- Calendario -->

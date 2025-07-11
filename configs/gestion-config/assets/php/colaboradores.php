@@ -13,7 +13,7 @@ function calcularAntiguedad($fechaIngreso) {
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 //página actual
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$perPage = 20; // Número de registros por página
+$perPage = 15; // Número de registros por página
 $offset = ($page - 1) * $perPage;
 
 $query = "SELECT * FROM colaboradores";

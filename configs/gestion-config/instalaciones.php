@@ -260,6 +260,7 @@ check_login();
               Excel Ejemplo
             </a>
             <button class="btn btn-updt" name="carga" type="submit">Cargar Datos</button>
+            <button class="btn btn-updt" name="cargaDotacion" type="submit">Cargar Dotacion</button>
           </div>
         </div>
       </form> 

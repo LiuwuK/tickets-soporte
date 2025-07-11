@@ -63,3 +63,9 @@
     color: #fff;
     background-color: #dc3545;
 }
+.table-responsive-custom {
+  overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px;
+  
+}

@@ -121,13 +121,10 @@ check_login();
                                     </td>
                                     <td>
                                         <select name="depto[]" id="depto" class="form-select form-select-sm" onchange="enableUpdateButton()" required>
-                                            <?php
+                                            <?php     
                                             foreach ($su as $row) {
-                                                if ($row['id'] == $row_s['departamento_id']) {
-                                                    echo "<option value=".$row['id']." selected>".$row['nombre'] . "</option>";
-                                                } else {
-                                                    echo "<option value=".$row['id'].">".$row['nombre'] . "</option>";
-                                                }
+                                              $selected = ($row['id'] == $row_s['facility']) ? 'selected' : '';
+                                              echo "<option value=\"{$row['id']}\" $selected>{$row['nombre']}</option>";
                                             };
                                             ?>
                                         </select>

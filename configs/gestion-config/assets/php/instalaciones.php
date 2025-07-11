@@ -320,4 +320,121 @@ if(isset($_POST['carga'])){
         </script>";
     }
 }
+
+
+//Cargar Dotacion
+if(isset($_POST['cargaDotacion'])){
+     if ($_FILES['file']['error'] == UPLOAD_ERR_OK) {
+        $filePath = $_FILES['file']['tmp_name'];
+        $spreadsheet = IOFactory::load($filePath);
+        $worksheet = $spreadsheet->getActiveSheet();
+        $data = $worksheet->toArray();
+        
+        //Consulta ( UPDATE)
+        $query_update = "UPDATE sucursales SET 
+                        puestos = ?, 
+                        dotacion_optima = ?
+                        WHERE nombre = ?";
+        
+        $stmt_update = $con->prepare($query_update);
+        
+        $successCount = 0;
+        $updateCount = 0;
+        $errorCount = 0;
+        $errorsDetails = []; // Para almacenar detalles de errores
+        
+        foreach ($data as $index => $row) {
+            if ($index == 0) continue; // Saltar encabezados
+            
+            // Normalizar nombre
+            $nombre = preg_replace('/\s+/', ' ', trim($row[0]));
+            $nombre = str_replace([' .', '. '], '.', $nombre);
+            $puestos = $row[5];
+            $dotacionOpt = $row[6];
+            
+            // Verificar si la sucursal ya existe con comparación flexible
+            $query_check = "SELECT id, nombre FROM sucursales WHERE 
+                           REPLACE(REPLACE(nombre, ' ', ''), '.', '') = 
+                           REPLACE(REPLACE(?, ' ', ''), '.', '')";
+            
+            $stmt_check = $con->prepare($query_check);
+            $originalForComparison = str_replace([' ', '.'], '', $nombre);
+            $stmt_check->bind_param("s", $originalForComparison);
+            $stmt_check->execute();
+            $stmt_check->store_result();
+            $stmt_check->bind_result($existing_id, $existing_name);
+            $stmt_check->fetch();
+            
+            if ($stmt_check->num_rows > 0) {
+                if ($existing_name !== $nombre) {
+                    $errorsDetails[] = "Nombre normalizado: '$nombre' difiere del existente: '$existing_name'";
+                    $nombre = $existing_name; 
+                }
+                
+                // Proceder con el update usando el nombre exacto
+                $stmt_update->bind_param("iis", $puestos, $dotacionOpt, $existing_name);
+            
+                if ($stmt_update->execute()) {
+                    $updateCount++;
+                } else {
+                    $errorCount++;
+                    $errorsDetails[] = "Error actualizando $nombre: " . $stmt_update->error;
+                }
+            } else {
+                // Sucursal no existe - Saltar
+                $errorCount++;
+                $errorsDetails[] = "Error Actualizando la instalacion $nombre: " . $stmt_insert->error;
+                continue;
+            }
+            $stmt_check->close();
+        }
+        
+        // Preparar el mensaje para SweetAlert
+        $swalTitle = "Proceso completado";
+        $swalHtml = "<div style='text-align: left;'>";
+        $swalHtml .= "<p><b>Sucursales actualizadas:</b> $updateCount</p>";
+        $swalHtml .= "<p><b>Errores:</b> $errorCount</p>";
+        
+        if ($errorCount > 0) {
+            $swalHtml .= "<details><summary>Detalles de errores</summary><ul>";
+            foreach ($errorsDetails as $error) {
+                $swalHtml .= "<li>$error</li>";
+            }
+            $swalHtml .= "</ul></details>";
+        }
+        $swalHtml .= "</div>";
+        
+        // Determinar el tipo de alerta según resultados
+        $swalType = ($errorCount > 0) ? 'warning' : 'success';
+        
+        // JavaScript para mostrar SweetAlert
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: '$swalTitle',
+                    html: `$swalHtml`,
+                    icon: '$swalType',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    window.location.href = 'instalaciones.php';
+                });
+            });
+        </script>";
+        
+    } else {
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Error al subir el archivo',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    window.location.href = 'instalaciones.php';
+                });
+            });
+        </script>";
+    }
+}
 ?>

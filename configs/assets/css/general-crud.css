@@ -65,3 +65,16 @@ span{
     color: white;
     border-color: #33435e;
 }
+.body-crud {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.table td input,
+.table td select {
+  min-width: 200px; 
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
