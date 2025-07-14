@@ -364,17 +364,20 @@ if (isset($_POST['carga'])) {
             if ($numCta !== null) {
                 $numCta = preg_replace('/[^0-9]/', '', $numCta);
             }
-            // columnas vacías, saltar la fila
-            if (is_empty($banco) || is_empty($rutNum) || is_empty($dv) || is_empty($numCta)) {
-                continue;
-            }
-            $totalRegistros++;
             //datos instalacion y turno
             $instalacion = $row[2] ?? null;
-            $fecha_turno = $row[5]; 
+            $fecha_turno = $row[5];
             //Obtener hora inicio y termino 
             $hora_inicio = $row[6];
             $hora_termino = $row[7];
+
+            // columnas vacías, saltar la fila
+            if (is_empty($banco) || is_empty($rutNum) || is_empty($dv) || is_empty($numCta) || is_empty($fecha_turno) || is_empty($hora_inicio) || is_empty($hora_termino) ) {
+                continue;
+            }
+            $totalRegistros++;
+ 
+
 
             $hora_inicio_obj = DateTime::createFromFormat('H:i', $hora_inicio);
             $hora_termino_obj = DateTime::createFromFormat('H:i', $hora_termino);
@@ -385,23 +388,22 @@ if (isset($_POST['carga'])) {
             
             $fechaTurnoFormateada = procesarFechaTurno($fecha_turno, $index, $errores);
     
-            if ($fechaTurnoFormateada === false) {
+            if (empty($fechaTurnoFormateada)) {
                 $nErrores++;
-                continue; 
+                continue;
             }
-
-            if($_SESSION['id'] != 38){
+            if($_SESSION['id'] != 34){
                 // validar fecha turno (SOLO DIA ACTUAL HASTA LAS 12:00 DEL DIA SIGUIENTE)
                 $horaActual = (int)date('H');
                 $horaMinuto = date('H:i');
                 $fechaHoy = date('Y-m-d');
                 $fechaAyer = date('Y-m-d', strtotime('-1 day'));
-                /* 
-                echo $fechaTurnoFormateada;
+                
+                echo 'FECHATURNOFORMATEADA'.$fechaTurnoFormateada;
                 echo 'hora'.$horaActual;
                 echo 'fecha hoy'.$fechaHoy;
                 echo 'fecha ayet'.$fechaAyer;
-                */
+
                 if ($horaActual < 12) {
                     if ($fechaTurnoFormateada != $fechaAyer && $fechaTurnoFormateada != $fechaHoy) {
                         $fechasInvalidas = $fechaTurnoFormateada;
@@ -638,11 +640,11 @@ if (isset($_POST['carga'])) {
 
 // Función para limpiar y validar fechas
 function procesarFechaTurno($fecha_str, $index, &$errores) {
-    $mes_actual = date('n'); // Mes actual (1-12)
-    $anio_actual = date('Y'); // Año actual
+    $fecha_str = preg_replace('/[^\x20-\x7E]/u', '', $fecha_str);
+    $fecha_str = str_replace(['　', '⁄', '／', '\\', '|'], '/', $fecha_str);
+    $fecha_str = trim($fecha_str);
 
     try {
-        $fecha_str = trim($fecha_str);
         if (empty($fecha_str)) {
             throw new Exception("La fecha está vacía");
         }
@@ -650,93 +652,35 @@ function procesarFechaTurno($fecha_str, $index, &$errores) {
         // Patrón japonés: YYYY年MM月DD日
         if (preg_match('/(\d{4})年(\d{1,2})月(\d{1,2})日/', $fecha_str, $matches)) {
             $anio = (int)$matches[1];
-            $a = (int)$matches[2];
-            $b = (int)$matches[3];
-
-            if ($mes_actual == $a) {
-                $mes = $a;
-                $dia = $b;
-            } elseif ($mes_actual == $b) {
-                $mes = $b;
-                $dia = $a;
-            } else {
-                // Por defecto asumir a = mes, b = día
-                $mes = $a;
-                $dia = $b;
-            }
+            $mes = (int)$matches[2];
+            $dia = (int)$matches[3];
 
             if (!checkdate($mes, $dia, $anio)) {
                 throw new Exception("Fecha inválida en formato especial");
             }
 
-            $fecha_obj = new DateTime(sprintf('%04d-%02d-%02d', $anio, $mes, $dia));
-
-            if ($fecha_obj->format('Y') != $anio_actual) {
-                throw new Exception("El año no coincide con el actual");
-            }
-
-            return $fecha_obj->format('Y-m-d');
+            return sprintf('%04d-%02d-%02d', $anio, $mes, $dia);
         }
 
-        // Formatos ambiguos numéricos
-        $formatos = ['d/m/Y', 'm/d/Y', 'd-m-Y', 'm-d-Y', 'd.m.Y', 'm.d.Y', 'Y-m-d'];
-
-        foreach ($formatos as $formato) {
-            $fecha_obj = DateTime::createFromFormat($formato, $fecha_str);
-            if ($fecha_obj !== false) {
-                $errors = DateTime::getLastErrors();
-                if (is_array($errors) && $errors['warning_count'] === 0 && $errors['error_count'] === 0) {
-                    $dia = (int)$fecha_obj->format('d');
-                    $mes = (int)$fecha_obj->format('m');
-                    $anio = (int)$fecha_obj->format('Y');
-
-                    if ($mes_actual == $mes) {
-                    } elseif ($mes_actual == $dia) {
-                        $tmp = $mes;
-                        $mes = $dia;
-                        $dia = $tmp;
-
-                        if (!checkdate($mes, $dia, $anio)) {
-                            throw new Exception("Fecha ambigua corregida inválida");
-                        }
-                        $fecha_obj = new DateTime(sprintf('%04d-%02d-%02d', $anio, $mes, $dia));
-                    } else {
-                        throw new Exception("Fecha ambigua: día y mes no coinciden con el mes actual");
-                    }
-
-                    if ($fecha_obj->format('Y') != $anio_actual) {
-                        throw new Exception("El año no coincide con el año actual");
-                    }
-
-                    return $fecha_obj->format('Y-m-d');
-                }
+        // Intentar con formato día/mes/año
+        $fecha_obj = DateTime::createFromFormat('d/m/Y', $fecha_str);
+        if ($fecha_obj !== false) {
+            $errors = DateTime::getLastErrors();
+            if (empty($errors['warnings']) && empty($errors['errors'])) {
+                return $fecha_obj->format('Y-m-d');
             }
         }
 
-        // Parseo flexible
-        $fecha_obj = new DateTime($fecha_str);
-        $dia = (int)$fecha_obj->format('d');
-        $mes = (int)$fecha_obj->format('m');
-        $anio = (int)$fecha_obj->format('Y');
-
-        if ($mes_actual == $mes) {
-            // ok
-        } elseif ($mes_actual == $dia) {
-            $tmp = $mes;
-            $mes = $dia;
-            $dia = $tmp;
-            if (!checkdate($mes, $dia, $anio)) {
-                throw new Exception("Fecha flexible corregida inválida");
+        // Intentar con formato mes/día/año (por si acaso)
+        $fecha_obj = DateTime::createFromFormat('m/d/Y', $fecha_str);
+        if ($fecha_obj !== false) {
+            $errors = DateTime::getLastErrors();
+            if (empty($errors['warnings']) && empty($errors['errors'])) {
+                return $fecha_obj->format('Y-m-d');
             }
-            $fecha_obj = new DateTime(sprintf('%04d-%02d-%02d', $anio, $mes, $dia));
         }
 
-        if ($fecha_obj->format('Y') != $anio_actual) {
-            throw new Exception("El año no coincide con el año actual");
-        }
-
-        return $fecha_obj->format('Y-m-d');
-
+        throw new Exception("Formato de fecha no reconocido");
     } catch (Exception $e) {
         $errores['fechasInvalidas'][] = "Fila $index: '{$fecha_str}' - " . $e->getMessage();
         return false;

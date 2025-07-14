@@ -107,6 +107,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const spanHistorico = item.tiene_historico > 0 
             ? `<span class="label label-rechazo">Justificado</span>` 
             : '';
+            const fechaOriginal = item.fechaTurno;
+            const [anio, mes, dia] = fechaOriginal.split('-');
+            const fecha = new Date(anio, mes - 1, dia);
+            const fechaTurno = (fecha.toLocaleDateString('es-ES'));
 
             const itemHTML = `
                 <div class="h-container" onclick="window.location.href='detalle-turno.php?id=${item.id}';">
@@ -122,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                     <div class="h-body">
                         <p>Instalación: ${item.instalacion ?? 'Sin Instalación'} </p>
-                        <p>Fecha del Turno: ${item.fechaTurno}</p>
+                        <p>Fecha del Turno: ${fechaTurno}</p>
                         <p>Horas Cubiertas: ${item.horas} hrs</p>
                         <p>Motivo: ${item.motivo}</p>
                         <div class="h-footer">
