@@ -7,15 +7,16 @@ check_login();
 
 
 if (isset($_SESSION['success_message'])) {
-    echo '<script>alert("'.addslashes($_SESSION['success_message']).'");</script>';
-    unset($_SESSION['success_message']);
+  echo '<script>alert("'.addslashes($_SESSION['success_message']).'");</script>';
+  unset($_SESSION['success_message']);
 }
 
 if (isset($_SESSION['error_message'])) {
-    echo '<script>alert("'.addslashes($_SESSION['error_message']).'");</script>';
-    unset($_SESSION['error_message']);
+  echo '<script>alert("'.addslashes($_SESSION['error_message']).'");</script>';
+  unset($_SESSION['error_message']);
 }
 
+$diasSemana = ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
 ?>
 <!DOCTYPE html>
 <html>
@@ -112,6 +113,7 @@ if (isset($_SESSION['error_message'])) {
         <div class="main-turnos col-md-11 d-flex justify-content-between">          
           <div class="d-container col-md-6 info-turnos table-responsive-custom">
             <form id="formTurnos" action="assets/php/guardar-turnos.php" method="post">
+              <input type="hidden" name="sucursal_id" value="<?= $_GET['id'] ?>">
               <table class="table table-hover" id="tabla-turnos">
                 <thead>
                   <tr>
@@ -129,8 +131,6 @@ if (isset($_SESSION['error_message'])) {
                     <?php foreach ($turnosExistentes as $index => $turno): ?>
                       <tr data-turno-id="<?= $turno['id'] ?>">
                         <input type="hidden" name="turnos[<?= $index ?>][id]" value="<?= $turno['id'] ?>">
-                        <input type="hidden" name="sucursal_id" value="<?= $_GET['id'] ?>">
-                        
                         <td class="align-middle text-center">
                           <input type="text" name="turnos[<?= $index ?>][nombre]" 
                                 class="form-control" value="<?= htmlspecialchars($turno['nombre_turno']) ?>">
@@ -151,14 +151,14 @@ if (isset($_SESSION['error_message'])) {
                         
                         <td class="align-middle text-center">
                           <table class="table table-sm mb-0">
-                            <?php $diasSemana = ['lunes','martes','miércoles','jueves','viernes','sábado','domingo']; ?>
+                            <?php ?>
                               <?php foreach ($diasSemana as $dia): ?>
                                 <tr>
                                   <td class="text-nowrap align-middle"><strong><?= ucfirst($dia) ?>:</strong></td>
                                   <td>
                                     <input type="time" class="form-control"
-                                          name="turnos[<?= $index ?>][dias][<?= $dia ?>][entrada]"
-                                          value="<?= $turno['dias'][$dia]['entrada'] ?? '' ?>">
+                                      name="turnos[<?= $index ?>][dias][<?= $dia ?>][entrada]"
+                                      value="<?= $turno['dias'][$dia]['entrada'] ?? '' ?>">
                                   </td>
                                 </tr>
                               <?php endforeach; ?>
@@ -171,8 +171,8 @@ if (isset($_SESSION['error_message'])) {
                               <tr>
                                 <td>
                                   <input type="time" class="form-control" 
-                                        name="turnos[<?= $index ?>][dias][<?= $dia ?>][salida]" 
-                                        value="<?= $turno['dias'][$dia]['salida'] ?? '' ?>">
+                                    name="turnos[<?= $index ?>][dias][<?= $dia ?>][salida]" 
+                                    value="<?= $turno['dias'][$dia]['salida'] ?? '' ?>">
                                 </td>
                               </tr>
                             <?php endforeach; ?>
@@ -211,6 +211,7 @@ if (isset($_SESSION['error_message'])) {
                       <table class="table table-sm mb-0">
                         <?php foreach ($diasSemana as $dia): ?>
                           <tr>
+                            <td class="text-nowrap align-middle"><strong><?= ucfirst($dia) ?>:</strong></td>
                             <td>
                               <input type="time" class="form-control" 
                                     name="nuevos_turnos[][dias][<?= $dia ?>][entrada]">
