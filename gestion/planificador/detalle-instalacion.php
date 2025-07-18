@@ -46,12 +46,6 @@ $diasSemana = ['lunes','martes','miércoles','jueves','viernes','sábado','domin
 <!-- Graficos -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<style>
-  table td, table th {
-  white-space: normal;
-  word-break: break-word;
-}
-</style>
 <body class="test" >
   <!-- Sidebar -->
   <div class="page-container ">
@@ -119,132 +113,134 @@ $diasSemana = ['lunes','martes','miércoles','jueves','viernes','sábado','domin
           <div class="d-container col-md-6 info-turnos table-responsive-custom">
             <form id="formTurnos" action="assets/php/guardar-turnos.php" method="post">
               <input type="hidden" name="sucursal_id" value="<?= $_GET['id'] ?>">
-              <table class="table table-hover" id="tabla-turnos">
-                <thead>
-                  <tr>
-                    <th scope="col" class="align-middle text-center">Turno</th>
-                    <th scope="col" class="align-middle text-center">Tipo Jornada</th>
-                    <th scope="col" class="align-middle text-center">Hora Entrada</th>
-                    <th scope="col" class="align-middle text-center">Hora Salida</th>
-                    <th scope="col" class="align-middle text-center">Código</th>
-                    <th scope="col" class="align-middle text-center">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody id="cuerpo-tabla">
-                  <!-- Mostrar turnos existentes -->
-                  <?php if (!empty($turnosExistentes)): ?>
-                    <?php foreach ($turnosExistentes as $index => $turno): ?>
-                      <tr data-turno-id="<?= $turno['id'] ?>">
-                        <input type="hidden" name="turnos[<?= $index ?>][id]" value="<?= $turno['id'] ?>">
-                        <td class="align-middle text-center">
-                          <input type="text" name="turnos[<?= $index ?>][nombre]" 
-                                class="form-control" value="<?= htmlspecialchars($turno['nombre_turno']) ?>">
-                        </td>
-                        
-                        <td class="align-middle text-center">
-                          <select name="turnos[<?= $index ?>][jornada_id]" class="form-control">
-                            <option value="">Seleccione una jornada</option>
-                            <?php mysqli_data_seek($jornadas, 0); ?>
-                            <?php while ($row = mysqli_fetch_assoc($jornadas)): ?>
-                              <option value="<?= htmlspecialchars($row['id']) ?>" 
-                                <?= $row['id'] == $turno['jornada_id'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($row['tipo_jornada']) ?>
-                              </option>
-                            <?php endwhile; ?>
-                          </select>
-                        </td>
-                        
-                        <td class="align-middle text-center">
-                          <table class="table table-sm mb-0">
-                            <?php ?>
+              <div class="table-responsive">
+                <table class="table table-hover" id="tabla-turnos">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="align-middle text-center">Turno</th>
+                      <th scope="col" class="align-middle text-center">Tipo Jornada</th>
+                      <th scope="col" class="align-middle text-center">Hora Entrada</th>
+                      <th scope="col" class="align-middle text-center">Hora Salida</th>
+                      <th scope="col" class="align-middle text-center">Código</th>
+                      <th scope="col" class="align-middle text-center">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cuerpo-tabla">
+                    <!-- Mostrar turnos existentes -->
+                    <?php if (!empty($turnosExistentes)): ?>
+                      <?php foreach ($turnosExistentes as $index => $turno): ?>
+                        <tr data-turno-id="<?= $turno['id'] ?>">
+                          <input type="hidden" name="turnos[<?= $index ?>][id]" value="<?= $turno['id'] ?>">
+                          <td class="align-middle text-center">
+                            <input type="text" name="turnos[<?= $index ?>][nombre]" 
+                                  class="form-control" style="min-width: 170px;" value="<?= htmlspecialchars($turno['nombre_turno']) ?>">
+                          </td>
+                          
+                          <td class="align-middle text-center">
+                            <select style="min-width: 70px;" name="turnos[<?= $index ?>][jornada_id]" class="form-control">
+                              <option value="">Seleccione una jornada</option>
+                              <?php mysqli_data_seek($jornadas, 0); ?>
+                              <?php while ($row = mysqli_fetch_assoc($jornadas)): ?>
+                                <option value="<?= htmlspecialchars($row['id']) ?>" 
+                                  <?= $row['id'] == $turno['jornada_id'] ? 'selected' : '' ?>>
+                                  <?= htmlspecialchars($row['tipo_jornada']) ?>
+                                </option>
+                              <?php endwhile; ?>
+                            </select>
+                          </td>
+                          
+                          <td class="align-middle text-center">
+                            <table class="table table-sm mb-0">
+                              <?php ?>
+                                <?php foreach ($diasSemana as $dia): ?>
+                                  <tr>
+                                    <td class="text-nowrap align-middle"><strong><?= ucfirst($dia) ?>:</strong></td>
+                                    <td>
+                                      <input type="time" class="form-control"
+                                        name="turnos[<?= $index ?>][dias][<?= $dia ?>][entrada]"
+                                        value="<?= $turno['dias'][$dia]['entrada'] ?? '' ?>">
+                                    </td>
+                                  </tr>
+                                <?php endforeach; ?>
+                            </table>
+                          </td>
+                          
+                          <td class="align-middle text-center">
+                            <table class="table table-sm mb-0">
                               <?php foreach ($diasSemana as $dia): ?>
                                 <tr>
-                                  <td class="text-nowrap align-middle"><strong><?= ucfirst($dia) ?>:</strong></td>
                                   <td>
-                                    <input type="time" class="form-control"
-                                      name="turnos[<?= $index ?>][dias][<?= $dia ?>][entrada]"
-                                      value="<?= $turno['dias'][$dia]['entrada'] ?? '' ?>">
+                                    <input type="time" class="form-control" 
+                                      name="turnos[<?= $index ?>][dias][<?= $dia ?>][salida]" 
+                                      value="<?= $turno['dias'][$dia]['salida'] ?? '' ?>">
                                   </td>
                                 </tr>
                               <?php endforeach; ?>
-                          </table>
-                        </td>
-                        
-                        <td class="align-middle text-center">
-                          <table class="table table-sm mb-0">
-                            <?php foreach ($diasSemana as $dia): ?>
-                              <tr>
-                                <td>
-                                  <input type="time" class="form-control" 
-                                    name="turnos[<?= $index ?>][dias][<?= $dia ?>][salida]" 
-                                    value="<?= $turno['dias'][$dia]['salida'] ?? '' ?>">
-                                </td>
-                              </tr>
-                            <?php endforeach; ?>
-                          </table>
-                        </td>
-                        
-                        <td class="align-middle text-center">
-                          <span class="form-control-plaintext"><?= htmlspecialchars($turno['codigo']) ?></span>
-                          <input type="hidden" name="turnos[<?= $index ?>][codigo]" value="<?= htmlspecialchars($turno['codigo']) ?>">
-                        </td>
-                        
-                        <td class="align-middle text-center">
-                          <button type="button" class="btn btn-updt btn-dates">Asignar fecha</button>
-                          <button type="button" class="btn btn-danger" onclick="eliminarTurno(this)" 
-                            <?= count($turnosExistentes) <= 1 ? 'disabled' : '' ?>>X</button>
-                        </td>
-                      </tr>
-                    <?php endforeach; ?>
-                  <?php endif; ?>
-                  
-                  <!-- Plantilla para nuevas filas (hidden) -->
-                  <tr id="plantilla-fila" style="display: none;">
-                    <td><input type="text" name="nuevos_turnos[][nombre]" class="form-control"></td>
-                    <td>
-                      <select name="nuevos_turnos[][jornada_id]" class="form-control">
-                        <option value="">Seleccione una jornada</option>
-                        <?php mysqli_data_seek($jornadas, 0); ?>
-                        <?php while ($row = mysqli_fetch_assoc($jornadas)): ?>
-                          <option value="<?= htmlspecialchars($row['id']) ?>">
-                            <?= htmlspecialchars($row['tipo_jornada']) ?>
-                          </option>
-                        <?php endwhile; ?>
-                      </select>
-                    </td>
-                    <td>
-                      <table class="table table-sm mb-0">
-                        <?php foreach ($diasSemana as $dia): ?>
-                          <tr>
-                            <td class="text-nowrap align-middle"><strong><?= ucfirst($dia) ?>:</strong></td>
-                            <td>
-                              <input type="time" class="form-control" 
-                                    name="nuevos_turnos[][dias][<?= $dia ?>][entrada]">
-                            </td>
-                          </tr>
-                        <?php endforeach; ?>
-                      </table>
-                    </td>
-                    <td>
-                      <table class="table table-sm mb-0">
-                        <?php foreach ($diasSemana as $dia): ?>
-                          <tr>
-                            <td>
-                              <input type="time" class="form-control" 
-                                    name="nuevos_turnos[][dias][<?= $dia ?>][salida]">
-                            </td>
-                          </tr>
-                        <?php endforeach; ?>
-                      </table>
-                    </td>
-                    <td>
-                      <span class="form-control-plaintext">Nuevo</span>
-                      <input type="hidden" name="nuevos_turnos[][codigo]" value="">
-                    </td>
-                    <td><button type="button" class="btn btn-danger" onclick="eliminarTurno(this)">X</button></td>
-                  </tr>
-                </tbody>
-              </table>
+                            </table>
+                          </td>
+                          
+                          <td class="align-middle text-center">
+                            <span style="min-width: 70px;" class="form-control-plaintext"><?= htmlspecialchars($turno['codigo']) ?></span>
+                            <input type="hidden" name="turnos[<?= $index ?>][codigo]" value="<?= htmlspecialchars($turno['codigo']) ?>">
+                          </td>
+                          
+                          <td class="align-middle text-center">
+                            <button type="button" class="btn btn-updt btn-dates">Asignar fecha</button>
+                            <button type="button" class="btn btn-danger" onclick="eliminarTurno(this)" 
+                              <?= count($turnosExistentes) <= 1 ? 'disabled' : '' ?>>X</button>
+                          </td>
+                        </tr>
+                      <?php endforeach; ?>
+                    <?php endif; ?>
+                    
+                    <!-- Plantilla para nuevas filas (hidden) -->
+                    <tr id="plantilla-fila" style="display: none;">
+                      <td><input type="text" name="nuevos_turnos[][nombre]" class="form-control"></td>
+                      <td>
+                        <select name="nuevos_turnos[][jornada_id]" class="form-control">
+                          <option value="">Seleccione una jornada</option>
+                          <?php mysqli_data_seek($jornadas, 0); ?>
+                          <?php while ($row = mysqli_fetch_assoc($jornadas)): ?>
+                            <option value="<?= htmlspecialchars($row['id']) ?>">
+                              <?= htmlspecialchars($row['tipo_jornada']) ?>
+                            </option>
+                          <?php endwhile; ?>
+                        </select>
+                      </td>
+                      <td>
+                        <table class="table table-sm mb-0">
+                          <?php foreach ($diasSemana as $dia): ?>
+                            <tr>
+                              <td class="text-nowrap align-middle"><strong><?= ucfirst($dia) ?>:</strong></td>
+                              <td>
+                                <input type="time" class="form-control" 
+                                      name="nuevos_turnos[][dias][<?= $dia ?>][entrada]">
+                              </td>
+                            </tr>
+                          <?php endforeach; ?>
+                        </table>
+                      </td>
+                      <td>
+                        <table class="table table-sm mb-0">
+                          <?php foreach ($diasSemana as $dia): ?>
+                            <tr>
+                              <td>
+                                <input type="time" class="form-control" 
+                                      name="nuevos_turnos[][dias][<?= $dia ?>][salida]">
+                              </td>
+                            </tr>
+                          <?php endforeach; ?>
+                        </table>
+                      </td>
+                      <td>
+                        <span class="form-control-plaintext">Nuevo</span>
+                        <input type="hidden" name="nuevos_turnos[][codigo]" value="">
+                      </td>
+                      <td><button type="button" class="btn btn-danger" onclick="eliminarTurno(this)">X</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               
               <div class="mb-3">
                 <button type="button" class="btn btn-updt" id="btn-agregar-turno">Agregar Turno</button>
