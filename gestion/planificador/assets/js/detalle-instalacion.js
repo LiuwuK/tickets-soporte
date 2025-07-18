@@ -1,74 +1,189 @@
-//TURNOS---------------------------------------------------------------------------------------------------------------
-document.getElementById('formTurnos')?.addEventListener('submit', async function(e) {
+//TURNOS-------------------------------------------------------------------------------------------------------------
+const btnGuardar = document.querySelector('#formTurnos button[type="submit"]');
+const formTurnos = document.getElementById('formTurnos');
+
+// Bloquear botón inicialmente
+if (btnGuardar) btnGuardar.disabled = true;
+
+function habilitarGuardar() {
+  if (btnGuardar) btnGuardar.disabled = false;
+}
+formTurnos.querySelectorAll('input, select').forEach(el => {
+  el.addEventListener('input', habilitarGuardar);
+  el.addEventListener('change', habilitarGuardar);
+});
+
+document.getElementById('btn-agregar-turno')?.addEventListener('click', () => {
+  agregarTurno();
+  habilitarGuardar();
+});
+
+
+formTurnos.addEventListener('submit', async function(e) {
   e.preventDefault();
-  console.log('SUBMIT ejecutado');
+
+  document.querySelectorAll('#plantilla-fila input, #plantilla-fila select').forEach(input => input.disabled = true);
+  
   if (this.dataset.submitting === "true") return;
   this.dataset.submitting = "true";
 
   try {
+    // Validar formulario
+    if (!validarFormularioTurnos()) {
+      this.dataset.submitting = "false";
+      return;
+    }
+
+    // Recolectar datos del formulario
     const formData = new FormData(this);
+    
+    // Recolectar IDs de turnos eliminados
+    const turnosEliminados = Array.from(document.querySelectorAll('tr[data-turno-id]'))
+      .filter(tr => tr.style.display === 'none')
+      .map(tr => tr.dataset.turnoId);
+    
+    turnosEliminados.forEach(id => {
+      formData.append('turnos_eliminados[]', id);
+    });
+
+    console.log('Enviando datos:', Object.fromEntries(formData.entries()));
+
     const response = await fetch(this.action, {
       method: 'POST',
       body: formData
     });
 
-    if (response.redirected) {
-      window.location.href = response.url;
-    } else {
-      const data = await response.json();
-      if (data.success) {
-        alert('Turnos guardados correctamente');
-        location.reload();
+    // Manejar respuesta del servidor
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Respuesta del servidor:', data);
+
+    if (data.success) {
+      alert(data.message || 'Turnos guardados correctamente');
+      if (data.redirect) {
+        window.location.href = data.redirect;
       } else {
-        alert('Error: ' + data.message);
+        location.reload();
       }
+    } else {
+      throw new Error(data.message || 'Error al guardar los turnos');
     }
   } catch (error) {
     console.error('Error:', error);
-    alert('Ocurrió un error al guardar los turnos');
+    alert(error.message || 'Ocurrió un error al guardar los turnos');
   } finally {
     this.dataset.submitting = "false";
   }
 });
 
+function validarFormularioTurnos() {
+  let valido = true;
+  const filas = document.querySelectorAll('#cuerpo-tabla tr[data-turno-id], #cuerpo-tabla tr:not(#plantilla-fila):has(input[name*="[nombre]"])');
+  
+  filas.forEach((fila, index) => {
+    if (fila.style.display === 'none') return;
+
+    // Validar nombre
+    const nombre = fila.querySelector('input[name*="[nombre]"]');
+    if (!nombre?.value.trim()) {
+      alert(`Por favor ingrese el nombre del turno en la fila ${index + 1}`);
+      nombre?.focus();
+      valido = false;
+      return;
+    }
+
+    // Validar jornada
+    const jornada = fila.querySelector('select[name*="[jornada_id]"]');
+    if (!jornada?.value) {
+      alert(`Por favor seleccione una jornada en la fila ${index + 1}`);
+      jornada?.focus();
+      valido = false;
+      return;
+    }
+
+    // Validar horarios
+    const dias = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+    for (const dia of dias) {
+      const entrada = fila.querySelector(`input[name*="[dias][${dia}][entrada]"]`);
+      const salida = fila.querySelector(`input[name*="[dias][${dia}][salida]"]`);
+      
+      if (!entrada || !salida) continue;
+      
+      if (entrada.value && !salida.value) {
+        alert(`Por favor ingrese la hora de salida para ${dia} en la fila ${index + 1}`);
+        salida.focus();
+        valido = false;
+        return;
+      }
+      
+      if (!entrada.value && salida.value) {
+        alert(`Por favor ingrese la hora de entrada para ${dia} en la fila ${index + 1}`);
+        entrada.focus();
+        valido = false;
+        return;
+      }
+      
+     
+    }
+  });
+  
+  return valido;
+}
+
 function agregarTurno() {
   const tbody = document.getElementById('cuerpo-tabla');
   const plantilla = document.getElementById('plantilla-fila');
   const nuevaFila = plantilla.cloneNode(true);
+  
   nuevaFila.style.display = '';
   nuevaFila.removeAttribute('id');
 
+  // Actualizar los nombres de los campos para evitar colisiones
   const inputs = nuevaFila.querySelectorAll('[name]');
   inputs.forEach(input => {
     const originalName = input.name;
-    const newName = originalName.replace('nuevos_turnos[]', `turnos[${contadorNuevos}]`);
+    const newName = originalName.replace('nuevos_turnos[]', `nuevos_turnos[${contadorNuevos}]`);
     input.name = newName;
-    input.required = false; 
+    input.required = false;
   });
 
   tbody.insertBefore(nuevaFila, plantilla);
   contadorNuevos++;
   actualizarBotonesEliminar();
+  
+  // Enfocar el primer campo de la nueva fila
+  const primerInput = nuevaFila.querySelector('input');
+  if (primerInput) primerInput.focus();
 }
+
 function eliminarTurno(boton) {
-    const fila = boton.closest('tr');
-    const filasVisibles = document.querySelectorAll('#cuerpo-tabla tr:not(#plantilla-fila)').length;
-    
-    if (filasVisibles <= 1) {
-        alert('Debe haber al menos un turno');
-        return;
-    }
-    
-    fila.remove();
-    actualizarBotonesEliminar();
+  const fila = boton.closest('tr');
+  const filasVisibles = document.querySelectorAll('#cuerpo-tabla tr:not(#plantilla-fila)').length;
+  
+  if (filasVisibles <= 1) {
+    alert('Debe haber al menos un turno');
+    return;
+  }
+  
+  const turnoId = fila.dataset.turnoId;
+  if (turnoId && !confirm('¿Está seguro de eliminar este turno?')) {
+    return;
+  }
+  
+  fila.remove();
+  actualizarBotonesEliminar();
 }
+
 function actualizarBotonesEliminar() {
-    const filasVisibles = document.querySelectorAll('#cuerpo-tabla tr:not(#plantilla-fila)').length;
-    const botones = document.querySelectorAll('#cuerpo-tabla button.btn-danger');
-    
-    botones.forEach(boton => {
-        boton.disabled = filasVisibles <= 1;
-    });
+  const filasVisibles = document.querySelectorAll('#cuerpo-tabla tr:not(#plantilla-fila)').length;
+  const botones = document.querySelectorAll('#cuerpo-tabla button.btn-danger');
+  
+  botones.forEach(boton => {
+    boton.disabled = filasVisibles <= 1;
+  });
 }
 
 //ASIGNAR FECHAS PARA EL TURNO 
