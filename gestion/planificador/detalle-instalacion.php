@@ -46,7 +46,12 @@ $diasSemana = ['lunes','martes','miércoles','jueves','viernes','sábado','domin
 <!-- Graficos -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
+<style>
+  table td, table th {
+  white-space: normal;
+  word-break: break-word;
+}
+</style>
 <body class="test" >
   <!-- Sidebar -->
   <div class="page-container ">
