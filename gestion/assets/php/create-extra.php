@@ -38,13 +38,14 @@ if (isset($_POST['newExtra'])) {
     $errores = [];
     $exitos = 0;
     $usuario_id = $_SESSION['id']; 
-
+    /*
     echo '<pre>Datos recibidos:';
     print_r($_POST);
     echo '</pre>';
+    */
 
     $turnosValidos = array_filter($turnos, function($t) {
-        return !empty($t['motivo']) || !empty($t['rut']) || !empty($t['fecha']);
+    return !empty($t['motivo']) || !empty($t['rut']) || !empty($t['fecha']);
     });
 
     if (empty($turnosValidos)) {
@@ -398,11 +399,12 @@ if (isset($_POST['carga'])) {
                 $horaMinuto = date('H:i');
                 $fechaHoy = date('Y-m-d');
                 $fechaAyer = date('Y-m-d', strtotime('-1 day'));
-                
+                /*
                 echo 'FECHATURNOFORMATEADA'.$fechaTurnoFormateada;
                 echo 'hora'.$horaActual;
                 echo 'fecha hoy'.$fechaHoy;
                 echo 'fecha ayet'.$fechaAyer;
+                */
 
                 if ($horaActual < 12) {
                     if ($fechaTurnoFormateada != $fechaAyer && $fechaTurnoFormateada != $fechaHoy) {
@@ -433,7 +435,7 @@ if (isset($_POST['carga'])) {
 
             // Obtener instalación
            if ($instalacion != null) {
-                $instalacion_normalizada = preg_replace('/\s+/', '', strtolower($instalacion));
+                $instalacion_normalizada = preg_replace('/[\s,]+/', '', strtolower($instalacion));
 
                 $query = "SELECT id FROM sucursales 
                         WHERE REPLACE(LOWER(nombre), ' ', '') = ?";
