@@ -393,7 +393,7 @@ if (isset($_POST['carga'])) {
                 $nErrores++;
                 continue;
             }
-            if($_SESSION['id'] != 34){
+            if($_SESSION['id'] != 38){
                 // validar fecha turno (SOLO DIA ACTUAL HASTA LAS 12:00 DEL DIA SIGUIENTE)
                 $horaActual = (int)date('H');
                 $horaMinuto = date('H:i');
