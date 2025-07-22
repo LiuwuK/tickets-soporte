@@ -194,12 +194,12 @@ if(isset($_POST['carga'])){
             $nombre = preg_replace('/\s+/', ' ', trim($row[0]));
             $nombre = str_replace([' .', '. '], '.', $nombre);
             
-            $ciudad = strtolower($row[3]);
+            $ciudad = strtolower($row[1]);
             $comuna = $row[2];
-            $calle = $row[5];
+            $calle = $row[3];
             $supervisor = $row[4];
-            $depto = $row[6];
-            $estado = strtolower($row[7]);
+            $depto = $row[5];
+            $estado = strtolower($row[6]);
 
             // Obtener departamento
             $query_d = "SELECT id FROM departamentos WHERE depto_id = ?";
