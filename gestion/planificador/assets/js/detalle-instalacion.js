@@ -194,14 +194,35 @@ document.querySelectorAll('.btn-dates').forEach(btn => {
     const turnoId = fila.dataset.turnoId; 
     
     // Obtener los horarios por día desde la tabla
+    const tablasHorarios = fila.querySelectorAll('td table');
+    if (tablasHorarios.length !== 2) {
+      console.warn('No se encontraron ambas tablas de horario.');
+      return;
+    }
+
+    const tablaEntradas = tablasHorarios[0];
+    const tablaSalidas = tablasHorarios[1];
+
+    const filasEntradas = tablaEntradas.querySelectorAll('tr');
+    const filasSalidas = tablaSalidas.querySelectorAll('tr');
+
     const horariosPorDia = {};
-    const filasDias = fila.querySelectorAll('table tbody tr');
     
-    filasDias.forEach(filaDia => {
-      const dia = filaDia.cells[0].textContent.trim().toLowerCase();
-      const entrada = filaDia.cells[1].textContent.trim();
-      const salida = filaDia.cells[2].textContent.trim();
-      
+    filasEntradas.forEach((filaDia, index) => {
+      const celdasEntrada = filaDia.querySelectorAll('td');
+      const celdasSalida = filasSalidas[index].querySelectorAll('td');
+
+      const diaTexto = celdasEntrada[0].textContent.trim().toLowerCase();
+      const dia = diaTexto
+        .replace(':', '')                          
+        .replace(/\s+/g, '');
+
+      const entradaInput = celdasEntrada[1].querySelector('input[type="time"]');
+      const salidaInput = celdasSalida[0].querySelector('input[type="time"]');
+
+      const entrada = entradaInput?.value || '-';
+      const salida = salidaInput?.value || '-';
+      //console.log(`Día: ${dia}, Entrada: ${entrada}, Salida: ${salida}`);
       if (entrada !== '-' && salida !== '-') {
         horariosPorDia[dia] = { entrada, salida };
       }
@@ -213,25 +234,28 @@ document.querySelectorAll('.btn-dates').forEach(btn => {
     // Llenar tabla de horarios en el modal
     const tbody = document.getElementById('horariosDias');
     tbody.innerHTML = '';
-    
+
     const diasSemana = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
-    
+
     diasSemana.forEach(dia => {
-      const tr = document.createElement('tr');
       const horario = horariosPorDia[dia] || { entrada: '', salida: '' };
-      
-      tr.innerHTML = `
-        <td>${dia.charAt(0).toUpperCase() + dia.slice(1)}</td>
-        <td>${horario.entrada || '-'}</td>
-        <td>${horario.salida || '-'}</td>
-        <td>
-          <div class="form-check form-switch">
-            <input class="form-check-input dia-checkbox" type="checkbox" data-dia="${dia}" ${horario.entrada ? 'checked' : ''}>
-          </div>
-        </td>
-      `;
-      
-      tbody.appendChild(tr);
+
+      if (horario.entrada && horario.salida) {
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+          <td>${dia.charAt(0).toUpperCase() + dia.slice(1)}</td>
+          <td>${horario.entrada}</td>
+          <td>${horario.salida}</td>
+          <td>
+            <div class="form-check form-switch">
+              <input class="form-check-input dia-checkbox" type="checkbox" data-dia="${dia}" checked>
+            </div>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      }
     });
     
     // Configurar fechas por defecto
@@ -305,7 +329,7 @@ document.getElementById('guardarHorario').addEventListener('click', async functi
     });
 
     const data = await response.json();
-
+    console.log(datos)
     if (!response.ok || !data.success) {
       throw new Error(data.message || 'Error al guardar el horario');
     }
@@ -374,3 +398,44 @@ document.addEventListener('DOMContentLoaded', function() {
     calendar.refetchEvents();
   });
 });
+
+
+
+// DESCARGAS------------------------------------------------------------------------------------------------------------------
+//descargas
+document.querySelector('.excel-btn').addEventListener('click', function () {
+    descargarCalendario('excel');
+});
+
+document.querySelector('.pdf-btn').addEventListener('click', function () {
+    descargarCalendario('pdf');
+});
+
+function descargarCalendario(formato) {
+  const sucursalId = document.getElementById('sucursalId').value; 
+  const colaboradorId = null;
+ 
+  const view = calendar.view;
+  const startDate = view.currentStart;
+  const mes = startDate.getMonth() + 1;
+  const anio = startDate.getFullYear();
+  const params = new URLSearchParams({
+    formato,
+    sucursal_id: sucursalId,
+    colaborador_id: colaboradorId,
+    mes,
+    anio
+  });
+  
+  fetch('assets/php/descargar-calendario.php?' + params.toString())
+    .then(res => res.blob())
+    .then(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `calendario_${mes}_${anio}.${formato === 'excel' ? 'xlsx' : 'pdf'}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    });
+}
