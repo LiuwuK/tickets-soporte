@@ -23,8 +23,8 @@ check_login();
 <link href="../../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
 <link href="../assets/css/general-crud.css" rel="stylesheet" type="text/css"/>
 
-<!-- Toast notificaciones -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<!-- sweetalert -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 
 <body class="test" >
@@ -311,6 +311,35 @@ check_login();
       </div>
   </div>
 </div>
+
+<!-- sweetalert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<?php if (isset($_SESSION['swal'])): ?>
+  <script>
+    Swal.fire({
+      title: <?= json_encode($_SESSION['swal']['title']) ?>,
+      html: <?= json_encode($_SESSION['swal']['html']) ?>,
+      icon: <?= json_encode($_SESSION['swal']['icon']) ?>,
+      confirmButtonText: <?= json_encode($_SESSION['swal']['confirmButtonText']) ?>,
+      <?= isset($_SESSION['swal']['showCancelButton']) && $_SESSION['swal']['showCancelButton'] ? 'showCancelButton: true,' : '' ?>
+      <?= isset($_SESSION['swal']['cancelButtonText']) ? 'cancelButtonText: ' . json_encode($_SESSION['swal']['cancelButtonText']) . ',' : '' ?>
+      footer: <?= json_encode($_SESSION['swal']['footer']) ?>
+    }).then((result) => {
+      <?php if (!empty($_SESSION['swal']['details'])): ?>
+        if (result.dismiss === Swal.DismissReason.cancel) {
+          Swal.fire({
+            title: 'Detalles',
+            html: <?= json_encode(nl2br($_SESSION['swal']['details'])) ?>,
+            icon: 'info',
+            confirmButtonText: 'Cerrar'
+          });
+        }
+      <?php endif; ?>
+    });
+  </script>
+  <?php unset($_SESSION['swal']); ?>
+<?php endif; ?>
 
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

@@ -146,8 +146,6 @@ if (isset($_POST['newExtra'])) {
             $bancoId = null;
             if (!empty($turno['banco']) && !empty($turno['rut_cuenta']) && !empty($turno['numero_cuenta'])) {
 
-                print_r($turno);
-
                 $rutCuenta = strtoupper(preg_replace('/[^0-9kK]/', '', $turno['rut_cuenta']));
                 $rutCuentaNum = substr($rutCuenta, 0, -1);
                 $rutCuentaDv = substr($rutCuenta, -1);

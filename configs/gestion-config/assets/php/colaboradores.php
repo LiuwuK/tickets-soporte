@@ -82,23 +82,7 @@ function formatRut($rut){
 
 //nuevo colaborador
 if(isset($_POST['newColab'])){ 
-    $name = $_POST['nombre'];
-    $city = $_POST['ciudad'];
-    $direccion = $_POST['direccion'];
-    $comuna = $_POST['comuna'];
-    $supervisor = $_POST['supervisor'];
-    $dept = $_POST['departamento'];
 
-
-    $query  = "INSERT INTO sucursales(nombre, direccion_calle, comuna, ciudad_id, departamento_id, supervisor_id)
-                VALUES (?,?,?,?,?,?)";
-    $stmt = $con->prepare($query);
-    $stmt->bind_param("sssiii",$name,$direccion, $comuna, $city, $dept, $supervisor);
-    if ($stmt->execute()) {
-        echo "<script>alert('Sucursal registrada correctamente'); location.href='instalaciones.php';</script>";
-    } else {
-        echo "<script>alert('Error en la consulta: ".$stmt->error."');</script>";
-    }
 }
 //actualizar
 if(isset($_POST['btnUpdt'])){
@@ -167,7 +151,6 @@ if(isset($_POST['delColab'])){
 use PhpOffice\PhpSpreadsheet\IOFactory;
 if(isset($_POST['carga'])) {
     if ($_FILES['file']['error'] == UPLOAD_ERR_OK) {
-        // Aumentar límites temporales para archivos grandes
         set_time_limit(0);
         ini_set('memory_limit', '1024M');
         
@@ -176,109 +159,174 @@ if(isset($_POST['carga'])) {
         $worksheet = $spreadsheet->getActiveSheet();
         $data = $worksheet->toArray();
 
-        // Preparar consultas
-        $query_main = "INSERT INTO `colaboradores` 
+        // Consultas
+        $query_insert = "INSERT INTO `colaboradores` 
                       (`rut`, `name`, `fname`, `mname`, `rsocial`, `birth_date`, 
                        `nacionality`, `gender`, `role`, `entry_date`, `phone`, 
                        `email`, `contract_type`, `leaving_reason`, `facility`, `vigente`) 
                       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-        
-        $query_sucursal = "SELECT id FROM sucursales WHERE nombre = ? LIMIT 1";
-        
-        $stmt = $con->prepare($query_main);
+
+        $query_update = "UPDATE `colaboradores` SET 
+                          `fname` = ?, `mname` = ?, `rsocial` = ?, `birth_date` = ?, 
+                          `nacionality` = ?, `gender` = ?, `role` = ?, `entry_date` = ?, 
+                          `phone` = ?, `email` = ?, `contract_type` = ?, `leaving_reason` = ?, 
+                          `facility` = ?, `vigente` = ? 
+                          WHERE rut = ? AND name = ?";
+
+        $query_check = "SELECT id FROM colaboradores WHERE rut = ? AND name = ?";
+        $query_sucursal = "
+            SELECT id, nombre FROM sucursales
+            WHERE REPLACE(REPLACE(REPLACE(LOWER(nombre), ' ', ''), '.', ''), ',', '') = ?
+            LIMIT 1
+        ";
+
+        $stmt_insert = $con->prepare($query_insert);
+        $stmt_update = $con->prepare($query_update);
+        $stmt_check = $con->prepare($query_check);
         $stmt_sucursal = $con->prepare($query_sucursal);
-        /*
-        echo "<pre>";
-        print_r($data);
-        echo "</pre>";
-        */
-        // Desactivar autocommit para transacción
+
         $con->autocommit(false);
-        
+
         try {
             $registros_procesados = 0;
+            $actualizados = 0;
             $errores = [];
+
             
             foreach ($data as $index => $row) {
-                if ($index == 0) continue; // Saltar encabezado
-
-                // Validar datos básicos
-                if(empty($row[0]) || empty($row[2]) ) {
+                if ($index == 0) continue;
+                
+                if(empty($row[0]) || empty($row[2])) {
                     $errores[] = "Fila $index: Datos básicos faltantes";
                     continue;
                 }
+                $inst = $row[63];
+                $inst = strtolower($inst);
+                $inst = preg_replace('/[\s\.,]+/', '', $inst);
 
-                // Obtener ID de sucursal
-                $stmt_sucursal->bind_param("s", $row[60]);
+                $stmt_sucursal->bind_param("s", $inst);
                 $stmt_sucursal->execute();
                 $result = $stmt_sucursal->get_result();
                 $sucursal = $result->fetch_assoc();
-                
+
                 if(!$sucursal) {
-                    $errores[] = "Fila $index: Sucursal no encontrada - ".$row[60];
+                    $errores[] = "Fila $index: Sucursal no encontrada - ".$row[63];
                     continue;
                 }
-                
-                // Formatear fechas
+
+
+
                 $bday = DateTime::createFromFormat('d-m-Y', $row[6])->format('Y-m-d');
                 $entrydate = DateTime::createFromFormat('d-m-Y', $row[14])->format('Y-m-d');
-                
-                // Bind parameters
                 $vigente = ($row[65] == 'Si') ? 1 : 0;
                 $email = !empty($row[33]) ? $row[33] : null;
                 $phone = !empty($row[30]) ? $row[30] : null;
                 $lReason = !empty($row[49]) ? $row[49] : null;
-                
-                $stmt->bind_param(
-                    "ssssssssssisssii",
-                    $row[0],    // rut
-                    $row[2],    // name
-                    $row[3],    // fname
-                    $row[4],    // mname
-                    $row[5],    // rsocial
-                    $bday,      // birth_date
-                    $row[7],    // nacionality
-                    $row[8],    // gender
-                    $row[11],   // role
-                    $entrydate, // entry_date
-                    $phone,     // phone
-                    $email,   // email
-                    $row[47],   // contract_type
-                    $lReason,   // leaving_reason
-                    $sucursal['id'], // facility
-                    $vigente    // vigente
-                );
-                
-                if(!$stmt->execute()) {
-                    $errores[] = "Fila $index: Error al insertar - " . $stmt->error;
+
+                // Verificar si ya existe
+                $stmt_check->bind_param("ss", $row[0], $row[2]); // rut, name
+                $stmt_check->execute();
+                $stmt_check->store_result();
+
+                if($stmt_check->num_rows > 0) {
+                    // Actualizar
+                    $stmt_update->bind_param(
+                        "sssssssssssissss",
+                        $row[3],  // fname
+                        $row[4],  // mname
+                        $row[5],  // rsocial
+                        $bday,
+                        $row[7],  // nacionality
+                        $row[8],  // gender
+                        $row[11], // role
+                        $entrydate,
+                        $phone,
+                        $email,
+                        $row[47], // contract_type
+                        $lReason,
+                        $sucursal['id'],
+                        $vigente,
+                        $row[0],  // rut
+                        $row[2]   // name
+                    );
+
+                    if(!$stmt_update->execute()) {
+                        $errores[] = "Fila $index: Error al actualizar - " . $stmt_update->error;
+                    } else {
+                        $actualizados++;
+                    }
+
                 } else {
-                    $registros_procesados++;
+                    // Insertar
+                    $stmt_insert->bind_param(
+                        "ssssssssssisssii",
+                        $row[0],  // rut
+                        $row[2],  // name
+                        $row[3],  // fname
+                        $row[4],  // mname
+                        $row[5],  // rsocial
+                        $bday,
+                        $row[7],  // nacionality
+                        $row[8],  // gender
+                        $row[11], // role
+                        $entrydate,
+                        $phone,
+                        $email,
+                        $row[47], // contract_type
+                        $lReason,
+                        $sucursal['id'],
+                        $vigente
+                    );
+
+                    if(!$stmt_insert->execute()) {
+                        $errores[] = "Fila $index: Error al insertar - " . $stmt_insert->error;
+                    } else {
+                        $registros_procesados++;
+                    }
                 }
             }
-            
-            // Commit si todo está bien
+
             $con->commit();
-            // Mostrar resultados
-            $mensaje = "$registros_procesados colaboradores registrados.";
+            $mensaje = "$registros_procesados colaboradores insertados.\n$actualizados colaboradores actualizados.";
             if(!empty($errores)) {
                 $mensaje .= "\nErrores: " . count($errores);
-                // Guardar errores en log
                 file_put_contents('errores_carga.log', implode("\n", $errores), FILE_APPEND);
-                echo "<script>alert('".addslashes($mensaje)."'); location.href='colaboradores.php';</script>";
             }
-            echo "<script>alert('".addslashes($mensaje)."'); location.href='colaboradores.php';</script>";
+
+            $detallesErrores = implode("\n", $errores); 
+
+            $_SESSION['swal'] = [
+                'title' => 'Resultado de la carga',
+                'html' => nl2br(htmlspecialchars($mensaje)), 
+                'icon' => (!empty($errores) ? 'warning' : 'success'),
+                'confirmButtonText' => 'Aceptar',
+                'showCancelButton' => true,
+                'cancelButtonText' => 'Ver detalles',
+                'footer' => '<a href="colaboradores.php">Volver</a>',
+                'details' => nl2br(htmlspecialchars($detallesErrores))
+            ];
+
+            header("Location: colaboradores.php");
+            exit;
         } catch (Exception $e) {
             $con->rollback();
-            echo "<script>alert('Error en la transacción: ".addslashes($e->getMessage())."');</script>";
+            $_SESSION['swal'] = [
+                'title' => 'Resultado de la carga',
+                'html' => nl2br(htmlspecialchars(string: $mensaje)),
+                'icon' => (!empty($errores) ? 'warning' : 'success'),
+                'confirmButtonText' => 'Aceptar',
+                'footer' => '<a href="colaboradores.php">Volver</a>'
+            ];
         }
-        
-        // Restaurar configuración
+
         $con->autocommit(true);
-        $stmt->close();
+        $stmt_insert->close();
+        $stmt_update->close();
+        $stmt_check->close();
         $stmt_sucursal->close();
-         echo "<script>alert('".addslashes($mensaje)."'); location.href='colaboradores.php';</script>";
     } else {
         echo "<script>alert('Error al subir el archivo: ".$_FILES['file']['error']."');</script>";
     }
 }
+
 ?>
