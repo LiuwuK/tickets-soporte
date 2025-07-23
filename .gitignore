@@ -14,3 +14,4 @@ composer.lock
 composer.json
 vendor/composer/InstalledVersions.php
 /vendor
+configs/gestion-config/errores_carga.log
