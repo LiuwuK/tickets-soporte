@@ -129,7 +129,8 @@ $diasSemana = ['lunes','martes','miércoles','jueves','viernes','sábado','domin
                     <!-- Mostrar turnos existentes -->
                     <?php if (!empty($turnosExistentes)): ?>
                       <?php foreach ($turnosExistentes as $index => $turno): ?>
-                        <tr data-turno-id="<?= $turno['id'] ?>">
+                        
+                        <tr data-turno-id="<?= $turno['id'] ?>" data-jornada="<?= htmlspecialchars($turno['nJo']) ?>">
                           <input type="hidden" name="turnos[<?= $index ?>][id]" value="<?= $turno['id'] ?>">
                           <td class="align-middle text-center">
                             <input type="text" name="turnos[<?= $index ?>][nombre]" 
@@ -151,14 +152,17 @@ $diasSemana = ['lunes','martes','miércoles','jueves','viernes','sábado','domin
                           
                           <td class="align-middle text-center">
                             <table class="table table-sm mb-0">
-                              <?php ?>
-                                <?php foreach ($diasSemana as $dia): ?>
+                                <?php foreach ($diasSemana as $dia): 
+                                  $entrada = $turno['dias'][$dia]['entrada'] ?? '';
+                                  $salida = $turno['dias'][$dia]['salida'] ?? '';
+                                  if (empty($entrada) && empty($salida)) continue;
+                                ?>
                                   <tr>
                                     <td class="text-nowrap align-middle"><strong><?= ucfirst($dia) ?>:</strong></td>
                                     <td>
                                       <input type="time" class="form-control"
-                                        name="turnos[<?= $index ?>][dias][<?= $dia ?>][entrada]"
-                                        value="<?= $turno['dias'][$dia]['entrada'] ?? '' ?>">
+                                            name="turnos[<?= $index ?>][dias][<?= $dia ?>][entrada]"
+                                            value="<?= $entrada ?>">
                                     </td>
                                   </tr>
                                 <?php endforeach; ?>
@@ -167,12 +171,16 @@ $diasSemana = ['lunes','martes','miércoles','jueves','viernes','sábado','domin
                           
                           <td class="align-middle text-center">
                             <table class="table table-sm mb-0">
-                              <?php foreach ($diasSemana as $dia): ?>
+                              <?php foreach ($diasSemana as $dia): 
+                                $entrada = $turno['dias'][$dia]['entrada'] ?? '';
+                                $salida = $turno['dias'][$dia]['salida'] ?? '';
+                                if (empty($entrada) && empty($salida)) continue;
+                              ?>
                                 <tr>
                                   <td>
-                                    <input type="time" class="form-control" 
-                                      name="turnos[<?= $index ?>][dias][<?= $dia ?>][salida]" 
-                                      value="<?= $turno['dias'][$dia]['salida'] ?? '' ?>">
+                                    <input type="time" class="form-control"
+                                          name="turnos[<?= $index ?>][dias][<?= $dia ?>][salida]"
+                                          value="<?= $salida ?>">
                                   </td>
                                 </tr>
                               <?php endforeach; ?>
@@ -771,41 +779,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 let calendar; 
-//descargas
-document.querySelector('.excel-btn').addEventListener('click', function () {
-    descargarCalendario('excel');
-});
 
-document.querySelector('.pdf-btn').addEventListener('click', function () {
-    descargarCalendario('pdf');
-});
-
-function descargarCalendario(formato) {
-  const sucursalId = document.getElementById('sucursalId').value; 
-  const colaboradorId = null;
-  const mes = new Date().getMonth() + 1;
-  const anio = new Date().getFullYear();
-
-  const params = new URLSearchParams({
-    formato,
-    sucursal_id: sucursalId,
-    colaborador_id: colaboradorId,
-    mes,
-    anio
-  });
-
-  fetch('assets/php/descargar-calendario.php?' + params.toString())
-    .then(res => res.blob())
-    .then(blob => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `calendario_${mes}_${anio}.${formato === 'excel' ? 'xlsx' : 'pdf'}`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    });
-}
 // Contador para nuevos turnos
 let contadorNuevos = <?= !empty($turnosExistentes) ? count($turnosExistentes) : 0 ?>;
 </script>

@@ -70,11 +70,6 @@ function generarPdfCalendario($datos, $mes, $anio) {
         ob_end_clean();
     }
 
-    header('Content-Type: application/pdf');
-    header('Content-Disposition: attachment; filename="calendario.pdf"');
-    header('Cache-Control: private, max-age=0, must-revalidate');
-    header('Pragma: public');
-
     $pdf = new \TCPDF('P', 'mm', 'A4');
     $pdf->SetMargins(10, 10, 10);
     $pdf->AddPage();
@@ -94,7 +89,6 @@ function generarPdfCalendario($datos, $mes, $anio) {
     }
     $pdf->Ln();
 
-    // Datos para el mes
     $primerDia = mktime(0, 0, 0, $mes, 1, $anio);
     $diaSemana = (int)date('N', $primerDia);
     $diasMes = (int)date('t', $primerDia);
@@ -103,6 +97,7 @@ function generarPdfCalendario($datos, $mes, $anio) {
 
     $diaActual = 1;
     $columna = 1;
+
     while ($diaActual <= $diasMes) {
         if ($diaActual == 1 && $columna < $diaSemana) {
             $pdf->Cell($anchoCelda, $altoCelda, '', 1);
@@ -116,17 +111,27 @@ function generarPdfCalendario($datos, $mes, $anio) {
 
         $fechaActual = sprintf('%04d-%02d-%02d', $anio, $mes, $diaActual);
 
-        // Armar contenido de la celda
-        $contenido = "$fechaActual\n";
+        // Buscar turnos para este día
+        $contenido = "$diaActual\n";
+        $tieneHorarios = false;
 
         foreach ($datos as $turno) {
             if ($turno['fecha'] === $fechaActual) {
                 $colaborador = $turno['nombre_colaborador'] ?? 'Sin asignar';
                 $contenido .= "{$turno['hora_entrada']} - {$turno['hora_salida']}\n$colaborador\n";
+                $tieneHorarios = true;
             }
         }
 
-        $pdf->MultiCell($anchoCelda, $altoCelda, $contenido, 1, 'L', false, 0, '', '', true, 0, false, true, $altoCelda, 'M');
+        if (!$tieneHorarios) {
+            $contenido .= "Libre\n";
+            $pdf->SetFillColor(230, 230, 230);
+            $relleno = true;
+        } else {
+            $relleno = false;
+        }
+
+        $pdf->MultiCell($anchoCelda, $altoCelda, $contenido, 1, 'L', $relleno, 0, '', '', true, 0, false, true, $altoCelda, 'M');
 
         $columna++;
         if ($columna > 7) {
@@ -135,6 +140,7 @@ function generarPdfCalendario($datos, $mes, $anio) {
         }
         $diaActual++;
     }
+
     if ($columna != 1) {
         while ($columna <= 7) {
             $pdf->Cell($anchoCelda, $altoCelda, '', 1);
@@ -146,32 +152,88 @@ function generarPdfCalendario($datos, $mes, $anio) {
     exit;
 }
 
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+
 function generarExcel($datos, $mes, $anio) {
-    $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     $sheet->setTitle("Calendario $mes-$anio");
 
-    $sheet->fromArray(
-        [['Fecha', 'Entrada', 'Salida', 'Tipo', 'Código', 'Colaborador']],
-        NULL, 'A1'
-    );
+    $diasSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
-    $row = 2;
-    foreach ($datos as $d) {
-        $colaborador = $d['nombre_colaborador'] ?? 'Sin asignar';
-        $sheet->setCellValue("A$row", $d['fecha']);
-        $sheet->setCellValue("B$row", $d['hora_entrada']);
-        $sheet->setCellValue("C$row", $d['hora_salida']);
-        $sheet->setCellValue("D$row", $d['tipo']);
-        $sheet->setCellValue("E$row", $d['codigo']);
-        $sheet->setCellValue("F$row", $colaborador);
-        $row++;
+    // Escribir encabezado (días de la semana)
+    foreach ($diasSemana as $i => $dia) {
+        $col = $i + 1;
+        $cell = Coordinate::stringFromColumnIndex($col) . '1';
+        $sheet->setCellValue($cell, $dia);
+        $sheet->getStyle($cell)->getFont()->setBold(true);
     }
 
+    $primerDia = mktime(0, 0, 0, $mes, 1, $anio);
+    $diaSemana = (int)date('N', $primerDia); // 1 (Lun) a 7 (Dom)
+    $diasMes = (int)date('t', $primerDia);
+
+    $row = 2;
+    $col = 1;
+    $diaActual = 1;
+
+    // Celdas vacías antes del primer día
+    for ($i = 1; $i < $diaSemana; $i++) {
+        $col++;
+    }
+
+    while ($diaActual <= $diasMes) {
+        $fecha = sprintf('%04d-%02d-%02d', $anio, $mes, $diaActual);
+        $turnosDia = array_filter($datos, fn($d) => $d['fecha'] === $fecha);
+
+        // Contenido de la celda
+        $contenido = "$diaActual\n";
+        if (count($turnosDia) === 0) {
+            $contenido .= "Libre";
+        } else {
+            foreach ($turnosDia as $turno) {
+                $colaborador = $turno['nombre_colaborador'] ?? 'Sin asignar';
+                $contenido .= "{$turno['hora_entrada']} - {$turno['hora_salida']}\n$colaborador\n";
+            }
+        }
+
+        $cell = Coordinate::stringFromColumnIndex($col) . $row;
+        $sheet->setCellValue($cell, $contenido);
+        $sheet->getRowDimension($row)->setRowHeight(80);
+        $sheet->getColumnDimensionByColumn($col)->setWidth(25);
+
+        // Estilo de celda
+        $style = $sheet->getStyle($cell);
+        $style->getAlignment()->setWrapText(true)->setVertical('top');
+        $style->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+        if (count($turnosDia) === 0) {
+            $style->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFEEEEEE');
+        }
+
+        // Avanzar a la siguiente columna / fila
+        $col++;
+        if ($col > 7) {
+            $col = 1;
+            $row++;
+        }
+
+        $diaActual++;
+    }
+
+    // Encabezados de descarga
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment; filename="calendario.xlsx"');
+    header('Cache-Control: max-age=0');
 
-    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-    $writer->save("php://output");
+    $writer = new Xlsx($spreadsheet);
+    $writer->save('php://output');
     exit;
 }
+
+
