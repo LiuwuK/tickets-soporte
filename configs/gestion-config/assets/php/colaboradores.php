@@ -218,12 +218,11 @@ if(isset($_POST['carga'])) {
 
                 $bday = DateTime::createFromFormat('d-m-Y', $row[6])->format('Y-m-d');
                 $entrydate = DateTime::createFromFormat('d-m-Y', $row[14])->format('Y-m-d');
-                $vigente = ($row[65] == 'Si') ? 1 : 0;
-                $email = !empty($row[33]) ? $row[33] : null;
-                $phone = !empty($row[30]) ? $row[30] : null;
-                $lReason = !empty($row[49]) ? $row[49] : null;
+                $vigente = ($row[68] == 'Si') ? 1 : 0;
+                $email = !empty($row[36]) ? $row[36] : null;
+                $phone = !empty($row[33]) ? $row[33] : null;
+                $lReason = !empty($row[52]) ? $row[52] : null;
 
-                // Verificar si ya existe
                 $stmt_check->bind_param("ss", $row[0], $row[2]); // rut, name
                 $stmt_check->execute();
                 $stmt_check->store_result();
@@ -242,7 +241,7 @@ if(isset($_POST['carga'])) {
                         $entrydate,
                         $phone,
                         $email,
-                        $row[47], // contract_type
+                        $row[50], // contract_type
                         $lReason,
                         $sucursal['id'],
                         $vigente,
@@ -272,7 +271,7 @@ if(isset($_POST['carga'])) {
                         $entrydate,
                         $phone,
                         $email,
-                        $row[47], // contract_type
+                        $row[50], // contract_type
                         $lReason,
                         $sucursal['id'],
                         $vigente
