@@ -438,7 +438,7 @@ if (isset($_POST['carga'])) {
                 $instalacion_normalizada = preg_replace('/[^\w]/', '', strtolower($instalacion));
 
                 $query = "SELECT id FROM sucursales 
-                        WHERE REGEXP_REPLACE(LOWER(nombre), '[\\\\s,.-]+', '') = ?";
+                            WHERE REGEXP_REPLACE(LOWER(nombre), '[^a-z0-9_]', '') = ?";
                 $stmt_s = $con->prepare($query);
                 $stmt_s->bind_param("s", $instalacion_normalizada);
                 $stmt_s->execute();
