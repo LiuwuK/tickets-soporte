@@ -432,11 +432,13 @@ if (isset($_POST['carga'])) {
             $autorizado = $_SESSION['id'];
 
             // Obtener instalación
-           if ($instalacion != null) {
+            if (empty($instalacion) || strtolower(trim($instalacion)) === 'spot') {
+                $instalacion_id = null;
+            } else {
                 $instalacion_normalizada = preg_replace('/[^\w]/', '', strtolower($instalacion));
 
                 $query = "SELECT id FROM sucursales 
-                        WHERE REGEXP_REPLACE(LOWER(nombre), '[^\w]', '') = ?";
+                        WHERE REGEXP_REPLACE(LOWER(nombre), '[\\\\s,.-]+', '') = ?";
                 $stmt_s = $con->prepare($query);
                 $stmt_s->bind_param("s", $instalacion_normalizada);
                 $stmt_s->execute();
@@ -448,9 +450,8 @@ if (isset($_POST['carga'])) {
                     $errores['instalacionesInvalidas'][] = "Fila $index: Instalación '$instalacion' no existe";
                     $nErrores++;
                 }
+
                 $stmt_s->free_result();
-            } else {
-                $instalacion_id = null;
             }
             // Obtener Motivo
             $stmt_m->bind_param("s", $motivo);
