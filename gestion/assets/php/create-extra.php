@@ -317,7 +317,6 @@ if (isset($_POST['carga'])) {
                         AND nombre_colaborador = ? 
                         AND rut = ? 
                         AND motivo_turno_id = ? 
-                        AND autorizado_por = ? 
                         AND (persona_motivo IS NULL OR persona_motivo = ?)
                         AND contratado = ? 
                         AND nacionalidad = ?
@@ -480,7 +479,7 @@ if (isset($_POST['carga'])) {
             echo   '<br>nacionalidad '.$nacionalidad;
             */
             //Verificar si existe los datos 
-            $stmtTurnos->bind_param("isiissiisisss",$instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $motivo_id, $autorizado, $persona_motivo, $contratado, $nacionalidad, $hora_inicio, $hora_termino);
+            $stmtTurnos->bind_param("isiissisisss",$instalacion_id, $fecha, $horas, $monto, $colaborador, $rut, $motivo_id, $persona_motivo, $contratado, $nacionalidad, $hora_inicio, $hora_termino);
             $stmtTurnos->execute();
             $stmtTurnos->store_result();    
             if ($stmtTurnos->num_rows > 0) {
