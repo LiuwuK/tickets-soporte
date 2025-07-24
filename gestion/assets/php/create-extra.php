@@ -433,10 +433,10 @@ if (isset($_POST['carga'])) {
 
             // Obtener instalación
            if ($instalacion != null) {
-                $instalacion_normalizada = preg_replace('/[\s,]+/', '', strtolower($instalacion));
+                $instalacion_normalizada = preg_replace('/[^\w]/', '', strtolower($instalacion));
 
                 $query = "SELECT id FROM sucursales 
-                        WHERE REPLACE(LOWER(nombre), ' ', '') = ?";
+                        WHERE REGEXP_REPLACE(LOWER(nombre), '[^\w]', '') = ?";
                 $stmt_s = $con->prepare($query);
                 $stmt_s->bind_param("s", $instalacion_normalizada);
                 $stmt_s->execute();
