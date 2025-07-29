@@ -83,7 +83,7 @@ try {
     while ($fechaActual <= $fechaFin) {
         if ($esDiaTrabajo) {
             // Verificar si este día de la semana tiene horario definido
-            $nombreDia = strtolower($fechaActual->format('l')); // 'Monday', 'Tuesday', etc.
+            $nombreDia = strtolower($fechaActual->format('l')); 
             $nombreDiaEsp = array_search($fechaActual->format('w'), $diasMap);
             
             // Buscar horario para este día
