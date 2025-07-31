@@ -75,3 +75,4 @@ document.addEventListener('DOMContentLoaded', function () {
     // Ejecutar la función al cargar la página
     actualizarResultados();
 });
+

@@ -3,18 +3,24 @@ require '../../../../vendor/autoload.php';
 require_once '../../../../dbconnection.php';
 
 $formato = $_GET['formato'] ?? 'pdf';
+
 $sucursal_id = (int)($_GET['sucursal_id'] ?? 0);
 $colaborador_id = isset($_GET['colaborador_id']) ? (int)$_GET['colaborador_id'] : null;
 $mes = (int)($_GET['mes'] ?? date('n'));
 $anio = (int)($_GET['anio'] ?? date('Y'));
 
 $datos = obtenerDatosCalendario($con, $sucursal_id, $colaborador_id, $mes, $anio);
-
+$allD = alldata($con, $mes, $anio);
+print_r( $allD);
+die();
 if ($formato === 'excel') {
     generarExcel($datos, $mes, $anio);
+} else if ($formato ===  'all') {
+    generarExcelMultiSucursal($allD, $mes, $anio);
 } else {
     generarPdfCalendario($datos, $mes, $anio);
 }
+
 
 function obtenerDatosCalendario($con, $sucursal_id, $colaborador_id, $mes, $anio) {
     $query = "SELECT 
@@ -63,6 +69,59 @@ function obtenerDatosCalendario($con, $sucursal_id, $colaborador_id, $mes, $anio
     }
 
     return $datos;
+}
+
+function allData($con, $mes, $anio) {
+   $query = "SELECT 
+            hc.id AS horario_id,
+            hc.fecha, 
+            hc.tipo, 
+            hc.hora_entrada, 
+            hc.hora_salida, 
+            ti.codigo,
+            c.id AS colaborador_id,
+            CONCAT(c.name, ' ', c.fname) AS nombre_colaborador,
+            hc.sucursal_id,
+            s.nombre AS nombre_sucursal
+          FROM horarios_sucursal hc
+          JOIN turnos_instalacion ti ON hc.turno_id = ti.id
+          LEFT JOIN colaborador_turno ct ON hc.turno_id = ct.turno_id 
+            AND hc.fecha BETWEEN ct.fecha_inicio AND ct.fecha_fin
+          LEFT JOIN colaboradores c ON ct.colaborador_id = c.id
+          JOIN sucursales s ON hc.sucursal_id = s.id
+          WHERE MONTH(hc.fecha) = ? 
+            AND YEAR(hc.fecha) = ?";
+
+    $query .= " ORDER BY hc.fecha, hc.hora_entrada, ti.codigo";
+    $stmt = $con->prepare($query);
+    
+    if (!$stmt) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Error en la preparación de la consulta: ' . $con->error]);
+        exit;
+    }
+    
+    $stmt->bind_param("ii", $mes, $anio);
+
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $datos = [];
+    while ($row = $result->fetch_assoc()) {
+        $datos[] = $row;
+    }
+    // Agrupar datos por sucursal
+    $datosPorSucursal = [];
+    foreach ($datos as $dato) {
+        $sucursalId = $dato['sucursal_id'];
+        if (!isset($datosPorSucursal[$sucursalId])) {
+            $datosPorSucursal[$sucursalId] = [];
+        }
+        $datosPorSucursal[$sucursalId][] = $dato;
+    }
+
+    return $datosPorSucursal;
 }
 
 function generarPdfCalendario($datos, $mes, $anio) {
@@ -236,4 +295,85 @@ function generarExcel($datos, $mes, $anio) {
     exit;
 }
 
+function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio) {
+    $spreadsheet = new Spreadsheet();
 
+    $spreadsheet->removeSheetByIndex(0);
+    
+    $diasSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+    
+    foreach ($datosPorSucursal as $sucursalId => $datos) {
+        // nueva hoja para cada sucursal
+        $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, "Sucursal $sucursalId");
+        $spreadsheet->addSheet($sheet);
+        $sheet->setTitle("Sucursal $sucursalId"); 
+        
+        //  (días de la semana)
+        foreach ($diasSemana as $i => $dia) {
+            $col = $i + 1;
+            $cell = Coordinate::stringFromColumnIndex($col) . '1';
+            $sheet->setCellValue($cell, $dia);
+            $sheet->getStyle($cell)->getFont()->setBold(true);
+        }
+        
+        $primerDia = mktime(0, 0, 0, $mes, 1, $anio);
+        $diaSemana = (int)date('N', $primerDia); 
+        $diasMes = (int)date('t', $primerDia);
+        
+        $row = 2;
+        $col = 1;
+        $diaActual = 1;
+        
+        for ($i = 1; $i < $diaSemana; $i++) {
+            $col++;
+        }
+        
+        while ($diaActual <= $diasMes) {
+            $fecha = sprintf('%04d-%02d-%02d', $anio, $mes, $diaActual);
+            $turnosDia = array_filter($datos, fn($d) => $d['fecha'] === $fecha);
+            
+            // Contenido de la celda
+            $contenido = "$diaActual\n";
+            if (count($turnosDia) === 0) {
+                $contenido .= "Libre";
+            } else {
+                foreach ($turnosDia as $turno) {
+                    $colaborador = $turno['nombre_colaborador'] ?? 'Sin asignar';
+                    $contenido .= "{$turno['hora_entrada']} - {$turno['hora_salida']}\n$colaborador\n";
+                }
+            }
+            
+            $cell = Coordinate::stringFromColumnIndex($col) . $row;
+            $sheet->setCellValue($cell, $contenido);
+            $sheet->getRowDimension($row)->setRowHeight(80);
+            $sheet->getColumnDimensionByColumn($col)->setWidth(25);
+            
+            // Estilo de celda
+            $style = $sheet->getStyle($cell);
+            $style->getAlignment()->setWrapText(true)->setVertical('top');
+            $style->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+            
+            if (count($turnosDia) === 0) {
+                $style->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFEEEEEE');
+            }
+            
+            // Avanzar a la siguiente columna / fila
+            $col++;
+            if ($col > 7) {
+                $col = 1;
+                $row++;
+            }
+            
+            $diaActual++;
+        }
+    }
+    
+    // Encabezados de descarga
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment; filename="calendario_sucursales.xlsx"');
+    header('Cache-Control: max-age=0');
+    
+    $writer = new Xlsx($spreadsheet);
+    $writer->save('php://output');
+    exit;
+}

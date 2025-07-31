@@ -48,7 +48,7 @@ check_login();
         </div> <br><br>
 
           <div class="filtros d-flex justify-content-between form-f">
-            <div class="d-flex justify-content-arround mb-3">
+            <div class="d-flex justify-content-between mb-3">
               <div class="all-fil">
                 <label for="filtroTexto">Buscar</label>
                 <input type="text" id="filtroTexto" name="texto" class="form-control form-control-sm fil" placeholder="Buscar por nombre, tipo, etc.">
@@ -88,6 +88,12 @@ check_login();
                 </select>
               </div>
             </div>
+            <div>
+                <button type="submit" class="btn btn-excel" onclick="window.location.href='assets/php/descargar-calendario.php?formato=all';">
+                  <i class="bi bi-file-earmark-excel"></i> 
+                  Exportar Calendarios
+                </button>
+              </div>
           </div>
       
         <div id="resultadoSucursal" class="content"></div>

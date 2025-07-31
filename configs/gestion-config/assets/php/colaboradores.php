@@ -103,9 +103,9 @@ if(isset($_POST['btnUpdt'])){
     foreach ($ids as $index => $id) {
         $rut = $ruts[$index];
         $name = $names[$index];
-        $fnames = $fnames[$index];
-        $mnames =  $mnames[$index];
-        $rsocial = $rsocial[$index];
+        $fname = $fnames[$index];
+        $mname =  $mnames[$index];
+        $rsocial = $rsocials[$index];
         $nct = $nacionality[$index];
         $entry_date = $entry_dates[$index];
         $phone = $phones[$index];
@@ -130,8 +130,9 @@ if(isset($_POST['btnUpdt'])){
         $stmt = $con->prepare($query);
         $stmt->bind_param("sssssssissisi",$rut, $name, $fname, $mname, $rsocial, $nct, $entry_date, $phone, $email, $ctype, $depto, $estado, $id);
         $stmt->execute();
+       
     }
-    echo "<script>alert('colaboradores actualizados correctamente.'); location.href='instalaciones.php';</script>";
+    echo "<script>alert('colaboradores actualizados correctamente.'); location.href='colaboradores.php';</script>";
 
 }
 //eliminar

@@ -95,12 +95,12 @@ if ($_SESSION['cargo'] == 11){
 
 // Filtro por fecha
 if (!empty($fecha_inicio) && !empty($fecha_fin)) {
-    $filtros[] = "te.created_at BETWEEN '$fecha_inicio' AND '$fecha_fin'";
+    $filtros[] = "te.fecha_turno BETWEEN '$fecha_inicio' AND '$fecha_fin'";
 }
 // Filtro para dpto 10 (Solo registros con estado "aprobado")
 if (array_intersect([10], $_SESSION['deptos'])) {
-    $filtros[] = "(te.created_at >= DATE_SUB(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 1 WEEK)
-                   AND te.created_at < DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY))";
+    $filtros[] = "(te.fecha_turno >= DATE_SUB(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 1 WEEK)
+                   AND te.fecha_turno < DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY))";
     $filtros[] = "te.estado = 'aprobado'";
 } elseif (!empty($estado)) {
     $filtros[] = "te.estado = '$estado'";

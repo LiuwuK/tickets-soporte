@@ -404,11 +404,11 @@ document.addEventListener('DOMContentLoaded', function() {
 // DESCARGAS------------------------------------------------------------------------------------------------------------------
 //descargas
 document.querySelector('.excel-btn').addEventListener('click', function () {
-    descargarCalendario('excel');
+  descargarCalendario('excel');
 });
 
 document.querySelector('.pdf-btn').addEventListener('click', function () {
-    descargarCalendario('pdf');
+  descargarCalendario('pdf');
 });
 
 function descargarCalendario(formato) {
