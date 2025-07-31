@@ -82,14 +82,16 @@ function allData($con, $mes, $anio) {
             CONCAT(c.name, ' ', c.fname) AS nombre_colaborador,
             hc.sucursal_id,
             s.nombre AS nombre_sucursal
-          FROM horarios_sucursal hc
-          JOIN turnos_instalacion ti ON hc.turno_id = ti.id
-          LEFT JOIN colaborador_turno ct ON hc.turno_id = ct.turno_id 
-            AND hc.fecha BETWEEN ct.fecha_inicio AND ct.fecha_fin
-          LEFT JOIN colaboradores c ON ct.colaborador_id = c.id
-          JOIN sucursales s ON hc.sucursal_id = s.id
-          WHERE MONTH(hc.fecha) = ? 
-            AND YEAR(hc.fecha) = ?";
+            FROM horarios_sucursal hc
+            JOIN turnos_instalacion ti ON hc.turno_id = ti.id
+            LEFT JOIN colaborador_turno ct ON hc.turno_id = ct.turno_id 
+                AND hc.fecha BETWEEN ct.fecha_inicio AND ct.fecha_fin
+            LEFT JOIN colaboradores c ON ct.colaborador_id = c.id
+            JOIN sucursales s ON hc.sucursal_id = s.id
+            WHERE MONTH(hc.fecha) = ? 
+                AND YEAR(hc.fecha) = ?
+            ORDER BY s.nombre ASC
+            ";
 
     $query .= " ORDER BY hc.fecha, hc.hora_entrada, ti.codigo";
     $stmt = $con->prepare($query);
