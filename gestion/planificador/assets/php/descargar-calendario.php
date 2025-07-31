@@ -299,30 +299,41 @@ function generarExcel($datos, $mes, $anio) {
 
 function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio) {
     $spreadsheet = new Spreadsheet();
+    
     $spreadsheet->removeSheetByIndex(0);
     
     $diasSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
     
     foreach ($datosPorSucursal as $sucursal) {
+        $sucursalId = $sucursal['sucursal_id'];
         $nombreSucursal = $sucursal['nombre_sucursal'];
         $datos = $sucursal['turnos'];
         
-        $nombreHoja = substr($nombreSucursal, 0, 31);
-        $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $nombreHoja);
+        $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, "Sucursal $sucursalId");
         $spreadsheet->addSheet($sheet);
         
+        $sheet->mergeCells('A1:G1');
+        $sheet->setCellValue('A1', $nombreSucursal);
+        $sheet->getStyle('A1')->getFont()
+            ->setBold(true)
+            ->setSize(14);
+        $sheet->getStyle('A1')->getAlignment()
+            ->setHorizontal('center')
+            ->setVertical('center');
+        
+    
         foreach ($diasSemana as $i => $dia) {
             $col = $i + 1;
-            $cell = Coordinate::stringFromColumnIndex($col) . '1';
+            $cell = Coordinate::stringFromColumnIndex($col) . '2';
             $sheet->setCellValue($cell, $dia);
             $sheet->getStyle($cell)->getFont()->setBold(true);
         }
         
         $primerDia = mktime(0, 0, 0, $mes, 1, $anio);
-        $diaSemana = (int)date('N', $primerDia); 
+        $diaSemana = (int)date('N', $primerDia);
         $diasMes = (int)date('t', $primerDia);
         
-        $row = 2;
+        $row = 3; 
         $col = 1;
         $diaActual = 1;
         
@@ -349,7 +360,6 @@ function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio) {
             $sheet->getRowDimension($row)->setRowHeight(80);
             $sheet->getColumnDimensionByColumn($col)->setWidth(25);
             
-            // Estilo de celda
             $style = $sheet->getStyle($cell);
             $style->getAlignment()->setWrapText(true)->setVertical('top');
             $style->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
@@ -366,9 +376,10 @@ function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio) {
             
             $diaActual++;
         }
+        
+        $sheet->getRowDimension(1)->setRowHeight(30);
     }
     
-    // Encabezados de descarga
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment; filename="calendario_sucursales.xlsx"');
     header('Cache-Control: max-age=0');
