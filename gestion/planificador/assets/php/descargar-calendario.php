@@ -302,10 +302,11 @@ function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio) {
     $diasSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
     
     foreach ($datosPorSucursal as $sucursalId => $datos) {
+        $ns = $sucursalId['nombre_sucursal'];
         // nueva hoja para cada sucursal
-        $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, "Sucursal $sucursalId");
+        $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, "Sucursal $ns");
         $spreadsheet->addSheet($sheet);
-        $sheet->setTitle("Sucursal $sucursalId"); 
+        $sheet->setTitle("Sucursal $ns"); 
         
         //  (días de la semana)
         foreach ($diasSemana as $i => $dia) {
