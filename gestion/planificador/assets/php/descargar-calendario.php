@@ -11,8 +11,7 @@ $anio = (int)($_GET['anio'] ?? date('Y'));
 
 $datos = obtenerDatosCalendario($con, $sucursal_id, $colaborador_id, $mes, $anio);
 $allD = alldata($con, $mes, $anio);
-print_r( $allD);
-die();
+
 if ($formato === 'excel') {
     generarExcel($datos, $mes, $anio);
 } else if ($formato ===  'all') {
