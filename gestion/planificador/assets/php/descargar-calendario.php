@@ -115,9 +115,12 @@ function allData($con, $mes, $anio) {
     foreach ($datos as $dato) {
         $sucursalId = $dato['sucursal_id'];
         if (!isset($datosPorSucursal[$sucursalId])) {
-            $datosPorSucursal[$sucursalId] = [];
+            $datosPorSucursal[$sucursalId] = [
+                'nombre_sucursal' => $dato['nombre_sucursal'],
+                'turnos' => []
+            ];
         }
-        $datosPorSucursal[$sucursalId][] = $dato;
+        $datosPorSucursal[$sucursalId]['turnos'][] = $dato;
     }
 
     return $datosPorSucursal;
@@ -296,19 +299,18 @@ function generarExcel($datos, $mes, $anio) {
 
 function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio) {
     $spreadsheet = new Spreadsheet();
-
     $spreadsheet->removeSheetByIndex(0);
     
     $diasSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
     
-    foreach ($datosPorSucursal as $sucursalId => $datos) {
-        $ns = $datos['nombre_sucursal'];
-        // nueva hoja para cada sucursal
-        $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, "Sucursal $ns");
-        $spreadsheet->addSheet($sheet);
-        $sheet->setTitle("Sucursal $ns"); 
+    foreach ($datosPorSucursal as $sucursal) {
+        $nombreSucursal = $sucursal['nombre_sucursal'];
+        $datos = $sucursal['turnos'];
         
-        //  (días de la semana)
+        $nombreHoja = substr($nombreSucursal, 0, 31);
+        $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $nombreHoja);
+        $spreadsheet->addSheet($sheet);
+        
         foreach ($diasSemana as $i => $dia) {
             $col = $i + 1;
             $cell = Coordinate::stringFromColumnIndex($col) . '1';
@@ -332,7 +334,6 @@ function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio) {
             $fecha = sprintf('%04d-%02d-%02d', $anio, $mes, $diaActual);
             $turnosDia = array_filter($datos, fn($d) => $d['fecha'] === $fecha);
             
-            // Contenido de la celda
             $contenido = "$diaActual\n";
             if (count($turnosDia) === 0) {
                 $contenido .= "Libre";
@@ -357,7 +358,6 @@ function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio) {
                 $style->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFEEEEEE');
             }
             
-            // Avanzar a la siguiente columna / fila
             $col++;
             if ($col > 7) {
                 $col = 1;
