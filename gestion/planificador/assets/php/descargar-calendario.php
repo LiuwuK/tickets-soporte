@@ -28,7 +28,7 @@ function obtenerDatosCalendario($con, $sucursal_id, $colaborador_id, $mes, $anio
                 hc.tipo, 
                 hc.hora_entrada, 
                 hc.hora_salida, 
-                ti.codigo,
+                ti.codigo AS codigo,
                 c.id AS colaborador_id,
                 CONCAT(c.name, ' ', c.fname) AS nombre_colaborador
               FROM horarios_sucursal hc
@@ -90,7 +90,6 @@ function allData($con, $mes, $anio) {
             JOIN sucursales s ON hc.sucursal_id = s.id
             WHERE MONTH(hc.fecha) = ? 
                 AND YEAR(hc.fecha) = ?
-            ORDER BY s.nombre ASC
             ";
 
     $query .= " ORDER BY hc.fecha, hc.hora_entrada, ti.codigo";
@@ -239,7 +238,7 @@ function generarExcel($datos, $mes, $anio) {
     }
 
     $primerDia = mktime(0, 0, 0, $mes, 1, $anio);
-    $diaSemana = (int)date('N', $primerDia); // 1 (Lun) a 7 (Dom)
+    $diaSemana = (int)date('N', $primerDia); 
     $diasMes = (int)date('t', $primerDia);
 
     $row = 2;
@@ -262,7 +261,7 @@ function generarExcel($datos, $mes, $anio) {
         } else {
             foreach ($turnosDia as $turno) {
                 $colaborador = $turno['nombre_colaborador'] ?? 'Sin asignar';
-                $contenido .= "{$turno['hora_entrada']} - {$turno['hora_salida']}\n$colaborador\n";
+                $contenido .= "{$turno['codigo']}\n$colaborador\n";
             }
         }
 
