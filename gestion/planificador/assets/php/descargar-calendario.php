@@ -116,6 +116,7 @@ function allData($con, $mes, $anio) {
         $sucursalId = $dato['sucursal_id'];
         if (!isset($datosPorSucursal[$sucursalId])) {
             $datosPorSucursal[$sucursalId] = [
+                'sucursal_id' => $sucursalId,
                 'nombre_sucursal' => $dato['nombre_sucursal'],
                 'turnos' => []
             ];
