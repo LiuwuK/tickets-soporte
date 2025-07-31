@@ -279,7 +279,6 @@ function generarExcel($datos, $mes, $anio) {
             $style->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFEEEEEE');
         }
 
-        // Avanzar a la siguiente columna / fila
         $col++;
         if ($col > 7) {
             $col = 1;
