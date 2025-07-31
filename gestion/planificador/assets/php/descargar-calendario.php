@@ -77,7 +77,7 @@ function allData($con, $mes, $anio) {
             hc.tipo, 
             hc.hora_entrada, 
             hc.hora_salida, 
-            ti.codigo,
+            ti.codigo AS codigo,
             c.id AS colaborador_id,
             CONCAT(c.name, ' ', c.fname) AS nombre_colaborador,
             hc.sucursal_id,
@@ -354,7 +354,7 @@ function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio) {
             } else {
                 foreach ($turnosDia as $turno) {
                     $colaborador = $turno['nombre_colaborador'] ?? 'Sin asignar';
-                    $contenido .= "{$turno['hora_entrada']} - {$turno['hora_salida']}\n$colaborador\n";
+                    $contenido .= "{$turno['codigo']}\n$colaborador\n";
                 }
             }
             
