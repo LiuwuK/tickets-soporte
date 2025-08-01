@@ -23,12 +23,15 @@ $query = "SELECT
             hc.tipo, 
             hc.hora_entrada, 
             hc.hora_salida, 
+            hc.bloque_id,
             ti.codigo,
             c.id AS colaborador_id,
             CONCAT(c.name, ' ', c.fname) AS nombre_colaborador
           FROM horarios_sucursal hc
           JOIN turnos_instalacion ti ON hc.turno_id = ti.id
-          LEFT JOIN colaborador_turno ct ON hc.turno_id = ct.turno_id 
+          LEFT JOIN colaborador_turno ct 
+            ON hc.turno_id = ct.turno_id 
+            AND hc.bloque_id = ct.bloque_id
             AND hc.fecha BETWEEN ct.fecha_inicio AND ct.fecha_fin
           LEFT JOIN colaboradores c ON ct.colaborador_id = c.id
           WHERE hc.sucursal_id = ?";
@@ -74,6 +77,7 @@ while ($row = $result->fetch_assoc()) {
             'hora_entrada' => $row['hora_entrada'],
             'hora_salida' => $row['hora_salida'],
             'codigo' => $row['codigo'],
+            'bloque_id' => $row['bloque_id'],
             'colaboradores' => []
         ];
     }
@@ -86,10 +90,12 @@ while ($row = $result->fetch_assoc()) {
 // generar los eventos
 foreach ($horarios as $horario) {
     $codigoTurno = $horario['codigo'];
+    $bloqueId = $horario['bloque_id'];
 
-    if (!isset($colaboradorColores[$codigoTurno])) {
-        $colaboradorColores[$codigoTurno] = $colores[count($colaboradorColores) % $colorCount];
+    if (!isset($colaboradorColores[$bloqueId])) {
+        $colaboradorColores[$bloqueId] = $colores[count($colaboradorColores) % $colorCount];
     }
+
 
     if ($horario['tipo'] === 'TRABAJO') {
         $hayColaboradores = !empty($horario['colaboradores']);
@@ -101,16 +107,18 @@ foreach ($horarios as $horario) {
         $titulo = $codigoTurno . ' - ' . ($hayColaboradores ? 'TURNO ASIGNADO' : 'SIN ASIGNAR');
 
         $eventos[] = [
-            'groupId' => $horario['fecha'] . $codigoTurno,
+            'groupId' => $horario['bloque_id'], 
             'title' => $titulo,
             'start' => $horario['fecha'] . 'T' . $horario['hora_entrada'],
             'end' => $horario['fecha'] . 'T' . $horario['hora_salida'],
-            'color' => $colaboradorColores[$codigoTurno],
+            'color' => $colaboradorColores[$bloqueId],
             'extendedProps' => [
                 'codigo_turno' => $codigoTurno,
+                'bloque_id' => $horario['bloque_id'],
                 'colaboradores' => $colaboradoresTexto
             ]
         ];
+
     } else {
         $eventos[] = [
             'title' => 'Descanso',

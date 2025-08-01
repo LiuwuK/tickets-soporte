@@ -30,11 +30,6 @@ try {
         $ids_eliminar = array_map('intval', $_POST['turnos_eliminados']);
         $placeholders = implode(',', array_fill(0, count($ids_eliminar), '?'));
         
-        /* Eliminar días 
-        $stmt = $con->prepare("DELETE FROM turno_dias WHERE turno_id IN ($placeholders)");
-        $stmt->bind_param(str_repeat('i', count($ids_eliminar)), ...$ids_eliminar);
-        $stmt->execute();
-        */
         // Eliminar turnos
         $stmt = $con->prepare("DELETE FROM turnos_instalacion WHERE id IN ($placeholders) AND sucursal_id = ?");
         $ids_eliminar[] = $sucursal_id;

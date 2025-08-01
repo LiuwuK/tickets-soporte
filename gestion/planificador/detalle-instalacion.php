@@ -551,8 +551,9 @@ document.addEventListener('DOMContentLoaded', function() {
       
       turnos.forEach(turno => {
           const option = document.createElement('option');
-          option.value = turno.id;
-          option.textContent = `${turno.codigo} (${turno.nombre_turno} - ${turno.tipo_jornada})`;
+          option.value = turno.turno_id;
+          option.dataset.bloque = turno.bloque_id;
+          option.textContent = `${turno.codigo} (${turno.nombre_turno}) - ${turno.bloque_id}`;
           turnoUnicoSelect.appendChild(option);
       });
       
@@ -733,16 +734,21 @@ document.addEventListener('DOMContentLoaded', function() {
     es_recurrente: esRecurrente
   };
 
-  if (esRecurrente) {
+ if (esRecurrente) {
     datos.turno_id = turnoUnicoSelect.value;
+    datos.bloque_id = turnoUnicoSelect.selectedOptions[0].dataset.bloque; 
   } else {
-    datos.turnos_semanas = Array.from(document.querySelectorAll('[name="turnos[]"]')).map(sel => sel.value);
+    datos.turnos_semanas = Array.from(document.querySelectorAll('[name="turnos[]"]')).map(sel => ({
+      turno_id: sel.value,
+      bloque_id: sel.selectedOptions[0]?.dataset.bloque || null
+    }));
   }
 
   return datos;
 }
 
   async function enviarAsignacion(datos) {
+    console.log(datos)
     const response = await fetch('assets/php/asignar-turno.php', {
       method: 'POST',
       headers: {

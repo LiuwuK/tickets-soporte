@@ -13,33 +13,35 @@ $datos = obtenerDatosCalendario($con, $sucursal_id, $colaborador_id, $mes, $anio
 $allD = alldata($con, $mes, $anio);
 
 if ($formato === 'excel') {
-    generarExcel($datos, $mes, $anio);
+    generarExcel($datos, $mes, $anio, $con, $sucursal_id, $colaborador_id);
 } else if ($formato ===  'all') {
-    generarExcelMultiSucursal($allD, $mes, $anio);
+    generarExcelMultiSucursal($allD, $mes, $anio, $con);
 } else {
-    generarPdfCalendario($datos, $mes, $anio);
+    generarPdfCalendario($datos, $mes, $anio, $con, $sucursal_id, $colaborador_id);
 }
 
 
 function obtenerDatosCalendario($con, $sucursal_id, $colaborador_id, $mes, $anio) {
-    $query = "SELECT 
-                hc.id AS horario_id,
-                hc.fecha, 
-                hc.tipo, 
-                hc.hora_entrada, 
-                hc.hora_salida, 
-                ti.codigo AS codigo,
-                c.id AS colaborador_id,
-                CONCAT(c.name, ' ', c.fname) AS nombre_colaborador
-              FROM horarios_sucursal hc
-              JOIN turnos_instalacion ti ON hc.turno_id = ti.id
-              LEFT JOIN colaborador_turno ct ON hc.turno_id = ct.turno_id 
-                AND hc.fecha BETWEEN ct.fecha_inicio AND ct.fecha_fin
-              LEFT JOIN colaboradores c ON ct.colaborador_id = c.id
-              WHERE hc.sucursal_id = ? 
-                AND MONTH(hc.fecha) = ? 
-                AND YEAR(hc.fecha) = ?";
-
+    $query = "SELECT  
+            hc.id AS horario_id,
+            hc.fecha, 
+            hc.tipo, 
+            hc.hora_entrada, 
+            hc.hora_salida, 
+            hc.bloque_id,
+            ti.codigo AS codigo,
+            c.id AS colaborador_id,
+            CONCAT(c.name, ' ', c.fname) AS nombre_colaborador
+          FROM horarios_sucursal hc
+          JOIN turnos_instalacion ti ON hc.turno_id = ti.id
+          LEFT JOIN colaborador_turno ct 
+            ON hc.turno_id = ct.turno_id 
+            AND hc.bloque_id = ct.bloque_id
+            AND hc.fecha BETWEEN ct.fecha_inicio AND ct.fecha_fin
+          LEFT JOIN colaboradores c ON ct.colaborador_id = c.id
+          WHERE hc.sucursal_id = ? 
+            AND MONTH(hc.fecha) = ? 
+            AND YEAR(hc.fecha) = ?";
     if ($colaborador_id) {
         $query .= " AND c.id = ?";
     }
@@ -71,25 +73,28 @@ function obtenerDatosCalendario($con, $sucursal_id, $colaborador_id, $mes, $anio
 }
 
 function allData($con, $mes, $anio) {
-   $query = "SELECT 
+   $query = "SELECT  
             hc.id AS horario_id,
             hc.fecha, 
             hc.tipo, 
             hc.hora_entrada, 
             hc.hora_salida, 
+            hc.bloque_id,
+            hc.sucursal_id,
+            s.nombre AS nombre_sucursal,
             ti.codigo AS codigo,
             c.id AS colaborador_id,
-            CONCAT(c.name, ' ', c.fname) AS nombre_colaborador,
-            hc.sucursal_id,
-            s.nombre AS nombre_sucursal
-            FROM horarios_sucursal hc
-            JOIN turnos_instalacion ti ON hc.turno_id = ti.id
-            LEFT JOIN colaborador_turno ct ON hc.turno_id = ct.turno_id 
-                AND hc.fecha BETWEEN ct.fecha_inicio AND ct.fecha_fin
-            LEFT JOIN colaboradores c ON ct.colaborador_id = c.id
-            JOIN sucursales s ON hc.sucursal_id = s.id
-            WHERE MONTH(hc.fecha) = ? 
-                AND YEAR(hc.fecha) = ?
+            CONCAT(c.name, ' ', c.fname) AS nombre_colaborador
+          FROM horarios_sucursal hc
+          JOIN turnos_instalacion ti ON hc.turno_id = ti.id
+          LEFT JOIN colaborador_turno ct 
+            ON hc.turno_id = ct.turno_id 
+            AND hc.bloque_id = ct.bloque_id
+            AND hc.fecha BETWEEN ct.fecha_inicio AND ct.fecha_fin
+          LEFT JOIN colaboradores c ON ct.colaborador_id = c.id
+          JOIN sucursales s ON hc.sucursal_id = s.id
+          WHERE MONTH(hc.fecha) = ? 
+            AND YEAR(hc.fecha) = ?
             ";
 
     $query .= " ORDER BY hc.fecha, hc.hora_entrada, ti.codigo";
@@ -111,7 +116,7 @@ function allData($con, $mes, $anio) {
     while ($row = $result->fetch_assoc()) {
         $datos[] = $row;
     }
-    // Agrupar datos por sucursal
+
     $datosPorSucursal = [];
     foreach ($datos as $dato) {
         $sucursalId = $dato['sucursal_id'];
@@ -128,7 +133,7 @@ function allData($con, $mes, $anio) {
     return $datosPorSucursal;
 }
 
-function generarPdfCalendario($datos, $mes, $anio) {
+function generarPdfCalendario($datos, $mes, $anio, $con, $s_id, $colab_id) {
     if (ob_get_length()) {
         ob_end_clean();
     }
@@ -177,20 +182,37 @@ function generarPdfCalendario($datos, $mes, $anio) {
         // Buscar turnos para este día
         $contenido = "$diaActual\n";
         $tieneHorarios = false;
+        $colaboradoresConTurno = [];
 
+        //procesar los turnos asignados
         foreach ($datos as $turno) {
             if ($turno['fecha'] === $fechaActual) {
                 $colaborador = $turno['nombre_colaborador'] ?? 'Sin asignar';
-                $contenido .= "{$turno['hora_entrada']} - {$turno['hora_salida']}\n$colaborador\n";
+                $contenido .= "{$turno['codigo']}\n$colaborador\n";
                 $tieneHorarios = true;
+                $colaboradoresConTurno[] = $turno['colaborador_id'];
             }
         }
 
-        if (!$tieneHorarios) {
+        // identificar colaboradores libres 
+        if ($tieneHorarios) {
+            if (empty($colab_id)) {
+                $todosColaboradores = obtenerColaboradoresSucursal($con, $s_id);
+                
+                foreach ($todosColaboradores as $colab) {
+                    if (!in_array($colab['id'], $colaboradoresConTurno)) {
+                        $contenido .= "{$turno['codigo']}\nLIBRE\n";
+                    }
+                }
+            }
+        } else {
+            // No hay ningún turno este día
             $contenido .= "Libre\n";
             $pdf->SetFillColor(230, 230, 230);
             $relleno = true;
-        } else {
+        }
+
+        if ($tieneHorarios) {
             $relleno = false;
         }
 
@@ -222,7 +244,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
-function generarExcel($datos, $mes, $anio) {
+function generarExcel($datos, $mes, $anio, $con, $s_id, $colab_id) {
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     $sheet->setTitle("Calendario $mes-$anio");
@@ -253,15 +275,28 @@ function generarExcel($datos, $mes, $anio) {
     while ($diaActual <= $diasMes) {
         $fecha = sprintf('%04d-%02d-%02d', $anio, $mes, $diaActual);
         $turnosDia = array_filter($datos, fn($d) => $d['fecha'] === $fecha);
-
+        
+        // Obtener todos los colaboradores únicos que tienen turno ese día
+        $colaboradoresConTurno = array_unique(array_column($turnosDia, 'colaborador_id'));
+        
         // Contenido de la celda
         $contenido = "$diaActual\n";
+        
         if (count($turnosDia) === 0) {
             $contenido .= "Libre";
         } else {
+            // Primero mostramos los turnos asignados
             foreach ($turnosDia as $turno) {
                 $colaborador = $turno['nombre_colaborador'] ?? 'Sin asignar';
                 $contenido .= "{$turno['codigo']}\n$colaborador\n";
+            }
+            if (empty($colab_id)) {
+                $todosColaboradores = obtenerColaboradoresSucursal($con, $s_id); 
+                foreach ($todosColaboradores as $colab) {
+                    if (!in_array($colab['id'], $colaboradoresConTurno)) {
+                        $contenido .= "{$turno['codigo']}\nLIBRE\n "; 
+                    }
+                }
             }
         }
 
@@ -298,7 +333,7 @@ function generarExcel($datos, $mes, $anio) {
     exit;
 }
 
-function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio) {
+function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio, $con) {
     $spreadsheet = new Spreadsheet();
     
     $spreadsheet->removeSheetByIndex(0);
@@ -346,35 +381,50 @@ function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio) {
             $fecha = sprintf('%04d-%02d-%02d', $anio, $mes, $diaActual);
             $turnosDia = array_filter($datos, fn($d) => $d['fecha'] === $fecha);
             
+            // Obtener todos los colaboradores únicos que tienen turno ese día
+            $colaboradoresConTurno = array_unique(array_column($turnosDia, 'colaborador_id'));
+            
+            // Contenido de la celda
             $contenido = "$diaActual\n";
+            
             if (count($turnosDia) === 0) {
                 $contenido .= "Libre";
             } else {
+                // Primero mostramos los turnos asignados
                 foreach ($turnosDia as $turno) {
                     $colaborador = $turno['nombre_colaborador'] ?? 'Sin asignar';
                     $contenido .= "{$turno['codigo']}\n$colaborador\n";
                 }
+
+                $todosColaboradores = obtenerColaboradoresSucursal($con, sucursal_id: $sucursalId); 
+                foreach ($todosColaboradores as $colab) {
+                    if (!in_array($colab['id'], $colaboradoresConTurno)) {
+                        $contenido .= "{$turno['codigo']}\nLIBRE\n "; 
+                    }
+                }
+                
             }
-            
+
             $cell = Coordinate::stringFromColumnIndex($col) . $row;
             $sheet->setCellValue($cell, $contenido);
             $sheet->getRowDimension($row)->setRowHeight(80);
             $sheet->getColumnDimensionByColumn($col)->setWidth(25);
-            
+
+            // Estilo de celda
             $style = $sheet->getStyle($cell);
             $style->getAlignment()->setWrapText(true)->setVertical('top');
             $style->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-            
+
             if (count($turnosDia) === 0) {
                 $style->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFEEEEEE');
             }
-            
+
             $col++;
             if ($col > 7) {
                 $col = 1;
                 $row++;
             }
-            
+
             $diaActual++;
         }
         
@@ -388,4 +438,15 @@ function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio) {
     $writer = new Xlsx($spreadsheet);
     $writer->save('php://output');
     exit;
+}
+function obtenerColaboradoresSucursal($con, $sucursal_id) {
+    $query = "SELECT c.id, CONCAT(c.name, ' ', c.fname) AS nombre 
+                FROM colaboradores c
+                JOIN colaborador_turno hc ON(c.id = hc.colaborador_id) 
+                WHERE facility = ?
+                GROUP BY c.id";
+    $stmt = $con->prepare($query);
+    $stmt->bind_param("i", $sucursal_id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }

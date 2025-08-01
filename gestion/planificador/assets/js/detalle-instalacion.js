@@ -413,8 +413,9 @@ document.querySelector('.pdf-btn').addEventListener('click', function () {
 
 function descargarCalendario(formato) {
   const sucursalId = document.getElementById('sucursalId').value; 
-  const colaboradorId = null;
- 
+  const colaboradorId = document.getElementById('filtroColaborador').value;
+  console.log(colaboradorId);
+
   const view = calendar.view;
   const startDate = view.currentStart;
   const mes = startDate.getMonth() + 1;

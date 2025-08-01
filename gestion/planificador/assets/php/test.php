@@ -60,9 +60,9 @@ try {
 
     // Consulta para insertar horarios
     $stmt = $con->prepare("INSERT INTO horarios_sucursal 
-                          (sucursal_id, fecha, turno_id, hora_entrada, hora_salida, tipo) 
-                          VALUES (?, ?, ?, ?, ?, ?)");
- 
+    (sucursal_id, fecha, turno_id, hora_entrada, hora_salida, tipo, bloque_id) 
+    VALUES (?, ?, ?, ?, ?, ?, ?)");
+    
     $diasMap = [
         'lunes' => 1,
         'martes' => 2,
@@ -79,27 +79,24 @@ try {
     $esDiaTrabajo = true;
     $contadorDiasPatron = 0;
     $totalTurnosGenerados = 0;
-
+    $bloqueId = uniqid('bloque_', true);
+    
     while ($fechaActual <= $fechaFin) {
         if ($esDiaTrabajo) {
-            // Verificar si este día de la semana tiene horario definido
-            $nombreDia = strtolower($fechaActual->format('l')); 
-            $nombreDiaEsp = array_search($fechaActual->format('w'), $diasMap);
-            
-            // Buscar horario para este día
             foreach ($horarios as $diaEsp => $horario) {
                 if ($diasMap[$diaEsp] == $fechaActual->format('w')) {
                     $fechaStr = $fechaActual->format('Y-m-d');
                     $tipo = 'TRABAJO';
                     
                     $stmt->bind_param(
-                        "isisss",
+                        "isissss",
                         $sucursalId,
                         $fechaStr,
                         $turnoId,
                         $horario['entrada'],
                         $horario['salida'],
-                        $tipo
+                        $tipo,
+                        $bloqueId
                     );
                     
                     if (!$stmt->execute()) {
@@ -131,9 +128,11 @@ try {
         'message' => "Turnos generados correctamente",
         'total_dias' => $fechaInicio->diff($fechaFin)->days + 1,
         'turnos_generados' => $totalTurnosGenerados,
+        'bloque_id' => $bloqueId,
         'fecha_inicio' => $fechaInicio->format('Y-m-d'),
         'fecha_fin' => $fechaFin->format('Y-m-d')
     ]);
+
 
 } catch (Exception $e) {
     $con->rollback();
