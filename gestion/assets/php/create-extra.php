@@ -649,7 +649,7 @@ function procesarFechaTurno($fecha_str, $index, &$errores) {
             throw new Exception("La fecha está vacía");
         }
 
-        // Patrón japonés: YYYY年MM月DD日
+        // Patrón japonés (si es necesario)
         if (preg_match('/(\d{4})年(\d{1,2})月(\d{1,2})日/', $fecha_str, $matches)) {
             $anio = (int)$matches[1];
             $mes = (int)$matches[2];
@@ -662,25 +662,36 @@ function procesarFechaTurno($fecha_str, $index, &$errores) {
             return sprintf('%04d-%02d-%02d', $anio, $mes, $dia);
         }
 
-        // Intentar con formato día/mes/año
-        $fecha_obj = DateTime::createFromFormat('d/m/Y', $fecha_str);
-        if ($fecha_obj !== false) {
-            $errors = DateTime::getLastErrors();
-            if (empty($errors['warnings']) && empty($errors['errors'])) {
-                return $fecha_obj->format('Y-m-d');
-            }
+        if (!preg_match('#^(\d{1,2})/(\d{1,2})/(\d{4})$#', $fecha_str, $matches)) {
+            throw new Exception("Formato debe ser DD/MM/AAAA");
         }
 
-        // Intentar con formato mes/día/año (por si acaso)
-        $fecha_obj = DateTime::createFromFormat('m/d/Y', $fecha_str);
-        if ($fecha_obj !== false) {
-            $errors = DateTime::getLastErrors();
-            if (empty($errors['warnings']) && empty($errors['errors'])) {
-                return $fecha_obj->format('Y-m-d');
-            }
+        $a = (int)$matches[1];
+        $b = (int)$matches[2];
+        $anio = (int)$matches[3];
+
+        
+        $mes_actual = (int)date('m');
+        $anio_actual = (int)date('Y');
+
+        if($a === $mes_actual){
+            $mes = $a;
+            $dia = $b;
+        }else{
+            $mes = $b;
+            $dia = $a;
         }
 
-        throw new Exception("Formato de fecha no reconocido");
+        if ($mes !== $mes_actual || $anio !== $anio_actual) {
+            throw new Exception("La fecha debe ser del mes actual");
+        }
+        
+        if (!checkdate($mes, $dia, $anio)) {
+            throw new Exception("Fecha inválida");
+        }
+        
+        return sprintf('%04d-%02d-%02d', $anio, $mes, $dia);
+
     } catch (Exception $e) {
         $errores['fechasInvalidas'][] = "Fila $index: '{$fecha_str}' - " . $e->getMessage();
         return false;
