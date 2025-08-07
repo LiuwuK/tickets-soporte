@@ -640,20 +640,38 @@ if (isset($_POST['carga'])) {
 
 // Función para limpiar y validar fechas
 function procesarFechaTurno($fecha_str, $index, &$errores) {
+    $ch = false;
+    if (preg_match('/(\d{4})年(\d{1,2})月(\d{1,2})日/', $fecha_str, $matches)){
+        $ch = true; 
+    }
+
     $fecha_str = preg_replace('/[^\x20-\x7E]/u', '', $fecha_str);
     $fecha_str = str_replace(['　', '⁄', '／', '\\', '|'], '/', $fecha_str);
     $fecha_str = trim($fecha_str);
+    $mes_actual = (int)date('m');
+    $anio_actual = (int)date('Y');
+
 
     try {
+
+
         if (empty($fecha_str)) {
             throw new Exception("La fecha está vacía");
         }
 
         // Patrón japonés (si es necesario)
-        if (preg_match('/(\d{4})年(\d{1,2})月(\d{1,2})日/', $fecha_str, $matches)) {
+        if ($ch) {
+            $a = (int)$matches[3];
+            $b = (int)$matches[2];
             $anio = (int)$matches[1];
-            $mes = (int)$matches[2];
-            $dia = (int)$matches[3];
+
+            if($a === $mes_actual){
+                $mes = $a;
+                $dia = $b;
+            }else{
+                $mes = $b;
+                $dia = $a;
+            }
 
             if (!checkdate($mes, $dia, $anio)) {
                 throw new Exception("Fecha inválida en formato especial");
@@ -669,10 +687,6 @@ function procesarFechaTurno($fecha_str, $index, &$errores) {
         $a = (int)$matches[1];
         $b = (int)$matches[2];
         $anio = (int)$matches[3];
-
-        
-        $mes_actual = (int)date('m');
-        $anio_actual = (int)date('Y');
 
         if($a === $mes_actual){
             $mes = $a;
