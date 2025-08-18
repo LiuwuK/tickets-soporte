@@ -320,8 +320,6 @@ if(isset($_POST['carga'])){
         </script>";
     }
 }
-
-
 //Cargar Dotacion
 if(isset($_POST['cargaDotacion'])){
      if ($_FILES['file']['error'] == UPLOAD_ERR_OK) {

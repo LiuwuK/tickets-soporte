@@ -169,7 +169,7 @@ try {
     $mail->setFrom('stsafeteck@gmail.com', 'Turnos Semanales');
     $destinatarios = [
         'fnorton@gruposafeteck.com' => 'Usuario',
-        'fponce@gruposafeteck.com' => 'Usuario',
+        'Fponce@gruposafeteck.com' => 'Usuario',
         'fsilva@gruposafeteck.com' => 'Usuario',
         'kcarvajal@gruposafeteck.com' => 'Usuario',
         'aarriagada@gruposafeteck.com' => 'Usuario',
