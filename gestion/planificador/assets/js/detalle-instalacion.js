@@ -323,7 +323,7 @@ document.getElementById('guardarHorario').addEventListener('click', async functi
     const response = await fetch('assets/php/test.php', {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(datos)
     });
@@ -360,9 +360,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initialView: 'dayGridMonth',
     locale: 'es',
     headerToolbar: {
-        left: 'prev,next',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      left: 'prev,next',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
     buttonText: { 
       month: 'Mes',
@@ -378,23 +378,23 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       fetch(url)
-        .then(response => response.json())
-        .then(data => successCallback(data))
-        .catch(error => failureCallback(error));
+      .then(response => response.json())
+      .then(data => successCallback(data))
+      .catch(error => failureCallback(error));
     },
     dateClick: function(info) {
-        alert('Fecha clickeada: ' + info.dateStr);
+      alert('Fecha clickeada: ' + info.dateStr);
     },
     eventClick: function(info) {
-        const colaboradores = info.event.extendedProps.colaboradores || 'Sin asignar';
-        const titulo = info.event.title;
-        alert(`Turno: ${titulo}\nColaboradores: ${colaboradores}`);
+      const colaboradores = info.event.extendedProps.colaboradores || 'Sin asignar';
+      const titulo = info.event.title;
+      alert(`Turno: ${titulo}\nColaboradores: ${colaboradores}`);
     },
     eventDisplay: 'block',
     eventOrder: 'groupId'
   });
   calendar.render();
-   filtroColaborador.addEventListener('change', function() {
+    filtroColaborador.addEventListener('change', function() {
     calendar.refetchEvents();
   });
 });
@@ -414,8 +414,6 @@ document.querySelector('.pdf-btn').addEventListener('click', function () {
 function descargarCalendario(formato) {
   const sucursalId = document.getElementById('sucursalId').value; 
   const colaboradorId = document.getElementById('filtroColaborador').value;
-  console.log(colaboradorId);
-
   const view = calendar.view;
   const startDate = view.currentStart;
   const mes = startDate.getMonth() + 1;

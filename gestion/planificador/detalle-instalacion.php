@@ -484,11 +484,11 @@ document.addEventListener('DOMContentLoaded', function() {
   fechaFinInput.addEventListener('change', validarFechasYGenerarTabla);
   
   checkMismoTurno.addEventListener('change', function() {
-      turnoUnicoContainer.classList.toggle('d-none', !this.checked);
-      if (this.checked) {
-        cargarTurnosUnicoSelect();
-      }
-      validarFechasYGenerarTabla();
+    turnoUnicoContainer.classList.toggle('d-none', !this.checked);
+    if (this.checked) {
+      cargarTurnosUnicoSelect();
+    }
+    validarFechasYGenerarTabla();
   });
 
   // Botones de asignación en la tabla
@@ -514,27 +514,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Confirmar asignación
   btnConfirmar.addEventListener('click', async function() {
-      if (!validarFormulario()) return;
+    if (!validarFormulario()) return;
+    try {
+      mostrarCarga(true);
+      const datos = prepararDatosAsignacion();
+      const response = await enviarAsignacion(datos);
       
-      try {
-          mostrarCarga(true);
-          
-          const datos = prepararDatosAsignacion();
-          const response = await enviarAsignacion(datos);
-          
-          if (response.success) {
-            mostrarExito(response.message);
-            bootstrap.Modal.getInstance(document.getElementById('modalAsignarTurno')).hide();
-            if (typeof actualizarVista === 'function') actualizarVista();
-          } else {
-            throw new Error(response.message || 'Error al asignar turnos');
-          }
-      } catch (error) {
-        mostrarError(error.message);
-        console.error('Error:', error);
-      } finally {
-        mostrarCarga(false);
+      if (response.success) {
+        mostrarExito(response.message);
+        bootstrap.Modal.getInstance(document.getElementById('modalAsignarTurno')).hide();
+        if (typeof actualizarVista === 'function') actualizarVista();
+      } else {
+        throw new Error(response.message || 'Error al asignar turnos');
       }
+    } catch (error) {
+      mostrarError(error.message);
+      console.error('Error:', error);
+    } finally {
+      mostrarCarga(false);
+    }
   });
 
   // Funciones auxiliares
@@ -559,12 +557,12 @@ document.addEventListener('DOMContentLoaded', function() {
     turnoUnicoSelect.innerHTML = '<option value="">Seleccionar turno...</option>';
     
     turnos.forEach(turno => {
-        const letraBloque = turno.bloque_id.split('_')[0];
-        const option = document.createElement('option');
-        option.value = turno.turno_id;
-        option.dataset.bloque = turno.bloque_id;
-        option.textContent = `${turno.codigo} (${turno.nombre_turno}) - ${letraBloque}`;
-        turnoUnicoSelect.appendChild(option);
+      const letraBloque = turno.bloque_id.split('_')[0];
+      const option = document.createElement('option');
+      option.value = turno.turno_id;
+      option.dataset.bloque = turno.bloque_id;
+      option.textContent = `${turno.codigo} (${turno.nombre_turno}) - ${letraBloque}`;
+      turnoUnicoSelect.appendChild(option);
     });
     
     turnoUnicoSelect.disabled = turnos.length === 0;
@@ -609,16 +607,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const turnos = await cargarTurnosDisponibles();
       
     let html = `
-        <div class="table-responsive">
-            <table class="table table-sm table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th width="30%">Semana</th>
-                        <th>Turno</th>
-                        <th>Disponibilidad</th>
-                    </tr>
-                </thead>
-                <tbody>
+      <div class="table-responsive">
+        <table class="table table-sm table-hover">
+          <thead class="table-light">
+            <tr>
+              <th width="30%">Semana</th>
+              <th>Turno</th>
+              <th>Disponibilidad</th>
+            </tr>
+          </thead>
+          <tbody>
     `;
 
     let fechaActual = new Date(inicio);
@@ -633,34 +631,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Verificar disponibilidad para esta semana
       const turnosDisponibles = await verificarTurnosDisponiblesSemana(
-          inicioSemana.toISOString().split('T')[0],
-          finSemana.toISOString().split('T')[0]
+        inicioSemana.toISOString().split('T')[0],
+        finSemana.toISOString().split('T')[0]
       );
 
       const opciones = turnosDisponibles.length > 0
-          ? turnosDisponibles.map(t => 
-              `<option value="${t.id}">${t.codigo} (${t.nombre_turno})</option>`
-            ).join('')
-          : '<option value="">No hay turnos disponibles</option>';
+        ? turnosDisponibles.map(t => 
+          `<option value="${t.id}">${t.codigo} (${t.nombre_turno})</option>`
+          ).join('')
+        : '<option value="">No hay turnos disponibles</option>';
 
       const estado = turnosDisponibles.length > 0
-          ? '<span class="badge bg-success">Disponible</span>'
-          : '<span class="badge bg-danger">No disponible</span>';
+        ? '<span class="badge bg-success">Disponible</span>'
+        : '<span class="badge bg-danger">No disponible</span>';
 
       html += `
           <tr>
-              <td>
-                  <strong>Semana ${semanaIndex}</strong><br>
-                  <small class="text-muted">${inicioSemana.toLocaleDateString()} - ${finSemana.toLocaleDateString()}</small>
-              </td>
-              <td>
-                  <select class="form-select form-select-sm" name="turnos[]" 
-                          ${turnosDisponibles.length === 0 ? 'disabled' : ''}>
-                      <option value="">${turnosDisponibles.length === 0 ? 'No disponibles' : 'Seleccionar...'}</option>
-                      ${opciones}
-                  </select>
-              </td>
-              <td>${estado}</td>
+            <td>
+              <strong>Semana ${semanaIndex}</strong><br>
+              <small class="text-muted">${inicioSemana.toLocaleDateString()} - ${finSemana.toLocaleDateString()}</small>
+            </td>
+            <td>
+              <select class="form-select form-select-sm" name="turnos[]" 
+                ${turnosDisponibles.length === 0 ? 'disabled' : ''}>
+                <option value="">${turnosDisponibles.length === 0 ? 'No disponibles' : 'Seleccionar...'}</option>
+                ${opciones}
+              </select>
+            </td>
+            <td>${estado}</td>
           </tr>
       `;
 
@@ -675,10 +673,9 @@ document.addEventListener('DOMContentLoaded', function() {
   async function cargarTurnosDisponibles() {
     try {
       const response = await fetch(`assets/php/get-turnos-sucursal.php?sucursal_id=${sucursalIdInput.value}`);
-      const data = await response.json();
-      
+      const data = await response.json();      
       if (!data || !data.success || !Array.isArray(data.data)) {
-          throw new Error('Formato de datos incorrecto');
+        throw new Error('Formato de datos incorrecto');
       }
       
       return data.data;
