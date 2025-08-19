@@ -86,7 +86,7 @@ function formatRut($rut){
     
     return $format;
 }
-
+//
 //nueva sucursal
 if(isset($_POST['newSup'])){ 
     $name = $_POST['nombre'];
@@ -166,7 +166,7 @@ if(isset($_POST['carga'])){
         $worksheet = $spreadsheet->getActiveSheet();
         $data = $worksheet->toArray();
         
-        // Preparamos ambas consultas (INSERT y UPDATE)
+        // Preparar consultas (INSERT y UPDATE)
         $query_insert = "INSERT INTO sucursales(nombre, direccion_calle, comuna, ciudad_id, departamento_id, supervisor_id, estado)
                 VALUES (?,?,?,?,?,?,?)";
         
@@ -210,10 +210,8 @@ if(isset($_POST['carga'])){
             $stmt_d->fetch();
             $stmt_d->close();
             
-            $supervisor = formatRut($supervisor);
-            
             // Obtener supervisor 
-            $query_s = "SELECT id FROM supervisores WHERE rut = ?";
+            $query_s = "SELECT id FROM supervisores WHERE nombre_supervisor = ?";
             $stmt_s = $con->prepare($query_s);
             $stmt_s->bind_param("s", $supervisor); 
             $stmt_s->execute();
