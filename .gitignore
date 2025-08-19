@@ -17,3 +17,5 @@ vendor/composer/InstalledVersions.php
 configs/gestion-config/errores_carga.log
 vendor/autoload.php
 /vendor
+/vendor
+composer.lock

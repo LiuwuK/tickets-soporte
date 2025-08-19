@@ -359,6 +359,15 @@ $diasSemana = ['lunes','martes','miércoles','jueves','viernes','sábado','domin
               <input type="date" class="form-control" id="fechaTermino" required>
             </div>
           </div>
+          <div class="row mb-3">
+            <div class="mb-3">
+              <label class="form-label">Bloque</label>
+              <select class="form-select" id="bloqueSelect" name="bloqueSelect">
+                <option value="AM">AM</option>
+                <option value="PM">PM</option>
+              </select>
+            </div>
+          </div>
           
           <!-- Tabla de horarios por día -->
           <div class="table-responsive">
@@ -477,30 +486,30 @@ document.addEventListener('DOMContentLoaded', function() {
   checkMismoTurno.addEventListener('change', function() {
       turnoUnicoContainer.classList.toggle('d-none', !this.checked);
       if (this.checked) {
-          cargarTurnosUnicoSelect();
+        cargarTurnosUnicoSelect();
       }
       validarFechasYGenerarTabla();
   });
 
   // Botones de asignación en la tabla
   document.querySelectorAll('.btn-rol').forEach(btn => {
-      btn.addEventListener('click', async function() {
-          const fila = this.closest('tr');
-          const colabId = fila.dataset.id;
-          const colabNombre = fila.dataset.nombre;
-          
-          document.getElementById('colabId').value = colabId;
-          document.getElementById('colabNombre').value = colabNombre;
-          nombreColabSpan.textContent = colabNombre;
-          
-          // Resetear formulario
-          checkMismoTurno.checked = false;
-          turnoUnicoContainer.classList.add('d-none');
-          contenedorSemanas.innerHTML = '<div class="alert alert-info">Seleccione las fechas y opciones de asignación</div>';
-          
-          const modal = new bootstrap.Modal(document.getElementById('modalAsignarTurno'));
-          modal.show();
-      });
+    btn.addEventListener('click', async function() {
+      const fila = this.closest('tr');
+      const colabId = fila.dataset.id;
+      const colabNombre = fila.dataset.nombre;
+      
+      document.getElementById('colabId').value = colabId;
+      document.getElementById('colabNombre').value = colabNombre;
+      nombreColabSpan.textContent = colabNombre;
+      
+      // Resetear formulario
+      checkMismoTurno.checked = false;
+      turnoUnicoContainer.classList.add('d-none');
+      contenedorSemanas.innerHTML = '<div class="alert alert-info">Seleccione las fechas y opciones de asignación</div>';
+      
+      const modal = new bootstrap.Modal(document.getElementById('modalAsignarTurno'));
+      modal.show();
+    });
   });
 
   // Confirmar asignación
@@ -514,212 +523,213 @@ document.addEventListener('DOMContentLoaded', function() {
           const response = await enviarAsignacion(datos);
           
           if (response.success) {
-              mostrarExito(response.message);
-              bootstrap.Modal.getInstance(document.getElementById('modalAsignarTurno')).hide();
-              if (typeof actualizarVista === 'function') actualizarVista();
+            mostrarExito(response.message);
+            bootstrap.Modal.getInstance(document.getElementById('modalAsignarTurno')).hide();
+            if (typeof actualizarVista === 'function') actualizarVista();
           } else {
-              throw new Error(response.message || 'Error al asignar turnos');
+            throw new Error(response.message || 'Error al asignar turnos');
           }
       } catch (error) {
-          mostrarError(error.message);
-          console.error('Error:', error);
+        mostrarError(error.message);
+        console.error('Error:', error);
       } finally {
-          mostrarCarga(false);
+        mostrarCarga(false);
       }
   });
 
   // Funciones auxiliares
   async function validarFechasYGenerarTabla() {
-      const inicio = new Date(fechaInicioInput.value);
-      const fin = new Date(fechaFinInput.value);
+    const inicio = new Date(fechaInicioInput.value);
+    const fin = new Date(fechaFinInput.value);
 
-      if (isNaN(inicio) || isNaN(fin) || inicio > fin) {
-          contenedorSemanas.innerHTML = '<div class="alert alert-warning">Seleccione un rango de fechas válido</div>';
-          return;
-      }
+    if (isNaN(inicio) || isNaN(fin) || inicio > fin) {
+      contenedorSemanas.innerHTML = '<div class="alert alert-warning">Seleccione un rango de fechas válido</div>';
+      return;
+    }
 
-      if (checkMismoTurno.checked) {
-          await generarTablaTurnoUnico();
-      } else {
-          await generarTablaTurnosPorSemana();
-      }
+    if (checkMismoTurno.checked) {
+      await generarTablaTurnoUnico();
+    } else {
+      await generarTablaTurnosPorSemana();
+    }
   }
 
   async function cargarTurnosUnicoSelect() {
-      const turnos = await cargarTurnosDisponibles();
-      turnoUnicoSelect.innerHTML = '<option value="">Seleccionar turno...</option>';
-      
-      turnos.forEach(turno => {
-          const option = document.createElement('option');
-          option.value = turno.turno_id;
-          option.dataset.bloque = turno.bloque_id;
-          option.textContent = `${turno.codigo} (${turno.nombre_turno}) - ${turno.bloque_id}`;
-          turnoUnicoSelect.appendChild(option);
-      });
-      
-      turnoUnicoSelect.disabled = turnos.length === 0;
+    const turnos = await cargarTurnosDisponibles();
+    turnoUnicoSelect.innerHTML = '<option value="">Seleccionar turno...</option>';
+    
+    turnos.forEach(turno => {
+        const letraBloque = turno.bloque_id.split('_')[0];
+        const option = document.createElement('option');
+        option.value = turno.turno_id;
+        option.dataset.bloque = turno.bloque_id;
+        option.textContent = `${turno.codigo} (${turno.nombre_turno}) - ${letraBloque}`;
+        turnoUnicoSelect.appendChild(option);
+    });
+    
+    turnoUnicoSelect.disabled = turnos.length === 0;
   }
 
   async function generarTablaTurnoUnico() {
-      if (!turnoUnicoSelect.value) {
-          contenedorSemanas.innerHTML = '<div class="alert alert-warning">Seleccione un turno</div>';
-          return;
-      }
+    if (!turnoUnicoSelect.value) {
+      contenedorSemanas.innerHTML = '<div class="alert alert-warning">Seleccione un turno</div>';
+      return;
+    }
 
-      const inicio = new Date(fechaInicioInput.value);
-      const fin = new Date(fechaFinInput.value);
-      
-      // Verificar disponibilidad del turno
-      const disponible = await verificarDisponibilidadTurno(
-          turnoUnicoSelect.value, 
-          inicio.toISOString().split('T')[0], 
-          fin.toISOString().split('T')[0]
-      );
+    const inicio = new Date(fechaInicioInput.value);
+    const fin = new Date(fechaFinInput.value);
+    
+    // Verificar disponibilidad del turno
+    const disponible = await verificarDisponibilidadTurno(
+      turnoUnicoSelect.value, 
+      inicio.toISOString().split('T')[0], 
+      fin.toISOString().split('T')[0]
+    );
 
-      if (!disponible) {
-          contenedorSemanas.innerHTML = `
-              <div class="alert alert-danger">
-                  El turno seleccionado no tiene horarios asignados para el período seleccionado
-              </div>
-          `;
-          return;
-      }
-
+    if (!disponible) {
       contenedorSemanas.innerHTML = `
-          <div class="alert alert-success">
-              Se asignará el turno seleccionado semanalmente desde 
-              ${inicio.toLocaleDateString()} hasta ${fin.toLocaleDateString()}
-          </div>
+        <div class="alert alert-danger">
+          El turno seleccionado no tiene horarios asignados para el período seleccionado
+        </div>
       `;
+      return;
+    }
+
+    contenedorSemanas.innerHTML = `
+      <div class="alert alert-success">
+        Se asignará el turno seleccionado semanalmente desde 
+        ${inicio.toLocaleDateString()} hasta ${fin.toLocaleDateString()}
+      </div>
+    `;
   }
 
   async function generarTablaTurnosPorSemana() {
-      const inicio = new Date(fechaInicioInput.value);
-      const fin = new Date(fechaFinInput.value);
-      const turnos = await cargarTurnosDisponibles();
+    const inicio = new Date(fechaInicioInput.value);
+    const fin = new Date(fechaFinInput.value);
+    const turnos = await cargarTurnosDisponibles();
       
-      let html = `
-          <div class="table-responsive">
-              <table class="table table-sm table-hover">
-                  <thead class="table-light">
-                      <tr>
-                          <th width="30%">Semana</th>
-                          <th>Turno</th>
-                          <th>Disponibilidad</th>
-                      </tr>
-                  </thead>
-                  <tbody>
+    let html = `
+        <div class="table-responsive">
+            <table class="table table-sm table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th width="30%">Semana</th>
+                        <th>Turno</th>
+                        <th>Disponibilidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    let fechaActual = new Date(inicio);
+    let semanaIndex = 1;
+
+    while (fechaActual <= fin) {
+      const inicioSemana = new Date(fechaActual);
+      let finSemana = new Date(fechaActual);
+      finSemana.setDate(finSemana.getDate() + 6);
+      
+      if (finSemana > fin) finSemana = new Date(fin);
+
+      // Verificar disponibilidad para esta semana
+      const turnosDisponibles = await verificarTurnosDisponiblesSemana(
+          inicioSemana.toISOString().split('T')[0],
+          finSemana.toISOString().split('T')[0]
+      );
+
+      const opciones = turnosDisponibles.length > 0
+          ? turnosDisponibles.map(t => 
+              `<option value="${t.id}">${t.codigo} (${t.nombre_turno})</option>`
+            ).join('')
+          : '<option value="">No hay turnos disponibles</option>';
+
+      const estado = turnosDisponibles.length > 0
+          ? '<span class="badge bg-success">Disponible</span>'
+          : '<span class="badge bg-danger">No disponible</span>';
+
+      html += `
+          <tr>
+              <td>
+                  <strong>Semana ${semanaIndex}</strong><br>
+                  <small class="text-muted">${inicioSemana.toLocaleDateString()} - ${finSemana.toLocaleDateString()}</small>
+              </td>
+              <td>
+                  <select class="form-select form-select-sm" name="turnos[]" 
+                          ${turnosDisponibles.length === 0 ? 'disabled' : ''}>
+                      <option value="">${turnosDisponibles.length === 0 ? 'No disponibles' : 'Seleccionar...'}</option>
+                      ${opciones}
+                  </select>
+              </td>
+              <td>${estado}</td>
+          </tr>
       `;
 
-      let fechaActual = new Date(inicio);
-      let semanaIndex = 1;
+      fechaActual.setDate(fechaActual.getDate() + 7);
+      semanaIndex++;
+    }
 
-      while (fechaActual <= fin) {
-          const inicioSemana = new Date(fechaActual);
-          let finSemana = new Date(fechaActual);
-          finSemana.setDate(finSemana.getDate() + 6);
-          
-          if (finSemana > fin) finSemana = new Date(fin);
-
-          // Verificar disponibilidad para esta semana
-          const turnosDisponibles = await verificarTurnosDisponiblesSemana(
-              inicioSemana.toISOString().split('T')[0],
-              finSemana.toISOString().split('T')[0]
-          );
-
-          const opciones = turnosDisponibles.length > 0
-              ? turnosDisponibles.map(t => 
-                  `<option value="${t.id}">${t.codigo} (${t.nombre_turno})</option>`
-                ).join('')
-              : '<option value="">No hay turnos disponibles</option>';
-
-          const estado = turnosDisponibles.length > 0
-              ? '<span class="badge bg-success">Disponible</span>'
-              : '<span class="badge bg-danger">No disponible</span>';
-
-          html += `
-              <tr>
-                  <td>
-                      <strong>Semana ${semanaIndex}</strong><br>
-                      <small class="text-muted">${inicioSemana.toLocaleDateString()} - ${finSemana.toLocaleDateString()}</small>
-                  </td>
-                  <td>
-                      <select class="form-select form-select-sm" name="turnos[]" 
-                              ${turnosDisponibles.length === 0 ? 'disabled' : ''}>
-                          <option value="">${turnosDisponibles.length === 0 ? 'No disponibles' : 'Seleccionar...'}</option>
-                          ${opciones}
-                      </select>
-                  </td>
-                  <td>${estado}</td>
-              </tr>
-          `;
-
-          fechaActual.setDate(fechaActual.getDate() + 7);
-          semanaIndex++;
-      }
-
-      html += `</tbody></table></div>`;
-      contenedorSemanas.innerHTML = html;
+    html += `</tbody></table></div>`;
+    contenedorSemanas.innerHTML = html;
   }
 
   async function cargarTurnosDisponibles() {
-      try {
-          const response = await fetch(`assets/php/get-turnos-sucursal.php?sucursal_id=${sucursalIdInput.value}`);
-          const data = await response.json();
-          
-          if (!data || !data.success || !Array.isArray(data.data)) {
-              throw new Error('Formato de datos incorrecto');
-          }
-          
-          return data.data;
+    try {
+      const response = await fetch(`assets/php/get-turnos-sucursal.php?sucursal_id=${sucursalIdInput.value}`);
+      const data = await response.json();
+      
+      if (!data || !data.success || !Array.isArray(data.data)) {
+          throw new Error('Formato de datos incorrecto');
+      }
+      
+      return data.data;
       } catch (error) {
-          console.error('Error al cargar turnos:', error);
-          mostrarError('No se pudieron cargar los turnos disponibles');
-          return []; 
+        console.error('Error al cargar turnos:', error);
+        mostrarError('No se pudieron cargar los turnos disponibles');
+        return []; 
       }
   }
 
   async function verificarDisponibilidadTurno(turnoId, fechaInicio, fechaFin) {
-      try {
-          const response = await fetch(`assets/php/verificar-disponibilidad.php?turno_id=${turnoId}&fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}`);
-          const data = await response.json();
-          return data.success && data.disponible;
-      } catch (error) {
-          console.error('Error verificando disponibilidad:', error);
-          return false;
-      }
+    try {
+      const response = await fetch(`assets/php/verificar-disponibilidad.php?turno_id=${turnoId}&fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}`);
+      const data = await response.json();
+      return data.success && data.disponible;
+    } catch (error) {
+      console.error('Error verificando disponibilidad:', error);
+      return false;
+    }
   }
 
   async function verificarTurnosDisponiblesSemana(fechaInicio, fechaFin) {
-      try {
-          const response = await fetch(`assets/php/get-turnos-disponibles.php?sucursal_id=${sucursalIdInput.value}&fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}`);
-          const data = await response.json();
-          return data.success ? data.data : [];
-      } catch (error) {
-          console.error('Error verificando turnos semanales:', error);
-          return [];
-      }
+    try {
+      const response = await fetch(`assets/php/get-turnos-disponibles.php?sucursal_id=${sucursalIdInput.value}&fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}`);
+      const data = await response.json();
+      return data.success ? data.data : [];
+    } catch (error) {
+      console.error('Error verificando turnos semanales:', error);
+      return [];
+    }
   }
 
   function validarFormulario() {
-      const form = document.getElementById('formAsignarTurno');
-      if (!form.checkValidity()) {
-          form.reportValidity();
-          return false;
-      }
+    const form = document.getElementById('formAsignarTurno');
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return false;
+    }
       
-      if (checkMismoTurno.checked && !turnoUnicoSelect.value) {
-          mostrarError('Debe seleccionar un turno para asignación recurrente');
-          return false;
-      }
+    if (checkMismoTurno.checked && !turnoUnicoSelect.value) {
+      mostrarError('Debe seleccionar un turno para asignación recurrente');
+      return false;
+    }
       
-      if (!checkMismoTurno.checked) {
-          const turnosSeleccionados = Array.from(document.querySelectorAll('[name="turnos[]"]')).filter(sel => sel.value);
-          if (turnosSeleccionados.length === 0) {
-              mostrarError('Debe seleccionar al menos un turno para alguna semana');
-              return false;
-          }
+    if (!checkMismoTurno.checked) {
+      const turnosSeleccionados = Array.from(document.querySelectorAll('[name="turnos[]"]')).filter(sel => sel.value);
+      if (turnosSeleccionados.length === 0) {
+        mostrarError('Debe seleccionar al menos un turno para alguna semana');
+        return false;
       }
+    }
       
       return true;
   }
@@ -752,7 +762,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const response = await fetch('assets/php/asignar-turno.php', {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(datos)
     });

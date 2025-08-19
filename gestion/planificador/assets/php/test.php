@@ -79,8 +79,9 @@ try {
     $esDiaTrabajo = true;
     $contadorDiasPatron = 0;
     $totalTurnosGenerados = 0;
-    $bloqueId = uniqid('bloque_', true);
-    
+    $bloque = $data['bloque'];
+    $bloqueId = $bloque . '_' . uniqid();
+
     while ($fechaActual <= $fechaFin) {
         if ($esDiaTrabajo) {
             foreach ($horarios as $diaEsp => $horario) {

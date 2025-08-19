@@ -230,7 +230,6 @@ document.querySelectorAll('.btn-dates').forEach(btn => {
     
     document.getElementById('turnoId').value = turnoId;
     document.getElementById('patronJornada').value = fila.dataset.jornada;
-    
     // Llenar tabla de horarios en el modal
     const tbody = document.getElementById('horariosDias');
     tbody.innerHTML = '';
@@ -317,6 +316,7 @@ document.getElementById('guardarHorario').addEventListener('click', async functi
       patron_jornada: document.getElementById('patronJornada').value,
       fecha_inicio: document.getElementById('fechaInicio').value,
       fecha_fin: document.getElementById('fechaTermino').value,
+      bloque: document.getElementById('bloqueSelect').value,
       horarios: horariosDias
     };
 
