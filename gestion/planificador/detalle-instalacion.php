@@ -305,33 +305,33 @@ $diasSemana = ['lunes','martes','miércoles','jueves','viernes','sábado','domin
           </div>
         </div>
         
-        <!-- Calendario -->
-        <div class="main-colab col-md-9 d-flex flex-column d-container"> 
-          <div class="mb-3 d-flex justify-content-between"> 
-            <div class="select col-md-5">
-              <label class="form-label" for="colaborador">Filtrar por Colaborador</label>
-              <select class="form-select form-select-sm" name="colaborador" id="filtroColaborador">
-                  <option value="">Todos los turnos</option>
-                <?php foreach ($colaboradorAsociado as $index => $colab): ?>
-                  <option value="<?= $colab['id'] ?>">
-                    <?= $colab['name'].' '.$colab['fname'].' '.$colab['mname'] ?>
-                  </option>
-                <?php endforeach;?> 
+      <!-- Calendario -->
+      <div class="main-colab col-md-9 d-flex flex-column d-container"> 
+        <div class="mb-3 d-flex justify-content-between"> 
+          <div class="select col-md-5">
+            <label class="form-label" for="colaborador">Filtrar por Colaborador</label>
+            <select class="form-select form-select-sm" name="colaborador" id="filtroColaborador">
+                <option value="">Todos los turnos</option>
+              <?php foreach ($colaboradorAsociado as $index => $colab): ?>
+                <option value="<?= $colab['id'] ?>">
+                  <?= $colab['name'].' '.$colab['fname'].' '.$colab['mname'] ?>
+                </option>
+              <?php endforeach;?> 
 
-              </select>
-            </div>
-            <div class="btns col-md-5 d-flex justify-content-end p-3">
-              <button type="button" class="excel-btn btn ">
-                <i class="bi bi-file-earmark-excel"></i>
-              </button>
-              <button type="button" class="pdf-btn btn">
-                <i class="bi bi-file-earmark-pdf"></i>
-              </button>
-            </div>
+            </select>
           </div>
-          <div class="col-md-12 calendario" id="calendar">
+          <div class="btns col-md-5 d-flex justify-content-end p-3">
+            <button type="button" class="excel-btn btn ">
+              <i class="bi bi-file-earmark-excel"></i>
+            </button>
+            <button type="button" class="pdf-btn btn">
+              <i class="bi bi-file-earmark-pdf"></i>
+            </button>
           </div>
-        </div>           
+        </div>
+        <div class="col-md-12 calendario" id="calendar">
+        </div>
+      </div>           
     </div>
   </div>
 
@@ -393,7 +393,6 @@ $diasSemana = ['lunes','martes','miércoles','jueves','viernes','sábado','domin
     </div>
   </div>
 </div>
-
 <!-- modala asignacion colaborador -->
 <div class="modal fade" id="modalAsignarTurno">
   <div class="modal-dialog modal-lg">
