@@ -641,9 +641,10 @@ document.addEventListener('DOMContentLoaded', function() {
         finSemana.toISOString().split('T')[0]
       );
 
+      console.log(turnosDisponibles);
       const opciones = turnosDisponibles.length > 0
         ? turnosDisponibles.map(t => 
-          `<option value="${t.id}">${t.codigo} (${t.nombre_turno})</option>`
+          `<option value="${t.turno_id}" data-bloque="${t.bloque_id}">${t.codigo} (${t.nombre_turno})</option>`
           ).join('')
         : '<option value="">No hay turnos disponibles</option>';
 
@@ -738,27 +739,37 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function prepararDatosAsignacion() {
-  const esRecurrente = checkMismoTurno.checked;
-  const datos = {
-    colaborador_id: document.getElementById('colabId').value,
-    colaborador_nombre: document.getElementById('colabNombre').value,
-    fecha_inicio: fechaInicioInput.value,
-    fecha_fin: fechaFinInput.value,
-    es_recurrente: esRecurrente
-  };
+    const esRecurrente = checkMismoTurno.checked;
+    const datos = {
+      colaborador_id: document.getElementById('colabId').value,
+      colaborador_nombre: document.getElementById('colabNombre').value,
+      fecha_inicio: fechaInicioInput.value,
+      fecha_fin: fechaFinInput.value,
+      es_recurrente: esRecurrente
+    };
 
- if (esRecurrente) {
-    datos.turno_id = turnoUnicoSelect.value;
-    datos.bloque_id = turnoUnicoSelect.selectedOptions[0].dataset.bloque; 
-  } else {
-    datos.turnos_semanas = Array.from(document.querySelectorAll('[name="turnos[]"]')).map(sel => ({
-      turno_id: sel.value,
-      bloque_id: sel.selectedOptions[0]?.dataset.bloque || null
-    }));
+    if (esRecurrente) {
+      datos.turno_id = turnoUnicoSelect.value;
+      datos.bloque_id = turnoUnicoSelect.selectedOptions[0].dataset.bloque; 
+    } else {
+      datos.turnos_semanas = [];
+      document.querySelectorAll('[name="turnos[]"]').forEach((select, index) => {
+        if (select.value && select.selectedIndex > 0) { 
+          datos.turnos_semanas.push({
+            turno_id: select.value,
+            bloque_id: select.options[select.selectedIndex].dataset.bloque
+          });
+        } else {
+          datos.turnos_semanas.push({
+            turno_id: null,
+            bloque_id: null
+          });
+        }
+      });
+    }
+
+    return datos;
   }
-
-  return datos;
-}
 
   async function enviarAsignacion(datos) {
     console.log(datos)

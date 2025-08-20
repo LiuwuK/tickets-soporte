@@ -129,40 +129,50 @@ try {
         }
 
         $fechaActual = clone $fechaInicio;
-        foreach ($data['turnos_semanas'] as $asignacion) {
+        $semanasProcesadas = 0;
+        
+        foreach ($data['turnos_semanas'] as $index => $asignacion) {
+            // Validar que tenemos datos para esta semana
             if (empty($asignacion['turno_id']) || empty($asignacion['bloque_id'])) {
                 $fechaActual->modify('+7 days');
+                $semanasProcesadas++;
                 continue;
             }
 
             $turnoId = (int)$asignacion['turno_id'];
-            $bloqueId = $asignacion['bloque_id']; // STRING
+            $bloqueId = $asignacion['bloque_id'];
 
+            // Calcular rango de la semana actual
             $fechaInicioSemana = $fechaActual->format('Y-m-d');
             $fechaFinSemana = clone $fechaActual;
             $fechaFinSemana->modify('+6 days');
+            
+            // Ajustar si excede la fecha final
             if ($fechaFinSemana > $fechaFin) {
                 $fechaFinSemana = clone $fechaFin;
             }
             $fechaFinSemanaStr = $fechaFinSemana->format('Y-m-d');
+            
+            error_log("Semana $index: $fechaInicioSemana a $fechaFinSemanaStr - Turno: $turnoId, Bloque: $bloqueId");
 
-            // Verificar turno y bloque
-            $stmtTurno = $con->prepare("
-                SELECT t.id 
-                FROM turnos_instalacion t
-                JOIN horarios_sucursal hs ON hs.turno_id = t.id
-                WHERE t.id = ? AND hs.bloque_id = ?
-                LIMIT 1
+            // Verificar disponibilidad del turno
+            $stmtVerificar = $con->prepare("
+                SELECT COUNT(*) as disponible 
+                FROM horarios_sucursal 
+                WHERE turno_id = ? AND bloque_id = ?
             ");
-            $stmtTurno->bind_param("is", $turnoId, $bloqueId);
-            $stmtTurno->execute();
-            $turno = $stmtTurno->get_result()->fetch_assoc();
-
-            if (!$turno) {
+            $stmtVerificar->bind_param("is", $turnoId, $bloqueId);
+            $stmtVerificar->execute();
+            $disponible = $stmtVerificar->get_result()->fetch_assoc()['disponible'];
+            
+            if (!$disponible) {
+                error_log("Turno $turnoId con bloque $bloqueId no disponible para semana $index");
                 $fechaActual->modify('+7 days');
+                $semanasProcesadas++;
                 continue;
             }
 
+            // Insertar asignación
             $stmtAsignar->bind_param("iisss", 
                 $colaboradorId, 
                 $turnoId, 
@@ -170,13 +180,19 @@ try {
                 $fechaInicioSemana, 
                 $fechaFinSemanaStr
             );
-            $stmtAsignar->execute();
-            $asignacionesCreadas++;
+            
+            if ($stmtAsignar->execute()) {
+                $asignacionesCreadas++;
+                error_log("Asignación creada para semana $index");
+            } else {
+                error_log("Error en asignación semana $index: " . $stmtAsignar->error);
+            }
 
             $fechaActual->modify('+7 days');
+            $semanasProcesadas++;
         }
 
-        $mensaje = "Se asignaron $asignacionesCreadas turnos semanales";
+        $mensaje = "Se asignaron $asignacionesCreadas de $semanasProcesadas semanas solicitadas";
     }
 
     if ($asignacionesCreadas === 0) {
