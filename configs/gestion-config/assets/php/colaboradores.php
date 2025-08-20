@@ -2,11 +2,19 @@
 require __DIR__.'/../../../../vendor/autoload.php';
 // Funcion para caclular antiguedad
 function calcularAntiguedad($fechaIngreso) {
-    $entryDate = new DateTime($fechaIngreso);
-    $currentDate = new DateTime();
-    $interval = $currentDate->diff($entryDate);
-    
-    return $interval->format('%y años, %m meses');
+    try {
+        if (empty($fechaIngreso)) {
+            throw new Exception("Fecha vacía");
+        }
+        
+        $entryDate = new DateTime($fechaIngreso);
+        $currentDate = new DateTime();
+        $interval = $currentDate->diff($entryDate);
+        
+        return $interval->format('%y años, %m meses');
+    } catch (Exception $e) {
+        return "Error en fecha: " . substr($fechaIngreso, 0, 10);
+    }
 }
 
 //obtener info 
@@ -214,9 +222,6 @@ if(isset($_POST['carga'])) {
                     $errores[] = "Fila $index: Sucursal no encontrada - ".$row[63];
                     continue;
                 }
-
-
-
                 $bday = DateTime::createFromFormat('d-m-Y', $row[6])->format('Y-m-d');
                 $entrydate = DateTime::createFromFormat('d-m-Y', $row[14])->format('Y-m-d');
                 $vigente = ($row[68] == 'Si') ? 1 : 0;
