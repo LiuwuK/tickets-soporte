@@ -555,12 +555,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const turnos = await cargarTurnosDisponibles();
     turnoUnicoSelect.innerHTML = '<option value="">Seleccionar turno...</option>';
     
+    const bloqueCounters = {};
     turnos.forEach(turno => {
       const letraBloque = turno.bloque_id.split('_')[0];
+      if (!bloqueCounters[letraBloque]) {
+        bloqueCounters[letraBloque] = 1;
+      } else {
+        bloqueCounters[letraBloque]++;
+      }
+      const numeroBloque = bloqueCounters[letraBloque];
       const option = document.createElement('option');
       option.value = turno.turno_id;
       option.dataset.bloque = turno.bloque_id;
-      option.textContent = `${turno.codigo} (${turno.nombre_turno}) - ${letraBloque}`;
+      option.textContent = `${turno.codigo} (${turno.nombre_turno}) - ${letraBloque}${numeroBloque}`;
       turnoUnicoSelect.appendChild(option);
     });
     
