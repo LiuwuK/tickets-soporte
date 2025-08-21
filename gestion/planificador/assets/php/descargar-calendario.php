@@ -336,103 +336,174 @@ function generarExcel($datos, $mes, $anio, $con, $s_id, $colab_id) {
 
 function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio, $con) {
     $spreadsheet = new Spreadsheet();
-    
     $spreadsheet->removeSheetByIndex(0);
-    
+    $userID = 32;
     $diasSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
     $mes = 9;
-    
-    foreach ($datosPorSucursal as $sucursal) {
-        $sucursalId = $sucursal['sucursal_id'];
-        $nombreSucursal = $sucursal['nombre_sucursal'];
-        $datos = $sucursal['turnos'];
         
-        $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, "Sucursal $sucursalId");
-        $spreadsheet->addSheet($sheet);
-        
-        $sheet->mergeCells('A1:G1');
-        $sheet->setCellValue('A1', $nombreSucursal);
-        $sheet->getStyle('A1')->getFont()
-            ->setBold(true)
-            ->setSize(14);
-        $sheet->getStyle('A1')->getAlignment()
-            ->setHorizontal('center')
-            ->setVertical('center');
-        
-    
-        foreach ($diasSemana as $i => $dia) {
-            $col = $i + 1;
-            $cell = Coordinate::stringFromColumnIndex($col) . '2';
-            $sheet->setCellValue($cell, $dia);
-            $sheet->getStyle($cell)->getFont()->setBold(true);
-        }
-        
-        $primerDia = mktime(0, 0, 0, $mes, 1, $anio);
-        $diaSemana = (int)date('N', $primerDia);
-        $diasMes = (int)date('t', $primerDia);
-        
-        $row = 3; 
-        $col = 1;
-        $diaActual = 1;
-        
-        for ($i = 1; $i < $diaSemana; $i++) {
-            $col++;
-        }
-        
-        while ($diaActual <= $diasMes) {
-            $fecha = sprintf('%04d-%02d-%02d', $anio, $mes, $diaActual);
-            $turnosDia = array_filter($datos, fn($d) => $d['fecha'] === $fecha);
-            
-            // Obtener todos los colaboradores únicos que tienen turno ese día
-            $colaboradoresConTurno = array_unique(array_column($turnosDia, 'colaborador_id'));
-            
-            // Contenido de la celda
-            $contenido = "$diaActual\n";
-            
-            if (count($turnosDia) === 0) {
-                $contenido .= "Libre";
-            } else {
-                // Primero mostramos los turnos asignados
-                foreach ($turnosDia as $turno) {
-                    $colaborador = $turno['nombre_colaborador'] ?? 'Sin asignar';
-                    $contenido .= "{$turno['codigo']}\n$colaborador\n";
-                }
+    if($userID == 32){
+        foreach ($datosPorSucursal as $sucursal) {
+            $sucursalId = $sucursal['sucursal_id'];
+            $nombreSucursal = $sucursal['nombre_sucursal'];
+            $datos = $sucursal['turnos'];
 
-                $todosColaboradores = obtenerColaboradoresSucursal($con, sucursal_id: $sucursalId); 
-                foreach ($todosColaboradores as $colab) {
-                    if (!in_array($colab['id'], $colaboradoresConTurno)) {
-                        $contenido .= "{$turno['codigo']}\nLIBRE\n "; 
+            $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, "Sucursal $sucursalId");
+            $spreadsheet->addSheet($sheet);
+
+            // Título
+            $sheet->mergeCells('A1:Z1');
+            $sheet->setCellValue('A1', $nombreSucursal);
+            $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+            $sheet->getStyle('A1')->getAlignment()->setHorizontal('center')->setVertical('center');
+
+            // Cabecera de días
+            $primerDia = mktime(0, 0, 0, $mes, 1, $anio);
+            $diasMes = (int)date('t', $primerDia);
+
+            $sheet->setCellValue('A2', 'DNI');
+            $sheet->getStyle('A2')->getFont()->setBold(true);
+
+            for ($dia = 1; $dia <= $diasMes; $dia++) {
+                $col = $dia + 1; // columna B en adelante
+                $nombreDia = $diasSemana[(date('N', mktime(0,0,0,$mes,$dia,$anio))-1)];
+                $cell = Coordinate::stringFromColumnIndex($col) . '2';
+                $sheet->setCellValue($cell, "$nombreDia $dia");
+                $sheet->getStyle($cell)->getFont()->setBold(true);
+            }
+
+            // Obtener todos los colaboradores de la sucursal
+            $todosColaboradores = obtenerColaboradoresSucursal($con, $sucursalId);
+
+            $row = 3;
+            foreach ($todosColaboradores as $colab) {
+                $sheet->setCellValue("A$row", $colab['rutC']);
+                $sheet->getStyle("A$row")->getFont()->setBold(true);
+
+                for ($dia = 1; $dia <= $diasMes; $dia++) {
+                    $fecha = sprintf('%04d-%02d-%02d', $anio, $mes, $dia);
+
+                    $turno = array_filter($datos, fn($d) =>
+                        $d['fecha'] === $fecha && $d['colaborador_id'] == $colab['id']
+                    );
+
+                    $col = $dia + 1;
+                    $cell = Coordinate::stringFromColumnIndex($col) . $row;
+
+                    if ($turno) {
+                        $t = reset($turno);
+                        $sheet->setCellValue($cell, $t['codigo']);
+                    } else {
+                        $sheet->setCellValue($cell, 'Libre');
                     }
+
+                    $sheet->getStyle($cell)->getAlignment()
+                        ->setHorizontal('center')
+                        ->setVertical('center');
+                    $sheet->getStyle($cell)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
                 }
-                
-            }
 
-            $cell = Coordinate::stringFromColumnIndex($col) . $row;
-            $sheet->setCellValue($cell, $contenido);
-            $sheet->getRowDimension($row)->setRowHeight(80);
-            $sheet->getColumnDimensionByColumn($col)->setWidth(25);
-
-            // Estilo de celda
-            $style = $sheet->getStyle($cell);
-            $style->getAlignment()->setWrapText(true)->setVertical('top');
-            $style->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-
-            if (count($turnosDia) === 0) {
-                $style->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFEEEEEE');
-            }
-
-            $col++;
-            if ($col > 7) {
-                $col = 1;
                 $row++;
             }
 
-            $diaActual++;
+            // Ajustes de tamaño
+            $sheet->getColumnDimension('A')->setWidth(25);
+            for ($c = 2; $c <= $diasMes+1; $c++) {
+                $colLetter = Coordinate::stringFromColumnIndex($c);
+                $sheet->getColumnDimension($colLetter)->setWidth(10);
+            }
         }
+    }else{      
+        foreach ($datosPorSucursal as $sucursal) {
+            $sucursalId = $sucursal['sucursal_id'];
+            $nombreSucursal = $sucursal['nombre_sucursal'];
+            $datos = $sucursal['turnos'];
+            
+            $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, "Sucursal $sucursalId");
+            $spreadsheet->addSheet($sheet);
+            
+            $sheet->mergeCells('A1:G1');
+            $sheet->setCellValue('A1', $nombreSucursal);
+            $sheet->getStyle('A1')->getFont()
+                ->setBold(true)
+                ->setSize(14);
+            $sheet->getStyle('A1')->getAlignment()
+                ->setHorizontal('center')
+                ->setVertical('center');
+            
         
-        $sheet->getRowDimension(1)->setRowHeight(30);
+            foreach ($diasSemana as $i => $dia) {
+                $col = $i + 1;
+                $cell = Coordinate::stringFromColumnIndex($col) . '2';
+                $sheet->setCellValue($cell, $dia);
+                $sheet->getStyle($cell)->getFont()->setBold(true);
+            }
+            
+            $primerDia = mktime(0, 0, 0, $mes, 1, $anio);
+            $diaSemana = (int)date('N', $primerDia);
+            $diasMes = (int)date('t', $primerDia);
+            
+            $row = 3; 
+            $col = 1;
+            $diaActual = 1;
+            
+            for ($i = 1; $i < $diaSemana; $i++) {
+                $col++;
+            }
+            
+            while ($diaActual <= $diasMes) {
+                $fecha = sprintf('%04d-%02d-%02d', $anio, $mes, $diaActual);
+                $turnosDia = array_filter($datos, fn($d) => $d['fecha'] === $fecha);
+                
+                // Obtener todos los colaboradores únicos que tienen turno ese día
+                $colaboradoresConTurno = array_unique(array_column($turnosDia, 'colaborador_id'));
+                
+                // Contenido de la celda
+                $contenido = "$diaActual\n";
+                
+                if (count($turnosDia) === 0) {
+                    $contenido .= "Libre";
+                } else {
+                    // Primero mostramos los turnos asignados
+                    foreach ($turnosDia as $turno) {
+                        $colaborador = $turno['nombre_colaborador'] ?? 'Sin asignar';
+                        $contenido .= "{$turno['codigo']}\n$colaborador\n";
+                    }
+
+                    $todosColaboradores = obtenerColaboradoresSucursal($con, sucursal_id: $sucursalId); 
+                    foreach ($todosColaboradores as $colab) {
+                        if (!in_array($colab['id'], $colaboradoresConTurno)) {
+                            $contenido .= "{$turno['codigo']}\nLIBRE\n "; 
+                        }
+                    }
+                    
+                }
+
+                $cell = Coordinate::stringFromColumnIndex($col) . $row;
+                $sheet->setCellValue($cell, $contenido);
+                $sheet->getRowDimension($row)->setRowHeight(80);
+                $sheet->getColumnDimensionByColumn($col)->setWidth(25);
+
+                // Estilo de celda
+                $style = $sheet->getStyle($cell);
+                $style->getAlignment()->setWrapText(true)->setVertical('top');
+                $style->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+                if (count($turnosDia) === 0) {
+                    $style->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFEEEEEE');
+                }
+
+                $col++;
+                if ($col > 7) {
+                    $col = 1;
+                    $row++;
+                }
+
+                $diaActual++;
+            }
+            
+            $sheet->getRowDimension(1)->setRowHeight(30);
+        }
     }
-    
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment; filename="calendario_sucursales.xlsx"');
     header('Cache-Control: max-age=0');
@@ -442,7 +513,7 @@ function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio, $con) {
     exit;
 }
 function obtenerColaboradoresSucursal($con, $sucursal_id) {
-    $query = "SELECT c.id, CONCAT(c.name, ' ', c.fname) AS nombre 
+    $query = "SELECT c.id, CONCAT(c.name, ' ', c.fname) AS nombre, c.rut AS rutC
                 FROM colaboradores c
                 JOIN colaborador_turno hc ON(c.id = hc.colaborador_id) 
                 WHERE facility = ?
