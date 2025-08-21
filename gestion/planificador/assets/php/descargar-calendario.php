@@ -73,7 +73,8 @@ function obtenerDatosCalendario($con, $sucursal_id, $colaborador_id, $mes, $anio
 }
 
 function allData($con, $mes, $anio) {
-   $query = "SELECT  
+    $mes = 9;
+    $query = "SELECT  
             hc.id AS horario_id,
             hc.fecha, 
             hc.tipo, 
@@ -339,6 +340,7 @@ function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio, $con) {
     $spreadsheet->removeSheetByIndex(0);
     
     $diasSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+    $mes = 9;
     
     foreach ($datosPorSucursal as $sucursal) {
         $sucursalId = $sucursal['sucursal_id'];
