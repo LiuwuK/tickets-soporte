@@ -352,10 +352,11 @@ function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio, $con) {
 
             // Título
             $sheet->mergeCells('A1:Z1');
-            $sheet->setCellValue('A1', $nombreSucursal);
+            /*$sheet->setCellValue('A1', $nombreSucursal);
             $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
             $sheet->getStyle('A1')->getAlignment()->setHorizontal('center')->setVertical('center');
-
+            */
+            
             // Cabecera de días
             $primerDia = mktime(0, 0, 0, $mes, 1, $anio);
             $diasMes = (int)date('t', $primerDia);
@@ -367,7 +368,7 @@ function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio, $con) {
                 $col = $dia + 1; // columna B en adelante
                 $nombreDia = $diasSemana[(date('N', mktime(0,0,0,$mes,$dia,$anio))-1)];
                 $cell = Coordinate::stringFromColumnIndex($col) . '2';
-                $sheet->setCellValue($cell, "$nombreDia $dia");
+                $sheet->setCellValue($cell, "$dia");
                 $sheet->getStyle($cell)->getFont()->setBold(true);
             }
 
