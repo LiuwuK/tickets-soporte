@@ -8,6 +8,8 @@ $sucursal_id = (int)($_GET['sucursal_id'] ?? 0);
 $colaborador_id = isset($_GET['colaborador_id']) ? (int)$_GET['colaborador_id'] : null;
 $mes = (int)($_GET['mes'] ?? date('n'));
 $anio = (int)($_GET['anio'] ?? date('Y'));
+$userID = isset($_GET['userID']) ? (int)$_GET['userID'] : null;
+
 
 $datos = obtenerDatosCalendario($con, $sucursal_id, $colaborador_id, $mes, $anio);
 $allD = alldata($con, $mes, $anio);
@@ -15,7 +17,7 @@ $allD = alldata($con, $mes, $anio);
 if ($formato === 'excel') {
     generarExcel($datos, $mes, $anio, $con, $sucursal_id, $colaborador_id);
 } else if ($formato ===  'all') {
-    generarExcelMultiSucursal($allD, $mes, $anio, $con);
+    generarExcelMultiSucursal($allD, $mes, $anio, $con, $userID);
 } else {
     generarPdfCalendario($datos, $mes, $anio, $con, $sucursal_id, $colaborador_id);
 }
@@ -333,15 +335,13 @@ function generarExcel($datos, $mes, $anio, $con, $s_id, $colab_id) {
     $writer->save('php://output');
     exit;
 }
-
-function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio, $con) {
+function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio, $con, $userID) {
     $spreadsheet = new Spreadsheet();
     $spreadsheet->removeSheetByIndex(0);
-    $userID = 32;
     $diasSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
     $mes = 9;
         
-    if($userID == 32){
+    if($userID == 50){
         foreach ($datosPorSucursal as $sucursal) {
             $sucursalId = $sucursal['sucursal_id'];
             $nombreSucursal = $sucursal['nombre_sucursal'];

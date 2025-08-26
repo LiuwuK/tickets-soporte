@@ -4,6 +4,7 @@ include("../../checklogin.php");
 include("../../dbconnection.php");
 include("assets/php/instalaciones.php");
 check_login();
+$userID = $_SESSION['id'];
 
 ?>
 <!DOCTYPE html>
@@ -89,7 +90,8 @@ check_login();
               </div>
             </div>
             <div>
-                <button type="submit" class="btn btn-excel" onclick="window.location.href='assets/php/descargar-calendario.php?formato=all';">
+                <button type="submit" class="btn btn-excel" onclick="window.location.href='assets/php/descargar-calendario.php?formato=all&userID=<?php echo $userID;?>';">
+
                   <i class="bi bi-file-earmark-excel"></i> 
                   Exportar Calendarios
                 </button>
