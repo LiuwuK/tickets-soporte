@@ -44,11 +44,16 @@ check_login();
             </div><br><br>
 
             <div class="content-body mx-auto col-xl-10">
+                <?php    
+                if(isset($_SESSION['deptos']) && in_array(20, $_SESSION['deptos'])){
+                ?>
                 <div class="crd mx-auto" onclick="window.location.href='colaboradores.php';">
                     <i class="bi bi-people-fill"></i>
                     <h4>Colaboradores</h4>
                 </div>  
-
+               <?php
+                }
+                ?>
                 <div class="crd mx-auto" onclick="window.location.href='instalaciones.php';">
                     <i class="bi bi-buildings-fill"></i>
                     <h4>Sucursales</h4>

@@ -245,7 +245,7 @@ if (isset($_POST['newExtra'])) {
     exit;
 }
 
-
+// TODO Esta es la carga de archivos
 use PhpOffice\PhpSpreadsheet\IOFactory;
 function is_empty($value) {
     return $value === null || trim($value) === '';
