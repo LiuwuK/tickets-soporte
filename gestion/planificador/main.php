@@ -45,7 +45,7 @@ check_login();
 
             <div class="content-body mx-auto col-xl-10">
                 <?php    
-                if(isset($_SESSION['deptos']) && in_array(20, $_SESSION['deptos'])){
+                if(isset($_SESSION['deptos']) && in_array(238, $_SESSION['deptos'])){
                 ?>
                 <div class="crd mx-auto" onclick="window.location.href='colaboradores.php';">
                     <i class="bi bi-people-fill"></i>
