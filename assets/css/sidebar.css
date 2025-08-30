@@ -318,3 +318,16 @@ input, .form-control, .form-select{
         display: flex;
     }
 }
+.pagination .page-item.active .page-link {
+    background-color: #34435E; 
+    color: #fff;               
+    border-color: #34435E;     
+}
+.pagination .page-item .page-link:hover {
+    background-color: #5a5f7a; 
+    color: #fff;
+}
+.pagination .page-item .page-link {
+    color: #34435E; 
+    border-color: #ccc;
+}

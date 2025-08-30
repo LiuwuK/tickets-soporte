@@ -281,14 +281,40 @@ header('Content-Type: text/html; charset=utf-8');
                 <?php }
                 ?>
                 <!-- PAGINACIÓN -->
-                <?php if($totalPages > 1): ?>
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        <?php for($i=1; $i<=$totalPages; $i++): ?>
-                            <li class="page-item <?= $i==$page ? 'active' : '' ?>">
-                                <a class="page-link" href="?<?= http_build_query(array_merge($_GET,['page'=>$i])) ?>"><?= $i ?></a>
+               <?php if ($totalPages > 1): ?>
+                <nav aria-label="Paginación de proyectos">
+                    <ul class="pagination justify-content-center mt-4">
+                        <?php if ($page > 1): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>">
+                                &laquo; Anterior
+                            </a>
+                        </li>
+                        <?php endif; ?>
+
+                        <?php
+                        $startPage = max(1, $page - 2);
+                        $endPage   = min($totalPages, $startPage + 4);
+
+                        if ($endPage - $startPage < 4) {
+                            $startPage = max(1, $endPage - 4);
+                        }
+
+                        for ($i = $startPage; $i <= $endPage; $i++): ?>
+                            <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>">
+                                    <?= $i ?>
+                                </a>
                             </li>
                         <?php endfor; ?>
+
+                        <?php if ($page < $totalPages): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>">
+                                Siguiente &raquo;
+                            </a>
+                        </li>
+                        <?php endif; ?>
                     </ul>
                 </nav>
                 <?php endif; 
