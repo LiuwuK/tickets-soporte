@@ -28,7 +28,7 @@ $query = "SELECT * FROM colaboradores";
 //agregar el filtro
 if (!empty($search)) {
     $query .= " WHERE name LIKE ?";
-    $searchTerm = "%$search%"; // Búsqueda parcial
+    $searchTerm = "%$search%"; 
 }
 // Agregar paginación
 $query .= " LIMIT ? OFFSET ?";

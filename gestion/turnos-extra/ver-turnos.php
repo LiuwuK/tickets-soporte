@@ -4,8 +4,6 @@ include("../../checklogin.php");
 check_login();
 include("../../dbconnection.php");
 include("../assets/php/ver-turnos.php");
-
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -26,8 +24,6 @@ include("../assets/php/ver-turnos.php");
 <!-- CSS personalizados -->
 <link href="../../assets/css/sidebar.css" rel="stylesheet" type="text/css"/>
 <link href="../assets/css/historico-TD.css" rel="stylesheet" type="text/css"/>
-<!-- Toast notificaciones -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 </head>
 
 <body class="test" >
@@ -44,86 +40,130 @@ include("../assets/php/ver-turnos.php");
               <i class="bi bi-arrow-left" ></i>
           </button>
         </div> <br><br>
-        <form method="GET" action="../assets/php/exportar-turnos.php" class="">
+        <form method="GET" action="" id="filtrosForm">
           <div class="filtros d-flex justify-content-between form-f">
-            <div class="d-flex justify-content-arround mb-3">
-              <div class="all-fil">
-                <label for="filtroTexto">Buscar</label>
-                <input type="text" id="filtroTexto" name="texto" class="form-control form-control-sm fil" placeholder="Buscar por nombre, instalación, etc." onkeydown="return event.key !== 'Enter';">
+              <div class="d-flex justify-content-arround mb-3">
+                  <div class="all-fil">
+                      <label for="filtroTexto">Buscar</label>
+                      <input type="text" id="filtroTexto" name="texto" value="<?= htmlspecialchars($filtros['texto']) ?>" class="form-control form-control-sm fil" placeholder="Buscar por nombre, instalación, etc.">
+                  </div>
+                  <div class="all-fil">  
+                      <label for="filtroEstado" >Estado</label>
+                      <select id="filtroEstado" name="estado" class="form-select form-select-sm fil-estado">
+                          <option value="">Todos los estados</option>
+                          <?php
+                          foreach ($valoresEnum as $valor) {
+                              $selected = $filtros['estado'] == $valor ? 'selected' : '';
+                              echo "<option value='$valor' $selected>$valor</option>";
+                          }
+                          ?>
+                      </select>
+                  </div>
+                  <div class="all-fil">  
+                      <label for="filtroSupervisor" >Supervisor</label>
+                      <select id="filtroSupervisor" name="supervisor" class="form-select form-select-sm">
+                          <option value="">Todos los supervisores</option>
+                          <?php
+                          if ($result_sup->num_rows > 0) {
+                              while ($supervisor = $result_sup->fetch_assoc()) {
+                                  $selected = $filtros['supervisor'] == $supervisor['id'] ? 'selected' : '';
+                                  echo '<option value="'.$supervisor['id'].'" '.$selected.'>' 
+                                      . htmlspecialchars($supervisor['name'], ENT_QUOTES) . '</option>';
+                              }
+                          } else {
+                              echo '<option value="">No hay supervisores</option>';
+                          }
+                          $stmt_s->close();
+                          ?>
+                      </select>
+                  </div>
+                  <div class="all-fil">
+                      <label for="filtroFechaInicio">Fecha Inicio</label>
+                      <input name="fecha_inicio" type="date" value="<?= htmlspecialchars($filtros['fecha_inicio']) ?>" class="form-control form-control-sm fil" id="filtroFechaInicio">
+                  </div>
+                  <div class="all-fil">
+                      <label for="filtroFechaFin">Fecha Fin</label>
+                      <input name="fecha_fin" type="date" value="<?= htmlspecialchars($filtros['fecha_fin']) ?>" class="form-control form-control-sm fil" id="filtroFechaFin">
+                  </div>
+                  <div class="all-fill">
+                      <label class="form-check-label" for="filtroSemanaActual">Semana en Gestion</label>
+                      <div class="form-check form-switch mt-3">
+                          <input class="form-check-input" type="checkbox" id="filtroSemanaActual" name="semana_actual" <?= $filtros['semana_actual'] ? 'checked' : '' ?>>
+                      </div>
+                  </div>
               </div>
-              <div class="all-fil">  
-                <label for="filtroEstado" >Estado</label>
-                <select id="filtroEstado" name="estado" class="form-select form-select-sm fil-estado">
-                  <option value="">Todos los estados</option>
-                  <?php
-                  foreach ($valoresEnum as $valor) {
-                      echo "<option value='$valor'>$valor</option>";
-                  }
-                  ?>
-                </select>
-              </div>
-              <div class="all-fil">  
-                <label for="filtroSupervisor" >Supervisor</label>
-                <select id="filtroSupervisor" name="supervisor" class="form-select form-select-sm">
-                  <option value="">Todos los supervisores</option>
-                  <?php
-                    if ($result_sup->num_rows > 0) {
-                      while ($supervisor = $result_sup->fetch_assoc()) {
-                          echo '<option value="'.$supervisor['id'].'">' 
-                            . htmlspecialchars($supervisor['name'], ENT_QUOTES) . '</option>';
-                      }
-                    } else {
-                      echo '<option value="">No hay supervisores</option>';
-                    }
-                    $stmt_s->close();
-                  ?>
-                </select>
-              </div>
-              <div class="all-fil">
-                <label for="filtroFechaInicio">Fecha Inicio</label>
-                <input name="fecha_inicio" type="date" class="form-control form-control-sm fil" id="filtroFechaInicio">
-              </div>
-              <div class="all-fil">
-                <label for="filtroFechaInicio">Fecha Fin</label>
-                <input name="fecha_fin" type="date" class="form-control form-control-sm fil" id="filtroFechaFin">
-              </div>
-              <div class="all-fill">
-                <label class="form-check-label" for="filtroSemanaActual">Semana en Gestion</label>
-                <div class="form-check form-switch mt-3">
-                  <input class="form-check-input" type="checkbox" id="filtroSemanaActual" name="semana_actual">
-                </div>
-              </div>
-            </div>
-            <div>
-              <button type="submit" class="btn btn-excel">
-                <i class="bi bi-file-earmark-excel"></i> 
-                Exportar Turnos
-              </button>
-            <?php
-              if($_SESSION['cargo'] != 11){
-            ?>    
-                <button class="btn btn-excel" type="button"  data-bs-toggle="modal" data-bs-target="#newSuper">
-                <i class="bi bi-file-earmark-excel"></i> 
-                  Actualizar turnos
-                </button>
-                <?php
-                  if (array_intersect([10], $_SESSION['deptos'])) {
-                ?>    
-                  <button type="button" class="btn btn-excel" onclick="window.location.href='../assets/php/exportar-pagos.php';">
-                    <i class="bi bi-file-earmark-excel"></i> 
-                    Exportar Pagos
+              <div>
+                  <button type="submit" class="btn btn-updt btn-lg me-2">
+                      Filtrar
                   </button>
-                <?php
-                  }
-                ?>    
-              
-            <?php
-              }
-            ?>
-            </div>
+                  <button type="submit" class="btn btn-excel" formaction="../assets/php/exportar-turnos.php">
+                      <i class="bi bi-file-earmark-excel"></i> 
+                      Exportar Turnos
+                  </button>
+                  <?php if($_SESSION['cargo'] != 11): ?>    
+                      <button class="btn btn-excel" type="button" data-bs-toggle="modal" data-bs-target="#newSuper">
+                          <i class="bi bi-arrow-repeat"></i> 
+                          Actualizar turnos
+                      </button>
+                      <?php if (array_intersect([10], $_SESSION['deptos'])): ?>    
+                          <button type="submit" class="btn btn-excel" formaction="../assets/php/exportar-pagos.php">
+                              <i class="bi bi-file-earmark-excel"></i> 
+                              Exportar Pagos
+                          </button>
+                      <?php endif; ?>
+                  <?php endif; ?>
+              </div>
           </div>
+          <input type="hidden" name="pagina" id="paginaInput" value="1">
         </form>
+
         <div id="resultadoTurnos" class="content"></div>
+
+        <!-- Pag -->
+        <?php if ($total_pages > 1): ?>
+        <nav aria-label="Paginación de turnos">
+            <ul class="pagination justify-content-center mt-4">
+                <?php if ($pagina > 1): ?>
+                <li class="page-item">
+                    <a class="page-link" href="?<?= http_build_query(array_merge($filtros, ['pagina' => $pagina - 1])) ?>">
+                        &laquo; Anterior
+                    </a>
+                </li>
+                <?php endif; ?>
+
+                <?php
+                $startPage = max(1, $pagina - 2);
+                $endPage = min($total_pages, $startPage + 4);
+                if ($endPage - $startPage < 4) {
+                    $startPage = max(1, $endPage - 4);
+                }
+                
+                for ($i = $startPage; $i <= $endPage; $i++): ?>
+                <li class="page-item <?= $i == $pagina ? 'active' : '' ?>">
+                    <a class="page-link" href="?<?= http_build_query(array_merge($filtros, ['pagina' => $i])) ?>">
+                        <?= $i ?>
+                    </a>
+                </li>
+                <?php endfor; ?>
+
+                <?php if ($pagina < $total_pages): ?>
+                <li class="page-item">
+                    <a class="page-link" href="?<?= http_build_query(array_merge($filtros, ['pagina' => $pagina + 1])) ?>">
+                        Siguiente &raquo;
+                    </a>
+                </li>
+                <?php endif; ?>
+            </ul>
+        </nav>
+
+        <div class="text-center text-muted mb-4">
+            <small>
+                Mostrando <?= (($pagina - 1) * $limite) + 1 ?> 
+                a <?= min($pagina * $limite, $total_rows) ?> 
+                de <?= $total_rows ?> resultados
+            </small>
+        </div>
+        <?php endif; ?>
     </div>
   </div>
 

@@ -5,50 +5,20 @@ document.addEventListener('DOMContentLoaded', function () {
         cc: document.getElementById('filtroCentro')
     };
 
-    Object.values(filtros).forEach(filtro => {
-        filtro.addEventListener('change', actualizarResultados);
-    });
+    const form = document.getElementById('filtrosForm');
+    const paginaInput = document.getElementById('paginaInput');
 
-    //cambios en el campo de búsqueda
-    filtros.texto.addEventListener('input', actualizarResultados);
-
-    function actualizarResultados() {
-        const texto = filtros.texto.value.toLowerCase();
-        const supervisor = filtros.supervisor.value;
-        const cc = filtros.cc.value;
-
-        const resultados = sucursalData.filter(item => {
-
-            // filtro texto coincide con algún campo
-            const coincideTexto = (
-                texto === '' || 
-                item.nombre.toLowerCase().includes(texto) ||
-                item.nSup.toLowerCase().includes(texto) ||
-                item.nCiudad.toLowerCase().includes(texto) ||
-                item.estado.toLowerCase().includes(texto) ||
-                item.cost_center.toLowerCase().includes(texto)
-            );
-
-            const coincideSupervisor = (
-                (supervisor === '' || item.supId === supervisor)
-            );
-
-            const coincideCC = (
-                (cc === '' || item.cc === cc)
-            );
-         
-            // Aplicar todos los filtros
-            return coincideTexto && coincideSupervisor && coincideCC ;
-        });
-
-        mostrarResultados(resultados);
-    }
-
-    function mostrarResultados(data) {
+    // Mostrar resultados (solo para la página actual)
+    function mostrarResultados() {
         const contenedor = document.getElementById('resultadoSucursal');
         contenedor.innerHTML = '';
-        data.forEach(item => {
 
+        if (sucursalData.length === 0) {
+            contenedor.innerHTML = '<div class="alert alert-info">No se encontraron sucursales</div>';
+            return;
+        }
+
+        sucursalData.forEach(item => {
             const itemHTML = `
                 <div class="h-container" onclick="window.location.href='detalle-instalacion.php?id=${item.id}';">
                     <div class="h-header d-flex justify-content-between">
@@ -72,7 +42,26 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Ejecutar la función al cargar la página
-    actualizarResultados();
-});
+    // Inicializar
+    mostrarResultados();
 
+    // Cuando se cambia cualquier filtro, resetear a página 1
+    Object.values(filtros).forEach(filtro => {
+        if (filtro) {
+            filtro.addEventListener('change', function() {
+                paginaInput.value = 1;
+                form.submit();
+            });
+        }
+    });
+
+    // Debounce para búsqueda de texto
+    let timeout;
+    filtros.texto.addEventListener('input', function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            paginaInput.value = 1;
+            form.submit();
+        }, 500);
+    });
+});

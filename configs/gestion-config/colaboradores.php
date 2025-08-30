@@ -207,76 +207,6 @@ check_login();
           <h5 class="modal-title" id="newSuperLabel">Nuevo colaborador</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <!-- 
-      <form id="newForm"  method="post" enctype="multipart/form-data">
-        <div class="modal-body">
-          <div class="form-row-modal mb-3 mx-auto">
-            <div class="form-group">
-                <label for="nombre" class="form-label">Nombre<span>*</span></label>
-                <input type="text" class="form-control form-control-sm" id="nombre" name="nombre" required>
-            </div>
-          </div>
-          
-          <div class="form-row-modal mb-3 mx-auto">
-            <div class="form-group">
-              <label class="form-label">Ciudad<span>*</span></label>
-              <div>
-                <select name="ciudad" id="ciudad" class="form-select form-select-sm" required>
-                    <?php
-                    foreach ($city AS $row) {
-                      echo "<option value=".$row['id'].">".$row['nombre_ciudad'] ."</option>";
-                    };
-                    ?>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="comuna" class="form-label">Comuna<span>*</span></label>
-              <input type="text" class="form-control form-control-sm" id="comuna" name="comuna" required>
-            </div>
-          </div>
-
-          <div class="form-row-modal mb-3 mx-auto">
-            <div class="form-group">
-              <label for="direccion" class="form-label">Dirección Calle<span>*</span></label>
-              <input type="text" class="form-control form-control-sm" id="direccion" name="direccion" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Supervisor</label>
-                <div>
-                  <select name="supervisor" id="supervisor" class="form-select form-select-sm">
-                    <option value="">Sin Asignar</option>
-                    <?php
-                    foreach ($sup AS $row) {
-                      echo "<option value=".$row['id'].">".$row['nombre_supervisor'] ."</option>";
-                    };
-                    ?>
-                  </select>
-                </div>
-            </div>
-          </div>
-
-          <div class="form-row-modal mb-3 mx-auto">
-            <div class="form-group">
-              <label class="form-label">Departamento</label>
-                <div>
-                  <select name="departamento" id="departamento" class="form-select form-select-sm" required>
-                    <option value="">Sin Asignar</option>
-                    <?php
-                    foreach ($depto AS $row) {
-                      echo "<option value=".$row['id'].">".$row['nombre_departamento'] ."</option>";
-                    };
-                    ?>
-                  </select>
-                </div>
-            </div>
-          </div>
-          <div class="form-row-modal justify-content-end">
-            <button type="submit"  name="newSup" class="btn pull-right btn-updt">Agregar</button>
-          </div>
-        </div>
-      </form>
-       -->
       <form class="mb-2 mv" method="post" enctype="multipart/form-data">
         <div class="modal-footer mv-form">
           <h5 class="text-start">Carga masiva</h5>
@@ -295,11 +225,11 @@ check_login();
   <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="delSuperLabel">Eliminar Sucursal</h5>
+            <h5 class="modal-title" id="delSuperLabel">Eliminar Colaborador</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p>¿Estás seguro de que quieres eliminar esta Sucursal?</p>
+          <p>¿Estás seguro de que quieres eliminar a este Colaborador?</p>
           <form id="delForm" method="POST">
             <input type="hidden" name="idSup" id="idSup">
             <div class="modal-footer">

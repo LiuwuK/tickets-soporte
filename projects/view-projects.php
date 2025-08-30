@@ -1,14 +1,13 @@
 <?php
 session_start();
 include("../checklogin.php");
+check_login();
 include("../dbconnection.php");
 include("assets/php/view-projects.php");
 header('Content-Type: text/html; charset=utf-8');
-check_login();
 ?>
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <meta charset="utf-8" />
@@ -27,467 +26,287 @@ check_login();
     <!-- Toast notificaciones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 </head>
-
-<body class="test" >
-    <!-- Sidebar -->
-  <div class="page-container ">
-
+<body class="test">
+  <div class="page-container">
     <div class="sidebar">
-    <?php include("../header-test.php"); ?>
-      
+        <?php include("../header-test.php"); ?>
     </div>
     <div class="page-content">
-    <?php include("../leftbar-test.php"); ?>
+        <?php include("../leftbar-test.php"); ?>
         <div class="content">
             <div class="page-title d-flex justify-content-between">
                 <h2>Proyectos</h2>
-                <button class=" btn-back" onclick="window.location.href='projects-main.php';"> 
-                    <i class="bi bi-arrow-left" ></i>
+                <button class="btn-back" onclick="window.location.href='projects-main.php';">
+                    <i class="bi bi-arrow-left"></i>
                 </button>
             </div>
-            <!-- filtros  -->
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-sm" id="toggleFiltersBtn">
-                    <i class="bi bi-arrow-down-short"></i> Filtros
-                </button>
-            </div>
-            <div>        
-                <form method="GET" action="" id="filtersForm" class="mt-3" >
-                    <div class="fil-main form-group">
-                        <div class="search-div d-flex">
-                            <label class="form-label" >Buscar</labe>
-                            <input type="text" class="form-control form-control-sm" id="textSearch" name="textSearch" placeholder="Nombre/ID del proyecto">
+
+            <!-- filtros -->
+            <div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <form method="GET" class="d-flex flex-wrap align-items-end gap-2">
+                        <!-- Buscar -->
+                        <div style="min-width:180px; flex:1">
+                            <label class="form-label">Buscar</label>
+                            <input type="text" class="form-control form-control-sm" name="textSearch" placeholder="Nombre/ID" value="<?= htmlspecialchars($searchText) ?>">
                         </div>
-                        <div class="fil-div">
-                            <label class="form-label" for="st">Estado</label>
-                            <select name="statusF" class="form-select form-select-sm" id="st">
-                                <option value="">Ver todo</option>    
-                                <?php
-                                while ($st = mysqli_fetch_assoc($statusF)) {
-                                    $select = isset($_GET['statusF']) && $_GET['statusF'] == $st['id'] ? 'selected' : '';
-                                    echo "<option value='" . $st['id'] . "' $select>" . $st['nombre'] . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="fil-div">
-                            <label class="form-label" for="prio">Vertical</label>
-                            <select name="verticalF" class="form-select form-select-sm" id="prio">
-                                <option value="">Ver todo</option> 
-                                <?php
-                                foreach ($verticales as $row) {
-                                    // Opcion para filtrar por vertical
-                                    $selected = isset($_GET['verticalF']) && $_GET['verticalF'] == $row['id'] ? 'selected' : '';
-                                    echo "<option value='" . $row['id'] . "' $selected>" . $row['nombre'] . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="fil-div">
-                            <label class="form-label" for="st">Portal</label>
-                            <select name="portalF" class="form-select form-select-sm" id="st">
-                                <option value="">Ver todo</option>    
-                                <?php
-                                foreach($portal AS $pt) {
-                                    $select = isset($_GET['portalF']) && $_GET['portalF'] == $pt['id'] ? 'selected' : '';
-                                    echo "<option value='" . $pt['id'] . "' $select>" . $pt['nombre_portal'] . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="fil-div">
-                            <label class="form-label" for="st">Tipo de Proyecto</label>
-                            <select name="tipoprjF" class="form-select form-select-sm" id="tipoprjF">
-                                <option value="">Ver todo</option>    
-                                <?php
-                                foreach($tipoProyecto AS $tprj) {
-                                    $select = isset($_GET['tipoprjF']) && $_GET['tipoprjF'] == $tprj['id'] ? 'selected' : '';
-                                    echo "<option value='" . $tprj['id'] . "' $select>" . $tprj['nombre'] . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="fil-div">
-                            <label class="form-label" for="st">Clasificación</label>
-                            <select name="clasif" class="form-select form-select-sm" id="clasif">
-                                <option value="">Ver todo</option>    
-                                <?php
-                                foreach($clasif AS $cl) {
-                                    $select = isset($_GET['clasif']) && $_GET['clasif'] == $cl['id'] ? 'selected' : '';
-                                    echo "<option value='" . $cl['id'] . "' $select>" . $cl['nombre'] . "</option>";
-                                }
-                                ?>
+
+                        <!-- Estado -->
+                        <div style="min-width:120px">
+                            <label class="form-label">Estado</label>
+                            <select name="statusF" class="form-select form-select-sm">
+                                <option value="">Ver todo</option>
+                                <?php while ($st = mysqli_fetch_assoc($statusF)): ?>
+                                    <option value="<?= $st['id'] ?>" <?= isset($_GET['statusF']) && $_GET['statusF']==$st['id'] ? 'selected' : '' ?>><?= $st['nombre'] ?></option>
+                                <?php endwhile; ?>
                             </select>
                         </div>
 
-                        <div class="fil-btn">
-                            <button type="submit" class="btn">Filtrar</button>
+                        <!-- Vertical -->
+                        <div style="min-width:120px">
+                            <label class="form-label">Vertical</label>
+                            <select name="verticalF" class="form-select form-select-sm">
+                                <option value="">Ver todo</option>
+                                <?php foreach ($verticales as $row): ?>
+                                    <option value="<?= $row['id'] ?>" <?= isset($_GET['verticalF']) && $_GET['verticalF']==$row['id'] ? 'selected' : '' ?>><?= $row['nombre'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
-                    </div>
-                    <br>
-                </form>
-                <br>
+
+                        <!-- Portal -->
+                        <div style="min-width:120px">
+                            <label class="form-label">Portal</label>
+                            <select name="portalF" class="form-select form-select-sm">
+                                <option value="">Ver todo</option>
+                                <?php foreach($portal as $pt): ?>
+                                    <option value="<?= $pt['id'] ?>" <?= isset($_GET['portalF']) && $_GET['portalF']==$pt['id'] ? 'selected' : '' ?>><?= $pt['nombre_portal'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <!-- Tipo de Proyecto -->
+                        <div style="min-width:120px">
+                            <label class="form-label">Tipo Proyecto</label>
+                            <select name="tipoprjF" class="form-select form-select-sm">
+                                <option value="">Ver todo</option>
+                                <?php foreach($tipoProyecto as $tprj): ?>
+                                    <option value="<?= $tprj['id'] ?>" <?= isset($_GET['tipoprjF']) && $_GET['tipoprjF']==$tprj['id'] ? 'selected' : '' ?>><?= $tprj['nombre'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <!-- Clasificación -->
+                        <div style="min-width:120px">
+                            <label class="form-label">Clasificación</label>
+                            <select name="clasif" class="form-select form-select-sm">
+                                <option value="">Ver todo</option>
+                                <?php foreach($clasif as $cl): ?>
+                                    <option value="<?= $cl['id'] ?>" <?= isset($_GET['clasif']) && $_GET['clasif']==$cl['id'] ? 'selected' : '' ?>><?= $cl['nombre'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <!-- Proyectos por página -->
+                        <div style="min-width:100px">
+                            <label class="form-label">Mostrar</label>
+                            <select name="limit" class="form-select form-select-sm">
+                                <option value="10" <?= $limit==10 ? 'selected' : '' ?>>10</option>
+                                <option value="20" <?= $limit==20 ? 'selected' : '' ?>>20</option>
+                                <option value="50" <?= $limit==50 ? 'selected' : '' ?>>50</option>
+                            </select>
+                        </div>
+
+                        <!-- Botón Filtrar -->
+                        <div class="align-self-end">
+                            <button type="submit" class="btn btn-updt btn-sm">Filtrar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
+
+            </div>
+
             <?php 
             if ($num > 0) {
-                while ($row = mysqli_fetch_array($rt)) {?>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="grid simple no-border">
-                            <!-- Vista cerrada -->
-                            <div class="grid-title no-border descriptive clickable">
-                                <h4 class="semi-bold"><?php echo $row['nombre']; ?></h4>
-                                <p>
-                                    <span class="text-success bold">Proyecto #<?php echo $row['id']; ?></span> - Fecha de Creación <?php echo $row['fecha_creacion']; ?> 
-                                    <?php
-                                        if ($row['estado_id'] == '20') {
-                                        ?>
-                                        <span class="label label-success"><?php echo $row['estado']; ?></span>
-                                        <?php
-                                        }else if ($row['estado_id'] == '21'){
-                                        ?>
-                                        <span class="label label-important"><?php echo $row['estado']; ?></span>
-                                        <?php
-                                        }else{?>
-                                            <span class="label label-warning"><?php echo $row['estado']; ?></span>
-                                        <?php if($row['estado_etapa']){ ?>
-                                            <span class="label label-et"><?php echo $row['etapaN']; ?></span>
-                                        <?php
-                                            }
-                                        };
-                                        
-                                    ?>
-                                    <span class="label label-success"><?php echo '$'.number_format($row['monto'], 0, '.', ',');?></span>
-                                </p>
-                                <div class="actions"> 
-                                    <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> 
+                while ($row = $rt->fetch_assoc()) { ?>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="grid simple no-border">
+
+                                <!-- Vista cerrada -->
+                                <div class="grid-title no-border descriptive clickable">
+                                    <h4 class="semi-bold"><?= $row['nombre']; ?></h4>
+                                    <p>
+                                        <span class="text-success bold">Proyecto #<?= $row['projectId']; ?></span>
+                                        - Fecha de Creación <?= $row['fecha_creacion']; ?> 
+                                        <?php if ($row['estado_id'] == 20): ?>
+                                            <span class="label label-success"><?= $row['estado']; ?></span>
+                                        <?php elseif ($row['estado_id'] == 21): ?>
+                                            <span class="label label-important"><?= $row['estado']; ?></span>
+                                        <?php else: ?>
+                                            <span class="label label-warning"><?= $row['estado']; ?></span>
+                                            <?php if($row['etapaN']): ?>
+                                                <span class="label label-et"><?= $row['etapaN']; ?></span>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                        <span class="label label-success">$<?= number_format($row['monto'],0,'.',','); ?></span>
+                                    </p>
+                                    <div class="actions"> 
+                                        <a class="view" href="javascript:;"><i class="bi bi-caret-down-fill"></i></a> 
+                                    </div>
+                                    <p>
+                                        <strong>Fecha de Cierre Documental:</strong> 
+                                        <span><?= !empty($row['fecha_cierre_documental']) ? $row['fecha_cierre_documental'] : 'Sin Asignar'; ?></span>
+                                        <strong style="margin-left:5px">Fecha Adjudicacion:</strong>
+                                        <span><?= !empty($row['fecha_adjudicacion']) ? $row['fecha_adjudicacion'] : 'Sin Asignar'; ?></span>
+                                    </p>
+                                    <p>
+                                        <strong>Ciudad:</strong> <span><?= $row['ciudadN']; ?></span>
+                                        <strong style="margin-left:5px">Cliente:</strong> <span><?= !empty($row['clienteN']) ? $row['clienteN'] : 'Sin Asignar'; ?></span>
+                                        <strong style="margin-left:5px">Ingeniero Responsable:</strong> <span><?= $row['ingeniero'] ?: 'Sin asignar'; ?></span>
+                                    </p>
                                 </div>
-                                <p>
-                                    <strong>Fecha de Cierre Documental</strong>:<span><?php echo !empty($row['fecha_cierre_documental']) ? $row['fecha_cierre_documental'] : 'Sin Asignar';?></span> 
-                                    <strong style="margin-left:5px">Fecha Adjudicacion</strong>:<span><?php echo !empty($row['fecha_adjudicacion']) ? $row['fecha_adjudicacion'] : 'Sin Asignar';?></span> 
-                                </p>
-                                <p>
-                                    <strong>Ciudad</strong>:<span><?php echo $row['ciudadN'];?></span> 
-                                    <strong style="margin-left:5px">Cliente</strong>:<span><?php echo !empty($row['clienteN']) ? $row['clienteN'] : 'Sin Asignar'; ?></span>
-                                    <strong style="margin-left:5px">Ingeniero Responsable</strong>:<?php echo $row['ingeniero_responsable'] ? $row['ingeniero'] : "Sin asignar" ;?></span>
-                                </p>
-                            </div>
 
-                            <!-- Vista completa -->
-                            <div class="grid-body  no-border" style="display:none">
-                            <hr>
-                                <div class="post">
-                                    <div class="info-wrapper"> 
-                                        <div class="info d-flex">
-                                            <div class="left-bar"></div>
-                                            <div class="main-info">
-                                                <!-- Descripcion del proyecto -->
-                                                <div class="pr-row">
-                                                    <div class="group">
-                                                        <strong>Descripción</strong>
-                                                        <p><?php echo !empty($row['resumen']) ? $row['resumen'] : 'Sin descripción'; ?></p>
-                                                    </div>
-                                                </div>
-                                                <!-- Datos cliente/ingeniero/tipo/distribuidor -->
-                                                <div class="pr-row ">
-                                                    <div class="group">
-                                                        <strong>Cliente</strong>
-                                                        <p><?php echo !empty($row['clienteN']) ? $row['clienteN'] : 'Sin Asignar'; ?></p>
-                                                    </div>
-                                                </div>
-                                                <div class="pr-row"> 
-                                                    <div class="group">
-                                                        <strong>Distribuidor</strong>
-                                                        <?php
-                                                            if(isset($row['distribuidor'])){
-                                                                foreach ($distData as $row_dist) {
-                                                                  if ($row_dist['id'] == $row['distribuidor']) {
-                                                                      echo "<p>".$row_dist['nombre']."</p>";
-                                                                  } 
-                                                                }
-                                                            }else{
-                                                                echo "<p> Sin asignar </p>";
-                                                            }
-                                                        ?>
-                                                    </div> 
-                                                </div>
-                                                <div class="pr-row"> 
-                                                    <div class="group">
-                                                        <strong>Vertical</strong>
-                                                        <?php
-                                                            if(isset($row['vertical'])){
-                                                                foreach ($verticales as $row_vertical) {
-                                                                  if ($row_vertical['id'] == $row['vertical']) {
-                                                                      echo "<p>".$row_vertical['nombre']."</p>";
-                                                                  } 
-                                                                }
-                                                            }else{
-                                                                echo "<p> Sin asignar </p>";
-                                                            }
-                                                        ?>
-                                                    </div> 
-                                                </div>
-                                                <div class="pr-row">
-                                                    <div class="group">
-                                                        <strong>Comercial responsable</strong>
-                                                        <p><?php echo $row['comercial'];?></p>
-                                                    </div>
-                                                </div>
-                                                <div class="pr-row">
-                                                    <div class="group">
-                                                        <strong>Tipo Proyecto</strong>
-                                                        <p><?php echo $row['tipoP'];?></p>
-                                                    </div>
-                                                </div>
-                                                <!-- Datos de tipo proyecto (contacto/licitacion)  -->
-                                                 
-                                                <?php
-                                                if($row['tipo'] == 1 or $row['tipo'] == 2){
-                                                    echo '<div class="pr-row"><strong>Datos de '.$row['tipoP'].'</strong>';
-                                                    //Licitacion
-                                                    if($row['tipo'] == '1' ){
-                                                        $id =  $row['projectId'];
-                                                        $query = "SELECT lic.*, pt.nombre_portal AS portalN
-                                                                    FROM licitacion_proyecto lic
-                                                                    LEFT JOIN portales pt ON(lic.portal = pt.id)
-                                                                    WHERE proyecto_id = $id";    
-                                                        $licitacion = $con->prepare($query);
-                                                        $licitacion->execute();
-                                                        $result = $licitacion->get_result();
-                                                        $row_lt = $result->fetch_assoc();
-                                                        $licitacion->close();
-                                                        ?>
-                                                    <div class="group lic d-flex">
-                                                        <strong class="form-label">ID Licitación</strong>
-                                                        <p>: <?php echo !empty($row_lt['licitacion_id']) ? $row_lt['licitacion_id'] : 'Sin asignar';?></p>
-                                                    </div>      
-                                                    <div class="group lic d-flex">                                                        
-                                                        <strong>Portal </strong>
-                                                        <p>: <?php echo !empty($row_lt['portalN']) ? $row_lt['portalN'] : 'Sin asignar';?></p>
-                                                    </div>                                                    
-                                                <?php
-                                                    //Contacto 
-                                                    }else if($row['tipo'] == '2'){
-                                                        $id =  $row['projectId'];
-                                                        $query = "SELECT * 
-                                                                    FROM contactos_proyecto
-                                                                    WHERE proyecto_id = $id";    
-                                                        $contacto = $con->prepare($query);
-                                                        $contacto->execute();
-                                                        $result = $contacto->get_result();
-                                                        $numCt = $result->num_rows;
-                                                        $contactos = [];
-                                                        while ($row_ct = $result->fetch_assoc()) {
-                                                            $contactos[] = $row_ct; 
-                                                        }
-                                                    ?>
-                                                    <div class="pr-row d-flex">
-                                                        <?php
-                                                            if ($numCt > 0 ){ 
-                                                                foreach ($contactos as $contacto) {
-                                                            ?>
-                                                            <div class="group d-flex cnt card p-2">
-                                                                <div class="cnt-div d-flex">
-                                                                    <strong class="form-label">Nombre </strong>
-                                                                    <p>: <?php echo $contacto['nombre'];?></p>
-                                                                </div>
-
-                                                                <div class="cnt-div d-flex">
-                                                                    <strong class="form-label">Correo </strong>
-                                                                    <p>: <?php echo $contacto['correo'];?></p>
-                                                                </div >
-
-                                                                <div class="cnt-div d-flex">
-                                                                    <strong class="form-label">Cargo </strong>
-                                                                    <p>: <?php echo $contacto['cargo'];?></p>
-                                                                </div>
-
-                                                                <div class="cnt-div d-flex">
-                                                                    <strong class="form-label">Contacto </strong>
-                                                                    <p>: <?php echo $contacto['numero'];?></p>
-                                                                </div>
-                                                            </div>
-                                                            <?php       
-                                                                }
-                                                            }else{
-                                                                echo "<p>No hay contactos registrados</p>";
-                                                            }
-                                                        ?>
-                                                        
-                                                    </div>     
-                                                <?php 
-                                                    }
-                                                    echo '</div>';
-                                                }
-                                                ?>
-                                                
-                                                <div class="pr-row">
-                                                    <div class="group">
-
-                                                        <strong>Actividades</strong>
-                                                        <ul>
-                                                        <?php 
-                                                            $id =  $row['projectId'];
-                                                            $query = "SELECT * 
-                                                                        FROM actividades
-                                                                        WHERE proyecto_id = $id";    
-                                                            $actividades = $con->prepare($query);
-                                                            $actividades->execute();
-                                                            $result = $actividades->get_result();
-                                                            $num = $result->num_rows;
-                                                            
-                                                            if($num > 0){
-                                                                while ($row_ac = $result->fetch_assoc()) {
-                                                                    $fecha_original = $row_ac['fecha_inicio']; 
-                                                                    setlocale(LC_TIME, 'es_ES.UTF-8', 'spanish');
-                                                                    // Formatear la fecha
-                                                                    $timestamp = strtotime($fecha_original);
-                                                                    $fecha = strftime('%e de %B %Y, %H:%M', $timestamp);
-                                                                ?>
-                                                                    <li><?php echo $row_ac['nombre'];?> -- <?php echo $fecha;?></li>    
-                                                                <?php }
-                                                            }else{
-                                                                echo "<p> Sin tareas asignadas </p>";
-                                                            }
-                                                        ?>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                <div class="pr-row">
-                                                    <?php
-                                                        $total = 0;
-                                                        $id =  $row['projectId'];
-                                                        $query = "SELECT * 
-                                                                    FROM bom
-                                                                    WHERE proyecto_id = $id";    
-                                                        $actividades = $con->prepare($query);
-                                                        $actividades->execute();
-                                                        $result = $actividades->get_result();
-                                                        $num = $result->num_rows;
-                                                        if($_SESSION['role'] != 'user'){
-                                                    ?>
+                                <!-- Vista completa -->
+                                <div class="grid-body no-border" style="display:none">
+                                    <hr>
+                                    <div class="post">
+                                        <div class="info-wrapper">
+                                            <div class="info d-flex">
+                                                <div class="left-bar"></div>
+                                                <div class="main-info">
+                                                    <!-- Datos básicos -->
+                                                    <div class="pr-row">
                                                         <div class="group">
-                                                            <strong>Lista de materiales (BOM)</strong>
-                                                            <ul>
-                                                            <?php                                                                 
-                                                                if($num > 0){
-                                                                    while ($row_bom = $result->fetch_assoc()) {
-                                                                        $total = $total +  $row_bom['total'];
-                                                                    ?>
-                                                                    <div class="material-item">
-                                                                            <div>
-                                                                                <li> <?php echo $row_bom['nombre'];?></li>   
-                                                                            </div>
-                                                                            <div>
-                                                                                <i class="bi bi-x-lg"></i>
-                                                                            </div> 
-                                                                            <div>
-                                                                                <p><?php echo $row_bom['cantidad']?></p>
-                                                                            </div>
-                                                                            <div>
-                                                                                <p>
-                                                                                    <?php echo '$'.number_format($row_bom['total'], 0, '.', ','); ?>
-                                                                                </p>
-                                                                            </div>
-                                                                    </div>
-                                                                    <?php }
-                                                                }else{
-                                                                    echo "<p> No se le han asignado materiales</p>";
-                                                                }
-                                                            ?>
-                                                            </ul>
-                                                        </div>                                                    
-                                                    <?php
-                                                        }
-                                                    ?>
-                                                    <div class="group">
-                                                        <strong>Total BOM</strong>
-                                                        <?php
-                                                            if($num > 0){
-                                                                while ($row_bom = $result->fetch_assoc()) {
-                                                                    $total = $total +  $row_bom['total'];
-                                                                }
-                                                            }
-                                                            if($total > 0){
-                                                                
-                                                                echo '<p>$'.number_format($total, 0, '.', ',').'</p>'; 
-                                                            }else{
-                                                                echo "<p> No se le han asignado materiales</p>";
-                                                            } 
-                                                        ?>    
-                                                    </div>
-                                                </div>
-                                                <!-- 
-                                                <?php 
-                                                    if( $row['clasificacion'] == '1' ){ ?>
-                                                        <div class="pr-row">
-                                                            <strong>Gastos</strong>
-                                                            <div class="group d-flex lic">
-                                                                <strong>Software</strong>
-                                                                <p>: $<?php echo $row['costo_software'];?></p>
-                                                            </div>
-                                                            <div class="group d-flex lic">
-                                                                <strong>Hardware</strong>
-                                                                <p>: $<?php echo $row['costo_hardware'];?></p>
-                                                            </div>
+                                                            <strong>Ciudad:</strong> 
+                                                            <p><?= $row['ciudadN']; ?></p>
                                                         </div>
-                                                <?php } 
-                                                ?>
-                                                 -->
-                                                <div class="pr-row">
-                                                    <div class="group">
-                                                        <strong>Monto Proyecto</strong>
-                                                        <p><?php echo '$'.number_format($row['monto'], 0, '.', ',');?></p>
+                                                        <div class="group">
+                                                            <strong>Cliente:</strong>
+                                                            <p><?= $row['clienteN'] ?: 'Sin Asignar'; ?></p>
+                                                        </div>
+                                                        <div class="group">
+                                                            <strong>Ingeniero:</strong>
+                                                            <p><?= $row['ingeniero'] ?: 'Sin Asignar'; ?></p>
+                                                        </div>
+                                                        <div class="group">
+                                                            <strong>Comercial:</strong>
+                                                            <p><?= $row['comercial'] ?: 'Sin Asignar'; ?></p>
+                                                        </div>
+                                                        <div class="group">
+                                                            <strong>Distribuidor:</strong>
+                                                            <p><?= $row['distribuidorN'] ?: 'Sin Asignar'; ?></p>
+                                                        </div>
+                                                        <div class="group">
+                                                            <strong>Tipo de Proyecto:</strong>
+                                                            <p><?= $row['tipoP'] ?: 'Sin Asignar'; ?></p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <!--
-                                                <div class="pr-row">
-                                                    <div class="group">
-                                                        <strong>Costo Real</strong>
-                                                        <p><?php echo '$'.number_format($row['costo_real'], 0, '.', ','); ?></p>
+
+                                                    <!-- Actividades -->
+                                                    <div class="pr-row">
+                                                        <div class="group">
+                                                            <strong>Actividades</strong>
+                                                            <ul>
+                                                                <?php
+                                                                if($row['actividades']){
+                                                                    $acts = explode(';;', $row['actividades']);
+                                                                    foreach($acts as $act){
+                                                                        [$nombre, $fecha] = explode('||',$act);
+                                                                        $fecha_form = strftime('%e de %B %Y, %H:%M', strtotime($fecha));
+                                                                        echo "<li>$nombre -- $fecha_form</li>";
+                                                                    }
+                                                                } else echo "<li>Sin tareas asignadas</li>";
+                                                                ?>
+                                                            </ul>
+                                                        </div>
                                                     </div>
+
+                                                    <!-- Contactos -->
+                                                    <div class="pr-row">
+                                                        <div class="group">
+                                                            <strong>Contactos</strong>
+                                                            <?php
+                                                            if($row['contactos']){
+                                                                $cts = explode(';;', $row['contactos']);
+                                                                foreach($cts as $c){
+                                                                    [$nombre, $correo, $cargo, $numero] = explode('||',$c);
+                                                                    echo "<div class='contacto-item'>
+                                                                            <strong>$nombre</strong> - $correo - $cargo - $numero
+                                                                        </div>";
+                                                                }
+                                                            } else echo "<p>No hay contactos</p>";
+                                                            ?>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- BOM -->
+                                                    <div class="pr-row">
+                                                        <div class="group">
+                                                            <strong>BOM</strong>
+                                                            <?php
+                                                            $totalBOM = 0;
+                                                            if($row['bom']){
+                                                                $boms = explode(';;',$row['bom']);
+                                                                echo "<ul>";
+                                                                foreach($boms as $b){
+                                                                    [$nombre, $cantidad, $total] = explode('||',$b);
+                                                                    $totalBOM += $total;
+                                                                    echo "<li>$nombre x$cantidad - $".number_format($total,0,'.',',')."</li>";
+                                                                }
+                                                                echo "</ul>";
+                                                            } else echo "<p>No se han asignado materiales</p>";
+                                                            ?>
+                                                            <strong>Total BOM:</strong> $<?= number_format($totalBOM,0,'.',','); ?>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Licitación (si aplica) -->
+                                                    <?php if($row['tipoP'] == 1 && $row['licitacion_id']): ?>
+                                                        <div class="pr-row">
+                                                            <strong>ID Licitación:</strong> <?= $row['licitacion_id']; ?>
+                                                            <strong>Portal:</strong> <?= $row['portal_id'] ?: 'Sin asignar'; ?>
+                                                        </div>
+                                                    <?php endif; ?>
                                                 </div>
-                                                -->
                                             </div>
                                         </div>
-                                        <br>
-                                        <div class="footer d-flex justify-content-between">
-                                            <button id="editButton" class="btn btn-updt" data-id="<?php echo $row['projectId']; ?>">Editar</button>
-                                        </div>
                                     </div>
-                                    
                                 </div>
+                                <!------------------>
                             </div>
-                            <!------------------>
                         </div>
                     </div>
-                </div>    
                 <?php }
-                } else { ?>
-                    <h3 align="center" style="color:red;">Sin proyectos que mostrar</h3>
-            <?php 
-            } ?>
+                ?>
+                <!-- PAGINACIÓN -->
+                <?php if($totalPages > 1): ?>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <?php for($i=1; $i<=$totalPages; $i++): ?>
+                            <li class="page-item <?= $i==$page ? 'active' : '' ?>">
+                                <a class="page-link" href="?<?= http_build_query(array_merge($_GET,['page'=>$i])) ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor; ?>
+                    </ul>
+                </nav>
+                <?php endif; 
 
-        </div>   
+            } else { ?>
+                <h3 align="center" style="color:red;">Sin proyectos que mostrar</h3>
+            <?php } ?>
+        </div>
     </div>
   </div>
 
-
-
-
-
-<!-- Popper.js (para tooltips y otros componentes) -->
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<!-- Bootstrap Bundle (con Popper.js) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Complementos/Plugins-->
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js" type="text/javascript"></script>
-<!-- Scripts propios -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
 <script src="../assets/js/support_ticket.js" type="text/javascript"></script>
 <script src="../assets/js/general.js"></script>
 <script src="../assets/js/sidebar.js"></script>
 <script src="assets/js/view-projects.js"></script>
 </body>
-
 </html>

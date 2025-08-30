@@ -48,57 +48,112 @@ $userID = $_SESSION['id'];
           </button>
         </div> <br><br>
 
-          <div class="filtros d-flex justify-content-between form-f">
-            <div class="d-flex justify-content-between mb-3">
-              <div class="all-fil">
-                <label for="filtroTexto">Buscar</label>
-                <input type="text" id="filtroTexto" name="texto" class="form-control form-control-sm fil" placeholder="Buscar por nombre, tipo, etc.">
-              </div>
-              <div class="all-fil">  
-                <label for="filtroCentro" >Centro de costos</label>
-                <select id="filtroCentro" name="centro" class="form-select form-select-sm">
-                  <option value="">Todos los Centros</option>
-                  <?php
-                    if ($result_dep->num_rows > 0) {
-                      while ($cc = $result_dep->fetch_assoc()) {
-                          echo '<option value="'.$cc['id'].'">' 
-                            . htmlspecialchars($cc['nombre_departamento'], ENT_QUOTES) . '</option>';
-                      }
-                    } else {
-                      echo '<option value="">No hay supervisores</option>';
-                    }
-                    $stmt_d->close();
-                  ?>
-                </select>
-              </div>
-              <div class="all-fil">  
-                <label for="filtroSupervisor" >Supervisor</label>
-                <select id="filtroSupervisor" name="supervisor" class="form-select form-select-sm">
-                  <option value="">Todos los supervisores</option>
-                  <?php
-                    if ($result_sup->num_rows > 0) {
-                      while ($supervisor = $result_sup->fetch_assoc()) {
-                          echo '<option value="'.$supervisor['id'].'">' 
-                            . htmlspecialchars($supervisor['nombre_supervisor'], ENT_QUOTES) . '</option>';
-                      }
-                    } else {
-                      echo '<option value="">No hay supervisores</option>';
-                    }
-                    $stmt_s->close();
-                  ?>
-                </select>
-              </div>
+        <form method="GET" action="" id="filtrosForm">
+            <div class="filtros d-flex justify-content-between form-f">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="all-fil">
+                        <label for="filtroTexto">Buscar</label>
+                        <input type="text" id="filtroTexto" name="texto" value="<?= htmlspecialchars($filtros['texto']) ?>" class="form-control form-control-sm fil" placeholder="Buscar por nombre, tipo, etc.">
+                    </div>
+                    <div class="all-fil">  
+                        <label for="filtroCentro">Centro de costos</label>
+                        <select id="filtroCentro" name="centro" class="form-select form-select-sm">
+                            <option value="">Todos los Centros</option>
+                            <?php
+                            if ($result_dep->num_rows > 0) {
+                                while ($cc = $result_dep->fetch_assoc()) {
+                                    $selected = $filtros['centro'] == $cc['id'] ? 'selected' : '';
+                                    echo '<option value="'.$cc['id'].'" '.$selected.'>' 
+                                        . htmlspecialchars($cc['nombre_departamento'], ENT_QUOTES) . '</option>';
+                                }
+                            } else {
+                                echo '<option value="">No hay departamentos</option>';
+                            }
+                            $stmt_d->close();
+                            ?>
+                        </select>
+                    </div>
+                    <div class="all-fil">  
+                        <label for="filtroSupervisor">Supervisor</label>
+                        <select id="filtroSupervisor" name="supervisor" class="form-select form-select-sm">
+                            <option value="">Todos los supervisores</option>
+                            <?php
+                            if ($result_sup->num_rows > 0) {
+                                while ($supervisor = $result_sup->fetch_assoc()) {
+                                    $selected = $filtros['supervisor'] == $supervisor['id'] ? 'selected' : '';
+                                    echo '<option value="'.$supervisor['id'].'" '.$selected.'>' 
+                                        . htmlspecialchars($supervisor['nombre_supervisor'], ENT_QUOTES) . '</option>';
+                                }
+                            } else {
+                                echo '<option value="">No hay supervisores</option>';
+                            }
+                            $stmt_s->close();
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-updt btn-lg me-2">
+                        <i class="bi bi-filter"></i> 
+                        Filtrar
+                    </button>
+                    <button type="button" class="btn btn-excel" onclick="window.location.href='assets/php/descargar-calendario.php?formato=all&userID=<?php echo $userID;?>';">
+                        <i class="bi bi-file-earmark-excel"></i> 
+                        Exportar Calendarios
+                    </button>
+                </div>
             </div>
-            <div>
-                <button type="submit" class="btn btn-excel" onclick="window.location.href='assets/php/descargar-calendario.php?formato=all&userID=<?php echo $userID;?>';">
+            <input type="hidden" name="pagina" id="paginaInput" value="1">
+        </form>
 
-                  <i class="bi bi-file-earmark-excel"></i> 
-                  Exportar Calendarios
-                </button>
-              </div>
-          </div>
-      
         <div id="resultadoSucursal" class="content"></div>
+
+        <!-- Paginación del servidor -->
+        <?php if ($total_pages > 1): ?>
+        <nav aria-label="Paginación de sucursales">
+            <ul class="pagination justify-content-center mt-4">
+                <?php if ($pagina > 1): ?>
+                <li class="page-item">
+                    <a class="page-link" href="?<?= http_build_query(array_merge($filtros, ['pagina' => $pagina - 1])) ?>">
+                        &laquo; Anterior
+                    </a>
+                </li>
+                <?php endif; ?>
+
+                <?php
+                $startPage = max(1, $pagina - 2);
+                $endPage = min($total_pages, $startPage + 4);
+                if ($endPage - $startPage < 4) {
+                    $startPage = max(1, $endPage - 4);
+                }
+                
+                for ($i = $startPage; $i <= $endPage; $i++): ?>
+                <li class="page-item <?= $i == $pagina ? 'active' : '' ?>">
+                    <a class="page-link" href="?<?= http_build_query(array_merge($filtros, ['pagina' => $i])) ?>">
+                        <?= $i ?>
+                    </a>
+                </li>
+                <?php endfor; ?>
+
+                <?php if ($pagina < $total_pages): ?>
+                <li class="page-item">
+                    <a class="page-link" href="?<?= http_build_query(array_merge($filtros, ['pagina' => $pagina + 1])) ?>">
+                        Siguiente &raquo;
+                    </a>
+                </li>
+                <?php endif; ?>
+            </ul>
+        </nav>
+        <!-- 
+        <div class="text-center text-muted mb-4">
+            <small>
+                Mostrando <?= (($pagina - 1) * $limite) + 1 ?> 
+                a <?= min($pagina * $limite, $total_rows) ?> 
+                de <?= $total_rows ?> sucursales
+            </small>
+        </div>
+         -->
+        <?php endif; ?>
     </div>
   </div>
 

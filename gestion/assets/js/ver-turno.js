@@ -8,14 +8,10 @@ document.addEventListener('DOMContentLoaded', function () {
         semanaActual: document.getElementById('filtroSemanaActual')
     };
 
-    Object.values(filtros).forEach(filtro => {
-        filtro.addEventListener('change', actualizarResultados);
-    });
+    const form = document.getElementById('filtrosForm');
+    const paginaInput = document.getElementById('paginaInput');
 
-    // Escuchar cambios en el campo de búsqueda
-    filtros.texto.addEventListener('input', actualizarResultados);
-
-
+    // Configuración de semana actual
     filtros.semanaActual.addEventListener('change', function(e) {
         if (e.target.checked) {
             const weekDates = getCurrentWeekDates();
@@ -29,9 +25,8 @@ document.addEventListener('DOMContentLoaded', function () {
             filtros.fechaInicio.disabled = false;
             filtros.fechaFin.disabled = false;
         }
-        actualizarResultados();
     });
-   
+
     function getCurrentWeekDates() {
         const today = new Date();
         const dayOfWeek = today.getDay();
@@ -46,71 +41,38 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    function actualizarResultados() {
-        const estado = filtros.estado.value.toLowerCase();
-        const fechaInicio = Date.parse(filtros.fechaInicio.value) || null;
-        const fechaFin = Date.parse(filtros.fechaFin.value) || null;
-        const texto = filtros.texto.value.toLowerCase();
-        const supervisor = filtros.supervisor.value.toLowerCase();
-
-        const resultados = turnosData.filter(item => {
-            const itemFecha = Date.parse(item.fechaTurno);
-
-            // filtro texto coincide con algún campo
-            const coincideTexto = (
-                texto === '' || 
-                (item.colaborador || '').toLowerCase().includes(texto) ||
-                (item.estado || '').toLowerCase().includes(texto) ||
-                (item.autorizadoPor || '').toLowerCase().includes(texto) ||
-                (item.rut || '').toLowerCase().includes(texto) ||
-                (item.motivo || '').toLowerCase().includes(texto) ||
-                (item.instalacion || '').toLowerCase().includes(texto)
-            );
-
-            const coincideFecha = (
-                (filtros.fechaInicio.value === '' || fechaInicio === null || itemFecha >= fechaInicio) &&
-                (filtros.fechaFin.value === '' || fechaFin === null || itemFecha <= fechaFin)
-            );
-
-            const coincideSupervisor = (
-                (supervisor === '' || item.supID === supervisor)
-            );
-            // filtros de  estado
-            const coincideEstado = (
-                (estado === '' || item.estado.toLowerCase() === estado)
-            );
-            // Aplicar todos los filtros
-            return coincideTexto && coincideFecha && coincideEstado && coincideSupervisor;
-        });
-
-        mostrarResultados(resultados);
-    }
-
-    function mostrarResultados(data) {
+    // Mostrar resultados (solo para la página actual)
+    function mostrarResultados() {
         const contenedor = document.getElementById('resultadoTurnos');
         contenedor.innerHTML = '';
-        data.forEach(item => {
-            // Formatear la fecha
+
+        if (turnosData.length === 0) {
+            contenedor.innerHTML = '<div class="alert alert-info">No se encontraron resultados</div>';
+            return;
+        }
+
+        turnosData.forEach(item => {
             const fechaFormateada = new Date(item.fechaCreacion).toLocaleDateString('es-CL', {
                 day: '2-digit',
                 month: '2-digit',
                 year: 'numeric'
             });
  
-            // Formatear la hora
             const horaFormateada = new Date(item.fechaCreacion).toLocaleTimeString('es-CL', {
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: false
             });
+
             const resultadoFinal = `${fechaFormateada} ${horaFormateada}`;
             const spanHistorico = item.tiene_historico > 0 
-            ? `<span class="label label-rechazo">Justificado</span>` 
-            : '';
+                ? `<span class="label label-rechazo">Justificado</span>` 
+                : '';
+
             const fechaOriginal = item.fechaTurno;
             const [anio, mes, dia] = fechaOriginal.split('-');
             const fecha = new Date(anio, mes - 1, dia);
-            const fechaTurno = (fecha.toLocaleDateString('es-ES'));
+            const fechaTurno = fecha.toLocaleDateString('es-ES');
 
             const itemHTML = `
                 <div class="h-container" onclick="window.location.href='detalle-turno.php?id=${item.id}';">
@@ -133,15 +95,31 @@ document.addEventListener('DOMContentLoaded', function () {
                             <p>Autorizado por: ${item.autorizadoPor}</p>
                             <p>${resultadoFinal}</p>
                         </div>
-                        
                     </div>
-              
                 </div>
             `;
 
             contenedor.insertAdjacentHTML('beforeend', itemHTML);
         });
     }
-    actualizarResultados();
-});
 
+    // Inicializar
+    mostrarResultados();
+    Object.values(filtros).forEach(filtro => {
+        if (filtro) {
+            filtro.addEventListener('change', function() {
+                paginaInput.value = 1;
+            });
+        }
+    });
+
+    // Debounce para búsqueda de texto
+    let timeout;
+    filtros.texto.addEventListener('input', function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            paginaInput.value = 1;
+            form.submit();
+        }, 500);
+    });
+});
