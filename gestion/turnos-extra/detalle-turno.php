@@ -3,7 +3,7 @@ session_start();
 include("../../checklogin.php");
 include("../../dbconnection.php");
 check_login();
-include("../assets/php/detalle-turno.php");
+include("assets/php/detalle-turno.php");
 
 $puede_editar = (
   ($_SESSION['cargo'] == 11 && $_SESSION['id'] == $row['idAuto'] && $row['estado'] == 'rechazado') || 
@@ -379,8 +379,7 @@ $puede_editar = (
 <!-- Bootstrap Bundle (con Popper.js) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Scripts propios -->
-<script src="../../assets/js/sidebar.js"></script>
-<script src="../assets/js/detalle-turno.js"></script>
+<script src="assets/js/detalle-turno.js"></script>
 <?php
 if($puede_editar){
 ?>

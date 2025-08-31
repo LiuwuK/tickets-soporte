@@ -3,7 +3,7 @@ session_start();
 include("../../checklogin.php");
 check_login();
 include BASE_PATH . 'dbconnection.php';
-include("../assets/php/create-extra.php");
+include("assets/php/create-extra.php");
 date_default_timezone_set('America/Santiago'); 
 
 ?>
@@ -27,8 +27,6 @@ date_default_timezone_set('America/Santiago');
 <link href="../../assets/css/sidebar.css" rel="stylesheet" type="text/css" />
 <link href="../../projects/assets/css/create-project.css" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" href="../assets/css/nuevo-turno.css">
-<!-- Toast notificaciones -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 <!-- sweetalert -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
@@ -256,8 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Complementos/Plugins-->
 <!-- Scripts propios -->
-<script src="../assets/js/turno-extra.js"></script>
-<script src="../../assets/js/sidebar.js"></script>
+<script src="assets/js/turno-extra.js"></script>
 </body>
 
 </html>

@@ -3,7 +3,7 @@ session_start();
 include("../../checklogin.php");
 check_login();
 include("../../dbconnection.php");
-include("../assets/php/ver-turnos.php");
+include("assets/php/ver-turnos.php");
 ?>
 <!DOCTYPE html>
 <html>
@@ -16,190 +16,198 @@ include("../assets/php/ver-turnos.php");
   <meta name="google" content="notranslate">
   <meta content="" name="description" />
   <meta content="" name="author" />
-<!-- CSS de Choices.js -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
-<!-- Bootstrap 5 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<!-- CSS personalizados -->
-<link href="../../assets/css/sidebar.css" rel="stylesheet" type="text/css"/>
-<link href="../assets/css/historico-TD.css" rel="stylesheet" type="text/css"/>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- CSS personalizados -->
+  <link href="../../assets/css/sidebar.css" rel="stylesheet" type="text/css"/>
+  <link href="../assets/css/historico-TD.css" rel="stylesheet" type="text/css"/>
 </head>
 
-<body class="test" >
-    <!-- Sidebar -->
+<body class="test">
+  <!-- Sidebar -->
   <div class="page-container ">
     <div class="sidebar">
       <?php include("../../header-test.php"); ?>
     </div>
     <div class="page-content">
-    <?php include("../../leftbar-test.php"); ?>
-        <div class="page-title d-flex justify-content-between">
-          <h2>Turnos extra</h2>
-          <button class=" btn-back" onclick="window.location.href='../turnos-extras.php';"> 
-              <i class="bi bi-arrow-left" ></i>
-          </button>
-        </div> <br><br>
-        <form method="GET" action="" id="filtrosForm">
-          <div class="filtros d-flex justify-content-between form-f">
-              <div class="d-flex justify-content-arround mb-3">
-                  <div class="all-fil">
-                      <label for="filtroTexto">Buscar</label>
-                      <input type="text" id="filtroTexto" name="texto" value="<?= htmlspecialchars($filtros['texto']) ?>" class="form-control form-control-sm fil" placeholder="Buscar por nombre, instalación, etc.">
-                  </div>
-                  <div class="all-fil">  
-                      <label for="filtroEstado" >Estado</label>
-                      <select id="filtroEstado" name="estado" class="form-select form-select-sm fil-estado">
-                          <option value="">Todos los estados</option>
-                          <?php
-                          foreach ($valoresEnum as $valor) {
-                              $selected = $filtros['estado'] == $valor ? 'selected' : '';
-                              echo "<option value='$valor' $selected>$valor</option>";
-                          }
-                          ?>
-                      </select>
-                  </div>
-                  <div class="all-fil">  
-                      <label for="filtroSupervisor" >Supervisor</label>
-                      <select id="filtroSupervisor" name="supervisor" class="form-select form-select-sm">
-                          <option value="">Todos los supervisores</option>
-                          <?php
-                          if ($result_sup->num_rows > 0) {
-                              while ($supervisor = $result_sup->fetch_assoc()) {
-                                  $selected = $filtros['supervisor'] == $supervisor['id'] ? 'selected' : '';
-                                  echo '<option value="'.$supervisor['id'].'" '.$selected.'>' 
-                                      . htmlspecialchars($supervisor['name'], ENT_QUOTES) . '</option>';
-                              }
-                          } else {
-                              echo '<option value="">No hay supervisores</option>';
-                          }
-                          $stmt_s->close();
-                          ?>
-                      </select>
-                  </div>
-                  <div class="all-fil">
-                      <label for="filtroFechaInicio">Fecha Inicio</label>
-                      <input name="fecha_inicio" type="date" value="<?= htmlspecialchars($filtros['fecha_inicio']) ?>" class="form-control form-control-sm fil" id="filtroFechaInicio">
-                  </div>
-                  <div class="all-fil">
-                      <label for="filtroFechaFin">Fecha Fin</label>
-                      <input name="fecha_fin" type="date" value="<?= htmlspecialchars($filtros['fecha_fin']) ?>" class="form-control form-control-sm fil" id="filtroFechaFin">
-                  </div>
-                  <div class="all-fill">
-                      <label class="form-check-label" for="filtroSemanaActual">Semana en Gestion</label>
-                      <div class="form-check form-switch mt-3">
-                          <input class="form-check-input" type="checkbox" id="filtroSemanaActual" name="semana_actual" <?= $filtros['semana_actual'] ? 'checked' : '' ?>>
-                      </div>
-                  </div>
+      <?php include("../../leftbar-test.php"); ?>
+      
+      <div class="page-title d-flex justify-content-between">
+        <h2>Turnos extra</h2>
+        <button class=" btn-back" onclick="window.location.href='../turnos-extras.php';"> 
+          <i class="bi bi-arrow-left" ></i>
+        </button>
+      </div> <br><br>
+
+      <!-- FILTROS -->
+      <form method="GET" action="" id="filtrosForm">
+        <div class="filtros d-flex justify-content-between form-f">
+          <div class="d-flex justify-content-arround mb-3">
+            <div class="all-fil">
+              <label for="filtroTexto">Buscar</label>
+              <input type="text" id="filtroTexto" name="texto" value="<?= htmlspecialchars($filtros['texto']) ?>" class="form-control form-control-sm fil" placeholder="Buscar por nombre, instalación, etc.">
+            </div>
+            <div class="all-fil">  
+              <label for="filtroEstado" >Estado</label>
+              <select id="filtroEstado" name="estado" class="form-select form-select-sm fil-estado">
+                <option value="">Todos los estados</option>
+                <?php foreach ($valoresEnum as $valor): ?>
+                  <option value="<?= $valor ?>" <?= $filtros['estado'] == $valor ? 'selected' : '' ?>><?= $valor ?></option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div class="all-fil">  
+              <label for="filtroSupervisor" >Supervisor</label>
+              <select id="filtroSupervisor" name="supervisor" class="form-select form-select-sm">
+                <option value="">Todos los supervisores</option>
+                <?php if ($result_sup->num_rows > 0): ?>
+                  <?php while ($supervisor = $result_sup->fetch_assoc()): ?>
+                    <option value="<?= $supervisor['id'] ?>" <?= $filtros['supervisor'] == $supervisor['id'] ? 'selected' : '' ?>>
+                      <?= htmlspecialchars($supervisor['name'], ENT_QUOTES) ?>
+                    </option>
+                  <?php endwhile; ?>
+                <?php else: ?>
+                  <option value="">No hay supervisores</option>
+                <?php endif; $stmt_s->close(); ?>
+              </select>
+            </div>
+            <div class="all-fil">
+              <label for="filtroFechaInicio">Fecha Inicio</label>
+              <input name="fecha_inicio" type="date" value="<?= htmlspecialchars($filtros['fecha_inicio']) ?>" class="form-control form-control-sm fil" id="filtroFechaInicio">
+            </div>
+            <div class="all-fil">
+              <label for="filtroFechaFin">Fecha Fin</label>
+              <input name="fecha_fin" type="date" value="<?= htmlspecialchars($filtros['fecha_fin']) ?>" class="form-control form-control-sm fil" id="filtroFechaFin">
+            </div>
+            <div class="all-fill">
+              <label class="form-check-label" for="filtroSemanaActual">Semana en Gestión</label>
+              <div class="form-check form-switch mt-3">
+                <input class="form-check-input" type="checkbox" id="filtroSemanaActual" name="semana_actual" value="1" <?= $filtros['semana_actual'] ? 'checked' : '' ?>>
               </div>
-              <div>
-                  <button type="submit" class="btn btn-updt btn-lg me-2">
-                      Filtrar
-                  </button>
-                  <button type="submit" class="btn btn-excel" formaction="../assets/php/exportar-turnos.php">
-                      <i class="bi bi-file-earmark-excel"></i> 
-                      Exportar Turnos
-                  </button>
-                  <?php if($_SESSION['cargo'] != 11): ?>    
-                      <button class="btn btn-excel" type="button" data-bs-toggle="modal" data-bs-target="#newSuper">
-                          <i class="bi bi-arrow-repeat"></i> 
-                          Actualizar turnos
-                      </button>
-                      <?php if (array_intersect([10], $_SESSION['deptos'])): ?>    
-                          <button type="submit" class="btn btn-excel" formaction="../assets/php/exportar-pagos.php">
-                              <i class="bi bi-file-earmark-excel"></i> 
-                              Exportar Pagos
-                          </button>
-                      <?php endif; ?>
-                  <?php endif; ?>
-              </div>
+            </div>
           </div>
-          <input type="hidden" name="pagina" id="paginaInput" value="1">
-        </form>
+          <div>
+            <button type="submit" class="btn btn-updt btn-lg me-2">Filtrar</button>
+            <button type="submit" class="btn btn-excel" formaction="assets/php/exportar-turnos.php">
+              <i class="bi bi-file-earmark-excel"></i> Exportar Turnos
+            </button>
+            <?php if($_SESSION['cargo'] != 11): ?>    
+              <button class="btn btn-excel" type="button" data-bs-toggle="modal" data-bs-target="#newSuper">
+                <i class="bi bi-arrow-repeat"></i> Actualizar turnos
+              </button>
+              <?php if (array_intersect([10], $_SESSION['deptos'])): ?>    
+                <button type="submit" class="btn btn-excel" formaction="assets/php/exportar-pagos.php">
+                  <i class="bi bi-file-earmark-excel"></i> Exportar Pagos
+                </button>
+              <?php endif; ?>
+            <?php endif; ?>
+          </div>
+        </div>
+        <input type="hidden" name="pagina" id="paginaInput" value="<?= $pagina ?>">
+      </form>
 
-        <div id="resultadoTurnos" class="content"></div>
+      <!-- RESULTADOS -->
+      <div id="resultadoTurnos" class="content">
+        <?php if (empty($turnos)): ?>
+          <div class="alert alert-info">No se encontraron resultados</div>
+        <?php else: ?>
+          <?php foreach ($turnos as $item): ?>
+            <?php
+              $fechaCreacion = new DateTime($item['fechaCreacion']);
+              $resultadoFinal = $fechaCreacion->format('d-m-Y H:i');
+              $fechaTurno = (new DateTime($item['fechaTurno']))->format('d-m-Y');
+              $spanHistorico = $item['tiene_historico'] ? '<span class="label label-rechazo">Justificado</span>' : '';
+            ?>
+            <div class="h-container" onclick="window.location.href='detalle-turno.php?id=<?= $item['id'] ?>';">
+              <div class="h-header d-flex justify-content-between">
+                <div class="colab-turno">
+                  <strong><?= htmlspecialchars($item['colaborador']) ?></strong>
+                  <p>Rut: <?= htmlspecialchars($item['rut']) ?></p>
+                </div>
+                <div class="estado mt-2">
+                  <span class="label label-estado"><?= htmlspecialchars($item['estado']) ?></span>
+                  <?= $spanHistorico ?>
+                </div>
+              </div>
+              <div class="h-body">
+                <p>Instalación: <?= htmlspecialchars($item['instalacion'] ?? 'Sin Instalación') ?></p>
+                <p>Fecha del Turno: <?= $fechaTurno ?></p>
+                <p>Horas Cubiertas: <?= $item['horas'] ?> hrs</p>
+                <p>Motivo: <?= htmlspecialchars($item['motivo']) ?></p>
+                <div class="h-footer">
+                  <p>Autorizado por: <?= htmlspecialchars($item['autorizadoPor']) ?></p>
+                  <p><?= $resultadoFinal ?></p>
+                </div>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        <?php endif; ?>
+      </div>
 
-        <!-- Pag -->
-        <?php if ($total_pages > 1): ?>
+      <!-- PAGINACIÓN -->
+      <?php if ($total_pages > 1): ?>
         <nav aria-label="Paginación de turnos">
-            <ul class="pagination justify-content-center mt-4">
-                <?php if ($pagina > 1): ?>
-                <li class="page-item">
-                    <a class="page-link" href="?<?= http_build_query(array_merge($filtros, ['pagina' => $pagina - 1])) ?>">
-                        &laquo; Anterior
-                    </a>
-                </li>
-                <?php endif; ?>
+          <ul class="pagination justify-content-center mt-4">
+            <?php if ($pagina > 1): ?>
+              <li class="page-item">
+                <a class="page-link" href="?<?= http_build_query(array_merge($filtros, ['pagina' => $pagina - 1])) ?>">&laquo; Anterior</a>
+              </li>
+            <?php endif; ?>
 
-                <?php
-                $startPage = max(1, $pagina - 2);
-                $endPage = min($total_pages, $startPage + 4);
-                if ($endPage - $startPage < 4) {
-                    $startPage = max(1, $endPage - 4);
-                }
-                
-                for ($i = $startPage; $i <= $endPage; $i++): ?>
-                <li class="page-item <?= $i == $pagina ? 'active' : '' ?>">
-                    <a class="page-link" href="?<?= http_build_query(array_merge($filtros, ['pagina' => $i])) ?>">
-                        <?= $i ?>
-                    </a>
-                </li>
-                <?php endfor; ?>
+            <?php
+              $startPage = max(1, $pagina - 2);
+              $endPage = min($total_pages, $startPage + 4);
+              if ($endPage - $startPage < 4) {
+                  $startPage = max(1, $endPage - 4);
+              }
+              for ($i = $startPage; $i <= $endPage; $i++): ?>
+              <li class="page-item <?= $i == $pagina ? 'active' : '' ?>">
+                <a class="page-link" href="?<?= http_build_query(array_merge($filtros, ['pagina' => $i])) ?>"><?= $i ?></a>
+              </li>
+            <?php endfor; ?>
 
-                <?php if ($pagina < $total_pages): ?>
-                <li class="page-item">
-                    <a class="page-link" href="?<?= http_build_query(array_merge($filtros, ['pagina' => $pagina + 1])) ?>">
-                        Siguiente &raquo;
-                    </a>
-                </li>
-                <?php endif; ?>
-            </ul>
+            <?php if ($pagina < $total_pages): ?>
+              <li class="page-item">
+                <a class="page-link" href="?<?= http_build_query(array_merge($filtros, ['pagina' => $pagina + 1])) ?>">Siguiente &raquo;</a>
+              </li>
+            <?php endif; ?>
+          </ul>
         </nav>
 
         <div class="text-center text-muted mb-4">
-            <small>
-                Mostrando <?= (($pagina - 1) * $limite) + 1 ?> 
-                a <?= min($pagina * $limite, $total_rows) ?> 
-                de <?= $total_rows ?> resultados
-            </small>
+          <small>
+            Mostrando <?= (($pagina - 1) * $limite) + 1 ?> 
+            a <?= min($pagina * $limite, $total_rows) ?> 
+            de <?= $total_rows ?> resultados
+          </small>
         </div>
-        <?php endif; ?>
+      <?php endif; ?>
     </div>
   </div>
 
-<!-- Modal new -->
-<div class="modal fade" id="newSuper" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="newSuperLabel" aria-hidden="true">>
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
+  <!-- Modal actualizar -->
+  <div class="modal fade" id="newSuper" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="newSuperLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
           <h5 class="modal-title" id="newSuperLabel">Actualizar turnos</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form class="mb-2" method="post" enctype="multipart/form-data">
+        </div>
+        <form class="mb-2" method="post" enctype="multipart/form-data">
           <div class="modal-body mt-3 d-flex justify-content-center">
-              <input class="mb-3" type="file" name="file" required>
+            <input class="mb-3" type="file" name="file" required>
           </div>
           <div class="modal-footer form-row-modal d-flex justify-content-end">
-                <!-- 
-              <a href="../assets/excel-ejemplos/turnos.xlsm" download class="btn btn-default">
-                  Excel Ejemplo
-              </a> -->
-              <button class="btn btn-updt" name="carga" type="submit">Actualizar</button>
+            <button class="btn btn-updt" name="carga" type="submit">Actualizar</button>
           </div>
-      </form> 
+        </form> 
+      </div>
     </div>
   </div>
-</div>
 
-
-<!-- Popper.js (para tooltips y otros componentes) -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<!-- Bootstrap Bundle (con Popper.js) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Scripts propios -->
-<script src="../assets/js/sidebar.js"></script>
-<script src="../assets/js/ver-turno.js"></script>
-
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/ver-turno.js"></script>
 </body>
-
 </html>

@@ -1,9 +1,9 @@
 <?php
 session_start();
 include("../../checklogin.php");
-include BASE_PATH.'dbconnection.php';
-include("../assets/php/recuperaciones.php");
 check_login();
+require_once '../../dbconnection.php';
+include("assets/php/recuperaciones.php");
 ?>
 <!DOCTYPE html>
 <html>
@@ -105,7 +105,7 @@ check_login();
                         </select>
                     </div>
                     <div class="exp">
-                        <button type="button" class="btn btn-excel" onclick="window.location.href='../assets/php/exportar-recuperaciones.php';">
+                        <button type="button" class="btn btn-excel" onclick="window.location.href='assets/php/exportar-recuperaciones.php';">
                             <i class="bi bi-file-earmark-excel"></i> 
                             Exportar Recuperaciones
                         </button>
@@ -163,8 +163,7 @@ check_login();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Complementos/Plugins-->
 <!-- Scripts propios -->
-<script src="../../assets/js/sidebar.js"></script>
-<script src="../assets/js/recuperaciones.js"></script>
+<script src="assets/js/recuperaciones.js"></script>
 </body>
 
 </html>

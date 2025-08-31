@@ -14,27 +14,13 @@
 -->
 
 <div class="sidebar" id="sidebar">
-  <div class="text-center">
-    <br> 
-    <a href="<?php echo BASE_URL;?>tickets/create-ticket.php" > 
-      <button class="add-ticket btn" data-bs-toggle="tooltip" data-bs-placement="right" title="Crear ticket">
-        <i class="bi bi-plus"></i>
-      </button>
-    </a>
-    <br><br>
-  </div>
     
   <ul class="nav flex-column sidebar-nav">
     <!-- Dashboard -->
+     <br>
     <li class="nav-item">
       <a href="<?php echo BASE_URL;?>dashboard.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Inicio">
         <i class="bi bi-house-door"></i>
-      </a>
-    </li>
-    <!-- Modulo TICKETS -->
-    <li class="nav-item">
-      <a href="<?php echo BASE_URL; ?>tickets/tickets-main.php" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Tickets">
-        <i class="bi bi-ticket-perforated"></i>
       </a>
     </li>
     <?php

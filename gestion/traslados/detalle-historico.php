@@ -1,0 +1,428 @@
+<?php
+session_start();
+include("../../checklogin.php");
+include("../../dbconnection.php");
+include("assets/php/detalle-historico.php");
+check_login();
+
+?>
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <meta charset="utf-8" />
+  <title>Historico Traslados y Desvinculaciones</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta content="" name="description" />
+  <meta content="" name="author" />
+<!-- CSS de Choices.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<!-- sweetalert notificaciones -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<!-- CSS personalizados -->
+<link href="../../assets/css/sidebar.css" rel="stylesheet" type="text/css"/>
+<link href="../assets/css/historico-TD.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="test" >
+    <!-- Sidebar -->
+  <div class="page-container ">
+    <div class="sidebar">
+      <?php include("../../header-test.php"); ?>
+      <?php include("../../assets/php/phone-sidebar.php"); ?>
+    </div>
+    <div class="page-content">
+    <?php include("../../leftbar-test.php"); ?>
+        <div class="page-title d-flex justify-content-between">
+          <h2 class="det-view">Detalle <?php echo $_GET['tipo'].' #'.$_GET['id']?></h2>
+          <button class=" btn-back" onclick="window.location.href='historico-TD.php';"> 
+              <i class="bi bi-arrow-left" ></i>
+          </button>
+        </div> <br><br>
+        <div class="d-container col-md-9 mx-auto">
+          <?php 
+            if($_GET['tipo'] == 'traslado'){
+              while ($row = mysqli_fetch_assoc($tr)) {
+          ?>
+            <!-- Datos Colaborador -->
+            <h4 class="mt-3">Datos colaborador</h4>
+            <hr width="90%" class="mx-auto">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="colaborador" >Nombre Colaborador</label>
+                <input type="text" name="colaborador" id="colaborador" value="<?php echo $row['colaborador']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="rutC" >Rut Colaborador</label>
+                <input type="text" name="rutC" id="rutC" value="<?php echo $row['rutC']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+            <br>
+            <!-- Datos instalacion origen -->
+            <h4>Datos Instalación Origen</h4>
+            <hr width="90%" class="mx-auto">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="instOrigen" >Instalación Origen</label>
+                <input type="text" name="instOrigen" id="instOrigen"  value="<?php
+                  if (!empty(trim($row['nombre_origen'] ?? ''))) {
+                    echo htmlspecialchars($row['nombre_origen']);
+                  } elseif (!empty(trim($row['suOrigen'] ?? ''))) {
+                    echo htmlspecialchars($row['suOrigen']);
+                  } ?>"  class="form-control form-control-sm " readonly/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="raOrigen" >Razón Social</label>
+                <input type="text" name="raOrigen" id="raOrigen" value="<?php echo $row['raOrigen']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="supOrigen" >Supervisor Origen</label>
+                <input type="text" name="supOrigen" id="supOrigen" value="<?php echo $row['supOrigen']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+
+            <div class="form-row mt-3">
+              <div class="form-group">
+                <label class="form-label" for="rolOrigen" >Rol Origen</label>
+                <input type="text" name="rolOrigen" id="rolOrigen" value="<?php echo $row['rolOrigen']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="joOrigen" >Jornada Origen</label>
+                <input type="text" name="joOrigen" id="joOrigen" value="<?php echo $row['joOrigen']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+            <br>
+             <!-- Datos instalacion destino -->
+             <h4>Datos Instalación Destino</h4>
+             <hr width="90%" class="mx-auto">
+            <div class="form-row mt-3">
+              <div class="form-group">
+                <label class="form-label" for="instOrigen" >Instalación Destino</label>
+                <input type="text" name="instDestino" id="instDestino" value="<?php
+                  if (!empty(trim($row['nombre_destino'] ?? ''))) {
+                    echo htmlspecialchars($row['nombre_destino']);
+                  } elseif (!empty(trim($row['suDestino'] ?? ''))) {
+                    echo htmlspecialchars($row['suDestino']);
+                  } ?>"   class="form-control form-control-sm " readonly/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="raDestino" >Razón Social</label>
+                <input type="text" name="raDestino" id="raDestino" value="<?php echo $row['raDestino']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="supDestino" >Supervisor Destino</label>
+                <input type="text" name="supDestino" id="supDestino" value="<?php echo $row['supDestino']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="rolDestino" >Rol Destino</label>
+                <input type="text" name="rolDestino" id="rolDestino" value="<?php echo $row['rolDestino']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="joDestino" >Jornada Destino</label>
+                <input type="text" name="joDestino" id="joDestino" value="<?php echo $row['joDestino']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+            <br>
+            <!-- Estado, fecha y observacion -->
+            <h4>Informacion General</h4>
+            <hr width="90%" class="mx-auto">
+            <div class="form-row">
+              <div class="form-group">
+              <?php 
+                if($_SESSION['cargo'] !== 13){
+              ?>
+                <label for="estado" class="form-label">Estado</label>
+                <select class="form-select form-select-sm estado-select" data-id="<?php echo $_GET['id']; ?>">
+                    <option value="En gestión" <?php if ($row['estado'] == 'En gestión') echo 'selected'; ?>>En gestión</option>
+                    <option value="Realizado" <?php if ($row['estado'] == 'Realizado') echo 'selected'; ?>>Realizado</option>
+                    <option value="Anulado" <?php if ($row['estado'] == 'Anulado') echo 'selected'; ?>>Anulado</option>
+                </select>
+              <?php   
+                }else{
+              ?>
+                  <label class="form-label" for="estado" >Estado</label>
+                  <input type="text" name="estado" id="estado" value="<?php echo $row['estado']; ?>" class="form-control form-control-sm " readonly/>
+              <?php  
+                }
+              ?>
+              </div>
+              <div class="form-group">
+                  <label for="fInicio" class="form-label">Fecha Inicio de Turno</label>
+                  <input name="fInicio" type="date" class="form-control form-control-sm" value="<?php echo $row['fecha_turno'];?>" aria-label="Date" aria-describedby="fInicio" readonly>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                  <label class="form-label" for="motivoN" >Motivo de Traslado</label>
+                  <input type="text" name="motivoN" id="motivoN" value="<?php echo $row['motivoN']; ?>" class="form-control form-control-sm " readonly />
+                </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                  <label for="desc" class="form-label">Observación SSPP</labe>
+                  <textarea class="form-control form-control-sm" id="desc" name="desc" rows="3" readonly><?php echo $row['obs'];?></textarea>     
+              </div>
+            </div>
+            
+            <form id="newform" method="POST">
+              <?php
+                if($_SESSION['cargo'] == 12){
+              ?>
+                <div class="form-row">
+                  <div class="form-group">
+                      <label for="desc" class="form-label">Observación RRHH</labe>
+                      <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3"><?php echo $row['obs_rrhh'];?></textarea>     
+                  </div>
+                </div>
+                <div class="form-row justify-content-end">
+                  <button class="btn btn-updt" name="rrhh" id="updateBtn" disabled>Actualizar</button>
+                </div>
+              <?php
+              }else{
+                ?>
+                  <div class="form-row">
+                    <div class="form-group">
+                        <label for="desc" class="form-label">Observación RRHH</labe>
+                        <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3" readonly><?php echo $row['obs_rrhh'];?></textarea>     
+                    </div>
+                  </div>
+                <?php  
+                }
+                ?>
+            </form>
+          <?php
+            }
+            }else{
+            $row = $dv
+          ?>
+          <!-- colaborador -->
+            <h4 class="mt-3">Datos colaborador</h4>
+            <hr width="90%" class="mx-auto">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="colaborador" >Nombre Colaborador</label>
+                <input type="text" name="colaborador" id="colaborador" value="<?php echo $row['colaborador']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="rutC" >Rut Colaborador</label>
+                <input type="text" name="rutC" id="rutC" value="<?php echo $row['rut']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+            <br>
+          <!-- instalacion -->
+            <h4 class="mt-3">Datos de Instalacion</h4>
+            <hr width="90%" class="mx-auto">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="instalacion" >Instalacion Origen</label>
+                <input type="text" name="instalacion" id="instalacion" 
+                value="<?php
+                  if (!empty(trim($row['in_nombre'] ?? ''))) {
+                    echo htmlspecialchars($row['in_nombre']);
+                  } elseif (!empty(trim($row['instalacion'] ?? ''))) {
+                    echo htmlspecialchars($row['instalacion']);
+                  } ?>" 
+                class="form-control form-control-sm " readonly/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="razon" >Razón Social</label>
+                <input type="text" name="razon" id="razon" value="<?php echo $row['razon']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="supervisor" >Supervisor Encargado</label>
+                <input type="text" name="supervisor" id="supervisor" value="<?php echo $row['supervisor']; ?>" class="form-control form-control-sm " readonly/>
+              </div>
+            </div>
+            <br>
+          <!-- Observacion, motivo y estado  -->
+          <h4>Informacion General</h4>
+            <hr width="90%" class="mx-auto">
+            <div class="form-row">
+              <div class="form-group">
+                <?php 
+                  if($_SESSION['cargo'] !== 13){
+                ?>
+                  <label for="estado" class="form-label">Estado</label>
+                  <select class="form-select form-select-sm desv-select" data-id="<?php echo $_GET['id']; ?>">
+                      <option value="En gestión" <?php if ($row['estado'] == 'En gestión') echo 'selected'; ?>>En gestión</option>
+                      <option value="Realizado" <?php if ($row['estado'] == 'Realizado') echo 'selected'; ?>>Realizado</option>
+                      <option value="Anulado" <?php if ($row['estado'] == 'Anulado') echo 'selected'; ?>>Anulado</option>
+                  </select>
+                <?php   
+                  }else{
+                ?>
+                    <label class="form-label" for="estado" >Estado</label>
+                    <input type="text" name="estado" id="estado" value="<?php echo $row['estado']; ?>" class="form-control form-control-sm " readonly/>
+                <?php  
+                  }
+                ?>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="motivoEgreso" >Motivo de Egreso</label>
+                <input type="text" name="motivoEgreso" id="motivoEgreso" value="<?php echo $row['motivoEgreso']; ?>" class="form-control form-control-sm" readonly/>
+              </div>
+            </div>
+            <?php
+            if($row['motivo'] == 8){
+            ?>
+              <div class="form-row">
+
+                <div class="form-group">
+                <p>Fechas de Ausencia</p>
+                  <ul>
+                  <?php
+                    while ($fecha = mysqli_fetch_assoc($infoAusencia)) {
+                      $fecha = new DateTime($fecha['fecha']);
+                      $fechaF = $fecha->format("d-m-Y");
+                      echo "<li>".$fechaF."</li>";
+                    }
+                  ?>
+                  </ul>
+                </div>
+              </div>
+            <?php
+            }
+            echo '<div class="form-row"> <div class="form-group">';
+              if(isset($row['url'])){  
+                  echo "<label class='form-label'> Archivos Adjuntos</label><a href='".$row['url']."' target='_blank' class='document-link'>📄 Descargar documento </a>";
+              }else{
+            ?>
+            <form name="form" method="POST" enctype="multipart/form-data">
+              <div id="loading" style="display:none ;">
+                  <div class="loading-spinner"></div>
+                  <p>Procesando...</p>
+              </div>
+              <label for="desvDocs" class="form-label">Subir Archivos</label>
+              <input class="form-control form-control-sm" type="file" id="desvDocs" name="desvDocs">
+              <input type="hidden" name="desv" value="<?php echo $row['idDesv']; ?>">
+              <button name="newDoc" class="btn btn-updt mt-3">Subir</button>
+            </form>
+            <?php                
+              }
+            echo '</div> </div>';
+            ?>
+            
+            <div class="form-row">
+              <div class="form-group">
+                  <label for="desc" class="form-label">Observación SSPP</label>
+                  <textarea class="form-control form-control-sm" id="desc" name="desc" rows="3" readonly><?php echo $row['observacion'];?></textarea>     
+              </div>
+            </div>
+            <form id="newform" method="POST">      
+              <?php
+                if($_SESSION['cargo'] == 12){
+              ?>
+                <div class="form-row">
+                  <div class="form-group">
+                      <label for="desc" class="form-label">Observación RRHH</labe>
+                      <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3"><?php echo $row['obs_rrhh'];?></textarea>     
+                  </div>
+                </div>
+                <div class="form-row justify-content-end">
+                  <button class="btn btn-updt" name="rrhh" id="updateBtn" disabled>Actualizar</button>
+                </div>
+              <?php
+              }else{
+              ?>
+                <div class="form-row">
+                  <div class="form-group">
+                      <label for="desc" class="form-label">Observación RRHH</labe>
+                      <textarea class="form-control form-control-sm" id="descRRHH" name="descRRHH" rows="3" readonly><?php echo $row['obs_rrhh'];?></textarea>     
+                  </div>
+                </div>
+              <?php  
+              }
+              ?>
+            </form>
+          <?php
+          } 
+          ?>
+        
+        </div>
+    </div>
+  </div>
+<!-- Popper.js (para tooltips y otros componentes) -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<!-- Bootstrap Bundle (con Popper.js) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- sweetalert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Scripts propios -->
+<script src="assets/js/detalle-historico.js"></script>
+<script>
+  document.querySelectorAll(".estado-select, .desv-select").forEach(select => {
+    select.addEventListener("change", function() {
+        const id = this.dataset.id;
+        const tipo = this.classList.contains("estado-select") ? "traslado" : "desvinculacion";
+
+        fetch("assets/php/update-estado.php", {
+            method: "POST",
+            headers: {"Content-Type":"application/x-www-form-urlencoded"},
+            body: `id=${id}&tipo=${tipo}&estado=${encodeURIComponent(this.value)}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if(data.success){
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Actualizado!',
+                    text: 'Estado actualizado correctamente',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se pudo actualizar el estado',
+                });
+            }
+        })
+        .catch(() => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Ocurrió un error al actualizar',
+            });
+        });
+    });
+});
+
+// Habilitar botón RRHH solo si hay texto
+const descField = document.getElementById('descRRHH');
+const updateBtn = document.getElementById('updateBtn');
+if(descField && updateBtn){
+    descField.addEventListener('input', ()=> updateBtn.disabled = !descField.value.trim());
+    updateBtn.disabled = !descField.value.trim();
+}
+
+// SweetAlert2 para actualizar RRHH desde PHP
+<?php if(isset($_POST['rrhh'])): ?>
+Swal.fire({
+    icon: 'success',
+    title: '¡Listo!',
+    text: 'Observación RRHH actualizada correctamente',
+    confirmButtonText: 'Aceptar'
+}).then(() => {
+    window.location.href = 'detalle-historico.php?id=<?= $id ?>&tipo=<?= $tipo ?>';
+});
+<?php endif; ?>
+
+</script>
+</body>
+
+</html>

@@ -39,8 +39,7 @@ $diasSemana = ['lunes','martes','miércoles','jueves','viernes','sábado','domin
 <link href="../../assets/css/sidebar.css" rel="stylesheet" type="text/css"/>
 <link href="../assets/css/historico-TD.css" rel="stylesheet" type="text/css"/>
 <link href="assets/css/detalle-instalacion.css" rel="stylesheet" type="text/css"/>
-<!-- Toast notificaciones -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<!-- sweetalert notificaciones -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 <!-- Graficos -->
