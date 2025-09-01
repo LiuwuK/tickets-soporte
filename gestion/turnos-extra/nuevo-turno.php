@@ -45,7 +45,7 @@ date_default_timezone_set('America/Santiago');
         <div class="content">
             <div class="page-title d-flex justify-content-between">
                 <h2>Turnos Extra</h2>
-                <button class=" btn-back" onclick="window.location.href='../turnos-extras.php';"> 
+                <button class=" btn-back" onclick="window.location.href='turnos-extras.php';"> 
                     <i class="bi bi-arrow-left" ></i>
                 </button>
             </div>
