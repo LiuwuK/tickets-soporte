@@ -57,9 +57,11 @@ header('Content-Type: text/html; charset=utf-8');
                             <label class="form-label">Estado</label>
                             <select name="statusF" class="form-select form-select-sm">
                                 <option value="">Ver todo</option>
-                                <?php while ($st = mysqli_fetch_assoc($statusF)): ?>
-                                    <option value="<?= $st['id'] ?>" <?= isset($_GET['statusF']) && $_GET['statusF']==$st['id'] ? 'selected' : '' ?>><?= $st['nombre'] ?></option>
-                                <?php endwhile; ?>
+                                <?php foreach ($statusF as $st): ?>
+                                    <option value="<?= $st['id'] ?>" <?= isset($_GET['statusF']) && $_GET['statusF']==$st['id'] ? 'selected' : '' ?>>
+                                        <?= $st['nombre'] ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
@@ -332,7 +334,18 @@ header('Content-Type: text/html; charset=utf-8');
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
 <script src="../assets/js/support_ticket.js" type="text/javascript"></script>
 <script src="../assets/js/general.js"></script>
-<script src="../assets/js/sidebar.js"></script>
-<script src="assets/js/view-projects.js"></script>
+<script>
+    document.querySelectorAll("#editButton").forEach(function(btn) {
+        btn.addEventListener("click",function() {
+            const projectId = this.getAttribute("data-id");
+            window.location.href = `update-project.php?projectId=${projectId}`;
+        });
+    });
+    document.querySelector('form[datarole="filters"]')?.addEventListener('submit', function(e){
+        const url = new URL(window.location.href);
+        url.searchParams.set('page', '1');
+    });
+</script>
+
 </body>
 </html>

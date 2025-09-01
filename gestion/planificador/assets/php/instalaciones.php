@@ -1,5 +1,5 @@
 <?php
-// Obtener supervisores y departamentos (guardar en arrays para reutilizar)
+// Obtener supervisores y departamentos
 $stmt_s = $con->prepare("SELECT id, nombre_supervisor FROM supervisores");
 $stmt_s->execute();
 $result_sup = $stmt_s->get_result();
@@ -11,7 +11,7 @@ $result_dep = $stmt_d->get_result();
 $departamentos = $result_dep->fetch_all(MYSQLI_ASSOC);
 
 // Configuración de paginación
-$limite = 15;
+$limite = 30;
 $pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 if ($pagina < 1) $pagina = 1;
 $offset = ($pagina - 1) * $limite;
@@ -23,7 +23,7 @@ $filtros = [
     'centro' => isset($_GET['centro']) ? (int)$_GET['centro'] : 0
 ];
 
-// Construir consulta base
+// consulta base
 $query = "SELECT su.*, su.supervisor_id AS supId, su.departamento_id AS cc, 
                  dt.nombre_departamento AS cost_center, sup.nombre_supervisor AS 'nSup', 
                  ci.nombre_ciudad AS 'nCiudad'

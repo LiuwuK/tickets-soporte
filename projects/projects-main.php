@@ -22,9 +22,6 @@ include("../dbconnection.php");
 <!-- CSS personalizados -->
 <link href="../assets/css/sidebar.css" rel="stylesheet" type="text/css"/>
 <link href="../assets/css/main.css" rel="stylesheet" type="text/css"/>
-
-<!-- Toast notificaciones -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 </head>
 
 <body class="test" >
@@ -69,17 +66,12 @@ include("../dbconnection.php");
             </div>
         </div>   
     </div>
-
   </div>
-
-
 <!-- Popper.js (para tooltips y otros componentes) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <!-- Bootstrap Bundle (con Popper.js) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Complementos/Plugins-->
-<!-- Scripts propios -->
-<script src="../assets/js/sidebar.js"></script>
+
 </body>
 
 </html>

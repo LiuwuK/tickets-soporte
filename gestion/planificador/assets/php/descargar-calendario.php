@@ -2,12 +2,16 @@
 require '../../../../vendor/autoload.php'; 
 require_once '../../../../dbconnection.php';
 
-$formato = $_GET['formato'] ?? 'pdf';
+$mes  = date('n') + 1;
+$anio = date('Y');
+if ($mes === 13) { $mes = 1; $anio++; }
 
+$mes  = isset($_GET['mes'])  ? (int)$_GET['mes']  : $mes;
+$anio = isset($_GET['anio']) ? (int)$_GET['anio'] : $anio;
+
+$formato = $_GET['formato'] ?? 'pdf';
 $sucursal_id = (int)($_GET['sucursal_id'] ?? 0);
 $colaborador_id = isset($_GET['colaborador_id']) ? (int)$_GET['colaborador_id'] : null;
-$mes = (int)($_GET['mes'] ?? date('n'));
-$anio = (int)($_GET['anio'] ?? date('Y'));
 $userID = isset($_GET['userID']) ? (int)$_GET['userID'] : null;
 
 
@@ -75,7 +79,6 @@ function obtenerDatosCalendario($con, $sucursal_id, $colaborador_id, $mes, $anio
 }
 
 function allData($con, $mes, $anio) {
-    $mes = 9;
     $query = "SELECT  
             hc.id AS horario_id,
             hc.fecha, 

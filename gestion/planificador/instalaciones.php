@@ -46,7 +46,11 @@ $userID = $_SESSION['id'];
           <div class="d-flex justify-content-between mb-3">
             <div class="all-fil">
               <label for="filtroTexto">Buscar</label>
-              <input type="text" id="filtroTexto" name="texto" value="<?= htmlspecialchars($filtros['texto']) ?>" class="form-control form-control-sm fil" placeholder="Buscar por nombre, tipo, etc.">
+              <input type="text" id="filtroTexto" name="texto"
+                value="<?= htmlspecialchars($filtros['texto']) ?>"
+                class="form-control form-control-sm fil"
+                placeholder="Buscar..."
+                autocomplete="off">
             </div>
             <div class="all-fil">  
               <label for="filtroCentro">Centro de costos</label>
@@ -147,8 +151,13 @@ $userID = $_SESSION['id'];
     </div>
   </div>
 
+  <script>
+    document.getElementById('filtrosForm').addEventListener('submit', function() {
+      this.querySelector('input[name="pagina"]').value = 1;
+    });
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../../assets/js/sidebar.js"></script>
 </body>
 </html>

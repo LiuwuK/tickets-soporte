@@ -87,7 +87,7 @@ check_login();
                 && 
                 array_intersect([21], $_SESSION['deptos'])){
                 ?>
-                    <div class="crd mx-auto" onclick="window.location.href='turnos-extras.php';">
+                    <div class="crd mx-auto" onclick="window.location.href='turnos-extra/turnos-extras.php';">
                         <i class="bi bi-stopwatch"></i>
                         <h4>Turnos Extras</h4>
                     </div>
