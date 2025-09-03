@@ -6,10 +6,9 @@ check_login();
 include("assets/php/detalle-turno.php");
 
 $puede_editar = (
-  ($_SESSION['cargo'] == 11 && $_SESSION['id'] == $row['idAuto'] && $row['estado'] == 'rechazado') || 
-  (array_intersect([6], $_SESSION['deptos']) && $row['estado'] == 'rechazado')
+  ($_SESSION['cargo'] == 11 && $_SESSION['id'] == $turno['idAuto'] && $turno['estado'] == 'rechazado') || 
+  (array_intersect([6], $_SESSION['deptos']) && $turno['estado'] == 'rechazado')
 );
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -55,25 +54,25 @@ $puede_editar = (
           <div class="d-flex justify-content-between mt-3 mb-2">
             <h4 class="">Datos colaborador</h4>
             <div class="tags-container">
-              <span class="label label-estado"><?php echo $row['estado']; ?></span>
-              <?php if($row['justificado'] > 0){ echo '<span class="label label-rechazo">Justificado</span>';} ?>
+              <span class="label label-estado"><?php echo $turno['estado']; ?></span>
+              <?php if($turno['justificado'] > 0){ echo '<span class="label label-rechazo">Justificado</span>';} ?>
             </div>
           </div>
           <hr width="90%" class="mx-auto">
           <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="colaborador" >Nombre Colaborador</label>
-              <input type="text" name="colaborador" id="colaborador" value="<?php echo $row['colaborador']; ?>" class="form-control form-control-sm " readonly/>
+              <input type="text" name="colaborador" id="colaborador" value="<?php echo $turno['colaborador']; ?>" class="form-control form-control-sm " readonly/>
             </div>
             <div class="form-group">
               <label class="form-label" for="rutC" >Rut Colaborador</label>
-              <input type="text" name="rutC" id="rutC" value="<?php echo $row['rut']; ?>" class="form-control form-control-sm " readonly/>
+              <input type="text" name="rutC" id="rutC" value="<?php echo $turno['rut']; ?>" class="form-control form-control-sm " readonly/>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="nacionalidad" >Nacionalidad</label>
-              <input type="text" name="nacionalidad" id="nacionalidad" value="<?php echo $row['nacionalidad']; ?>" class="form-control form-control-sm " readonly/>
+              <input type="text" name="nacionalidad" id="nacionalidad" value="<?php echo $turno['nacionalidad']; ?>" class="form-control form-control-sm " readonly/>
             </div>
           </div>
           <br>
@@ -83,51 +82,51 @@ $puede_editar = (
           <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="instalacion" >Instalación</label>
-              <input type="text" name="instalacion" id="instalacion" value="<?php echo $row['instalacion']; ?>" class="form-control form-control-sm " readonly/>
+              <input type="text" name="instalacion" id="instalacion" value="<?php echo $turno['instalacion']; ?>" class="form-control form-control-sm " readonly/>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="horario" >Horario Cubierto</label>
-              <input type="text" name="horario" id="horario" value="<?php echo $row['horario']; ?>" class="form-control form-control-sm " readonly/>
+              <input type="text" name="horario" id="horario" value="<?php echo $turno['horario']; ?>" class="form-control form-control-sm " readonly/>
             </div>
             <div class="form-group">
               <label class="form-label" for="horas" >Horas Cubiertas</label>
-              <input type="number" name="horas" id="horas" value="<?php echo $row['horas']; ?>" class="form-control form-control-sm " readonly/>
+              <input type="number" name="horas" id="horas" value="<?php echo $turno['horas']; ?>" class="form-control form-control-sm " readonly/>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="fechaTurno" >Fecha del Turno</label>
-              <input type="text" name="fechaTurno" id="fechaTurno" value="<?php echo $row['fechaTurno']; ?>" class="form-control form-control-sm " readonly/>
+              <input type="text" name="fechaTurno" id="fechaTurno" value="<?php echo $turno['fechaTurno']; ?>" class="form-control form-control-sm " readonly/>
             </div>
             <div class="form-group">
               <label class="form-label" for="monto" >Monto</label>
-              <input type="text" name="monto" id="monto" value="$<?php echo number_format($row['monto'], 0, ',', '.'); ?>"  class="form-control form-control-sm " readonly/>
+              <input type="text" name="monto" id="monto" value="$<?php echo number_format($turno['monto'], 0, ',', '.'); ?>"  class="form-control form-control-sm " readonly/>
             </div>
           </div>
 
           <div class="form-row mt-3">
             <div class="form-group">
               <label class="form-label" for="motivo" >Motivo</label>
-              <input type="text" name="motivo" id="motivo" value="<?php echo $row['motivo']; ?>" class="form-control form-control-sm " readonly/>
+              <input type="text" name="motivo" id="motivo" value="<?php echo $turno['motivo']; ?>" class="form-control form-control-sm " readonly/>
             </div>
             <div class="form-group">
               <label class="form-label" for="personaMotivo" >Persona del Motivo</label>
-              <input type="text" name="personaMotivo" id="personaMotivo" value="<?php echo $row['persona_motivo']; ?>" class="form-control form-control-sm " readonly/>
+              <input type="text" name="personaMotivo" id="personaMotivo" value="<?php echo $turno['persona_motivo']; ?>" class="form-control form-control-sm " readonly/>
             </div>
           </div>
 
           <div class="form-row mt-3">
             <div class="form-group">
               <label class="form-label" for="contratado" >Contratado</label>
-              <input type="text" name="contratado" id="contratado" value="<?php echo ($row['contratado'] == 1) ? "SI" : "NO"; ?> " class="form-control form-control-sm " readonly/>
+              <input type="text" name="contratado" id="contratado" value="<?php echo ($turno['contratado'] == 1) ? "SI" : "NO"; ?> " class="form-control form-control-sm " readonly/>
             </div>
             <div class="form-group">
               <label class="form-label" for="autorizadoPor" >Autorizado Por</label>
-              <input type="text" name="autorizadoPor" id="autorizadoPor" value="<?php echo $row['autorizadoPor']; ?>" class="form-control form-control-sm " readonly/>
+              <input type="text" name="autorizadoPor" id="autorizadoPor" value="<?php echo $turno['autorizadoPor']; ?>" class="form-control form-control-sm " readonly/>
             </div>
           </div>
                     
@@ -138,22 +137,22 @@ $puede_editar = (
           <div class="form-row">
             <div class="form-group">
                 <label class="form-label" for="banco" >Banco</label>
-                <input type="text" name="banco" id="banco" value="<?php echo $row['banco']; ?>" class="form-control form-control-sm " readonly/>
+                <input type="text" name="banco" id="banco" value="<?php echo $turno['banco']; ?>" class="form-control form-control-sm " readonly/>
             </div>
             <div class="form-group">
                 <label for="rutCta" class="form-label">Rut de la Cuenta</label>
-                <input name="rutCta" id="rutCta" type="text" class="form-control form-control-sm" value="<?php echo $row['RUTcta'];?>"  readonly>
+                <input name="rutCta" id="rutCta" type="text" class="form-control form-control-sm" value="<?php echo $turno['RUTcta'];?>"  readonly>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
                 <label class="form-label" for="numCuenta" >Numero de la cuenta</label>
-                <input type="text" name="numCuenta" id="numCuenta" value="<?php echo $row['numCuenta']; ?>" class="form-control form-control-sm " readonly/>
+                <input type="text" name="numCuenta" id="numCuenta" value="<?php echo $turno['numCuenta']; ?>" class="form-control form-control-sm " readonly/>
             </div>
           </div>
           <br>
           <?php 
-          if(isset($row['motivoN']) && $row['estado'] != "aprobado"){
+          if(isset($turno['motivoN']) && $turno['estado'] != "aprobado"){
           ?>
             <!-- Informacion General -->
             <h4>Informacion General</h4>
@@ -162,22 +161,22 @@ $puede_editar = (
             <div class="form-row">
               <div class="form-group">
                 <label for="motivoN" class="form-label">Motivo del rechazo</labe>
-                <textarea class="form-control form-control-sm" id="motivoR" name="motivoN" rows="3" readonly><?php echo $row['motivoN'];?></textarea>     
+                <textarea class="form-control form-control-sm" id="motivoR" name="motivoN" rows="3" readonly><?php echo $turno['motivoN'];?></textarea>     
               </div>
             </div>
             <?php
             if ($puede_editar){?>
             <div id="justificacion-container" style="display: none;" class="form-row">
               <form method="post">
-                <input type="hidden" name="id_turno" value="<?= $row['id'] ?>">
+                <input type="hidden" name="id_turno" value="<?= $turno['id'] ?>">
                 
-                <input type="hidden" name="colab" id="hidden_colaborador" value="<?= $row['colaborador'] ?>">
-                <input type="hidden" name="rutC" id="hidden_rutC" value="<?= $row['rut'] ?>">
-                <input type="hidden" name="numCta" id="hidden_numCuenta" value="<?= $row['numCuenta'] ?>">
-                <input type="hidden" name="rutCta" id="hidden_rutCta" value="<?= $row['RUTcta'] ?>">
-                <input type="hidden" name="pMotivo" id="hidden_personaMotivo" value="<?= $row['persona_motivo'] ?>">
-                <input type="hidden" name="mt" id="hidden_monto" value="<?= $row['monto'] ?>">
-                <input type="hidden" name="fturno" id="hidden_fechaTurno" value="<?= $row['fechaTurno'] ?>">
+                <input type="hidden" name="colab" id="hidden_colaborador" value="<?= $turno['colaborador'] ?>">
+                <input type="hidden" name="rutC" id="hidden_rutC" value="<?= $turno['rut'] ?>">
+                <input type="hidden" name="numCta" id="hidden_numCuenta" value="<?= $turno['numCuenta'] ?>">
+                <input type="hidden" name="rutCta" id="hidden_rutCta" value="<?= $turno['RUTcta'] ?>">
+                <input type="hidden" name="pMotivo" id="hidden_personaMotivo" value="<?= $turno['persona_motivo'] ?>">
+                <input type="hidden" name="mt" id="hidden_monto" value="<?= $turno['monto'] ?>">
+                <input type="hidden" name="fturno" id="hidden_fechaTurno" value="<?= $turno['fechaTurno'] ?>">
 
                 <div class="form-group mb-3">
                   <label>Justificación de los cambios <span class="text-danger">*</span></label>
@@ -195,14 +194,14 @@ $puede_editar = (
             <div class="form-row">
               <div class="form-group" id="justificacion-container">
                 <label for="justi" class="form-label">Justificación</labe>
-                <textarea class="form-control form-control-sm" id="justi" name="justi" rows="3" readonly><?php echo $row['justificacion'];?></textarea>     
+                <textarea class="form-control form-control-sm" id="justi" name="justi" rows="3" readonly><?php echo $turno['justificacion'];?></textarea>     
               </div>
             </div>
           <?php
             }
           }
           
-          if((in_array(6, $_SESSION['deptos'], true)) && $row['estado'] != "aprobado" && $row['justificado'] > 0 ){
+          if((in_array(6, $_SESSION['deptos'], true)) && $turno['estado'] != "aprobado" && $turno['justificado'] > 0 ){
           ?>
             <!-- CAMBIOS REALIZADOS -->
             <h4>Cambios Realizados</h4>
@@ -273,12 +272,12 @@ $puede_editar = (
             </div>
           <?php
           }
-          if($_SESSION['cargo'] != 11 && $row['estado'] != "aprobado"){
+          if($_SESSION['cargo'] != 11 && $turno['estado'] != "aprobado"){
           ?>
             <hr>
             <div class="form-row">
               <div class="form-group">
-                <button type="button" class="btn btn-del del-btn den-btn ms-auto" data-bs-toggle="modal" data-bs-target="#denied" data-sup-id="<?php echo $row['id'];?>">Rechazar</button>
+                <button type="button" class="btn btn-del del-btn den-btn ms-auto" data-bs-toggle="modal" data-bs-target="#denied" data-sup-id="<?php echo $turno['id'];?>">Rechazar</button>
               </div>
               <div class="form-group">
               <form method="post" enctype="multipart/form-data">
@@ -292,7 +291,7 @@ $puede_editar = (
             <hr>
             <div class="form-row">
               <div class="form-group">
-                <button type="button" class="btn btn-del del-btn den-btn ms-auto" data-bs-toggle="modal" data-bs-target="#denied" data-sup-id="<?php echo $row['id'];?>">Rechazar</button>
+                <button type="button" class="btn btn-del del-btn den-btn ms-auto" data-bs-toggle="modal" data-bs-target="#denied" data-sup-id="<?php echo $turno['id'];?>">Rechazar</button>
               </div>
               <div class="form-group">
               <form method="post" enctype="multipart/form-data">

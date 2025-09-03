@@ -25,8 +25,6 @@ function actualizarDatosBancarios($con, $idDatos, $rut, $dv, $numCuenta) {
     $stmt->close();
 }
 
-// Cargar turno
-if (!isset($_GET['id'])) die("No se proporcionó ID de turno");
 
 $id = (int)$_GET['id'];
 
@@ -64,10 +62,10 @@ $stmt = $con->prepare($query);
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $result = $stmt->get_result();
-$row = $result->fetch_assoc();
+$turno = $result->fetch_assoc();
 $stmt->close();
 
-if (!$row) die("No se encontró ningún turno con el ID proporcionado");
+if (!$turno) die("No se encontró ningún turno con el ID proporcionado");
 
 // Histórico de cambios
 $query_historico = "SELECT h.fecha, u.name AS usuario, h.cambios, h.justificacion
@@ -81,7 +79,7 @@ $historico = $stmt_historico->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt_historico->close();
 
 // Permiso para editar
-$puede_editar = puedeEditarTurno($row, $_SESSION);
+$puede_editar = puedeEditarTurno($turno, $_SESSION);
 
 // Acciones: aprobar, pago, rechazar, editar
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -150,11 +148,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($fieldMap as $form => $dbField) {
             if(isset($_POST[$form])) {
                 $valorNuevo = $dbField === 'monto' ? str_replace(['$', '.'], '', $_POST[$form]) : $_POST[$form];
-                if($valorNuevo != $row[$dbField]) {
+                if($valorNuevo != $turno[$dbField]) {
                     $updates[] = "$dbField=?";
                     $params[] = $valorNuevo;
                     $types .= 's';
-                    $cambios[$dbField] = ['antes'=>$row[$dbField],'despues'=>$valorNuevo];
+                    $cambios[$dbField] = ['antes'=>$turno[$dbField],'despues'=>$valorNuevo];
                 }
             }
         }
@@ -167,12 +165,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 [$rut_cta, $dv] = $rutParts;
 
                 // Separar RUT y DV almacenados
-                $rutActualParts = explode('-', $row['RUTcta']);
+                $rutActualParts = explode('-', $turno['RUTcta']);
                 $rutActual = $rutActualParts[0] ?? '';
                 $dvActual = $rutActualParts[1] ?? '';
 
-                if($rut_cta != $rutActual || $dv != $dvActual || $_POST['numCta'] != $row['numCuenta']){
-                    actualizarDatosBancarios($con, $row['datos_bancarios_id'], $rut_cta, $dv, $_POST['numCta']);
+                if($rut_cta != $rutActual || $dv != $dvActual || $_POST['numCta'] != $turno['numCuenta']){
+                    actualizarDatosBancarios($con, $turno['datos_bancarios_id'], $rut_cta, $dv, $_POST['numCta']);
                     $banco_cambiado = true;
 
                     // Guardar como array asociativo para el histórico
@@ -180,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'antes' => [
                             'rut_cta' => $rutActual,
                             'digito_verificador' => $dvActual,
-                            'numero_cuenta' => $row['numCuenta']
+                            'numero_cuenta' => $turno['numCuenta']
                         ],
                         'despues' => [
                             'rut_cta' => $rut_cta,

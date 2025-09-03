@@ -8,7 +8,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
-// Función para construir filtros (reutilizable)
+// Función para construir filtros
 function construirFiltros($input) {
     $where = [];
     $params = [];
@@ -71,7 +71,7 @@ $input = [
 
 list($whereSQL, $params, $types) = construirFiltros($input);
 
-// Query principal optimizada
+// Query principal 
 $query = "
     SELECT
         te.id AS idTurno,
@@ -161,7 +161,7 @@ $sheet->getStyle("L2:L{$rowIndex}")
     ->getNumberFormat()
     ->setFormatCode('"$"#,##0');
 
-// Anchos fijos (igual que antes)
+// Anchos fijos
 $widths = [
     'A'=>15,'B'=>20,'C'=>25,'D'=>20,'E'=>30,'F'=>20,'G'=>15,'H'=>15,'I'=>15,'J'=>15,'K'=>15,'L'=>20,
     'M'=>20,'N'=>20,'O'=>25,'P'=>30,'Q'=>20,'R'=>30,'S'=>20,'T'=>20,'U'=>20,'V'=>20,'W'=>20,'X'=>30,'Y'=>40,'Z'=>20
