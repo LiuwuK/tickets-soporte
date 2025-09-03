@@ -12,14 +12,16 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
     // información de sucursal
-    $query = "SELECT su.*, dt.nombre_departamento AS cost_center, sup.nombre_supervisor AS 'nSup', ci.nombre_ciudad AS 'nCiudad'
-              FROM sucursales su 
-              JOIN departamentos dt ON(su.departamento_id = dt.id)
-              JOIN supervisores sup ON(su.supervisor_id = sup.id)
-              JOIN ciudades ci ON(su.ciudad_id = ci.id)
-              WHERE su.id = ?
-              ORDER BY su.nombre ASC";
-    
+    $query = "SELECT su.*, 
+                    dt.nombre_departamento AS cost_center, 
+                    sup.nombre_supervisor AS nSup, 
+                    ci.nombre_ciudad AS nCiudad
+                FROM sucursales su 
+                LEFT JOIN departamentos dt ON su.departamento_id = dt.id
+                LEFT JOIN supervisores sup ON su.supervisor_id = sup.id
+                LEFT JOIN ciudades ci ON su.ciudad_id = ci.id
+                WHERE su.id = ?";
+            
     $stmt = mysqli_prepare($con, $query);
     if (!$stmt) {
         die("Error al preparar la consulta: " . mysqli_error($con));
@@ -32,9 +34,9 @@ if (isset($_GET['id'])) {
     if (!$result) {
         die("Error al obtener resultados: " . mysqli_error($con));
     }
-    $row = mysqli_fetch_assoc($result);
-    if (!$row) {
-        die("No se encontró ningún turno con el ID proporcionado");
+    $sucursal = mysqli_fetch_assoc($result); 
+    if (!$sucursal) {
+        die("No se encontró ninguna sucursal con el ID proporcionado");
     }
     mysqli_stmt_close($stmt); 
 

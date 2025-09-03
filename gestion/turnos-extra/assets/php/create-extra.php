@@ -374,16 +374,9 @@ if (isset($_POST['carga'])) {
                 continue;
             }
             $totalRegistros++;
- 
-
-
             $hora_inicio_obj = DateTime::createFromFormat('H:i', $hora_inicio);
             $hora_termino_obj = DateTime::createFromFormat('H:i', $hora_termino);
-
-            $hora_inicio_str = $hora_inicio_obj->format('H:i:s');
-            $hora_termino_str = $hora_termino_obj->format('H:i:s');
-            // Convertir fecha a Y-m-d 
-            
+            // Convertir fecha a Y-m-d             
             $fechaTurnoFormateada = procesarFechaTurno($fecha_turno, $index, $errores);
     
             if (empty($fechaTurnoFormateada)) {

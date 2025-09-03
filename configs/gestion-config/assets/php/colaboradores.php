@@ -188,6 +188,9 @@ if(isset($_POST['carga'])) {
             WHERE REPLACE(REPLACE(REPLACE(LOWER(nombre), ' ', ''), '.', ''), ',', '') = ?
             LIMIT 1
         ";
+        $query_deactivate = "UPDATE `colaboradores` SET 
+                                `vigente` = 0 WHERE `vigente` = 1 AND 
+                                `rut` NOT IN (" . implode(',', array_fill(0, count($data) - 1, '?')) . ")";
 
         $stmt_insert = $con->prepare($query_insert);
         $stmt_update = $con->prepare($query_update);
@@ -196,6 +199,11 @@ if(isset($_POST['carga'])) {
 
         $con->autocommit(false);
 
+        $ruts = array_column(array_slice($data, 1), 0); 
+        $stmt_deactivate = $con->prepare($query_deactivate);
+        $types = str_repeat('s', count($ruts)); 
+        $stmt_deactivate->bind_param($types, ...$ruts);
+        $stmt_deactivate->execute();
         try {
             $registros_procesados = 0;
             $actualizados = 0;
@@ -290,6 +298,18 @@ if(isset($_POST['carga'])) {
                     }
                 }
             }
+            if (!empty($ruts)) {
+                $query_deactivate = "UPDATE `colaboradores` 
+                                    SET `vigente` = 0 
+                                    WHERE `vigente` = 1 
+                                    AND `rut` NOT IN (" . implode(',', array_fill(0, count($ruts), '?')) . ")";
+                $stmt_deactivate = $con->prepare($query_deactivate);
+                $types = str_repeat('s', count($ruts));
+                $stmt_deactivate->bind_param($types, ...$ruts);
+                $stmt_deactivate->execute();
+                $stmt_deactivate->close();
+            }
+
 
             $con->commit();
             $mensaje = "$registros_procesados colaboradores insertados.\n$actualizados colaboradores actualizados.";

@@ -62,49 +62,52 @@ $diasSemana = ['lunes','martes','miércoles','jueves','viernes','sábado','domin
         <!-- INFO SUCURSAL -->
         <div class="d-container col-md-11 mx-auto d-flex justify-content-arround">
             <div class="info col-md-6">
-              <h3><?php echo $row['nombre']; ?></h3>
-              <p>
-                <strong>Razon Social: </strong>
-                <?php echo $row['razon_social'] ? $row['razon_social'] : 'Sin definir'; ?>
-              </p>
-              <p>
-                <strong>Ceco: </strong>
-                <?php echo $row['cost_center']; ?>
-              </p>
-              <p>
-                <strong>Direccion: </strong>
-                <?php echo $row['direccion_calle']; ?>
-              </p>
-              <p>
-                <strong>Supervisor: </strong>
-                <?php echo $row['nSup']; ?>
-              </p>
-              <p>
-                <strong>Puestos: </strong>
-                <?php echo $row['puestos']; ?>
-              </p>
-              <p>
-                <strong>Dotacion Optima: </strong>
-                <?php echo $row['dotacion_optima']; ?>
-              </p>
-              <p>
-                <strong>Dotacion Real: </strong>
-                <?php echo $dotacion; ?>
-              </p>
-
+                <h3><?php echo isset($sucursal['nombre']) ? $sucursal['nombre'] : 'Sin nombre'; ?></h3>
+                <p>
+                    <strong>Razon Social: </strong>
+                    <?php echo isset($sucursal['razon_social']) ? $sucursal['razon_social'] : 'Sin definir'; ?>
+                </p>
+                <p>
+                    <strong>Ceco: </strong>
+                    <?php echo isset($sucursal['cost_center']) ? $sucursal['cost_center'] : 'Sin definir'; ?>
+                </p>
+                <p>
+                    <strong>Direccion: </strong>
+                    <?php echo isset($sucursal['direccion_calle']) ? $sucursal['direccion_calle'] : 'Sin definir'; ?>
+                </p>
+                <p>
+                    <strong>Supervisor: </strong>
+                    <?php echo isset($sucursal['nSup']) ? $sucursal['nSup'] : 'Sin definir'; ?>
+                </p>
+                <p>
+                    <strong>Puestos: </strong>
+                    <?php echo isset($sucursal['puestos']) ? $sucursal['puestos'] : 'Sin definir'; ?>
+                </p>
+                <p>
+                    <strong>Dotacion Optima: </strong>
+                    <?php echo isset($sucursal['dotacion_optima']) ? $sucursal['dotacion_optima'] : 'Sin definir'; ?>
+                </p>
+                <p>
+                    <strong>Dotacion Real: </strong>
+                    <?php echo isset($dotacion) ? $dotacion : '0'; ?>
+                </p>
             </div>
             <div class="img col-md-6 text-center">
-              <?php 
-                if ($row['razon_social'] === 'ARGENTO SEGURIDAD') {
-                  echo '<img src="assets/img/argento.png" alt="Logo ARGENTO" />';
-                } elseif ($row['razon_social'] === 'RESULVE') {
-                  echo '<img src="assets/img/resuelve.png" alt="Logo resuelve" />';
-                } elseif ($row['razon_social'] === 'SAFETECK SPA') {
-                  echo '<img src="assets/img/safeteck.png" alt="Logo safeteck" />';
+                <?php 
+                if (isset($sucursal['razon_social'])) {
+                    if ($sucursal['razon_social'] === 'ARGENTO SERVICIOS INTEGRALES SPA') {
+                        echo '<img src="assets/img/argento.png" alt="Logo ARGENTO" />';
+                    } elseif ($sucursal['razon_social'] === 'RESULVE') {
+                        echo '<img src="assets/img/resuelve.png" alt="Logo resuelve" />';
+                    } elseif ($sucursal['razon_social'] === 'SAFETECK SEGURIDAD SPA') {
+                        echo '<img src="assets/img/safeteck.png" alt="Logo safeteck" />';
+                    } else {
+                        echo '<h1>Razón social no reconocida</h1>';
+                    }
                 } else {
-                  echo '<h1>Logo razón social</h1>';
+                    echo '<h1>Sin Razon social definida</h1>';
                 }
-              ?>
+                ?>
             </div>
         </div>
         <!-- TURNOS -->
@@ -455,7 +458,7 @@ $diasSemana = ['lunes','martes','miércoles','jueves','viernes','sábado','domin
   </div>
 </div>
 
-<script>
+<script>  
 document.addEventListener('DOMContentLoaded', function() {
   // Elementos del DOM
   const fechaInicioInput = document.getElementById('fechaInicioAsignacion');
@@ -821,7 +824,6 @@ let contadorNuevos = <?= !empty($turnosExistentes) ? count($turnosExistentes) : 
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar/main.min.js"></script>
 <!-- Scripts propios -->
-<script src="../../assets/js/sidebar.js"></script>
 <script src="assets/js/detalle-instalacion.js"></script>
 </body>
 

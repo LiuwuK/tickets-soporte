@@ -329,7 +329,8 @@ if(isset($_POST['cargaDotacion'])){
         //Consulta ( UPDATE)
         $query_update = "UPDATE sucursales SET 
                         puestos = ?, 
-                        dotacion_optima = ?
+                        dotacion_optima = ?,
+                        razon_social = ?
                         WHERE nombre = ?";
         
         $stmt_update = $con->prepare($query_update);
@@ -337,21 +338,24 @@ if(isset($_POST['cargaDotacion'])){
         $successCount = 0;
         $updateCount = 0;
         $errorCount = 0;
-        $errorsDetails = []; // Para almacenar detalles de errores
+        $errorsDetails = []; 
         
         foreach ($data as $index => $row) {
-            if ($index == 0) continue; // Saltar encabezados
+            if ($index == 0) continue; 
             
             // Normalizar nombre
             $nombre = preg_replace('/\s+/', ' ', trim($row[0]));
-            $nombre = str_replace([' .', '. '], '.', $nombre);
-            $puestos = $row[5];
-            $dotacionOpt = $row[6];
-            
+            $nombre = str_replace([' .', '. ', ' ,', ', '], ['', '', '', ''], $nombre);
+            $puestos = $row[1];
+            $dotacionOpt = $row[2];
+            $razonSocial = $row[3];
+            if (empty($nombre) || empty($puestos) || empty($dotacionOpt) || empty($razonSocial)) {
+                continue;
+            }
             // Verificar si la sucursal ya existe con comparación flexible
             $query_check = "SELECT id, nombre FROM sucursales WHERE 
-                           REPLACE(REPLACE(nombre, ' ', ''), '.', '') = 
-                           REPLACE(REPLACE(?, ' ', ''), '.', '')";
+                        REPLACE(REPLACE(REPLACE(nombre, ' ', ''), '.', ''), ',', '') = 
+                        REPLACE(REPLACE(REPLACE(?, ' ', ''), '.', ''), ',', '')";
             
             $stmt_check = $con->prepare($query_check);
             $originalForComparison = str_replace([' ', '.'], '', $nombre);
@@ -366,9 +370,7 @@ if(isset($_POST['cargaDotacion'])){
                     $errorsDetails[] = "Nombre normalizado: '$nombre' difiere del existente: '$existing_name'";
                     $nombre = $existing_name; 
                 }
-                
-                // Proceder con el update usando el nombre exacto
-                $stmt_update->bind_param("iis", $puestos, $dotacionOpt, $existing_name);
+                $stmt_update->bind_param("iiss", $puestos, $dotacionOpt, $razonSocial, $existing_name);
             
                 if ($stmt_update->execute()) {
                     $updateCount++;

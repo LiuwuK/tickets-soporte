@@ -31,14 +31,14 @@ $query = "SELECT su.*, su.supervisor_id AS supId, su.departamento_id AS cc,
           JOIN departamentos dt ON (su.departamento_id = dt.id)
           JOIN supervisores sup ON (su.supervisor_id = sup.id)
           JOIN ciudades ci ON (su.ciudad_id = ci.id)
-          WHERE 1=1";
+          WHERE estado = 'activo' ";
 
 $count_query = "SELECT COUNT(*) as total
                 FROM sucursales su 
                 JOIN departamentos dt ON (su.departamento_id = dt.id)
                 JOIN supervisores sup ON (su.supervisor_id = sup.id)
                 JOIN ciudades ci ON (su.ciudad_id = ci.id)
-                WHERE 1=1";
+                WHERE estado = 'activo'";
 
 // Aplicar filtros
 $where_conditions = [];
