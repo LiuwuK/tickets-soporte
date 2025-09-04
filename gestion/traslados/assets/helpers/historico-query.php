@@ -87,7 +87,7 @@ function buildQueryHistorico($con, $filters, $mode = 'data') {
                de.rut AS rutC,
                su.nombre AS suOrigen,
                '' AS joOrigen,
-               '' AS rolOrigen,
+               de.rol AS rolOrigen,
                mo.motivo AS motivoN,
                '' AS suDestino,
                '' AS joDestino,
