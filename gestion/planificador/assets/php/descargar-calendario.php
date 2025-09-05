@@ -88,17 +88,22 @@ function allData($con, $mes, $anio) {
             hc.bloque_id,
             hc.sucursal_id,
             s.nombre AS nombre_sucursal,
+            s.direccion_calle AS direccion, 
+            sup.nombre_supervisor AS sup,
+            d.nombre_departamento AS ceco,
             ti.codigo AS codigo,
             c.id AS colaborador_id,
             CONCAT(c.name, ' ', c.fname) AS nombre_colaborador
           FROM horarios_sucursal hc
-          JOIN turnos_instalacion ti ON hc.turno_id = ti.id
+          JOIN turnos_instalacion ti ON hc.turno_id = ti.id          
           LEFT JOIN colaborador_turno ct 
             ON hc.turno_id = ct.turno_id 
             AND hc.bloque_id = ct.bloque_id
             AND hc.fecha BETWEEN ct.fecha_inicio AND ct.fecha_fin
           LEFT JOIN colaboradores c ON ct.colaborador_id = c.id
           JOIN sucursales s ON hc.sucursal_id = s.id
+          JOIN departamentos d ON s.departamento_id = d.id
+          JOIN supervisores sup ON s.supervisor_id = sup.id
           WHERE MONTH(hc.fecha) = ? 
             AND YEAR(hc.fecha) = ?
             ";
@@ -130,6 +135,9 @@ function allData($con, $mes, $anio) {
             $datosPorSucursal[$sucursalId] = [
                 'sucursal_id' => $sucursalId,
                 'nombre_sucursal' => $dato['nombre_sucursal'],
+                'direccion' => $dato['direccion'],
+                'sup' => $dato['sup'],
+                'ceco' => $dato['ceco'],
                 'turnos' => []
             ];
         }
@@ -433,20 +441,33 @@ function generarExcelMultiSucursal($datosPorSucursal, $mes, $anio, $con, $userID
             $sheet->getStyle('A1')->getAlignment()
                 ->setHorizontal('center')
                 ->setVertical('center');
-            
-        
+
+            $datosInstalacion = "Dirección: " . ($sucursal['direccion'] ?? 'N/A') . "\n" .
+                                "CECO: " . ($sucursal['ceco'] ?? 'N/A') . "\n" .
+                                "Supervisor: " . ($sucursal['sup'] ?? 'N/A');
+
+            $sheet->mergeCells('A2:G2');
+            $sheet->setCellValue('A2', $datosInstalacion);
+            $sheet->getStyle('A2')->getAlignment()
+                ->setHorizontal('center')
+                ->setVertical('center')
+                ->setWrapText(true);
+            $sheet->getStyle('A2')->getFont()->setSize(10);
+
+            $sheet->getRowDimension(2)->setRowHeight(40);
+
             foreach ($diasSemana as $i => $dia) {
                 $col = $i + 1;
-                $cell = Coordinate::stringFromColumnIndex($col) . '2';
+                $cell = Coordinate::stringFromColumnIndex($col) . '3';
                 $sheet->setCellValue($cell, $dia);
                 $sheet->getStyle($cell)->getFont()->setBold(true);
             }
-            
+
             $primerDia = mktime(0, 0, 0, $mes, 1, $anio);
             $diaSemana = (int)date('N', $primerDia);
             $diasMes = (int)date('t', $primerDia);
-            
-            $row = 3; 
+
+            $row = 4;
             $col = 1;
             $diaActual = 1;
             

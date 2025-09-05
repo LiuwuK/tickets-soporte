@@ -79,9 +79,16 @@ $userID = $_SESSION['id'];
             <button type="submit" class="btn btn-updt btn-lg me-2">
               <i class="bi bi-filter"></i> Filtrar
             </button>
-            <button type="button" class="btn btn-excel" onclick="window.location.href='assets/php/descargar-calendario.php?formato=all&userID=<?= $userID ?>';">
-              <i class="bi bi-file-earmark-excel"></i> Exportar Calendarios
+            <button type="button" class="btn btn-excel" onclick="window.location.href='assets/php/descargar-calendario.php?formato=all&';">
+              <i class="bi bi-file-earmark-excel"></i> Exportar Calendario por Instalacion
             </button>
+            <?php if($userID == 50 ){?>
+            <!--  if($userID == 50 ){-->
+              <button type="button" class="btn btn-excel" onclick="window.location.href='assets/php/descargar-calendario.php?formato=all&userID=<?= $userID ?>';">
+                <i class="bi bi-file-earmark-excel"></i> Exportar Calendario Conjunto
+              </button>
+
+            <?php } ?>
           </div>
         </div>
         <input type="hidden" name="pagina" value="<?= $pagina ?>">
